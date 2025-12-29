@@ -31,9 +31,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
-// Service for authentication operations.
+//  Service for authentication operations.
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -58,12 +59,12 @@ public class AuthService {
         }
 
         // Check if email already exists
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail().toLowerCase().trim())) {
             throw new ConflictException("An account with this email already exists");
         }
 
         // Check if pseudo already exists
-        if (userRepository.existsByPseudo(request.getPseudo())) {
+        if (userRepository.existsByPseudo(request.getPseudo().trim())) {
             throw new ConflictException("This pseudo is already taken");
         }
 
@@ -86,8 +87,8 @@ public class AuthService {
 
         log.info("User registered successfully:  {}", user.getId());
 
-        // TODO: Send verification email
-        return MessageResponse.of("Registration successful.  Please verify your email.");
+        // TODO: Send verification email asynchronously
+        return MessageResponse.of("Registration successful.  Please check your email to verify your account.");
     }
 
     // Authenticates a user and returns tokens.
@@ -108,7 +109,7 @@ public class AuthService {
 
             // Check if account is blocked
             if (!userDetails.isAccountNonLocked()) {
-                throw new ForbiddenException("Your account has been blocked");
+                throw new ForbiddenException("Your account has been blocked.  Please contact support.");
             }
 
             // Generate tokens
@@ -147,7 +148,7 @@ public class AuthService {
         }
     }
 
-    //  Refreshes the access token.
+    // Refreshes the access token.
     @Transactional
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         String token = request.getRefreshToken();
@@ -164,6 +165,12 @@ public class AuthService {
 
         // Get user
         User user = refreshToken.getUser();
+
+        // Check if user is still active
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new ForbiddenException("Your account is no longer active");
+        }
+
         CustomUserDetails userDetails = CustomUserDetails.fromUser(user);
 
         // Generate new tokens
@@ -195,7 +202,7 @@ public class AuthService {
     // Logs out the user by revoking the refresh token.
     @Transactional
     public MessageResponse logout(String refreshToken) {
-        if (refreshToken != null) {
+        if (refreshToken != null && !refreshToken.isBlank()) {
             refreshTokenRepository.findByToken(refreshToken)
                     .ifPresent(token -> {
                         token.revoke();
@@ -211,7 +218,82 @@ public class AuthService {
     public MessageResponse logoutAll(String userId) {
         refreshTokenRepository.revokeAllByUserId(userId);
         log.info("All tokens revoked for user:  {}", userId);
-        return MessageResponse.of("Logged out from all devices");
+        return MessageResponse.of("Logged out from all devices successfully");
+    }
+
+    // Verifies user email.
+    @Transactional
+    public MessageResponse verifyEmail(String token) {
+        log.info("Verifying email with token");
+
+        User user = userRepository.findByEmailVerificationToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid or expired verification token"));
+
+        if (user.getIsEmailVerified()) {
+            return MessageResponse.of("Email is already verified");
+        }
+
+        user.setIsEmailVerified(true);
+        user.setEmailVerificationToken(null);
+        userRepository.save(user);
+
+        log.info("Email verified for user: {}", user.getId());
+
+        return MessageResponse.of("Email verified successfully.  You can now login.");
+    }
+
+    // Initiates password reset process.
+    @Transactional
+    public MessageResponse forgotPassword(String email) {
+        log.info("Password reset requested for email: {}", email);
+
+        // Always return success to prevent email enumeration
+        userRepository.findByEmail(email.toLowerCase().trim())
+                .ifPresent(user -> {
+                    // Generate reset token
+                    String resetToken = UUID.randomUUID().toString();
+                    user.setPasswordResetToken(resetToken);
+                    user.setPasswordResetExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS));
+                    userRepository.save(user);
+
+                    // TODO: Send password reset email asynchronously
+                    log.info("Password reset token generated for user: {}", user.getId());
+                });
+
+        return MessageResponse.of("If an account exists with this email, you will receive a password reset link.");
+    }
+
+    // Resets user password.
+    @Transactional
+    public MessageResponse resetPassword(String token, String newPassword) {
+        log.info("Resetting password with token");
+
+        User user = userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid or expired reset token"));
+
+        // Check if token is expired
+        if (user.getPasswordResetExpiresAt() == null
+                || user.getPasswordResetExpiresAt().isBefore(Instant.now())) {
+            throw new BadRequestException("Reset token has expired.  Please request a new one.");
+        }
+
+        // Validate password
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new BadRequestException("Password must be at least 8 characters");
+        }
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetExpiresAt(null);
+        userRepository.save(user);
+
+        // Revoke all refresh tokens for security
+        refreshTokenRepository.revokeAllByUserId(user.getId());
+
+        log.info("Password reset successfully for user:  {}", user.getId());
+
+        return MessageResponse.of("Password reset successfully. Please login with your new password.");
     }
 
     // Saves a refresh token for a user.
