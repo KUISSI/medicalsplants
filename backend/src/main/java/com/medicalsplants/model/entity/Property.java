@@ -1,15 +1,13 @@
 package com.medicalsplants.model.entity;
 
-import jakarta. persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util. Set;
+import java.util.Set;
 
-/**
- * Entity representing a medicinal property.
- * Properties link symptoms to plants. 
- */
+//  Entity representing a medicinal property.
+//  Properties link symptoms to plants. 
 @Entity
 @Table(name = "ms_property", indexes = {
     @Index(name = "idx_property_title", columnList = "title"),
@@ -38,12 +36,11 @@ public class Property extends BaseEntity {
     // ========================================
     // RELATIONSHIPS
     // ========================================
-
     @ManyToMany
     @JoinTable(
-        name = "ms_property_symptom",
-        joinColumns = @JoinColumn(name = "property_id"),
-        inverseJoinColumns = @JoinColumn(name = "symptom_id")
+            name = "ms_property_symptom",
+            joinColumns = @JoinColumn(name = "property_id"),
+            inverseJoinColumns = @JoinColumn(name = "symptom_id")
     )
     @Builder.Default
     private Set<Symptom> symptoms = new HashSet<>();
@@ -55,7 +52,6 @@ public class Property extends BaseEntity {
     // ========================================
     // HELPER METHODS
     // ========================================
-
     /**
      * Adds a symptom to this property.
      */
@@ -65,7 +61,7 @@ public class Property extends BaseEntity {
     }
 
     /**
-     * Removes a symptom from this property. 
+     * Removes a symptom from this property.
      */
     public void removeSymptom(Symptom symptom) {
         this.symptoms.remove(symptom);
