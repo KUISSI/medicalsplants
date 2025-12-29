@@ -60,30 +60,22 @@ public class Review extends BaseEntity {
     // ========================================
     // HELPER METHODS
     // ========================================
-    /**
-     * Checks if the review is deleted (soft delete).
-     */
+    // Checks if the review is deleted (soft delete).
     public boolean isDeleted() {
         return deletedAt != null;
     }
 
-    /**
-     * Soft deletes this review.
-     */
+    // Soft deletes this review.
     public void softDelete() {
         this.deletedAt = Instant.now();
     }
 
-    /**
-     * Checks if this is a reply to another review.
-     */
+    // Checks if this is a reply to another review.
     public boolean isReply() {
         return parentReview != null;
     }
 
-    /**
-     * Gets the reply count.
-     */
+    // Gets the reply count.
     public int getReplyCount() {
         return replies != null ? replies.size() : 0;
     }
