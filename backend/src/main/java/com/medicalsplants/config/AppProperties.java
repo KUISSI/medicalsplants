@@ -22,7 +22,6 @@ public class AppProperties {
     private String url = "http://localhost:8080";
 
     // CORS configuration.
-    */
     private Cors cors = new Cors();
 
     @Getter
