@@ -1,0 +1,70 @@
+﻿# ============================================================
+# DOCKER COMPOSE - DEVELOPMENT ENVIRONMENT
+# ============================================================
+# Usage: docker-compose -f docker-compose.dev.yml up -d
+
+version: '3.8'
+
+services:
+  # ========================================
+  # PostgreSQL Database
+  # ========================================
+  db: 
+    image: postgres:16-alpine
+    container_name: medicalsplants-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment: 
+      POSTGRES_DB: medicalsplants_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medicalsplants-network
+
+  # ========================================
+  # Adminer - Database Management UI
+  # ========================================
+  adminer:
+    image: adminer:latest
+    container_name: medicalsplants-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on: 
+      db:
+        condition: service_healthy
+    networks:
+      - medicalsplants-network
+
+  # ========================================
+  # MailHog - Email Testing
+  # ========================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: medicalsplants-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - medicalsplants-network
+
+volumes:
+  postgres_data:
+    name: medicalsplants-postgres-data
+
+networks:
+  medicalsplants-network:
+    name: medicalsplants-dev
+    driver: bridge
