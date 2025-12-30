@@ -1,26 +1,26 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "./node_modules/@angular/cli/lib/config/schema. json",
   "version": 1,
   "cli": {
     "packageManager": "npm"
   },
   "newProjectRoot": "projects",
-  "projects":  {
+  "projects": {
     "frontend-app": {
-      "projectType":  "application",
-      "schematics":  {
-        "@schematics/angular: component": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
           "style": "scss",
           "skipTests": true
         },
-        "@schematics/angular: class": {
+        "@schematics/angular:class":  {
           "skipTests": true
         },
-        "@schematics/angular:directive": {
+        "@schematics/angular: directive": {
           "skipTests": true
         },
         "@schematics/angular:guard": {
-          "skipTests": true
+          "skipTests":  true
         },
         "@schematics/angular:interceptor": {
           "skipTests": true
@@ -29,45 +29,45 @@
           "skipTests": true
         },
         "@schematics/angular:resolver": {
-          "skipTests":  true
+          "skipTests": true
         },
-        "@schematics/angular:service":  {
+        "@schematics/angular:service": {
           "skipTests": true
         }
       },
-      "root": "",
+      "root":  "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/frontend-app",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
+            "index":  "src/index. html",
+            "main": "src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage":  "scss",
-            "assets": [
+            "tsConfig":  "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets":  [
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
+            "styles":  [
               "src/styles.scss"
             ],
             "scripts": []
           },
-          "configurations":  {
+          "configurations": {
             "production": {
-              "budgets": [
+              "budgets":  [
                 {
-                  "type": "initial",
-                  "maximumWarning":  "500kB",
-                  "maximumError": "1MB"
+                  "type":  "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError":  "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
+                  "maximumWarning":  "4kB",
                   "maximumError": "8kB"
                 }
               ],
@@ -78,16 +78,17 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap":  true,
+              "vendorChunk": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration":  "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget":  "frontend-app: build:production"
+              "buildTarget": "frontend-app: build:production"
             },
             "development": {
               "buildTarget": "frontend-app:build:development"
@@ -95,8 +96,11 @@
           },
           "defaultConfiguration":  "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+        "extract-i18n":  {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options":  {
+            "buildTarget": "frontend-app:build"
+          }
         }
       }
     }
