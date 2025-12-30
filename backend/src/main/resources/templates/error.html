@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns: th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur - Medicals Plants API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000 0%, #A52A2A 50%, #CD5C5C 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align:  center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius:  20px;
+            backdrop-filter:  blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width:  500px;
+            width: 90%;
+        }
+
+        . error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #FFB6C1;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        .error-details {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        . error-details p {
+            margin:  5px 0;
+        }
+
+        .error-details strong {
+            color:  #FFB6C1;
+        }
+
+        .btn {
+            display:  inline-block;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius:  8px;
+            font-weight:  600;
+            transition: all 0.3s ease;
+            margin:  5px;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-icon">⚠️</div>
+        <h1 th:text="${status}">500</h1>
+        <p class="error-message" th:text="${error}">Une erreur est survenue</p>
+        
+        <div class="error-details">
+            <p><strong>Status:</strong> <span th:text="${status}">500</span></p>
+            <p><strong>Erreur:</strong> <span th:text="${error}">Internal Server Error</span></p>
+            <p><strong>Chemin:</strong> <span th:text="${path}">/api/... </span></p>
+            <p><strong>Timestamp:</strong> <span th:text="${timestamp}">2024-01-01T00:00:00</span></p>
+        </div>
+
+        <a href="/" class="btn">🏠 Retour à l'accueil</a>
+        <a href="/swagger-ui.html" class="btn btn-outline">📚 Documentation</a>
+    </div>
+</body>
+</html>
