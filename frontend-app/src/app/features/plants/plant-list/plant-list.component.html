@@ -1,0 +1,157 @@
+<div class="plant-list-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <h1 class="page-header__title">
+        <span class="page-header__icon">🌱</span>
+        Plantes médicinales
+      </h1>
+      <p class="page-header__subtitle">
+        Explorez notre catalogue de plantes et découvrez leurs propriétés thérapeutiques
+      </p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filters__container">
+      <div class="filters__search">
+        <app-search-bar
+          placeholder="Rechercher une plante..."
+          (search)="onSearch($event)"
+        ></app-search-bar>
+      </div>
+
+      <div class="filters__options">
+        <!-- Mode Filter -->
+        <div class="filter-group">
+          <label for="mode" class="filter-label">Mode d'administration :</label>
+          <select
+            id="mode"
+            class="filter-select"
+            [ngModel]="selectedMode"
+            (ngModelChange)="onModeChange($event)"
+          >
+            <option value="">Tous les modes</option>
+            @for (mode of administrationModeKeys; track mode) {
+            <option [value]="mode">{{ administrationModes[mode] }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Clear Filters -->
+        @if (searchTerm || selectedMode) {
+        <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+          ✕ Effacer les filtres
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="page-content">
+    @if (isLoading) {
+    <app-loader message="Chargement des plantes..."></app-loader>
+    } @else if (filteredPlants.length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">🌱</span>
+      <h3 class="empty-state__title">Aucune plante trouvée</h3>
+      <p class="empty-state__message">
+        @if (searchTerm || selectedMode) { Essayez de modifier vos critères de recherche } @else {
+        Aucune plante n'est disponible pour le moment }
+      </p>
+      @if (searchTerm || selectedMode) {
+      <button class="empty-state__btn" (click)="clearFilters()">Effacer les filtres</button>
+      }
+    </div>
+    } @else {
+    <!-- Results Info -->
+    <div class="results-info">
+      <span class="results-info__count">
+        {{ filteredPlants.length }} plante(s) sur {{ totalElements }}
+      </span>
+    </div>
+
+    <!-- Plants Grid -->
+    <div class="plants-grid">
+      @for (plant of filteredPlants; track plant. id) {
+      <a [routerLink]="['/plants', plant.id]" class="plant-card">
+        <div class="plant-card__image">
+          @if (plant.imageUrl) {
+          <img [src]="plant.imageUrl" [alt]="plant.title" />
+          } @else {
+          <div class="plant-card__placeholder">
+            <span>🌿</span>
+          </div>
+          }
+          <span
+            class="plant-card__mode-badge"
+            [title]="administrationModes[plant.administrationMode]"
+          >
+            {{ getAdministrationIcon(plant.administrationMode) }}
+          </span>
+        </div>
+
+        <div class="plant-card__content">
+          <h3 class="plant-card__title">{{ plant.title }}</h3>
+
+          @if (plant.description) {
+          <p class="plant-card__description">{{ plant.description }}</p>
+          }
+
+          <div class="plant-card__meta">
+            <span class="plant-card__mode">
+              {{ administrationModes[plant.administrationMode] }}
+            </span>
+            @if (plant.consumedPart) {
+            <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
+            }
+          </div>
+        </div>
+      </a>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+    <div class="pagination">
+      <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">
+        ««
+      </button>
+      <button
+        class="pagination__btn"
+        [disabled]="currentPage === 0"
+        (click)="loadPage(currentPage - 1)"
+      >
+        ‹
+      </button>
+
+      @for (page of getPages(); track page) {
+      <button
+        class="pagination__btn"
+        [class.pagination__btn--active]="page === currentPage"
+        (click)="loadPage(page)"
+      >
+        {{ page + 1 }}
+      </button>
+      }
+
+      <button
+        class="pagination__btn"
+        [disabled]="currentPage === totalPages - 1"
+        (click)="loadPage(currentPage + 1)"
+      >
+        ›
+      </button>
+      <button
+        class="pagination__btn"
+        [disabled]="currentPage === totalPages - 1"
+        (click)="loadPage(totalPages - 1)"
+      >
+        »»
+      </button>
+    </div>
+    } }
+  </div>
+</div>

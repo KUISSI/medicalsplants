@@ -1,0 +1,707 @@
+. receipt-detail-page {
+  min-height: calc(100vh - 140px);
+  background: #f5f5f5;
+}
+
+// Error State
+.error-state {
+  text-align: center;
+  padding: 100px 20px;
+
+  &__icon {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    color: #333;
+    margin:  0 0 15px 0;
+  }
+
+  &__message {
+    color: #666;
+    font-size:  1rem;
+    margin:  0 0 30px 0;
+  }
+
+  &__actions {
+    display:  flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  &__btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background:  #FF9800;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #F57C00;
+    }
+  }
+}
+
+// Detail Header
+.detail-header {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  padding: 40px 20px 60px;
+  color: #ffffff;
+
+  &--premium {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #333;
+  }
+
+  &__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  &__back {
+    display:  inline-block;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    transition: color 0.3s;
+
+    &:hover {
+      color:  #ffffff;
+    }
+  }
+
+  &--premium &__back {
+    color: rgba(0, 0, 0, 0.6);
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  &__premium-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  &__type {
+    display:  inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  &__type-icon {
+    font-size: 1.2rem;
+  }
+
+  &__title {
+    font-size: 2. 5rem;
+    margin: 0 0 25px 0;
+    font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__author-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  &__author-name {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  &__author-date {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+}
+
+// Content
+.detail-content {
+  max-width: 900px;
+  margin: -40px auto 0;
+  padding:  0 20px 50px;
+  position: relative;
+  z-index: 1;
+}
+
+// Section
+.section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    color: #333;
+    margin:  0;
+    font-weight: 600;
+  }
+}
+
+// Description
+.description-text {
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.8;
+  margin:  0;
+  white-space: pre-line;
+}
+
+// Plants Grid
+.plants-grid {
+  display:  flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.plant-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius:  12px;
+  text-decoration: none;
+  color: inherit;
+  transition:  all 0.3s ease;
+
+  &:hover {
+    background: #e8f5e9;
+  }
+
+  &__icon {
+    font-size: 2rem;
+  }
+
+  &__info {
+    flex:  1;
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    color: #1a472a;
+    margin: 0 0 5px 0;
+    font-weight: 600;
+  }
+
+  &__meta {
+    display:  flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  &__mode, &__part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__arrow {
+    color: #4CAF50;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.3s;
+  }
+
+  &: hover &__arrow {
+    transform: translateX(5px);
+  }
+}
+
+// Add Review
+.add-review {
+  display: flex;
+  gap:  15px;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #eee;
+
+  &__avatar {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 50%;
+    background:  #4CAF50;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  &__form {
+    flex: 1;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s;
+
+    &: focus {
+      border-color: #4CAF50;
+    }
+  }
+
+  &__btn {
+    margin-top: 10px;
+    padding: 10px 25px;
+    background: #4CAF50;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor:  pointer;
+    transition: all 0.3s ease;
+
+    &:hover: not(:disabled) {
+      background: #45a049;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Login Prompt
+.login-prompt {
+  text-align: center;
+  padding:  20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin-bottom: 25px;
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+
+  a {
+    color:  #4CAF50;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Empty Reviews
+.empty-reviews {
+  text-align: center;
+  padding: 40px 20px;
+
+  &__icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom:  15px;
+    opacity: 0.5;
+  }
+
+  &__message {
+    color: #666;
+    margin: 0;
+  }
+}
+
+// Reviews List
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-card {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  &__avatar {
+    width:  40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #FF9800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight:  bold;
+    font-size: 1rem;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__author {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+  }
+
+  &__date {
+    display: block;
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  &__delete {
+    background:  none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__content {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin:  0 0 12px 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap:  15px;
+  }
+
+  &__reply-btn {
+    background: none;
+    border:  none;
+    color: #4CAF50;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.3s;
+
+    &: hover {
+      color: #2d5a3d;
+    }
+  }
+}
+
+// Reply Form
+.reply-form {
+  margin-top: 15px;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 10px;
+
+  &__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: none;
+    outline:  none;
+
+    &:focus {
+      border-color: #4CAF50;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap:  10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  &__btn {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor:  pointer;
+    transition: all 0.3s ease;
+
+    &--cancel {
+      background: transparent;
+      border: 1px solid #e0e0e0;
+      color: #666;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+
+    &--submit {
+      background: #4CAF50;
+      border:  none;
+      color:  #ffffff;
+
+      &:hover: not(:disabled) {
+        background: #45a049;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Replies
+.replies {
+  margin-top:  15px;
+  padding-left: 20px;
+  border-left: 3px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reply-card {
+  padding: 12px;
+  background: #ffffff;
+  border-radius:  8px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  &__avatar {
+    width:  30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #9C27B0;
+    color: #ffffff;
+    display:  flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__author {
+    font-weight: 600;
+    color:  #333;
+    font-size: 0.85rem;
+  }
+
+  &__date {
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 10px;
+  }
+
+  &__content {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin:  0;
+  }
+}
+Fichier 9.7 : receipt-create.component.ts
+📍 Chemin : src/app/features/receipts/receipt-create/receipt-create.component. ts
+
+TypeScript
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { LoaderComponent } from '../../../shared/components/loader/loader. component';
+import { ReceiptService } from '../../../core/services/receipt. service';
+import { PlantService } from '../../../core/services/plant.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Plant } from '../../../core/models/plant. model';
+import { ReceiptType, RECEIPT_TYPE_LABELS, CreateReceiptRequest } from '../../../core/models/receipt. model';
+
+@Component({
+  selector: 'app-receipt-create',
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
+  templateUrl: './receipt-create.component.html',
+  styleUrls: ['./receipt-create.component. scss']
+})
+export class ReceiptCreateComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  private receiptService = inject(ReceiptService);
+  private plantService = inject(PlantService);
+  authService = inject(AuthService);
+
+  receiptForm: FormGroup;
+  plants: Plant[] = [];
+  selectedPlantIds: string[] = [];
+  
+  isLoading = false;
+  isLoadingPlants = true;
+  isSubmitting = false;
+
+  receiptTypes = RECEIPT_TYPE_LABELS;
+  receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
+
+  constructor() {
+    this. receiptForm = this. fb.group({
+      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
+      type: ['', [Validators.required]],
+      description:  ['', [Validators.maxLength(5000)]],
+      isPremium: [false]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadPlants();
+  }
+
+  loadPlants(): void {
+    this.isLoadingPlants = true;
+    this.plantService.getAll(0, 100).subscribe({
+      next:  (response) => {
+        this.plants = response.content;
+        this. isLoadingPlants = false;
+      },
+      error:  () => {
+        this.isLoadingPlants = false;
+      }
+    });
+  }
+
+  get title() { return this.receiptForm.get('title'); }
+  get type() { return this.receiptForm.get('type'); }
+  get description() { return this.receiptForm.get('description'); }
+
+  togglePlant(plantId: string): void {
+    const index = this.selectedPlantIds.indexOf(plantId);
+    if (index > -1) {
+      this.selectedPlantIds.splice(index, 1);
+    } else {
+      this.selectedPlantIds.push(plantId);
+    }
+  }
+
+  isPlantSelected(plantId: string): boolean {
+    return this. selectedPlantIds. includes(plantId);
+  }
+
+  getSelectedPlants(): Plant[] {
+    return this.plants.filter(p => this.selectedPlantIds.includes(p.id));
+  }
+
+  removeSelectedPlant(plantId: string): void {
+    this.selectedPlantIds = this.selectedPlantIds.filter(id => id !== plantId);
+  }
+
+  getReceiptTypeIcon(type: ReceiptType): string {
+    const icons:  Record<ReceiptType, string> = {
+      'HOT_DRINK': '☕',
+      'COLD_DRINK': '🧊',
+      'DISH': '🍽️',
+      'LOTION': '🧴'
+    };
+    return icons[type] || '📖';
+  }
+
+  onSubmit(): void {
+    if (this.receiptForm. invalid) {
+      this.receiptForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.selectedPlantIds.length === 0) {
+      this.toastr.warning('Veuillez sélectionner au moins une plante', 'Attention');
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const request: CreateReceiptRequest = {
+      title: this.receiptForm.value.title,
+      type: this.receiptForm.value. type,
+      description: this.receiptForm.value.description,
+      isPremium: this. receiptForm.value.isPremium,
+      plantIds: this.selectedPlantIds
+    };
+
+    this.receiptService.create(request).subscribe({
+      next: (receipt) => {
+        this.isSubmitting = false;
+        this.toastr.success('Votre recette a été créée avec succès !', 'Succès');
+        this.router.navigate(['/receipts', receipt.id]);
+      },
+      error: () => {
+        this.isSubmitting = false;
+      }
+    });
+  }
+}

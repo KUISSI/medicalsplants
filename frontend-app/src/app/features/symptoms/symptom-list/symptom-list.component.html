@@ -1,0 +1,138 @@
+<div class="symptom-list-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <h1 class="page-header__title">
+        <span class="page-header__icon">🔍</span>
+        Symptômes
+      </h1>
+      <p class="page-header__subtitle">
+        Sélectionnez un symptôme pour découvrir les plantes adaptées à votre besoin
+      </p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filters__container">
+      <div class="filters__search">
+        <app-search-bar
+          placeholder="Rechercher un symptôme..."
+          (search)="onSearch($event)"
+        ></app-search-bar>
+      </div>
+
+      <div class="filters__options">
+        <!-- Family Filter -->
+        <div class="filter-group">
+          <label for="family" class="filter-label">Famille :</label>
+          <select
+            id="family"
+            class="filter-select"
+            [ngModel]="selectedFamily"
+            (ngModelChange)="onFamilyChange($event)"
+          >
+            <option value="">Toutes les familles</option>
+            @for (family of families; track family) {
+            <option [value]="family">{{ family }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- View Mode Toggle -->
+        <button
+          class="filter-btn"
+          (click)="toggleViewMode()"
+          [title]="viewMode === 'grid' ? 'Vue liste' : 'Vue grille'"
+        >
+          {{ viewMode === 'grid' ? '📋' : '🔲' }}
+        </button>
+
+        <!-- Clear Filters -->
+        @if (searchTerm || selectedFamily) {
+        <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+          ✕ Effacer les filtres
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="page-content">
+    @if (isLoading) {
+    <app-loader message="Chargement des symptômes... "></app-loader>
+    } @else if (filteredSymptoms.length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">🔍</span>
+      <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+      <p class="empty-state__message">
+        @if (searchTerm || selectedFamily) { Essayez de modifier vos critères de recherche } @else {
+        Aucun symptôme n'est disponible pour le moment }
+      </p>
+      @if (searchTerm || selectedFamily) {
+      <button class="empty-state__btn" (click)="clearFilters()">Effacer les filtres</button>
+      }
+    </div>
+    } @else {
+    <!-- Results Count -->
+    <div class="results-info">
+      <span class="results-info__count"> {{ filteredSymptoms.length }} symptôme(s) trouvé(s) </span>
+    </div>
+
+    <!-- Grid View -->
+    @if (viewMode === 'grid') { @for (family of (groupedSymptoms | keyvalue); track family.key) {
+    <div class="symptom-family">
+      <h2 class="symptom-family__title">
+        <span class="symptom-family__icon">{{ getSymptomIcon(family.key) }}</span>
+        {{ family.key }}
+        <span class="symptom-family__count">({{ family.value.length }})</span>
+      </h2>
+
+      <div class="symptom-grid">
+        @for (symptom of family.value; track symptom.id) {
+        <a [routerLink]="['/symptoms', symptom.id]" class="symptom-card">
+          <div class="symptom-card__icon" [style.background-color]="getFamilyColor(family.key)">
+            {{ getSymptomIcon(family.key) }}
+          </div>
+          <div class="symptom-card__content">
+            <h3 class="symptom-card__title">{{ symptom.title }}</h3>
+            @if (symptom. symptomDetail) {
+            <p class="symptom-card__description">{{ symptom.symptomDetail }}</p>
+            }
+          </div>
+          <span class="symptom-card__arrow">→</span>
+        </a>
+        }
+      </div>
+    </div>
+    } } @else {
+    <!-- List View -->
+    <div class="symptom-table">
+      <div class="symptom-table__header">
+        <span class="symptom-table__col symptom-table__col--name">Symptôme</span>
+        <span class="symptom-table__col symptom-table__col--family">Famille</span>
+        <span class="symptom-table__col symptom-table__col--action">Action</span>
+      </div>
+
+      @for (symptom of filteredSymptoms; track symptom. id) {
+      <a [routerLink]="['/symptoms', symptom.id]" class="symptom-table__row">
+        <span class="symptom-table__col symptom-table__col--name">
+          <span class="symptom-table__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
+          {{ symptom.title }}
+        </span>
+        <span class="symptom-table__col symptom-table__col--family">
+          <span
+            class="symptom-table__badge"
+            [style.background-color]="getFamilyColor(symptom.symptomFamily)"
+          >
+            {{ symptom.symptomFamily }}
+          </span>
+        </span>
+        <span class="symptom-table__col symptom-table__col--action"> Voir les plantes → </span>
+      </a>
+      }
+    </div>
+    } }
+  </div>
+</div>

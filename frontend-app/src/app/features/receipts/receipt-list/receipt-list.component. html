@@ -1,0 +1,187 @@
+<div class="receipt-list-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <h1 class="page-header__title">
+        <span class="page-header__icon">📖</span>
+        Recettes naturelles
+      </h1>
+      <p class="page-header__subtitle">
+        Découvrez nos recettes à base de plantes médicinales pour votre bien-être
+      </p>
+      @if (authService. isAuthenticated()) {
+        <a routerLink="/receipts/create" class="page-header__btn">
+          ✨ Créer une recette
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filters__container">
+      <div class="filters__search">
+        <app-search-bar
+          placeholder="Rechercher une recette..."
+          (search)="onSearch($event)"
+        ></app-search-bar>
+      </div>
+
+      <div class="filters__options">
+        <!-- Type Filter -->
+        <div class="filter-group">
+          <label for="type" class="filter-label">Type :</label>
+          <select
+            id="type"
+            class="filter-select"
+            [ngModel]="selectedType"
+            (ngModelChange)="onTypeChange($event)"
+          >
+            <option value="">Tous les types</option>
+            @for (type of receiptTypeKeys; track type) {
+              <option [value]="type">
+                {{ getReceiptTypeIcon(type) }} {{ receiptTypes[type] }}
+              </option>
+            }
+          </select>
+        </div>
+
+        @if (searchTerm || selectedType) {
+          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+            ✕ Effacer les filtres
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="page-content">
+    @if (isLoading) {
+      <app-loader message="Chargement des recettes..."></app-loader>
+    } @else if (filteredReceipts. length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">📖</span>
+        <h3 class="empty-state__title">Aucune recette trouvée</h3>
+        <p class="empty-state__message">
+          @if (searchTerm || selectedType) {
+            Essayez de modifier vos critères de recherche
+          } @else {
+            Aucune recette n'est disponible pour le moment
+          }
+        </p>
+        <div class="empty-state__actions">
+          @if (searchTerm || selectedType) {
+            <button class="empty-state__btn" (click)="clearFilters()">
+              Effacer les filtres
+            </button>
+          }
+          @if (authService. isAuthenticated()) {
+            <a routerLink="/receipts/create" class="empty-state__btn empty-state__btn--primary">
+              Créer une recette
+            </a>
+          }
+        </div>
+      </div>
+    } @else {
+      <!-- Results Info -->
+      <div class="results-info">
+        <span class="results-info__count">
+          {{ filteredReceipts.length }} recette(s) sur {{ totalElements }}
+        </span>
+      </div>
+
+      <!-- Receipts Grid -->
+      <div class="receipts-grid">
+        @for (receipt of filteredReceipts; track receipt. id) {
+          <a [routerLink]="['/receipts', receipt.id]" class="receipt-card" [class.receipt-card--premium]="receipt.isPremium">
+            @if (receipt.isPremium) {
+              <div class="receipt-card__premium-badge">
+                ⭐ Premium
+              </div>
+            }
+
+            <div class="receipt-card__image">
+              @if (receipt.imageUrl) {
+                <img [src]="receipt.imageUrl" [alt]="receipt. title" />
+              } @else {
+                <div class="receipt-card__placeholder">
+                  <span>{{ getReceiptTypeIcon(receipt.type) }}</span>
+                </div>
+              }
+              <span class="receipt-card__type-badge">
+                {{ getReceiptTypeIcon(receipt.type) }} {{ receiptTypes[receipt. type] }}
+              </span>
+            </div>
+
+            <div class="receipt-card__content">
+              <h3 class="receipt-card__title">{{ receipt.title }}</h3>
+              
+              @if (receipt.description) {
+                <p class="receipt-card__description">{{ receipt.description }}</p>
+              }
+
+              <div class="receipt-card__footer">
+                @if (receipt.author) {
+                  <span class="receipt-card__author">
+                    👤 {{ receipt. author.pseudo }}
+                  </span>
+                }
+                @if (receipt. plants && receipt.plants.length > 0) {
+                  <span class="receipt-card__plants">
+                    🌿 {{ receipt.plants.length }} plante(s)
+                  </span>
+                }
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(0)"
+          >
+            ««
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(currentPage - 1)"
+          >
+            ‹
+          </button>
+
+          @for (page of getPages(); track page) {
+            <button
+              class="pagination__btn"
+              [class.pagination__btn--active]="page === currentPage"
+              (click)="loadPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+          }
+
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(currentPage + 1)"
+          >
+            ›
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(totalPages - 1)"
+          >
+            »»
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

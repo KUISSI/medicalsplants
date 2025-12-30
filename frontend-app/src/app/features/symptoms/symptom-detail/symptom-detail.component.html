@@ -1,0 +1,101 @@
+<div class="symptom-detail-page">
+  @if (isLoading) {
+  <app-loader [fullscreen]="true" message="Chargement du symptôme..."></app-loader>
+  } @else if (error) {
+  <div class="error-state">
+    <span class="error-state__icon">😕</span>
+    <h2 class="error-state__title">{{ error }}</h2>
+    <a routerLink="/symptoms" class="error-state__btn"> ← Retour aux symptômes </a>
+  </div>
+  } @else if (symptom) {
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="detail-header__container">
+      <a routerLink="/symptoms" class="detail-header__back"> ← Retour aux symptômes </a>
+
+      <div class="detail-header__content">
+        <span class="detail-header__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
+        <div class="detail-header__info">
+          <span class="detail-header__family">{{ symptom.symptomFamily }}</span>
+          <h1 class="detail-header__title">{{ symptom.title }}</h1>
+        </div>
+      </div>
+
+      @if (symptom. symptomDetail) {
+      <p class="detail-header__description">{{ symptom.symptomDetail }}</p>
+      }
+    </div>
+  </div>
+
+  <!-- Plants Section -->
+  <div class="detail-content">
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">🌱 Plantes recommandées</h2>
+        <span class="section__count">{{ plants.length }} plante(s)</span>
+      </div>
+
+      @if (isLoadingPlants) {
+      <app-loader message="Chargement des plantes..."></app-loader>
+      } @else if (plants.length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">🌿</span>
+        <p class="empty-state__message">Aucune plante n'est encore associée à ce symptôme.</p>
+      </div>
+      } @else {
+      <div class="plants-grid">
+        @for (plant of plants; track plant.id) {
+        <a [routerLink]="['/plants', plant.id]" class="plant-card">
+          <div class="plant-card__header">
+            <span class="plant-card__icon">🌿</span>
+            <h3 class="plant-card__title">{{ plant.title }}</h3>
+          </div>
+
+          @if (plant.description) {
+          <p class="plant-card__description">{{ plant.description }}</p>
+          }
+
+          <div class="plant-card__footer">
+            <span
+              class="plant-card__mode"
+              [title]="administrationModeLabels[plant.administrationMode]"
+            >
+              {{ getAdministrationIcon(plant.administrationMode) }}
+              {{ administrationModeLabels[plant.administrationMode] }}
+            </span>
+            @if (plant.consumedPart) {
+            <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
+            }
+          </div>
+        </a>
+        }
+      </div>
+
+      @if (currentPage < totalPages - 1) {
+      <div class="load-more">
+        <button class="load-more__btn" (click)="loadMorePlants()">Charger plus de plantes</button>
+      </div>
+      } }
+    </div>
+
+    <!-- Related Symptoms -->
+    @if (relatedSymptoms.length > 0) {
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">🔗 Symptômes similaires</h2>
+      </div>
+
+      <div class="related-grid">
+        @for (related of relatedSymptoms; track related. id) {
+        <a [routerLink]="['/symptoms', related.id]" class="related-card">
+          <span class="related-card__icon">{{ getSymptomIcon(related.symptomFamily) }}</span>
+          <span class="related-card__title">{{ related.title }}</span>
+          <span class="related-card__arrow">→</span>
+        </a>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
