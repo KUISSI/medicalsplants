@@ -1,0 +1,180 @@
+<div class="plant-detail-page">
+  @if (isLoading) {
+  <app-loader [fullscreen]="true" message="Chargement de la plante... "></app-loader>
+  } @else if (error) {
+  <div class="error-state">
+    <span class="error-state__icon">🌿</span>
+    <h2 class="error-state__title">{{ error }}</h2>
+    <a routerLink="/plants" class="error-state__btn"> ← Retour aux plantes </a>
+  </div>
+  } @else if (plant) {
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="detail-header__container">
+      <a routerLink="/plants" class="detail-header__back"> ← Retour aux plantes </a>
+
+      <div class="detail-header__main">
+        <div class="detail-header__image">
+          @if (plant.imageUrl) {
+          <img [src]="plant.imageUrl" [alt]="plant.title" />
+          } @else {
+          <div class="detail-header__placeholder">
+            <span>🌿</span>
+          </div>
+          }
+        </div>
+
+        <div class="detail-header__info">
+          <div class="detail-header__badges">
+            <span class="detail-header__badge detail-header__badge--mode">
+              {{ getAdministrationIcon(plant.administrationMode) }}
+              {{ administrationModeLabels[plant.administrationMode] }}
+            </span>
+            @if (plant.consumedPart) {
+            <span class="detail-header__badge"> 🍃 {{ plant.consumedPart }} </span>
+            }
+          </div>
+
+          <h1 class="detail-header__title">{{ plant.title }}</h1>
+
+          @if (plant.description) {
+          <p class="detail-header__description">{{ plant.description }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="detail-content">
+    <!-- Properties Section -->
+    @if (plant.properties && plant.properties. length > 0) {
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">✨ Propriétés thérapeutiques</h2>
+      </div>
+
+      <div class="properties-grid">
+        @for (property of plant.properties; track property. id) {
+        <div class="property-card">
+          <div class="property-card__header">
+            <span class="property-card__icon">{{ getPropertyIcon(property.propertyFamily) }}</span>
+            <div>
+              <h3 class="property-card__title">{{ property.title }}</h3>
+              <span class="property-card__family">{{ property.propertyFamily }}</span>
+            </div>
+          </div>
+          @if (property.propertyDetail) {
+          <p class="property-card__description">{{ property.propertyDetail }}</p>
+          }
+
+          <!-- Symptoms linked to this property -->
+          @if (property.symptoms && property. symptoms.length > 0) {
+          <div class="property-card__symptoms">
+            <span class="property-card__symptoms-label">Aide pour :</span>
+            <div class="property-card__symptoms-list">
+              @for (symptom of property.symptoms; track symptom.id) {
+              <a [routerLink]="['/symptoms', symptom.id]" class="property-card__symptom-tag">
+                {{ symptom.title }}
+              </a>
+              }
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Receipts Section -->
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">📖 Recettes avec cette plante</h2>
+        <a routerLink="/receipts" [queryParams]="{ plant: plant.id }" class="section__link">
+          Voir toutes les recettes →
+        </a>
+      </div>
+
+      @if (isLoadingReceipts) {
+      <app-loader message="Chargement des recettes..."></app-loader>
+      } @else if (receipts.length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">📖</span>
+        <p class="empty-state__message">Aucune recette disponible pour cette plante.</p>
+        @if (authService.isAuthenticated()) {
+        <a routerLink="/receipts/create" class="empty-state__btn"> Créer une recette </a>
+        }
+      </div>
+      } @else {
+      <div class="receipts-grid">
+        @for (receipt of receipts; track receipt. id) {
+        <a
+          [routerLink]="['/receipts', receipt.id]"
+          class="receipt-card"
+          [class.receipt-card--premium]="receipt.isPremium"
+        >
+          @if (receipt.isPremium) {
+          <span class="receipt-card__premium-badge">⭐ Premium</span>
+          }
+
+          <div class="receipt-card__header">
+            <span class="receipt-card__type-icon">{{ getReceiptTypeIcon(receipt.type) }}</span>
+            <span class="receipt-card__type">{{ receiptTypeLabels[receipt.type] }}</span>
+          </div>
+
+          <h3 class="receipt-card__title">{{ receipt.title }}</h3>
+
+          @if (receipt. description) {
+          <p class="receipt-card__description">{{ receipt.description }}</p>
+          }
+
+          <div class="receipt-card__footer">
+            @if (receipt.author) {
+            <span class="receipt-card__author"> Par {{ receipt.author.pseudo }} </span>
+            }
+          </div>
+        </a>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Usage Tips Section -->
+    <div class="section section--tips">
+      <div class="section__header">
+        <h2 class="section__title">💡 Conseils d'utilisation</h2>
+      </div>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <span class="tip-card__icon">⚠️</span>
+          <h3 class="tip-card__title">Précautions</h3>
+          <p class="tip-card__text">
+            Consultez toujours un professionnel de santé avant d'utiliser des plantes médicinales,
+            surtout si vous êtes enceinte, allaitez ou prenez des médicaments.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <span class="tip-card__icon">📏</span>
+          <h3 class="tip-card__title">Dosage</h3>
+          <p class="tip-card__text">
+            Respectez les dosages recommandés dans les recettes. Une dose trop élevée peut avoir des
+            effets indésirables.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <span class="tip-card__icon">🌡️</span>
+          <h3 class="tip-card__title">Conservation</h3>
+          <p class="tip-card__text">
+            Conservez les plantes séchées dans un endroit frais, sec et à l'abri de la lumière pour
+            préserver leurs propriétés.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
