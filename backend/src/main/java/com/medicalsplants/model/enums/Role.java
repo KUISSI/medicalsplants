@@ -1,4 +1,4 @@
-package com. medicalsplants. model.enums;
+package com.medicalsplants.model.enums;
 
 public enum Role {
     USER,

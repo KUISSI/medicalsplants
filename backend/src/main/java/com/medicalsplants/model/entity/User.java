@@ -16,7 +16,7 @@ public class User extends BaseEntity {
     @Column(name = "id", length = 26)
     private String id;
 
-    @Column(name = "email", nullable = false, unique = true, length = 255)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password_hash", nullable = false)
@@ -66,11 +66,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    // Constructeurs
     public User() {
     }
 
-    // Getters et Setters
     public String getId() {
         return id;
     }
@@ -226,7 +224,6 @@ public class User extends BaseEntity {
         return status == UserStatus.BLOCKED;
     }
 
-    // Builder pattern manuel
     public static UserBuilder builder() {
         return new UserBuilder();
     }
