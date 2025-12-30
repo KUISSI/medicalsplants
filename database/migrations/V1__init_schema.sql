@@ -1,0 +1,390 @@
+-- ============================================================
+-- MEDICALS PLANTS - Database Schema
+-- Version:  1.0.0
+-- ============================================================
+
+-- Enable extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+-- ============================================================
+-- USERS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_user (
+    id VARCHAR(26) PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    pseudo VARCHAR(50) NOT NULL UNIQUE,
+    firstname VARCHAR(100),
+    lastname VARCHAR(100),
+    phone VARCHAR(20),
+    avatar TEXT,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    email_verification_token VARCHAR(255),
+    password_reset_token VARCHAR(255),
+    password_reset_expires_at TIMESTAMP,
+    last_login_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_user_email ON ms_user(email);
+CREATE INDEX idx_user_pseudo ON ms_user(pseudo);
+CREATE INDEX idx_user_status ON ms_user(status);
+
+-- ============================================================
+-- REFRESH TOKENS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_refresh_token (
+    id VARCHAR(26) PRIMARY KEY,
+    token VARCHAR(500) NOT NULL UNIQUE,
+    user_id VARCHAR(26) NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
+    expires_at TIMESTAMP NOT NULL,
+    is_revoked BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_refresh_token_token ON ms_refresh_token(token);
+CREATE INDEX idx_refresh_token_user ON ms_refresh_token(user_id);
+
+-- ============================================================
+-- SYMPTOMS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_symptom (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL UNIQUE,
+    symptom_family VARCHAR(100) NOT NULL,
+    symptom_detail TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_symptom_title ON ms_symptom(title);
+CREATE INDEX idx_symptom_family ON ms_symptom(symptom_family);
+
+-- ============================================================
+-- PROPERTIES
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_property (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL UNIQUE,
+    property_family VARCHAR(100) NOT NULL,
+    property_detail TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_property_title ON ms_property(title);
+CREATE INDEX idx_property_family ON ms_property(property_family);
+
+-- ============================================================
+-- PROPERTY - SYMPTOM (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_property_symptom (
+    property_id VARCHAR(26) NOT NULL REFERENCES ms_property(id) ON DELETE CASCADE,
+    symptom_id VARCHAR(26) NOT NULL REFERENCES ms_symptom(id) ON DELETE CASCADE,
+    PRIMARY KEY (property_id, symptom_id)
+);
+
+-- ============================================================
+-- PLANTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_plant (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(150) NOT NULL UNIQUE,
+    description TEXT,
+    administration_mode VARCHAR(30) NOT NULL,
+    consumed_part VARCHAR(100),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_plant_title ON ms_plant(title);
+CREATE INDEX idx_plant_admin_mode ON ms_plant(administration_mode);
+
+-- ============================================================
+-- PLANT - PROPERTY (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_plant_property (
+    plant_id VARCHAR(26) NOT NULL REFERENCES ms_plant(id) ON DELETE CASCADE,
+    property_id VARCHAR(26) NOT NULL REFERENCES ms_property(id) ON DELETE CASCADE,
+    PRIMARY KEY (plant_id, property_id)
+);
+
+-- ============================================================
+-- RECEIPTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_receipt (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    description TEXT,
+    is_premium BOOLEAN NOT NULL DEFAULT FALSE,
+    status VARCHAR(20) NOT NULL DEFAULT 'DRAFT',
+    author_id VARCHAR(26) REFERENCES ms_user(id) ON DELETE SET NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_receipt_title ON ms_receipt(title);
+CREATE INDEX idx_receipt_type ON ms_receipt(type);
+CREATE INDEX idx_receipt_status ON ms_receipt(status);
+CREATE INDEX idx_receipt_is_premium ON ms_receipt(is_premium);
+CREATE INDEX idx_receipt_author ON ms_receipt(author_id);
+
+-- ============================================================
+-- RECEIPT - PLANT (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_receipt_plant (
+    receipt_id VARCHAR(26) NOT NULL REFERENCES ms_receipt(id) ON DELETE CASCADE,
+    plant_id VARCHAR(26) NOT NULL REFERENCES ms_plant(id) ON DELETE CASCADE,
+    PRIMARY KEY (receipt_id, plant_id)
+);
+
+-- ============================================================
+-- REVIEWS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_review (
+    id VARCHAR(26) PRIMARY KEY,
+    content TEXT NOT NULL,
+    sender_id VARCHAR(26) NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
+    receipt_id VARCHAR(26) NOT NULL REFERENCES ms_receipt(id) ON DELETE CASCADE,
+    parent_review_id VARCHAR(26) REFERENCES ms_review(id) ON DELETE CASCADE,
+    deleted_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_review_receipt ON ms_review(receipt_id);
+CREATE INDEX idx_review_sender ON ms_review(sender_id);
+CREATE INDEX idx_review_parent ON ms_review(parent_review_id);
+CREATE INDEX idx_review_deleted ON ms_review(deleted_at);
+
+-- ============================================================
+-- INTERACTIONS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_interaction (
+    id VARCHAR(26) PRIMARY KEY,
+    type VARCHAR(20) NOT NULL,
+    value VARCHAR(50) NOT NULL,
+    user_id VARCHAR(26) NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
+    review_id VARCHAR(26) NOT NULL REFERENCES ms_review(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    UNIQUE (user_id, review_id, type, value)
+);
+
+CREATE INDEX idx_interaction_review ON ms_interaction(review_id);
+CREATE INDEX idx_interaction_user ON ms_interaction(user_id);
+CREATE INDEX idx_interaction_type ON ms_interaction(type);
+
+-- ============================================================
+-- SUCCESS MESSAGE
+-- ============================================================
+DO $$
+BEGIN
+    RAISE NOTICE 'Database schema created successfully!';
+END $$;
+
+
+-- ============================================================
+-- MEDICALS PLANTS - Database Schema
+-- Version:  1.0.0
+-- Author:  KUISSI
+-- ============================================================
+
+-- ============================================================
+-- TABLE:  USERS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_user (
+    id VARCHAR(26) PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    pseudo VARCHAR(50) NOT NULL UNIQUE,
+    firstname VARCHAR(100),
+    lastname VARCHAR(100),
+    phone VARCHAR(20),
+    avatar TEXT,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    email_verification_token VARCHAR(255),
+    password_reset_token VARCHAR(255),
+    password_reset_expires_at TIMESTAMP,
+    last_login_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_email ON ms_user(email);
+CREATE INDEX IF NOT EXISTS idx_user_pseudo ON ms_user(pseudo);
+CREATE INDEX IF NOT EXISTS idx_user_status ON ms_user(status);
+CREATE INDEX IF NOT EXISTS idx_user_role ON ms_user(role);
+
+-- ============================================================
+-- TABLE:  REFRESH TOKENS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_refresh_token (
+    id VARCHAR(26) PRIMARY KEY,
+    token VARCHAR(500) NOT NULL UNIQUE,
+    user_id VARCHAR(26) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    is_revoked BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_refresh_token_user FOREIGN KEY (user_id) REFERENCES ms_user(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_token_token ON ms_refresh_token(token);
+CREATE INDEX IF NOT EXISTS idx_refresh_token_user ON ms_refresh_token(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_token_expires ON ms_refresh_token(expires_at);
+
+-- ============================================================
+-- TABLE: SYMPTOMS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_symptom (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL UNIQUE,
+    symptom_family VARCHAR(100) NOT NULL,
+    symptom_detail TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_symptom_title ON ms_symptom(title);
+CREATE INDEX IF NOT EXISTS idx_symptom_family ON ms_symptom(symptom_family);
+
+-- ============================================================
+-- TABLE: PROPERTIES
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_property (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL UNIQUE,
+    property_family VARCHAR(100) NOT NULL,
+    property_detail TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_property_title ON ms_property(title);
+CREATE INDEX IF NOT EXISTS idx_property_family ON ms_property(property_family);
+
+-- ============================================================
+-- TABLE: PROPERTY_SYMPTOM (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_property_symptom (
+    property_id VARCHAR(26) NOT NULL,
+    symptom_id VARCHAR(26) NOT NULL,
+    PRIMARY KEY (property_id, symptom_id),
+    CONSTRAINT fk_ps_property FOREIGN KEY (property_id) REFERENCES ms_property(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ps_symptom FOREIGN KEY (symptom_id) REFERENCES ms_symptom(id) ON DELETE CASCADE
+);
+
+-- ============================================================
+-- TABLE: PLANTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_plant (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(150) NOT NULL UNIQUE,
+    description TEXT,
+    administration_mode VARCHAR(30) NOT NULL,
+    consumed_part VARCHAR(100),
+    image_url TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_plant_title ON ms_plant(title);
+CREATE INDEX IF NOT EXISTS idx_plant_admin_mode ON ms_plant(administration_mode);
+
+-- ============================================================
+-- TABLE: PLANT_PROPERTY (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_plant_property (
+    plant_id VARCHAR(26) NOT NULL,
+    property_id VARCHAR(26) NOT NULL,
+    PRIMARY KEY (plant_id, property_id),
+    CONSTRAINT fk_pp_plant FOREIGN KEY (plant_id) REFERENCES ms_plant(id) ON DELETE CASCADE,
+    CONSTRAINT fk_pp_property FOREIGN KEY (property_id) REFERENCES ms_property(id) ON DELETE CASCADE
+);
+
+-- ============================================================
+-- TABLE: RECEIPTS (Recipes)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_receipt (
+    id VARCHAR(26) PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    is_premium BOOLEAN NOT NULL DEFAULT FALSE,
+    status VARCHAR(20) NOT NULL DEFAULT 'DRAFT',
+    author_id VARCHAR(26),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_receipt_author FOREIGN KEY (author_id) REFERENCES ms_user(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_receipt_title ON ms_receipt(title);
+CREATE INDEX IF NOT EXISTS idx_receipt_type ON ms_receipt(type);
+CREATE INDEX IF NOT EXISTS idx_receipt_status ON ms_receipt(status);
+CREATE INDEX IF NOT EXISTS idx_receipt_is_premium ON ms_receipt(is_premium);
+CREATE INDEX IF NOT EXISTS idx_receipt_author ON ms_receipt(author_id);
+
+-- ============================================================
+-- TABLE: RECEIPT_PLANT (Many-to-Many)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_receipt_plant (
+    receipt_id VARCHAR(26) NOT NULL,
+    plant_id VARCHAR(26) NOT NULL,
+    PRIMARY KEY (receipt_id, plant_id),
+    CONSTRAINT fk_rp_receipt FOREIGN KEY (receipt_id) REFERENCES ms_receipt(id) ON DELETE CASCADE,
+    CONSTRAINT fk_rp_plant FOREIGN KEY (plant_id) REFERENCES ms_plant(id) ON DELETE CASCADE
+);
+
+-- ============================================================
+-- TABLE: REVIEWS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_review (
+    id VARCHAR(26) PRIMARY KEY,
+    content TEXT NOT NULL,
+    sender_id VARCHAR(26) NOT NULL,
+    receipt_id VARCHAR(26) NOT NULL,
+    parent_review_id VARCHAR(26),
+    deleted_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_review_sender FOREIGN KEY (sender_id) REFERENCES ms_user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_review_receipt FOREIGN KEY (receipt_id) REFERENCES ms_receipt(id) ON DELETE CASCADE,
+    CONSTRAINT fk_review_parent FOREIGN KEY (parent_review_id) REFERENCES ms_review(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_review_receipt ON ms_review(receipt_id);
+CREATE INDEX IF NOT EXISTS idx_review_sender ON ms_review(sender_id);
+CREATE INDEX IF NOT EXISTS idx_review_parent ON ms_review(parent_review_id);
+CREATE INDEX IF NOT EXISTS idx_review_deleted ON ms_review(deleted_at);
+
+-- ============================================================
+-- TABLE: INTERACTIONS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ms_interaction (
+    id VARCHAR(26) PRIMARY KEY,
+    type VARCHAR(20) NOT NULL,
+    value VARCHAR(50) NOT NULL,
+    user_id VARCHAR(26) NOT NULL,
+    review_id VARCHAR(26) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_interaction_user FOREIGN KEY (user_id) REFERENCES ms_user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_interaction_review FOREIGN KEY (review_id) REFERENCES ms_review(id) ON DELETE CASCADE,
+    CONSTRAINT uk_interaction_unique UNIQUE (user_id, review_id, type, value)
+);
+
+CREATE INDEX IF NOT EXISTS idx_interaction_review ON ms_interaction(review_id);
+CREATE INDEX IF NOT EXISTS idx_interaction_user ON ms_interaction(user_id);
+CREATE INDEX IF NOT EXISTS idx_interaction_type ON ms_interaction(type);
