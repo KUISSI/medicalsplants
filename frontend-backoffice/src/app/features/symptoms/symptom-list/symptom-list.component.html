@@ -1,0 +1,120 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">🩺 Symptômes</h1>
+      <p class="page__subtitle">Gérez les symptômes de la plateforme</p>
+    </div>
+    <a routerLink="/symptoms/new" class="btn btn--primary"> ➕ Nouveau symptôme </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="page__filters">
+    <div class="search-box">
+      <span class="search-box__icon">🔍</span>
+      <input
+        type="text"
+        class="search-box__input"
+        placeholder="Rechercher un symptôme..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilters()"
+      />
+      @if (searchTerm) {
+      <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()">✕</button>
+      }
+    </div>
+
+    <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()">
+      <option value="">Toutes les familles</option>
+      @for (family of families; track family) {
+      <option [value]="family">{{ family }}</option>
+      }
+    </select>
+
+    @if (searchTerm || selectedFamily) {
+    <button class="btn btn--secondary" (click)="clearFilters()">✕ Effacer</button>
+    }
+  </div>
+
+  <!-- Content -->
+  @if (isLoading) {
+  <app-loader message="Chargement des symptômes... "></app-loader>
+  } @else if (filteredSymptoms. length === 0) {
+  <div class="empty-state">
+    <span class="empty-state__icon">🩺</span>
+    <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+    <p class="empty-state__message">
+      @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche } @else { Commencez
+      par créer un symptôme }
+    </p>
+    @if (! searchTerm && ! selectedFamily) {
+    <a routerLink="/symptoms/new" class="btn btn--primary"> ➕ Créer un symptôme </a>
+    }
+  </div>
+  } @else {
+  <div class="page__info">
+    <span>{{ filteredSymptoms.length }} symptôme(s)</span>
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Famille</th>
+          <th>Description</th>
+          <th>Créé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (symptom of filteredSymptoms; track symptom. id) {
+        <tr>
+          <td>
+            <strong>{{ symptom.title }}</strong>
+          </td>
+          <td>
+            <span class="badge badge--info">{{ symptom.symptomFamily }}</span>
+          </td>
+          <td>
+            <span class="description-cell">
+              {{ symptom.symptomDetail || '-' }}
+            </span>
+          </td>
+          <td>{{ formatDate(symptom.createdAt) }}</td>
+          <td>
+            <div class="actions">
+              <a
+                [routerLink]="['/symptoms', symptom.id, 'edit']"
+                class="action-btn"
+                title="Modifier"
+              >
+                ✏️
+              </a>
+              <button
+                class="action-btn action-btn--danger"
+                (click)="confirmDelete(symptom)"
+                title="Supprimer"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer le symptôme"
+  [message]="'Êtes-vous sûr de vouloir supprimer le symptôme \'' + symptomToDelete?.title + '\' ?'"
+  icon="🗑️"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

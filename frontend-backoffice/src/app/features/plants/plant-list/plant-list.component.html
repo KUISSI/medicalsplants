@@ -1,0 +1,122 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">🌿 Plantes</h1>
+      <p class="page__subtitle">Gérez le catalogue des plantes médicinales</p>
+    </div>
+    <a routerLink="/plants/new" class="btn btn--primary"> ➕ Nouvelle plante </a>
+  </div>
+
+  @if (isLoading) {
+  <app-loader message="Chargement des plantes..."></app-loader>
+  } @else if (plants.length === 0) {
+  <div class="empty-state">
+    <span class="empty-state__icon">🌿</span>
+    <h3 class="empty-state__title">Aucune plante trouvée</h3>
+    <a routerLink="/plants/new" class="btn btn--primary"> ➕ Créer une plante </a>
+  </div>
+  } @else {
+  <div class="page__info">
+    <span>{{ totalElements }} plante(s)</span>
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Plante</th>
+          <th>Mode d'administration</th>
+          <th>Partie consommée</th>
+          <th>Propriétés</th>
+          <th>Créé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (plant of plants; track plant. id) {
+        <tr>
+          <td>
+            <div class="plant-cell">
+              <span class="plant-cell__icon">🌿</span>
+              <div>
+                <strong>{{ plant.title }}</strong>
+                @if (plant.description) {
+                <p class="plant-cell__desc">{{ plant.description }}</p>
+                }
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge--green">
+              {{ getAdministrationIcon(plant.administrationMode) }}
+              {{ administrationModeLabels[plant.administrationMode] }}
+            </span>
+          </td>
+          <td>{{ plant.consumedPart || '-' }}</td>
+          <td>
+            @if (plant.properties && plant.properties. length > 0) {
+            <span class="count-badge">{{ plant.properties.length }}</span>
+            } @else {
+            <span class="text-muted">0</span>
+            }
+          </td>
+          <td>{{ formatDate(plant.createdAt) }}</td>
+          <td>
+            <div class="actions">
+              <a [routerLink]="['/plants', plant.id, 'edit']" class="action-btn" title="Modifier">
+                ✏️
+              </a>
+              <button
+                class="action-btn action-btn--danger"
+                (click)="confirmDelete(plant)"
+                title="Supprimer"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages > 1) {
+  <div class="pagination">
+    <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">««</button>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === 0"
+      (click)="loadPage(currentPage - 1)"
+    >
+      ‹
+    </button>
+    <span class="pagination__info">Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === totalPages - 1"
+      (click)="loadPage(currentPage + 1)"
+    >
+      ›
+    </button>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === totalPages - 1"
+      (click)="loadPage(totalPages - 1)"
+    >
+      »»
+    </button>
+  </div>
+  } }
+</div>
+
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer la plante"
+  [message]="'Êtes-vous sûr de vouloir supprimer la plante \'' + plantToDelete?.title + '\' ? '"
+  icon="🗑️"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

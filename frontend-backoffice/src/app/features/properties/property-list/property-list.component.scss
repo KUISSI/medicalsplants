@@ -1,0 +1,55 @@
+@import '../../../shared/styles/admin-page';
+@import '../../../shared/styles/admin-table';
+
+.page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap:  15px;
+}
+
+.filter-select {
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  background: #ffffff;
+  min-width: 180px;
+
+  &: focus {
+    border-color: #667eea;
+  }
+}
+
+. badge--purple {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.tags {
+  display:  flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius:  15px;
+  font-size: 0.8rem;
+
+  &--more {
+    background: #e0e0e0;
+    color: #666;
+  }
+}
+
+. text-muted {
+  color: #999;
+  font-style: italic;
+}

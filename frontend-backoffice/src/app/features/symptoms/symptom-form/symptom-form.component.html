@@ -1,0 +1,75 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page__header">
+    <a routerLink="/symptoms" class="page__back">← Retour aux symptômes</a>
+    <h1 class="page__title">
+      {{ isEditMode ? '✏️ Modifier le symptôme' : '➕ Nouveau symptôme' }}
+    </h1>
+  </div>
+
+  @if (isLoadingData) {
+  <app-loader message="Chargement... "></app-loader>
+  } @else {
+  <div class="form-container">
+    <form [formGroup]="symptomForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <!-- Title -->
+      <div class="form-group">
+        <label class="form-label">Titre *</label>
+        <input
+          type="text"
+          formControlName="title"
+          class="form-input"
+          [class.form-input--error]="title?.invalid && title?.touched"
+          placeholder="Ex: Maux de tête"
+        />
+        @if (title?.invalid && title?.touched) {
+        <span class="form-error">
+          @if (title?. errors?. ['required']) { Le titre est requis } @else if
+          (title?.errors?.['minlength']) { Minimum 2 caractères }
+        </span>
+        }
+      </div>
+
+      <!-- Family -->
+      <div class="form-group">
+        <label class="form-label">Famille *</label>
+        <select
+          formControlName="symptomFamily"
+          class="form-select"
+          [class.form-input--error]="symptomFamily?.invalid && symptomFamily?.touched"
+        >
+          <option value="">Sélectionnez une famille</option>
+          @for (family of families; track family) {
+          <option [value]="family">{{ family }}</option>
+          }
+        </select>
+        @if (symptomFamily?.invalid && symptomFamily?.touched) {
+        <span class="form-error">La famille est requise</span>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="form-group form-group--full">
+        <label class="form-label">Description</label>
+        <textarea
+          formControlName="symptomDetail"
+          class="form-textarea"
+          rows="4"
+          placeholder="Décrivez le symptôme en détail..."
+        ></textarea>
+        <span class="form-hint"> {{ symptomDetail?.value?.length || 0 }} / 1000 caractères </span>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <a routerLink="/symptoms" class="btn btn--secondary">Annuler</a>
+        <button type="submit" class="btn btn--primary" [disabled]="isSaving">
+          @if (isSaving) { Enregistrement... } @else {
+          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  }
+</div>
