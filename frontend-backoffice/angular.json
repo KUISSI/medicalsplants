@@ -1,25 +1,25 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "./node_modules/@angular/cli/lib/config/schema. json",
   "version": 1,
   "cli": {
     "packageManager": "npm"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "frontend-backoffice": {
+    "frontend-backoffice":  {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
           "skipTests": true
         },
-        "@schematics/angular:class": {
+        "@schematics/angular:class":  {
           "skipTests": true
         },
-        "@schematics/angular:directive": {
+        "@schematics/angular: directive": {
           "skipTests": true
         },
-        "@schematics/angular:guard": {
+        "@schematics/angular: guard": {
           "skipTests": true
         },
         "@schematics/angular:interceptor": {
@@ -35,61 +35,75 @@
           "skipTests": true
         }
       },
-      "root": "",
+      "root":  "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix":  "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "dist/frontend-backoffice",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills":  ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+            "assets":  [
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "scripts": []
           },
-          "configurations": {
+          "configurations":  {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError":  "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning":  "4kB",
+                  "maximumError":  "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false
             },
-            "development": {
+            "development":  {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "vendorChunk": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend-backoffice:build:production"
+              "buildTarget": "frontend-backoffice: build:production"
             },
             "development": {
-              "buildTarget": "frontend-backoffice:build:development"
+              "buildTarget":  "frontend-backoffice:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4201
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options":  {
+            "buildTarget": "frontend-backoffice:build"
+          }
         }
       }
     }
