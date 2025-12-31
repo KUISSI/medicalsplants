@@ -1,0 +1,62 @@
+<header class="header">
+  <div class="header__container">
+    <!-- Logo -->
+    <a routerLink="/" class="header__logo" (click)="closeMenu()">
+      <span class="header__logo-icon">🔧</span>
+      <span class="header__logo-text">Admin Panel</span>
+    </a>
+
+    <!-- Navigation Desktop & Mobile -->
+    <nav class="header__nav" [class.header__nav--open]="isMenuOpen">
+      <!-- Menu Items -->
+      <div class="header__menu">
+        @for (item of menuItems; track item. path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          class="header__link"
+          (click)="closeMenu()"
+        >
+          <span class="header__link-icon">{{ item.icon }}</span>
+          <span class="header__link-text">{{ item.label }}</span>
+        </a>
+        }
+      </div>
+
+      <!-- User Section -->
+      <div class="header__user">
+        @if (authService. currentUser(); as user) {
+        <div class="header__user-info">
+          <span class="header__avatar">
+            {{ user.pseudo.charAt(0).toUpperCase() }}
+          </span>
+          <div class="header__user-details">
+            <span class="header__user-name">{{ user.pseudo }}</span>
+            <span class="header__user-role">Administrateur</span>
+          </div>
+        </div>
+        <button class="header__btn header__btn--logout" (click)="logout()">🚪 Déconnexion</button>
+        }
+      </div>
+    </nav>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="header__toggle"
+      (click)="toggleMenu()"
+      [class.header__toggle--active]="isMenuOpen"
+      [attr.aria-expanded]="isMenuOpen"
+      aria-label="Menu"
+    >
+      <span class="header__toggle-bar"></span>
+      <span class="header__toggle-bar"></span>
+      <span class="header__toggle-bar"></span>
+    </button>
+  </div>
+</header>
+
+<!-- Overlay pour fermer le menu sur mobile -->
+@if (isMenuOpen) {
+<div class="header__overlay" (click)="closeMenu()"></div>
+}
