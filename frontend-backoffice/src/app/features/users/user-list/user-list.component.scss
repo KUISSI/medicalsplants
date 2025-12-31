@@ -1,0 +1,87 @@
+@import '../../../shared/styles/admin-page';
+@import '../../../shared/styles/admin-table';
+
+.user-cell {
+  display: flex;
+  align-items:  center;
+  gap: 12px;
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    display:  flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-weight: 600;
+    color:  #333;
+  }
+
+  &__fullname {
+    font-size: 0.85rem;
+    color: #999;
+  }
+}
+
+.email-cell {
+  color: #666;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #4CAF50;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.inline-select {
+  padding: 6px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.3s;
+
+  &:focus {
+    border-color: #667eea;
+    outline: none;
+  }
+
+  &. badge--success {
+    background:  #e8f5e9;
+    border-color: #4CAF50;
+    color: #2e7d32;
+  }
+
+  &.badge--warning {
+    background:  #fff3e0;
+    border-color: #FF9800;
+    color: #e65100;
+  }
+
+  &.badge--danger {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #c62828;
+  }
+}

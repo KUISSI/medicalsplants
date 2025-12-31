@@ -1,0 +1,78 @@
+<div class="login-page">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-card__header">
+      <span class="login-card__icon">🔧</span>
+      <h1 class="login-card__title">Administration</h1>
+      <p class="login-card__subtitle">Connectez-vous pour accéder au panneau d'administration</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <div class="form-input-wrapper">
+          <span class="form-input-icon">📧</span>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-input"
+            [class.form-input--error]="email?.invalid && email?.touched"
+            placeholder="admin@medicalsplants.com"
+            autocomplete="email"
+          />
+        </div>
+        @if (email?.invalid && email?.touched) {
+        <span class="form-error">
+          @if (email?. errors?.['required']) { L'email est requis } @else if
+          (email?.errors?.['email']) { Format d'email invalide }
+        </span>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <div class="form-input-wrapper">
+          <span class="form-input-icon">🔒</span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="form-input"
+            [class.form-input--error]="password?.invalid && password?.touched"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button type="button" class="form-input-toggle" (click)="togglePassword()">
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (password?.invalid && password?.touched) {
+        <span class="form-error">
+          @if (password?.errors?. ['required']) { Le mot de passe est requis } @else if
+          (password?.errors?.['minlength']) { Minimum 8 caractères }
+        </span>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="loginForm.invalid || authService.isLoading()"
+      >
+        @if (authService.isLoading()) {
+        <span class="login-btn__loader"></span>
+        Connexion... } @else { Se connecter }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="login-card__footer">
+      <p>🛡️ Accès réservé aux administrateurs</p>
+    </div>
+  </div>
+</div>

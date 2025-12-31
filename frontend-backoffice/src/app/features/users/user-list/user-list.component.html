@@ -1,0 +1,167 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">👥 Utilisateurs</h1>
+      <p class="page__subtitle">Gérez les utilisateurs de la plateforme</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="page__filters">
+    <div class="search-box">
+      <span class="search-box__icon">🔍</span>
+      <input
+        type="text"
+        class="search-box__input"
+        placeholder="Rechercher par email ou pseudo..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+      @if (searchTerm) {
+      <button class="search-box__clear" (click)="searchTerm = ''; onSearch()">✕</button>
+      }
+    </div>
+    <button class="btn btn--primary" (click)="onSearch()">Rechercher</button>
+  </div>
+
+  <!-- Content -->
+  @if (isLoading) {
+  <app-loader message="Chargement des utilisateurs..."></app-loader>
+  } @else if (users.length === 0) {
+  <div class="empty-state">
+    <span class="empty-state__icon">👥</span>
+    <h3 class="empty-state__title">Aucun utilisateur trouvé</h3>
+    <p class="empty-state__message">
+      @if (searchTerm) { Aucun résultat pour "{{ searchTerm }}" } @else { Aucun utilisateur inscrit
+      pour le moment }
+    </p>
+  </div>
+  } @else {
+  <!-- Results count -->
+  <div class="page__info">
+    <span>{{ totalElements }} utilisateur(s)</span>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Inscrit le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user. id) {
+        <tr>
+          <td>
+            <div class="user-cell">
+              <span class="user-cell__avatar">
+                {{ user.pseudo.charAt(0).toUpperCase() }}
+              </span>
+              <div class="user-cell__info">
+                <span class="user-cell__name">{{ user.pseudo }}</span>
+                @if (user.firstname || user.lastname) {
+                <span class="user-cell__fullname"> {{ user.firstname }} {{ user.lastname }} </span>
+                }
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="email-cell">{{ user.email }}</span>
+            @if (user. isEmailVerified) {
+            <span class="verified-badge" title="Email vérifié">✓</span>
+            }
+          </td>
+          <td>
+            <select
+              class="inline-select"
+              [value]="user.role"
+              (change)="updateRole(user, $any($event.target).value)"
+            >
+              <option value="USER">Utilisateur</option>
+              <option value="PREMIUM">Premium</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </td>
+          <td>
+            <select
+              class="inline-select"
+              [ngClass]="getStatusBadgeClass(user.status)"
+              [value]="user.status"
+              (change)="updateStatus(user, $any($event.target).value)"
+            >
+              <option value="ACTIVE">Actif</option>
+              <option value="INACTIVE">Inactif</option>
+              <option value="BLOCKED">Bloqué</option>
+            </select>
+          </td>
+          <td>{{ formatDate(user.createdAt) }}</td>
+          <td>
+            <div class="actions">
+              <a [routerLink]="['/users', user.id]" class="action-btn" title="Modifier"> ✏️ </a>
+              <button
+                class="action-btn action-btn--danger"
+                (click)="confirmDelete(user)"
+                title="Supprimer"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) {
+  <div class="pagination">
+    <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">««</button>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === 0"
+      (click)="loadPage(currentPage - 1)"
+    >
+      ‹
+    </button>
+    <span class="pagination__info"> Page {{ currentPage + 1 }} sur {{ totalPages }} </span>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === totalPages - 1"
+      (click)="loadPage(currentPage + 1)"
+    >
+      ›
+    </button>
+    <button
+      class="pagination__btn"
+      [disabled]="currentPage === totalPages - 1"
+      (click)="loadPage(totalPages - 1)"
+    >
+      »»
+    </button>
+  </div>
+  } }
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer l'utilisateur"
+  [message]="
+    'Êtes-vous sûr de vouloir supprimer ' +
+    userToDelete?.pseudo +
+    ' ?  Cette action est irréversible. '
+  "
+  icon="🗑️"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>
