@@ -8,6 +8,7 @@ import com.medicalsplants.model.enums.AdministrationMode;
 import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.PropertyRepository;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,19 +18,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class PlantService {
 
     private final PlantRepository plantRepository;
     private final PropertyRepository propertyRepository;
     private final UlidGenerator ulidGenerator;
-
-    public PlantService(PlantRepository plantRepository,
-            PropertyRepository propertyRepository,
-            UlidGenerator ulidGenerator) {
-        this.plantRepository = plantRepository;
-        this.propertyRepository = propertyRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public Page<Plant> getAllPlants(Pageable pageable) {

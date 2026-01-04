@@ -5,6 +5,7 @@ import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.SymptomRepository;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,15 +14,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SymptomService {
 
     private final SymptomRepository symptomRepository;
     private final UlidGenerator ulidGenerator;
-
-    public SymptomService(SymptomRepository symptomRepository, UlidGenerator ulidGenerator) {
-        this.symptomRepository = symptomRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public List<Symptom> getAllSymptoms() {
