@@ -2,20 +2,17 @@ package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "ms_refresh_tokens")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken {
+public class RefreshToken extends BaseEntity {
 
     @Id
     @Column(length = 26)
@@ -26,10 +23,6 @@ public class RefreshToken {
 
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
 
     @Column(name = "is_revoked")
     @Builder.Default

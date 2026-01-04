@@ -4,11 +4,7 @@ import com.medicalsplants.model.enums.ReceiptStatus;
 import com.medicalsplants.model.enums.ReceiptType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,13 +12,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ms_receipt")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Receipt {
+public class Receipt extends BaseEntity {
 
     @Id
     @Column(length = 26)
@@ -51,14 +46,6 @@ public class Receipt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private Instant updatedAt;
 
     // Relations Many-to-Many avec Plant
     @ManyToMany

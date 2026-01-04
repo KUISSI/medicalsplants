@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Symptom {
+public class Symptom extends BaseEntity {
 
     @Id
     @Column(length = 26)

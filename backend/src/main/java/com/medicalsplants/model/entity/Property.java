@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Property {
+public class Property extends BaseEntity {
 
     @Id
     @Column(length = 26)

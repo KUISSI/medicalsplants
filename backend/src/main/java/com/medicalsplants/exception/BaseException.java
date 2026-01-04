@@ -1,7 +1,9 @@
 package com.medicalsplants.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public abstract class BaseException extends RuntimeException {
 
     private final String code;
@@ -17,13 +19,5 @@ public abstract class BaseException extends RuntimeException {
         super(message, cause);
         this.code = code;
         this.status = status;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 }
