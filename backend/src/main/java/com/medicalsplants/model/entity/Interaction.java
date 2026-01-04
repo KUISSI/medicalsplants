@@ -3,20 +3,15 @@ package com.medicalsplants.model.entity;
 import com.medicalsplants.model.enums.InteractionType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.Instant;
 
 @Entity
 @Table(name = "ms_interaction")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Interaction {
+public class Interaction extends BaseEntity {
 
     @Id
     @Column(length = 26)
@@ -38,10 +33,6 @@ public class Interaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
 
     // Méthodes utilitaires
     public boolean isGift() {
