@@ -19,10 +19,10 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
     @Query("SELECT r FROM Review r WHERE r.id = :id AND r.deletedAt IS NULL")
     Optional<Review> findByIdAndNotDeleted(@Param("id") String id);
 
-    @Query("SELECT r FROM Review r WHERE r.receipt.id = :receiptId AND r. deletedAt IS NULL AND r.parentReview IS NULL ORDER BY r.createdAt DESC")
+    @Query("SELECT r FROM Review r WHERE r.receipt.id = :receiptId AND r.deletedAt IS NULL AND r.parentReview IS NULL ORDER BY r.createdAt DESC")
     List<Review> findByReceiptIdAndNotDeleted(@Param("receiptId") String receiptId);
 
-    @Query("SELECT COUNT(r) FROM Review r WHERE r.receipt.id = :receiptId AND r. deletedAt IS NULL")
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.receipt.id = :receiptId AND r.deletedAt IS NULL")
     long countByReceiptId(@Param("receiptId") String receiptId);
 
     @Query("SELECT r FROM Review r WHERE r.sender.id = :userId AND r.deletedAt IS NULL ORDER BY r.createdAt DESC")

@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByPasswordResetToken(String token);
 
     @Modifying
-    @Query("UPDATE User u SET u.lastLoginAt = :lastLoginAt WHERE u. id = :userId")
+    @Query("UPDATE User u SET u.lastLoginAt = :lastLoginAt WHERE u.id = :userId")
     void updateLastLoginAt(@Param("userId") String userId, @Param("lastLoginAt") Instant lastLoginAt);
 
     @Modifying

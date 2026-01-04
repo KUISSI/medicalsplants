@@ -6,6 +6,7 @@ import com.medicalsplants.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,13 +21,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/plants")
 @Tag(name = "Plants", description = "Plant management endpoints")
+@RequiredArgsConstructor
 public class PlantController {
 
     private final PlantService plantService;
-
-    public PlantController(PlantService plantService) {
-        this.plantService = plantService;
-    }
 
     @Operation(summary = "Get all plants (paginated)")
     @GetMapping
