@@ -10,6 +10,7 @@ import com.medicalsplants.repository.ReviewRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,22 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReceiptRepository receiptRepository;
     private final UserRepository userRepository;
     private final UlidGenerator ulidGenerator;
-
-    public ReviewService(ReviewRepository reviewRepository,
-            ReceiptRepository receiptRepository,
-            UserRepository userRepository,
-            UlidGenerator ulidGenerator) {
-        this.reviewRepository = reviewRepository;
-        this.receiptRepository = receiptRepository;
-        this.userRepository = userRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public List<Review> getReviewsByReceiptId(String receiptId) {

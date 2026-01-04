@@ -13,6 +13,7 @@ import com.medicalsplants.repository.ReceiptRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,22 +23,13 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
     private final UlidGenerator ulidGenerator;
-
-    public ReceiptService(ReceiptRepository receiptRepository,
-            PlantRepository plantRepository,
-            UserRepository userRepository,
-            UlidGenerator ulidGenerator) {
-        this.receiptRepository = receiptRepository;
-        this.plantRepository = plantRepository;
-        this.userRepository = userRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public Page<Receipt> getPublishedReceipts(boolean canSeePremium, Pageable pageable) {

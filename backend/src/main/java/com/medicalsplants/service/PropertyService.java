@@ -7,6 +7,7 @@ import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.PropertyRepository;
 import com.medicalsplants.repository.SymptomRepository;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,19 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final SymptomRepository symptomRepository;
     private final UlidGenerator ulidGenerator;
-
-    public PropertyService(PropertyRepository propertyRepository,
-            SymptomRepository symptomRepository,
-            UlidGenerator ulidGenerator) {
-        this.propertyRepository = propertyRepository;
-        this.symptomRepository = symptomRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public List<Property> getAllProperties() {

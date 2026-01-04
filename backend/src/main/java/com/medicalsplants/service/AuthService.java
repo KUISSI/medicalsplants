@@ -19,6 +19,7 @@ import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
 import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -42,22 +44,6 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final UlidGenerator ulidGenerator;
-
-    public AuthService(UserRepository userRepository,
-            RefreshTokenRepository refreshTokenRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider,
-            AuthenticationManager authenticationManager,
-            UserMapper userMapper,
-            UlidGenerator ulidGenerator) {
-        this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
-        this.userMapper = userMapper;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional
     public MessageResponse register(RegisterRequest request) {
