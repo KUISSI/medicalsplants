@@ -7,7 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-profile',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl:  './profile.component. html',
+  templateUrl:  './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {

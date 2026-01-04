@@ -229,7 +229,7 @@
     transition: transform 0.3s;
   }
 
-  &: hover &__arrow {
+  &:hover &__arrow {
     transform: translateX(5px);
   }
 }
@@ -293,7 +293,7 @@
     border: none;
     color:  #666;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       background: #d0d0d0;
     }
 
@@ -306,7 +306,7 @@
       background:  linear-gradient(135deg, #FFD700, #FFA500);
       color: #333;
 
-      &:hover: not(:disabled) {
+      &:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
       }
@@ -316,7 +316,7 @@
       background: #f44336;
       color: #ffffff;
 
-      &: hover {
+      &:hover {
         background: #d32f2f;
       }
     }

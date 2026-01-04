@@ -1,6 +1,6 @@
 @import '../auth-shared';
 
-. auth-card--wide {
+.auth-card--wide {
   max-width: 550px;
 }
 
@@ -39,7 +39,7 @@
     justify-content: center;
     transition: all 0.3s ease;
 
-    &:: after {
+    &::after {
       content:  '✓';
       color: #ffffff;
       font-size: 14px;

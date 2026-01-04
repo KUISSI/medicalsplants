@@ -115,7 +115,7 @@
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
   }
 
-  &:: placeholder {
+  &::placeholder {
     color: #999;
   }
 
@@ -168,7 +168,7 @@
   justify-content: center;
   gap: 10px;
 
-  &: hover: not(:disabled) {
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
   }
@@ -188,7 +188,7 @@
   }
 }
 
-. auth-link {
+    .auth-link {
   color: #666;
   text-decoration: none;
   font-size:  0.9rem;

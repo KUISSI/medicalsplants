@@ -1,12 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { LoaderComponent } from '../../../shared/components/loader/loader. component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { ReceiptService } from '../../../core/services/receipt.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Plant, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
-import { Receipt, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
 
 @Component({
   selector: 'app-plant-detail',
@@ -44,8 +44,8 @@ export class PlantDetailComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this. plantService.getById(id).subscribe({
-      next: (plant) => {
+    this.plantService.getById(id).subscribe({
+      next: (plant: Plant) => {
         this.plant = plant;
         this.isLoading = false;
         this.loadReceipts(id);
@@ -61,7 +61,7 @@ export class PlantDetailComponent implements OnInit {
     this.isLoadingReceipts = true;
 
     this.receiptService.getByPlantId(plantId, 0, 6).subscribe({
-      next: (response) => {
+      next: (response: ReceiptPage) => {
         this.receipts = response.content;
         this.isLoadingReceipts = false;
       },

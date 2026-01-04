@@ -7,7 +7,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.component')
-      .then(m => m. HomeComponent),
+      .then(m => m.HomeComponent),
     title: 'Accueil - Medicals Plants'
   },
 
@@ -21,7 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register. component')
+    loadComponent: () => import('./features/auth/register/register.component')
       .then(m => m.RegisterComponent),
     canActivate:  [guestGuard],
     title:  'Inscription - Medicals Plants'
@@ -38,7 +38,7 @@ export const routes: Routes = [
   {
     path: 'symptoms',
     loadComponent: () => import('./features/symptoms/symptom-list/symptom-list.component')
-      .then(m => m. SymptomListComponent),
+      .then(m => m.SymptomListComponent),
     title: 'Symptômes - Medicals Plants'
   },
   {
@@ -58,7 +58,7 @@ export const routes: Routes = [
   {
     path: 'plants/:id',
     loadComponent: () => import('./features/plants/plant-detail/plant-detail.component')
-      .then(m => m. PlantDetailComponent),
+      .then(m => m.PlantDetailComponent),
     title: 'Détail de la plante - Medicals Plants'
   },
 
@@ -72,13 +72,13 @@ export const routes: Routes = [
   {
     path: 'receipts/create',
     loadComponent: () => import('./features/receipts/receipt-create/receipt-create.component')
-      .then(m => m. ReceiptCreateComponent),
+      .then(m => m.ReceiptCreateComponent),
     canActivate: [authGuard],
     title: 'Créer une recette - Medicals Plants'
   },
   {
     path: 'receipts/:id',
-    loadComponent: () => import('./features/receipts/receipt-detail/receipt-detail. component')
+    loadComponent: () => import('./features/receipts/receipt-detail/receipt-detail.component')
       .then(m => m.ReceiptDetailComponent),
     title: 'Détail de la recette - Medicals Plants'
   },
@@ -87,7 +87,7 @@ export const routes: Routes = [
   {
     path:  'profile',
     loadComponent: () => import('./features/profile/profile.component')
-      .then(m => m. ProfileComponent),
+      .then(m => m.ProfileComponent),
     canActivate: [authGuard],
     title: 'Mon profil - Medicals Plants'
   },

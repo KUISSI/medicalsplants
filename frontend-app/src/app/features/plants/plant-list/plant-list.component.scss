@@ -78,7 +78,7 @@
   }
 }
 
-. filter-group {
+.filter-group {
   display: flex;
   align-items: center;
   gap:  10px;
@@ -90,7 +90,7 @@
   white-space: nowrap;
 }
 
-. filter-select {
+.filter-select {
   padding: 10px 15px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -177,7 +177,7 @@
     }
   }
 
-  &: hover &__image img {
+  &:hover &__image img {
     transform:  scale(1.05);
   }
 
@@ -268,7 +268,7 @@
     font-weight: 500;
     transition:  all 0.3s ease;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       border-color: #4CAF50;
       color: #4CAF50;
     }
@@ -292,7 +292,7 @@
 }
 
 // Empty State
-. empty-state {
+.empty-state {
   text-align:  center;
   padding: 80px 20px;
 

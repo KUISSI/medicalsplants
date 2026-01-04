@@ -1,4 +1,4 @@
-import { Symptom } from './symptom. model';
+import { Symptom } from './symptom.model';
 
 export interface Property {
   id: string;

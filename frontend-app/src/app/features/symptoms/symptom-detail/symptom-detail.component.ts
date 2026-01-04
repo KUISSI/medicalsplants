@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { CardComponent } from '../../../shared/components/card/card.component';
-import { SymptomService } from '../../../core/services/symptom. service';
+import { SymptomService } from '../../../core/services/symptom.service';
 import { PlantService } from '../../../core/services/plant.service';
 import { Symptom } from '../../../core/models/symptom.model';
-import { Plant, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant. model';
+import { Plant, PlantPage, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 
 @Component({
   selector:  'app-symptom-detail',
   standalone: true,
   imports: [CommonModule, RouterModule, LoaderComponent, CardComponent],
-  templateUrl: './symptom-detail.component. html',
-  styleUrls: ['./symptom-detail. component.scss']
+  templateUrl: './symptom-detail.component.html',
+  styleUrls: ['./symptom-detail.component.scss']
 })
 export class SymptomDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -49,13 +49,13 @@ export class SymptomDetailComponent implements OnInit {
     this. error = null;
 
     this.symptomService.getById(id).subscribe({
-      next: (symptom) => {
+      next: (symptom: Symptom) => {
         this.symptom = symptom;
         this.isLoading = false;
         this.loadPlants(id);
         this.loadRelatedSymptoms(symptom.symptomFamily);
       },
-      error:  (err) => {
+      error:  (err: any) => {
         this.isLoading = false;
         this.error = 'Symptôme non trouvé';
       }
@@ -66,7 +66,7 @@ export class SymptomDetailComponent implements OnInit {
     this.isLoadingPlants = true;
 
     this.plantService.getBySymptomId(symptomId, this.currentPage, this.pageSize).subscribe({
-      next: (response) => {
+      next: (response: PlantPage) => {
         this.plants = response.content;
         this. totalPages = response. totalPages;
         this.isLoadingPlants = false;
@@ -79,7 +79,7 @@ export class SymptomDetailComponent implements OnInit {
 
   loadRelatedSymptoms(family: string): void {
     this.symptomService.getByFamily(family).subscribe({
-      next:  (symptoms) => {
+      next:  (symptoms: Symptom[]) => {
         // Exclure le symptôme actuel et limiter à 4
         this.relatedSymptoms = symptoms
           .filter(s => s.id !== this.symptom?.id)
@@ -92,7 +92,7 @@ export class SymptomDetailComponent implements OnInit {
     if (this.currentPage < this.totalPages - 1 && this.symptom) {
       this.currentPage++;
       this.plantService.getBySymptomId(this.symptom.id, this.currentPage, this.pageSize).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.plants = [...this.plants, ...response.content];
         }
       });

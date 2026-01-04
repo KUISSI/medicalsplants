@@ -56,7 +56,7 @@
   z-index: 1;
 }
 
-. receipt-form {
+.receipt-form {
   background: #ffffff;
   border-radius: 16px;
   padding: 35px;
@@ -72,7 +72,7 @@
   }
 }
 
-. form-label {
+.form-label {
   display: block;
   font-size: 0.95rem;
   font-weight: 600;
@@ -125,7 +125,7 @@
   text-align: right;
 }
 
-. form-error {
+.form-error {
   display: block;
   color: #f44336;
   font-size: 0.85rem;
@@ -293,7 +293,7 @@
     justify-content: center;
     transition: all 0.3s ease;
 
-    &:: after {
+    &::after {
       content:  '✓';
       color: #ffffff;
       font-size: 14px;
@@ -377,7 +377,7 @@
     color: #ffffff;
     border: none;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 5px 20px rgba(255, 152, 0, 0.4);
     }

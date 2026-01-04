@@ -2,12 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LoaderComponent } from '../../../shared/components/loader/loader. component';
-import { ReceiptService } from '../../../core/services/receipt. service';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { ReceiptService } from '../../../core/services/receipt.service';
 import { ReviewService } from '../../../core/services/review.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Receipt, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS } from '../../../core/models/receipt. model';
-import { Review, CreateReviewRequest } from '../../../core/models/review. model';
+import { Receipt, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS } from '../../../core/models/receipt.model';
+import { Review, CreateReviewRequest } from '../../../core/models/review.model';
 import { ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 import { ToastrService } from 'ngx-toastr';
 
@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
   templateUrl: './receipt-detail.component.html',
-  styleUrls: ['./receipt-detail.component. scss']
+  styleUrls: ['./receipt-detail.component.scss']
 })
 export class ReceiptDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -56,12 +56,12 @@ export class ReceiptDetailComponent implements OnInit {
     this.error = null;
 
     this.receiptService.getById(id).subscribe({
-      next: (receipt) => {
+      next: (receipt: Receipt) => {
         this. receipt = receipt;
         this.isLoading = false;
         this.loadReviews(id);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         if (err.status === 403) {
           this.error = 'Cette recette est réservée aux membres Premium';

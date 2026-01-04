@@ -19,8 +19,8 @@ import { Symptom } from '../../../core/models/symptom.model';
     CardComponent,
     LoaderComponent
   ],
-  templateUrl: './symptom-list.component. html',
-  styleUrls: ['./symptom-list. component.scss']
+  templateUrl: './symptom-list.component.html',
+  styleUrls: ['./symptom-list.component.scss']
 })
 export class SymptomListComponent implements OnInit {
   private symptomService = inject(SymptomService);

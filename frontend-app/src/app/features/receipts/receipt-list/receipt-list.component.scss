@@ -122,7 +122,7 @@
   }
 }
 
-. filter-btn {
+.filter-btn {
   padding: 10px 15px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -176,7 +176,7 @@
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
   position: relative;
 
-  &: hover {
+  &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
@@ -212,7 +212,7 @@
     }
   }
 
-  &: hover &__image img {
+  &:hover &__image img {
     transform:  scale(1.05);
   }
 
@@ -295,12 +295,12 @@
     font-weight: 500;
     transition:  all 0.3s ease;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       border-color: #FF9800;
       color: #FF9800;
     }
 
-    &: disabled {
+    &:disabled {
       opacity: 0.5;
       cursor:  not-allowed;
     }

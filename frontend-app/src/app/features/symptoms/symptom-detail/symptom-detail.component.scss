@@ -103,7 +103,7 @@
   }
 
   &__description {
-    font-size: 1. 1rem;
+    font-size: 1.1rem;
     color: #a8d5a2;
     margin:  0;
     max-width: 800px;
@@ -168,7 +168,7 @@
   transition: all 0.3s ease;
   border: 2px solid transparent;
 
-  &: hover {
+  &:hover {
     border-color: #4CAF50;
     transform: translateY(-3px);
     box-shadow: 0 5px 20px rgba(76, 175, 80, 0.15);
@@ -281,7 +281,7 @@
     transition:  transform 0.3s;
   }
 
-  &: hover &__arrow {
+  &:hover &__arrow {
     transform: translateX(5px);
   }
 }

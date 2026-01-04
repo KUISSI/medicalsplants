@@ -17,7 +17,7 @@ import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from
     SearchBarComponent,
     LoaderComponent
   ],
-  templateUrl:  './plant-list. component.html',
+  templateUrl:  './plant-list.component.html',
   styleUrls:  ['./plant-list.component.scss']
 })
 export class PlantListComponent implements OnInit {

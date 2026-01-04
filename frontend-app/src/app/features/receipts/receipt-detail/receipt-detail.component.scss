@@ -1,4 +1,4 @@
-. receipt-detail-page {
+.receipt-detail-page {
   min-height: calc(100vh - 140px);
   background: #f5f5f5;
 }
@@ -111,7 +111,7 @@
   }
 
   &__title {
-    font-size: 2. 5rem;
+    font-size: 2.5rem;
     margin: 0 0 25px 0;
     font-weight: 700;
 
@@ -246,7 +246,7 @@
     transition: transform 0.3s;
   }
 
-  &: hover &__arrow {
+  &:hover &__arrow {
     transform: translateX(5px);
   }
 }
@@ -441,7 +441,7 @@
     padding: 0;
     transition: color 0.3s;
 
-    &: hover {
+    &:hover {
       color: #2d5a3d;
     }
   }
@@ -567,141 +567,5 @@
     color: #555;
     line-height: 1.5;
     margin:  0;
-  }
-}
-Fichier 9.7 : receipt-create.component.ts
-📍 Chemin : src/app/features/receipts/receipt-create/receipt-create.component. ts
-
-TypeScript
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { LoaderComponent } from '../../../shared/components/loader/loader. component';
-import { ReceiptService } from '../../../core/services/receipt. service';
-import { PlantService } from '../../../core/services/plant.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { Plant } from '../../../core/models/plant. model';
-import { ReceiptType, RECEIPT_TYPE_LABELS, CreateReceiptRequest } from '../../../core/models/receipt. model';
-
-@Component({
-  selector: 'app-receipt-create',
-  standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl: './receipt-create.component.html',
-  styleUrls: ['./receipt-create.component. scss']
-})
-export class ReceiptCreateComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private toastr = inject(ToastrService);
-  private receiptService = inject(ReceiptService);
-  private plantService = inject(PlantService);
-  authService = inject(AuthService);
-
-  receiptForm: FormGroup;
-  plants: Plant[] = [];
-  selectedPlantIds: string[] = [];
-  
-  isLoading = false;
-  isLoadingPlants = true;
-  isSubmitting = false;
-
-  receiptTypes = RECEIPT_TYPE_LABELS;
-  receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
-
-  constructor() {
-    this. receiptForm = this. fb.group({
-      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-      type: ['', [Validators.required]],
-      description:  ['', [Validators.maxLength(5000)]],
-      isPremium: [false]
-    });
-  }
-
-  ngOnInit(): void {
-    this.loadPlants();
-  }
-
-  loadPlants(): void {
-    this.isLoadingPlants = true;
-    this.plantService.getAll(0, 100).subscribe({
-      next:  (response) => {
-        this.plants = response.content;
-        this. isLoadingPlants = false;
-      },
-      error:  () => {
-        this.isLoadingPlants = false;
-      }
-    });
-  }
-
-  get title() { return this.receiptForm.get('title'); }
-  get type() { return this.receiptForm.get('type'); }
-  get description() { return this.receiptForm.get('description'); }
-
-  togglePlant(plantId: string): void {
-    const index = this.selectedPlantIds.indexOf(plantId);
-    if (index > -1) {
-      this.selectedPlantIds.splice(index, 1);
-    } else {
-      this.selectedPlantIds.push(plantId);
-    }
-  }
-
-  isPlantSelected(plantId: string): boolean {
-    return this. selectedPlantIds. includes(plantId);
-  }
-
-  getSelectedPlants(): Plant[] {
-    return this.plants.filter(p => this.selectedPlantIds.includes(p.id));
-  }
-
-  removeSelectedPlant(plantId: string): void {
-    this.selectedPlantIds = this.selectedPlantIds.filter(id => id !== plantId);
-  }
-
-  getReceiptTypeIcon(type: ReceiptType): string {
-    const icons:  Record<ReceiptType, string> = {
-      'HOT_DRINK': '☕',
-      'COLD_DRINK': '🧊',
-      'DISH': '🍽️',
-      'LOTION': '🧴'
-    };
-    return icons[type] || '📖';
-  }
-
-  onSubmit(): void {
-    if (this.receiptForm. invalid) {
-      this.receiptForm.markAllAsTouched();
-      return;
-    }
-
-    if (this.selectedPlantIds.length === 0) {
-      this.toastr.warning('Veuillez sélectionner au moins une plante', 'Attention');
-      return;
-    }
-
-    this.isSubmitting = true;
-
-    const request: CreateReceiptRequest = {
-      title: this.receiptForm.value.title,
-      type: this.receiptForm.value. type,
-      description: this.receiptForm.value.description,
-      isPremium: this. receiptForm.value.isPremium,
-      plantIds: this.selectedPlantIds
-    };
-
-    this.receiptService.create(request).subscribe({
-      next: (receipt) => {
-        this.isSubmitting = false;
-        this.toastr.success('Votre recette a été créée avec succès !', 'Succès');
-        this.router.navigate(['/receipts', receipt.id]);
-      },
-      error: () => {
-        this.isSubmitting = false;
-      }
-    });
   }
 }

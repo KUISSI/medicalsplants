@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { Review, CreateReviewRequest } from '../models/review. model';
+import { Review, CreateReviewRequest } from '../models/review.model';
 
 @Injectable({
   providedIn: 'root'

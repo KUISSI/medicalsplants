@@ -1,6 +1,6 @@
 import { Plant } from './plant.model';
-import { User } from './user. model';
-import { Review } from './review. model';
+import { User } from './user.model';
+import { Review } from './review.model';
 
 export type ReceiptType = 'HOT_DRINK' | 'COLD_DRINK' | 'DISH' | 'LOTION';
 export type ReceiptStatus = 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED';
