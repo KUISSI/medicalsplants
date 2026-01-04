@@ -5,6 +5,7 @@ import com.medicalsplants.service.PropertyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,13 +17,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/properties")
 @Tag(name = "Properties", description = "Property management endpoints")
+@RequiredArgsConstructor
 public class PropertyController {
 
     private final PropertyService propertyService;
-
-    public PropertyController(PropertyService propertyService) {
-        this.propertyService = propertyService;
-    }
 
     @Operation(summary = "Get all properties")
     @GetMapping

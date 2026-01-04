@@ -19,6 +19,6 @@ public interface PropertyRepository extends JpaRepository<Property, String> {
     @Query("SELECT p FROM Property p JOIN p.symptoms s WHERE s.id = :symptomId ORDER BY p.title ASC")
     List<Property> findBySymptomId(@Param("symptomId") String symptomId);
 
-    @Query("SELECT p FROM Property p ORDER BY p.propertyFamily ASC, p. title ASC")
+    @Query("SELECT p FROM Property p ORDER BY p.propertyFamily ASC, p.title ASC")
     List<Property> findAllOrderByFamily();
 }

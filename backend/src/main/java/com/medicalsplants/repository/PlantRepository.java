@@ -18,7 +18,7 @@ public interface PlantRepository extends JpaRepository<Plant, String> {
 
     boolean existsByTitle(String title);
 
-    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = : symptomId ORDER BY pl.title ASC")
+    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = :symptomId ORDER BY pl.title ASC")
     Page<Plant> findBySymptomId(@Param("symptomId") String symptomId, Pageable pageable);
 
     @Query("SELECT pl FROM Plant pl JOIN pl.properties p WHERE p.id = :propertyId ORDER BY pl.title ASC")

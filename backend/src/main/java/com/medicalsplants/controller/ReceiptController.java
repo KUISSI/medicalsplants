@@ -7,6 +7,7 @@ import com.medicalsplants.service.ReceiptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,13 +23,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/receipts")
 @Tag(name = "Receipts", description = "Recipe management endpoints")
+@RequiredArgsConstructor
 public class ReceiptController {
 
     private final ReceiptService receiptService;
-
-    public ReceiptController(ReceiptService receiptService) {
-        this.receiptService = receiptService;
-    }
 
     @Operation(summary = "Get published recipes (paginated)")
     @GetMapping
