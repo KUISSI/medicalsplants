@@ -1,0 +1,53 @@
+<section class="home-auth">
+  <div class="hero">
+    <div class="hero__inner">
+      <div class="hero__greeting">Bonjour {{ authService.currentUser()?.pseudo || 'Marie' }}</div>
+
+      <div class="hero__search">
+        <app-search-bar placeholder="Rechercher des symptômes, plantes..." [showButton]="false" (search)="onSearch($event)"></app-search-bar>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <section class="quick-access">
+        <h2>Accès rapide</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>🔍 Symptômes</h3>
+            <p>Recherchez par symptôme et trouvez des solutions adaptées.</p>
+            <div class="card__items">
+              <span class="badge" *ngFor="let symptom of symptoms.slice(0, 2)">{{ symptom.title }}</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>🌱 Plantes</h3>
+            <p>Explorez notre catalogue de plantes médicinales.</p>
+            <div class="card__items">
+              <span class="badge" *ngFor="let plant of plants.slice(0, 2)">{{ plant.name }}</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>📖 Recettes</h3>
+            <p>Découvrez des recettes naturelles et faciles à suivre.</p>
+            <div class="card__items">
+              <span class="badge" *ngFor="let recipe of recipes.slice(0, 2)">{{ recipe.title }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Le savez-vous section -->
+      <section class="knowledge-section">
+        <div class="knowledge-bubble">
+          <div class="bubble-icon">💡</div>
+          <div class="bubble-content">
+            <h3>Le savez-vous ?</h3>
+            <p>{{ tip }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

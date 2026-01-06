@@ -13,6 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class HeaderComponent {
   authService = inject(AuthService);
   isMenuOpen = false;
+  isDropdownOpen = false;
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -20,6 +21,12 @@ export class HeaderComponent {
 
   closeMenu(): void {
     this.isMenuOpen = false;
+    this.isDropdownOpen = false;
+  }
+
+  toggleDropdown(event?: Event): void {
+    if (event) { event.stopPropagation(); }
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
 
   logout(): void {

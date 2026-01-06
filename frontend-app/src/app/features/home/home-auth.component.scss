@@ -1,0 +1,145 @@
+.home-auth {
+  .hero {
+    background: #F3FBF0;
+    padding: 60px 16px;
+    min-height: 300px;
+  }
+
+  .hero__inner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding-left: 0;
+  }
+
+  .hero__greeting {
+    font-size: 32px;
+    font-weight: 600;
+    color: #1a472a;
+    font-family: 'Rosarivo', serif;
+    margin-left: 10%;
+  }
+
+  .hero__search {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    max-width: none;
+  }
+
+  .hero__search app-search-bar {
+    width: 80%;
+    display: block;
+  }
+
+  ::ng-deep .hero__search app-search-bar .search-bar {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  ::ng-deep .hero__search app-search-bar .search-bar__input {
+    border-radius: 5px;
+  }
+
+  .page-body {
+    background: white;
+    padding: 40px 16px 80px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .quick-access {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .quick-access h2 {
+    margin-bottom: 24px;
+  }
+
+  .cards {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    width: 280px;
+    padding: 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: left;
+  }
+
+  .card h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+  }
+
+  .card p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .card__items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(76,175,80,0.1);
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* Le savez-vous section */
+  .knowledge-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .knowledge-bubble {
+    display: flex;
+    gap: 16px;
+    padding: 20px 24px;
+    background: #d4ff7f; /* lemon green */
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    max-width: 500px;
+    align-items: flex-start;
+  }
+
+  .bubble-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .bubble-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #1a472a;
+  }
+
+  .bubble-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+  }
+}

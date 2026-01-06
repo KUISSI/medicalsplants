@@ -25,6 +25,16 @@ export class ReceiptListComponent implements OnInit {
   private receiptService = inject(ReceiptService);
   authService = inject(AuthService);
 
+  // Mock receipts data
+  mockReceipts: Receipt[] = [
+    { id: '1', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HERBAL_TEA' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
+    { id: '2', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'SYRUP' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
+    { id: '3', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'OINTMENT' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
+    { id: '4', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HERBAL_TEA' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
+    { id: '5', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'ELIXIR' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
+    { id: '6', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'TINCTURE' as ReceiptType, createdAt: new Date().toISOString() } as Receipt
+  ];
+
   receipts: Receipt[] = [];
   filteredReceipts:  Receipt[] = [];
   
@@ -50,13 +60,18 @@ export class ReceiptListComponent implements OnInit {
 
     this.receiptService.getPublished(this.currentPage, this.pageSize).subscribe({
       next: (response:  ReceiptPage) => {
-        this. receipts = response. content;
-        this.filteredReceipts = response.content;
+        this. receipts = response. content.length > 0 ? response.content : this.mockReceipts;
+        this.filteredReceipts = this.receipts;
         this.totalPages = response.totalPages;
         this. totalElements = response. totalElements;
         this.isLoading = false;
       },
       error:  () => {
+        // En cas d'erreur, utiliser les mock data
+        this.receipts = this.mockReceipts;
+        this.filteredReceipts = this.mockReceipts;
+        this.totalPages = 1;
+        this.totalElements = this.mockReceipts.length;
         this.isLoading = false;
       }
     });

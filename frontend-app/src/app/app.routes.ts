@@ -92,6 +92,15 @@ export const routes: Routes = [
     title: 'Mon profil - Medicals Plants'
   },
 
+  // Authenticated Home (nouvelle page d'accueil pour utilisateurs connectés)
+  {
+    path: 'home',
+    loadComponent: () => import('./features/home/home-auth.component')
+      .then(m => m.HomeAuthComponent),
+    canActivate: [authGuard],
+    title: 'Accueil - Medicals Plants'
+  },
+
   // 404 - Page non trouvée
   {
     path: '**',

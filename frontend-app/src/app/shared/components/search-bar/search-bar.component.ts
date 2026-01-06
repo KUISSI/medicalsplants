@@ -53,15 +53,17 @@ import { FormsModule } from '@angular/forms';
       &__input {
         width: 100%;
         padding: 15px 45px;
-        border: 2px solid #e0e0e0;
-        border-radius: 30px;
+        border: 1px solid #d0d0d0;
+        border-radius: 50px;
         font-size: 1rem;
         transition: all 0.3s ease;
         outline: none;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
         &:focus {
           border-color: #4CAF50;
-          box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+          box-shadow: 0 6px 16px rgba(76, 175, 80, 0.15);
         }
 
         &::placeholder {

@@ -19,7 +19,7 @@ export class LoginComponent {
 
   loginForm: FormGroup;
   showPassword = false;
-  returnUrl:  string = '/';
+  returnUrl:  string = '/home';
 
   constructor() {
     this.loginForm = this.fb. group({
@@ -28,7 +28,7 @@ export class LoginComponent {
     });
 
     // Récupérer l'URL de retour si présente
-    this.returnUrl = this.route.snapshot. queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
   }
 
   get email() {
@@ -49,8 +49,9 @@ export class LoginComponent {
       return;
     }
 
-    this.authService. login(this.loginForm.value).subscribe({
-      next:  () => {
+    // Use frontend-only login to allow local login without backend
+    this.authService.loginFrontend(this.loginForm.value).subscribe({
+      next: () => {
         this.router.navigateByUrl(this.returnUrl);
       }
     });

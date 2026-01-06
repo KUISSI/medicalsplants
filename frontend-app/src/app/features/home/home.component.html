@@ -3,21 +3,13 @@
   <section class="hero">
     <div class="hero__content">
       <h1 class="hero__title">
-        <span class="hero__icon">🌿</span>
-        Medicals Plants
+        Quand la nature prend soin de vous
       </h1>
       <p class="hero__subtitle">
-        Découvrez le pouvoir des plantes médicinales pour votre santé naturelle
+        Identifiez vos symptômes et découvrez des plantes et recettes naturelles pour soulager les maux du quotidien.
       </p>
 
-      <div class="hero__search">
-        <app-search-bar
-          placeholder="Rechercher un symptôme (ex: maux de tête, stress... )"
-          [showButton]="true"
-          (search)="onSearch($event)"
-          (searchSubmit)="onSearch($event)"
-        ></app-search-bar>
-      </div>
+      <!-- search removed per design request -->
 
       <div class="hero__cta">
         <a routerLink="/symptoms" class="hero__btn hero__btn--primary"> Explorer les symptômes </a>
@@ -25,32 +17,13 @@
       </div>
     </div>
 
-    <div class="hero__decoration">
-      <span class="hero__leaf hero__leaf--1">🍃</span>
-      <span class="hero__leaf hero__leaf--2">🌱</span>
-      <span class="hero__leaf hero__leaf--3">🌿</span>
-    </div>
+
   </section>
 
-  <!-- Stats Section -->
-  <section class="stats">
-    <div class="stats__container">
-      <div class="stats__item">
-        <span class="stats__number">{{ stats.symptoms }}+</span>
-        <span class="stats__label">Symptômes</span>
-      </div>
-      <div class="stats__item">
-        <span class="stats__number">{{ stats.plants }}+</span>
-        <span class="stats__label">Plantes</span>
-      </div>
-      <div class="stats__item">
-        <span class="stats__number">{{ stats.receipts }}+</span>
-        <span class="stats__label">Recettes</span>
-      </div>
-      <div class="stats__item">
-        <span class="stats__number">{{ stats.users }}+</span>
-        <span class="stats__label">Utilisateurs</span>
-      </div>
+  <!-- Disclaimer Section -->
+  <section class="disclaimer">
+    <div class="disclaimer__container">
+      <p class="disclaimer__text">"{{ disclaimerText }}"</p>
     </div>
   </section>
 
@@ -74,37 +47,7 @@
     </div>
   </section>
 
-  <!-- Symptoms Section -->
-  <section class="symptoms">
-    <div class="section__container">
-      <h2 class="section__title">Symptômes populaires</h2>
-      <p class="section__subtitle">Sélectionnez un symptôme pour découvrir les plantes adaptées</p>
-
-      @if (isLoading) {
-      <app-loader message="Chargement des symptômes... "></app-loader>
-      } @else {
-      <div class="symptoms__grid">
-        @for (symptom of filteredSymptoms; track symptom.id) {
-        <app-card
-          [title]="symptom.title"
-          [subtitle]="symptom.symptomFamily"
-          [icon]="getSymptomIcon(symptom.symptomFamily)"
-          [link]="'/symptoms/' + symptom.id"
-        ></app-card>
-        } @empty {
-        <div class="symptoms__empty">
-          <span class="symptoms__empty-icon">🔍</span>
-          <p>Aucun symptôme trouvé pour "{{ searchTerm }}"</p>
-        </div>
-        }
-      </div>
-
-      <div class="symptoms__more">
-        <a routerLink="/symptoms" class="symptoms__more-link"> Voir tous les symptômes → </a>
-      </div>
-      }
-    </div>
-  </section>
+  <!-- Symptoms section removed per request -->
 
   <!-- CTA Section -->
   <section class="cta">

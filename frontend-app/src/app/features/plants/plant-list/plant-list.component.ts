@@ -23,6 +23,16 @@ import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from
 export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);
 
+  // Mock plants data
+  mockPlants: Plant[] = [
+    { id: '1', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '2', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '3', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '4', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', administrationMode: 'EPIDERMAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '5', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', administrationMode: 'NASAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '6', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant
+  ];
+
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];
   
@@ -48,13 +58,18 @@ export class PlantListComponent implements OnInit {
 
     this.plantService.getAll(this.currentPage, this.pageSize).subscribe({
       next: (response:  PlantPage) => {
-        this.plants = response.content;
-        this.filteredPlants = response.content;
+        this.plants = response.content.length > 0 ? response.content : this.mockPlants;
+        this.filteredPlants = this.plants;
         this.totalPages = response.totalPages;
         this. totalElements = response.totalElements;
         this.isLoading = false;
       },
       error: () => {
+        // En cas d'erreur, utiliser les mock data
+        this.plants = this.mockPlants;
+        this.filteredPlants = this.mockPlants;
+        this.totalPages = 1;
+        this.totalElements = this.mockPlants.length;
         this.isLoading = false;
       }
     });

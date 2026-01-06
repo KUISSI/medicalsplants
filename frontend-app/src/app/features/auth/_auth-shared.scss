@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+  background: #F3FBF0;
 }
 
 .auth-card {
@@ -16,7 +16,7 @@
   max-width:  450px;
 
   &__header {
-    text-align: center;
+    text-align: left;
     margin-bottom: 30px;
   }
 
@@ -31,12 +31,14 @@
     color: #1a472a;
     margin: 0 0 10px 0;
     font-weight:  700;
+    font-family: 'Rosarivo', serif;
   }
 
   &__subtitle {
     color: #666;
     font-size: 0.95rem;
     margin: 0;
+    font-family: 'Rosarivo', serif;
   }
 
   &__footer {

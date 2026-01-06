@@ -29,6 +29,8 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   searchTerm = '';
 
+  disclaimerText = 'Ces conseils sont partagés pour votre bien-être, mais ne remplacent pas un avis médical. La nature est puissante, utilisez-la avec sagesse.';
+
   // Statistiques pour la page d'accueil
   stats = {
     symptoms: 0,

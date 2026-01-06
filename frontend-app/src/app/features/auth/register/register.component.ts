@@ -78,9 +78,10 @@ export class RegisterComponent {
 
     const { acceptTerms, ...formData } = this. registerForm.value;
 
-    this.authService.register(formData).subscribe({
+    // Use frontend-only register to create a local user and log them in
+    this.authService.registerFrontend(formData).subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       }
     });
   }

@@ -1,35 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { HeaderGuestComponent } from './shared/components/header-guest/header-guest.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, HeaderGuestComponent, FooterComponent],
   template: `
-    <div class="app-container">
-      <app-header></app-header>
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
-      <app-footer></app-footer>
-    </div>
-  `,
-  styles: [`
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .main-content {
-      flex:  1;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-  `]
+    <app-header-guest *ngIf="!authService.isAuthenticated()" />
+    <app-header *ngIf="authService.isAuthenticated()" />
+    <router-outlet />
+    <app-footer />
+  `
 })
 export class AppComponent {
   title = 'Medicals Plants';
+  authService = inject(AuthService);
 }

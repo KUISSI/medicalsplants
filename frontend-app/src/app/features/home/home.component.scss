@@ -4,32 +4,43 @@
 
 // Hero Section
 .hero {
-  background:  linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #3d6b4f 100%);
-  color: #ffffff;
-  padding:  80px 20px;
-  text-align: center;
+  background-color: #F3FBF0;
+  color: #1a472a; /* Adjusted for light background */
+  padding: 40px 20px 80px 20px;
+
   position: relative;
   overflow: hidden;
 
+  /* Removed ::before overlay */
+
   &__content {
-    max-width: 800px;
-    margin: 0 auto;
+    width: 50%; /* Take up the right half of the screen */
+    max-width: none; /* Override previous max-width */
+    margin-right: 5%; /* A little padding from the right edge */
+    margin-left: auto; /* Push to right */
+    text-align: left; /* Align content to the left */
     position: relative;
     z-index: 2;
-  }
 
-  &__icon {
-    font-size: 4rem;
-    display: block;
-    margin-bottom: 20px;
-    animation: bounce 2s infinite;
+    @media (max-width: 992px) {
+      width: 100%;
+      margin: 0;
+      text-align: center;
+      padding: 0 20px;
+    }
   }
 
   &__title {
     font-size: 3rem;
     font-weight: 700;
     margin:  0 0 20px 0;
+    text-align: left; /* Ensure title is left aligned */
+    color: #1a472a; /* Adjusted for light background */
+    font-family: 'Rosarivo', serif;
 
+    @media (max-width:  992px) {
+      text-align: center;
+    }
     @media (max-width:  768px) {
       font-size: 2rem;
     }
@@ -37,10 +48,18 @@
 
   &__subtitle {
     font-size: 1.3rem;
-    color: #a8d5a2;
+    color: #666; /* Adjusted for light background */
+    text-shadow: none; /* Removed text shadow as background is light */
     margin:  0 0 40px 0;
     line-height: 1.6;
+    text-align: left; /* Ensure subtitle is left aligned */
+    font-family: 'Rosarivo', serif;
 
+    @media (max-width:  992px) {
+      text-align: center;
+      color: #666;
+      text-shadow: none;
+    }
     @media (max-width: 768px) {
       font-size: 1.1rem;
     }
@@ -48,33 +67,45 @@
 
   &__search {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Align search to the left */
     margin-bottom: 40px;
+  }
+
+  app-search-bar {
+    width: 100%;
+    max-width: 800px;
+    display: block;
+    margin: 0;
   }
 
   &__cta {
     display: flex;
     gap: 15px;
-    justify-content: center;
+    justify-content: flex-start; /* Align CTA buttons to the left */
     flex-wrap: wrap;
+
+    @media (max-width: 992px) {
+      justify-content: center;
+    }
   }
 
   &__btn {
-    padding: 15px 30px;
-    border-radius: 30px;
+    padding: 12px 24px;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
     font-size: 1rem;
     transition:  all 0.3s ease;
 
     &--primary {
-      background: #4CAF50;
+      background: #1a472a;
       color: #ffffff;
+      border: none;
 
       &:hover {
-        background: #45a049;
+        background: #2d5a3d;
         transform: translateY(-3px);
-        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        box-shadow: 0 5px 20px rgba(26, 71, 42, 0.4);
       }
     }
 
@@ -89,88 +120,40 @@
       }
     }
   }
+} // End of .hero section
 
-  &__decoration {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom:  0;
-    pointer-events: none;
-  }
-
-  &__leaf {
-    position: absolute;
-    font-size: 3rem;
-    opacity: 0.2;
-    animation:  float 6s ease-in-out infinite;
-
-    &--1 {
-      top: 20%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-
-    &--2 {
-      top:  60%;
-      right: 15%;
-      animation-delay:  2s;
-    }
-
-    &--3 {
-      bottom: 20%;
-      left:  20%;
-      animation-delay: 4s;
-    }
-  }
-}
-
-// Stats Section
-.stats {
+// Disclaimer (replaces previous Stats section)
+.disclaimer {
+  padding: 70px 20px;
   background: #ffffff;
-  padding:  40px 20px;
-  margin-top: -30px;
-  position: relative;
-  z-index: 3;
+  text-align: center;
+
+  @media (max-width: 992px) {
+    padding: 60px 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 50px 20px;
+  }
 
   &__container {
     max-width: 1000px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow:  0 10px 40px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-
-    @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 30px;
-    }
   }
 
-  &__item {
-    text-align: center;
-  }
-
-  &__number {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #4CAF50;
-    margin-bottom:  5px;
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-
-  &__label {
-    color: #666;
+  &__text {
+    color: #668469;
     font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
+    font-weight: 600;
+    font-style: italic;
   }
+}
+
+// Ensure sections without an explicit background are white
+section:not(.hero):not(.features):not(.symptoms):not(.cta) {
+  background: #ffffff;
 }
 
 // Section Common Styles
@@ -207,7 +190,7 @@
 // Features Section
 .features {
   padding: 80px 20px;
-  background: #ffffff;
+  background: #FBF6F0; /* Updated per request */
 
   &__grid {
     display: grid;
@@ -223,9 +206,12 @@
   text-align: center;
   transition: all 0.3s ease;
 
+  border: 1px solid #eee; /* tiny light grey border */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06); /* subtle elevation */
+
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
   }
 
   &__icon {
@@ -364,14 +350,5 @@
   }
   50% {
     transform:  translateY(-10px);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(10deg);
   }
 }

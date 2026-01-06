@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, of, tap, catchError, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../../environments/environment';
@@ -68,6 +68,42 @@ export class AuthService {
     );
   }
 
+  // Frontend-only register for local/testing without backend
+  registerFrontend(request: RegisterRequest): Observable<MessageResponse> {
+    this.isLoadingSignal.set(true);
+
+    const fakeUser = {
+      id: Math.random().toString(36).substring(2, 9),
+      email: request.email,
+      pseudo: request.pseudo || request.email.split('@')[0],
+      firstname: request.firstname || '',
+      lastname: request.lastname || '',
+      role: 'USER',
+      isEmailVerified: true,
+      createdAt: new Date().toISOString()
+    } as any;
+
+    const fakeResponse = {
+      success: true,
+      data: {
+        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
+        refreshToken: 'local-refresh-' + Math.random().toString(36).slice(2),
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: fakeUser
+      },
+      timestamp: new Date().toISOString()
+    } as any;
+
+    return of({ success: true, message: 'Inscription locale réussie', timestamp: new Date().toISOString() }).pipe(
+      tap(() => {
+        this.isLoadingSignal.set(false);
+        this.handleAuthSuccess(fakeResponse as any);
+        this.toastr.success('Inscription réussie', 'Bienvenue !');
+      })
+    );
+  }
+
   login(request: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSignal.set(true);
 
@@ -84,17 +120,53 @@ export class AuthService {
     );
   }
 
+  // Frontend-only login for when backend isn't used
+  loginFrontend(request: LoginRequest): Observable<AuthResponse> {
+    this.isLoadingSignal.set(true);
+
+    const fakeUser = {
+      id: Math.random().toString(36).substring(2, 9),
+      email: request.email,
+      pseudo: request.email.split('@')[0],
+      firstname: '',
+      lastname: '',
+      role: 'USER',
+      isEmailVerified: true,
+      createdAt: new Date().toISOString()
+    } as any;
+
+    const fakeResponse = {
+      success: true,
+      data: {
+        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
+        refreshToken: 'local-refresh-' + Math.random().toString(36).slice(2),
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: fakeUser
+      },
+      timestamp: new Date().toISOString()
+    } as any;
+
+    return of(fakeResponse).pipe(
+      tap(() => {
+        this.isLoadingSignal.set(false);
+        this.handleAuthSuccess(fakeResponse as any);
+        this.toastr.success('Connexion réussie', 'Bienvenue ! ');
+      })
+    );
+  }
+
   logout(): void {
     const refreshToken = this.storage.get<string>(environment.refreshTokenKey);
 
-    // Appel API pour invalider le token
-    this.http.post<MessageResponse>(`${this.apiUrl}/logout`, { refreshToken })
-      .subscribe({
-        complete: () => this.handleLogout()
-      });
-
-    // Logout local immédiat
+    // Logout local immédiat pour une meilleure réactivité
     this.handleLogout();
+
+    // Appel API pour invalider le token (fire and forget)
+    if (refreshToken) {
+      this.http.post<MessageResponse>(`${this.apiUrl}/logout`, { refreshToken })
+        .subscribe(); // On ne se soucie pas de la réponse, le logout local est prioritaire
+    }
   }
 
   refreshToken(): Observable<AuthResponse> {
@@ -153,7 +225,7 @@ export class AuthService {
     this.storage.remove(environment.userKey);
 
     this.currentUserSignal.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
     this.toastr.info('Vous êtes déconnecté', 'À bientôt !');
   }
 }
