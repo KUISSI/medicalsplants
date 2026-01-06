@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   template: `
     <div class="search-bar">
       <div class="search-bar__input-wrapper">
-        <span class="search-bar__icon">🔍</span>
+        <div class="search-bar__icon"></div>
         <input
           type="text"
           class="search-bar__input"
@@ -46,7 +46,12 @@ import { FormsModule } from '@angular/forms';
       &__icon {
         position: absolute;
         left:  15px;
-        font-size: 1.2rem;
+        width: 20px;
+        height: 20px;
+        background-image: url('../../../../assets/search.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
         pointer-events: none;
       }
 

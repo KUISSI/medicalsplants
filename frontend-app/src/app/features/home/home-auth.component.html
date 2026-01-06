@@ -14,27 +14,27 @@
       <section class="quick-access">
         <h2>Accès rapide</h2>
         <div class="cards">
-          <div class="card">
-            <h3>🔍 Symptômes</h3>
+          <a class="card" routerLink="/symptoms">
+            <div class="card__icon">
+              <img src="assets/sympicon.svg" alt="Symptômes" />
+            </div>
+            <h3>Symptômes</h3>
             <p>Recherchez par symptôme et trouvez des solutions adaptées.</p>
-            <div class="card__items">
-              <span class="badge" *ngFor="let symptom of symptoms.slice(0, 2)">{{ symptom.title }}</span>
+          </a>
+          <a class="card" routerLink="/plants">
+            <div class="card__icon">
+              <img src="assets/planticon.svg" alt="Plantes" />
             </div>
-          </div>
-          <div class="card">
-            <h3>🌱 Plantes</h3>
+            <h3>Plantes</h3>
             <p>Explorez notre catalogue de plantes médicinales.</p>
-            <div class="card__items">
-              <span class="badge" *ngFor="let plant of plants.slice(0, 2)">{{ plant.name }}</span>
+          </a>
+          <a class="card" routerLink="/receipts">
+            <div class="card__icon">
+              <img src="assets/foodicon.svg" alt="Recettes" />
             </div>
-          </div>
-          <div class="card">
-            <h3>📖 Recettes</h3>
+            <h3>Recettes</h3>
             <p>Découvrez des recettes naturelles et faciles à suivre.</p>
-            <div class="card__items">
-              <span class="badge" *ngFor="let recipe of recipes.slice(0, 2)">{{ recipe.title }}</span>
-            </div>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -47,6 +47,54 @@
             <p>{{ tip }}</p>
           </div>
         </div>
+      </section>
+
+      <!-- Recettes populaires section -->
+      <section class="popular-recipes">
+        <div class="popular-recipes__header">
+          <h2>Recettes populaires</h2>
+          <button class="popular-recipes__btn popular-recipes__btn--desktop" (click)="toggleMoreRecipes()" *ngIf="popularRecipes.length > 3">
+            {{ showMoreRecipes ? 'Voir moins' : 'Voir plus' }}
+          </button>
+        </div>
+
+        <div class="popular-recipes__grid">
+          <div class="recipe-card" *ngFor="let recipe of visibleRecipes">
+            <div class="recipe-card__image">
+              <img [src]="recipe.imageUrl" [alt]="recipe.title" (error)="onImageError($event)" />
+            </div>
+            <div class="recipe-card__content">
+              <h3 class="recipe-card__title">{{ recipe.title }}</h3>
+              <p class="recipe-card__category">{{ recipe.category }}</p>
+              <div class="recipe-card__rating">
+                <span class="recipe-card__stars" *ngFor="let star of [1,2,3,4,5]; let i = index" 
+                      [class.filled]="i < recipe.rating">★</span>
+              </div>
+              <div class="recipe-card__meta">
+                <span class="recipe-card__time">
+                  <i class="icon icon-time"></i>
+                  <span>{{ recipe.time }} min</span>
+                </span>
+                <span class="recipe-card__difficulty">
+                  <i class="icon icon-difficulty" [ngClass]="{
+                    'text-easy': recipe.difficulty === 'Facile',
+                    'text-medium': recipe.difficulty === 'Moyen',
+                    'text-hard': recipe.difficulty === 'Difficile'
+                  }"></i>
+                  <span [ngClass]="{
+                    'text-easy': recipe.difficulty === 'Facile',
+                    'text-medium': recipe.difficulty === 'Moyen',
+                    'text-hard': recipe.difficulty === 'Difficile'
+                  }">{{ recipe.difficulty }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="popular-recipes__btn popular-recipes__btn--mobile" (click)="toggleMoreRecipes()" *ngIf="popularRecipes.length > 3">
+          {{ showMoreRecipes ? 'Voir moins' : 'Voir plus' }}
+        </button>
       </section>
     </div>
   </div>
