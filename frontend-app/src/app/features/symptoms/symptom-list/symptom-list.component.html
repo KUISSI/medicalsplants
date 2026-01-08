@@ -13,47 +13,60 @@
   </div>
 
   <!-- Filters -->
-  <div class="filters">
+  <div class="filters" [class.scrolled]="isScrolled">
     <div class="filters__container">
-      <div class="filters__search">
-        <app-search-bar
-          placeholder="Rechercher un symptôme..."
-          (search)="onSearch($event)"
-        ></app-search-bar>
-      </div>
-
-      <div class="filters__options">
-        <!-- Family Filter -->
-        <div class="filter-group">
-          <label for="family" class="filter-label">Famille :</label>
-          <select
-            id="family"
-            class="filter-select"
-            [ngModel]="selectedFamily"
-            (ngModelChange)="onFamilyChange($event)"
-          >
-            <option value="">Toutes les familles</option>
-            @for (family of families; track family) {
-            <option [value]="family">{{ family }}</option>
-            }
-          </select>
+      <div class="filters__group">
+        <div class="filters__main">
+          <app-search-bar
+            class="search-bar--symptom"
+            placeholder="Rechercher un symptôme..."
+            (search)="onSearch($event)"
+          ></app-search-bar>
         </div>
+        <div class="filters__display-options">
+          <!-- Family Filter -->
+          <div class="filter-group">
+            <label for="family" class="filter-label">Famille :</label>
+            <select
+              id="family"
+              class="filter-select"
+              [ngModel]="selectedFamily"
+              (ngModelChange)="onFamilyChange($event)"
+            >
+              <option value="">Toutes les familles</option>
+              @for (family of families; track family) {
+              <option [value]="family">{{ family }}</option>
+              }
+            </select>
+          </div>
 
-        <!-- View Mode Toggle -->
-        <button
-          class="filter-btn"
-          (click)="toggleViewMode()"
-          [title]="viewMode === 'grid' ? 'Vue liste' : 'Vue grille'"
-        >
-          {{ viewMode === 'grid' ? '📋' : '🔲' }}
-        </button>
+          <!-- View Mode Toggle -->
+          <div class="view-mode-toggle">
+            <button
+              class="filter-btn"
+              (click)="toggleViewMode('list')"
+              [class.active]="viewMode === 'list'"
+              title="Vue liste"
+            >
+              <i class="fas fa-list"></i>
+            </button>
+            <button
+              class="filter-btn"
+              (click)="toggleViewMode('grid')"
+              [class.active]="viewMode === 'grid'"
+              title="Vue grille"
+            >
+              <i class="fas fa-th-large"></i>
+            </button>
+          </div>
 
-        <!-- Clear Filters -->
-        @if (searchTerm || selectedFamily) {
-        <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
-          ✕ Effacer les filtres
-        </button>
-        }
+          <!-- Clear Filters -->
+          @if (searchTerm || selectedFamily) {
+          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+            ✕ Effacer les filtres
+          </button>
+          }
+        </div>
       </div>
     </div>
   </div>
@@ -92,13 +105,17 @@
       <div class="symptom-grid">
         @for (symptom of family.value; track symptom.id) {
         <a [routerLink]="['/symptoms', symptom.id]" class="symptom-card">
-          <div class="symptom-card__icon" [style.background-color]="getFamilyColor(family.key)">
+          <div 
+            class="symptom-card__icon" 
+            [style.background-color]="getFamilyColor(family.key)"
+            [style.box-shadow]="'0 4px 15px ' + getFamilyColor(family.key) + '66'"
+          >
             {{ getSymptomIcon(family.key) }}
           </div>
           <div class="symptom-card__content">
             <h3 class="symptom-card__title">{{ symptom.title }}</h3>
-            @if (symptom. symptomDetail) {
-            <p class="symptom-card__description">{{ symptom.symptomDetail }}</p>
+            @if (symptom.description) {
+            <p class="symptom-card__description">{{ symptom.description | slice:0:100 }}...</p>
             }
           </div>
           <span class="symptom-card__arrow">→</span>
@@ -115,7 +132,7 @@
         <span class="symptom-table__col symptom-table__col--action">Action</span>
       </div>
 
-      @for (symptom of filteredSymptoms; track symptom. id) {
+      @for (symptom of filteredSymptoms; track symptom.id) {
       <a [routerLink]="['/symptoms', symptom.id]" class="symptom-table__row">
         <span class="symptom-table__col symptom-table__col--name">
           <span class="symptom-table__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>

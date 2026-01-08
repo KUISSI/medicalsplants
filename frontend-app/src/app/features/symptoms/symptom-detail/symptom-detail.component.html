@@ -20,19 +20,24 @@
           <h1 class="detail-header__title">{{ symptom.title }}</h1>
         </div>
       </div>
-
-      @if (symptom. symptomDetail) {
-      <p class="detail-header__description">{{ symptom.symptomDetail }}</p>
-      }
     </div>
   </div>
 
-  <!-- Plants Section -->
+  <!-- Page Content -->
   <div class="detail-content">
+    <!-- Description Section -->
+    <div class="section">
+      <h2 class="section__title">Description</h2>
+      <hr class="section__divider">
+      @if (symptom.description) {
+      <p class="description-text">{{ symptom.description }}</p>
+      }
+    </div>
+
+    <!-- Plants Section -->
     <div class="section">
       <div class="section__header">
         <h2 class="section__title">🌱 Plantes recommandées</h2>
-        <span class="section__count">{{ plants.length }} plante(s)</span>
       </div>
 
       @if (isLoadingPlants) {
@@ -46,26 +51,14 @@
       <div class="plants-grid">
         @for (plant of plants; track plant.id) {
         <a [routerLink]="['/plants', plant.id]" class="plant-card">
-          <div class="plant-card__header">
-            <span class="plant-card__icon">🌿</span>
+          <div class="plant-card__image-placeholder"></div>
+          <div class="plant-card__content">
             <h3 class="plant-card__title">{{ plant.title }}</h3>
-          </div>
-
-          @if (plant.description) {
-          <p class="plant-card__description">{{ plant.description }}</p>
-          }
-
-          <div class="plant-card__footer">
-            <span
-              class="plant-card__mode"
-              [title]="administrationModeLabels[plant.administrationMode]"
-            >
-              {{ getAdministrationIcon(plant.administrationMode) }}
-              {{ administrationModeLabels[plant.administrationMode] }}
-            </span>
-            @if (plant.consumedPart) {
-            <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
+            @if (plant.description) {
+            <p class="plant-card__description">{{ plant.description }}</p>
             }
+          </div>
+          <div class="plant-card__footer">
           </div>
         </a>
         }
@@ -81,12 +74,11 @@
     <!-- Related Symptoms -->
     @if (relatedSymptoms.length > 0) {
     <div class="section">
-      <div class="section__header">
-        <h2 class="section__title">🔗 Symptômes similaires</h2>
-      </div>
+      <h2 class="section__title">🔗 Symptômes similaires</h2>
+      <hr class="section__divider">
 
       <div class="related-grid">
-        @for (related of relatedSymptoms; track related. id) {
+        @for (related of relatedSymptoms; track related.id) {
         <a [routerLink]="['/symptoms', related.id]" class="related-card">
           <span class="related-card__icon">{{ getSymptomIcon(related.symptomFamily) }}</span>
           <span class="related-card__title">{{ related.title }}</span>

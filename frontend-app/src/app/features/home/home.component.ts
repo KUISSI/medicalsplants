@@ -12,10 +12,7 @@ import { Symptom } from '../../core/models/symptom.model';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    SearchBarComponent,
-    CardComponent,
-    LoaderComponent
+    RouterModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']

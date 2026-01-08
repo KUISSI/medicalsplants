@@ -63,6 +63,20 @@
     </div>
     }
 
+    <!-- Ingredients -->
+    @if (receipt.ingredients && receipt.ingredients.length > 0) {
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">📜 Ingrédients</h2>
+      </div>
+      <ul class="ingredients-list">
+        @for (ingredient of receipt.ingredients; track ingredient) {
+        <li class="ingredients-list__item">{{ ingredient }}</li>
+        }
+      </ul>
+    </div>
+    }
+
     <!-- Plants -->
     @if (receipt.plants && receipt.plants.length > 0) {
     <div class="section">
@@ -70,20 +84,11 @@
         <h2 class="section__title">🌿 Plantes utilisées</h2>
       </div>
       <div class="plants-grid">
-        @for (plant of receipt.plants; track plant. id) {
+        @for (plant of receipt.plants; track plant.id) {
         <a [routerLink]="['/plants', plant.id]" class="plant-item">
           <div class="plant-item__icon">🌿</div>
           <div class="plant-item__info">
             <h3 class="plant-item__title">{{ plant.title }}</h3>
-            <div class="plant-item__meta">
-              <span class="plant-item__mode">
-                {{ getAdministrationIcon(plant.administrationMode) }}
-                {{ administrationModeLabels[plant.administrationMode] }}
-              </span>
-              @if (plant.consumedPart) {
-              <span class="plant-item__part">🍃 {{ plant.consumedPart }}</span>
-              }
-            </div>
           </div>
           <span class="plant-item__arrow">→</span>
         </a>

@@ -15,6 +15,7 @@ export interface Receipt {
   status: ReceiptStatus;
   author?:  User;
   plants?: Plant[];
+  ingredients?: string[];
   reviews?: Review[];
   createdAt:  string;
   updatedAt?: string;
@@ -36,6 +37,7 @@ export interface CreateReceiptRequest {
   description?: string;
   isPremium?:  boolean;
   plantIds?: string[];
+  ingredients?: string[];
 }
 
 export const RECEIPT_TYPE_LABELS: Record<ReceiptType, string> = {

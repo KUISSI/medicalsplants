@@ -13,38 +13,40 @@
   </div>
 
   <!-- Filters -->
-  <div class="filters">
+  <div class="filters" [class.scrolled]="isScrolled">
     <div class="filters__container">
-      <div class="filters__search">
-        <app-search-bar
-          placeholder="Rechercher une plante..."
-          (search)="onSearch($event)"
-        ></app-search-bar>
-      </div>
-
-      <div class="filters__options">
-        <!-- Mode Filter -->
-        <div class="filter-group">
-          <label for="mode" class="filter-label">Mode d'administration :</label>
-          <select
-            id="mode"
-            class="filter-select"
-            [ngModel]="selectedMode"
-            (ngModelChange)="onModeChange($event)"
-          >
-            <option value="">Tous les modes</option>
-            @for (mode of administrationModeKeys; track mode) {
-            <option [value]="mode">{{ administrationModes[mode] }}</option>
-            }
-          </select>
+      <div class="filters__group">
+        <div class="filters__main">
+          <app-search-bar
+            placeholder="Rechercher une plante..."
+            (search)="onSearch($event)"
+          ></app-search-bar>
         </div>
 
-        <!-- Clear Filters -->
-        @if (searchTerm || selectedMode) {
-        <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
-          ✕ Effacer les filtres
-        </button>
-        }
+        <div class="filters__display-options">
+          <!-- Mode Filter -->
+          <div class="filter-group">
+            <label for="mode" class="filter-label">Mode d'administration :</label>
+            <select
+              id="mode"
+              class="filter-select"
+              [ngModel]="selectedMode"
+              (ngModelChange)="onModeChange($event)"
+            >
+              <option value="">Tous les modes</option>
+              @for (mode of administrationModeKeys; track mode) {
+              <option [value]="mode">{{ administrationModes[mode] }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Clear Filters -->
+          @if (searchTerm || selectedMode) {
+          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+            ✕ Effacer les filtres
+          </button>
+          }
+        </div>
       </div>
     </div>
   </div>
@@ -85,12 +87,14 @@
             <span>🌿</span>
           </div>
           }
+          @if (plant.administrationMode) {
           <span
             class="plant-card__mode-badge"
             [title]="administrationModes[plant.administrationMode]"
           >
             {{ getAdministrationIcon(plant.administrationMode) }}
           </span>
+          }
         </div>
 
         <div class="plant-card__content">
@@ -101,9 +105,11 @@
           }
 
           <div class="plant-card__meta">
+            @if (plant.administrationMode) {
             <span class="plant-card__mode">
               {{ administrationModes[plant.administrationMode] }}
             </span>
+            }
             @if (plant.consumedPart) {
             <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
             }

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -24,7 +24,8 @@ export class ReceiptCreateComponent implements OnInit {
     title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
     type: ['', Validators.required],
     description: [''],
-    isPremium: [false]
+    isPremium: [false],
+    ingredients: this.fb.array([])
   });
 
   receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
@@ -53,6 +54,18 @@ export class ReceiptCreateComponent implements OnInit {
   get title() { return this.receiptForm.get('title'); }
   get type() { return this.receiptForm.get('type'); }
   get description() { return this.receiptForm.get('description'); }
+  get ingredients() { return this.receiptForm.get('ingredients') as FormArray; }
+
+  addIngredient(): void {
+    this.ingredients.push(this.fb.group({
+      name: ['', Validators.required],
+      quantity: ['', Validators.required]
+    }));
+  }
+
+  removeIngredient(index: number): void {
+    this.ingredients.removeAt(index);
+  }
 
   getReceiptTypeIcon(type: ReceiptType): string {
     const icons: Record<ReceiptType, string> = {
@@ -93,6 +106,7 @@ export class ReceiptCreateComponent implements OnInit {
       this.isSubmitting = false;
       this.receiptForm.reset();
       this.selectedPlantIds = [];
+      this.ingredients.clear(); // Clear ingredients as well
     }, 800);
   }
 }

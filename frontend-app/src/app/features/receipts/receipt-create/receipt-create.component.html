@@ -71,6 +71,20 @@
         <span class="form-hint"> {{ description?.value?.length || 0 }} / 5000 caractères </span>
       </div>
 
+      <!-- Ingredients -->
+      <div class="form-group">
+        <label class="form-label">Ingrédients</label>
+        <div formArrayName="ingredients">
+          @for (ingredient of ingredients.controls; track $index) {
+          <div class="ingredient-input">
+            <input [formControlName]="$index" class="form-input" placeholder="Ex: 1 cuillère à café de miel">
+            <button type="button" class="form-btn--remove" (click)="removeIngredient($index)">✕</button>
+          </div>
+          }
+        </div>
+        <button type="button" class="form-btn--add" (click)="addIngredient()">+ Ajouter un ingrédient</button>
+      </div>
+
       <!-- Plants Selection -->
       <div class="form-group">
         <label class="form-label">Plantes utilisées *</label>

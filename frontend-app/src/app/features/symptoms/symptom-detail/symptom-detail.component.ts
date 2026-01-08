@@ -11,7 +11,7 @@ import { Plant, PlantPage, ADMINISTRATION_MODE_LABELS } from '../../../core/mode
 @Component({
   selector:  'app-symptom-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoaderComponent, CardComponent],
+  imports: [CommonModule, RouterModule, LoaderComponent],
   templateUrl: './symptom-detail.component.html',
   styleUrls: ['./symptom-detail.component.scss']
 })
@@ -33,42 +33,45 @@ export class SymptomDetailComponent implements OnInit {
   totalPages = 0;
   pageSize = 12;
 
-  administrationModeLabels = ADMINISTRATION_MODE_LABELS;
-
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
       if (id) {
-        this.loadSymptom(id);
+        this.isLoading = true;
+        this.symptomService.getById(id).subscribe({
+          next: (symptom) => {
+            this.symptom = symptom;
+            this.isLoading = false;
+            this.error = null;
+            this.loadPlants();
+            if (symptom.symptomFamily) {
+              this.loadRelatedSymptoms(symptom.symptomFamily);
+            }
+          },
+          error: (err) => {
+            console.error('Error loading symptom', err);
+            this.error = 'Failed to load symptom.';
+            this.isLoading = false;
+          }
+        });
       }
     });
   }
 
-  loadSymptom(id: string): void {
-    this. isLoading = true;
-    this. error = null;
-
-    this.symptomService.getById(id).subscribe({
-      next: (symptom: Symptom) => {
-        this.symptom = symptom;
-        this.isLoading = false;
-        this.loadPlants(id);
-        this.loadRelatedSymptoms(symptom.symptomFamily);
-      },
-      error:  (err: any) => {
-        this.isLoading = false;
-        this.error = 'Symptôme non trouvé';
-      }
-    });
-  }
-
-  loadPlants(symptomId: string): void {
+  loadPlants(): void {
     this.isLoadingPlants = true;
+    const symptomFamily = this.symptom?.symptomFamily;
 
-    this.plantService.getBySymptomId(symptomId, this.currentPage, this.pageSize).subscribe({
+    this.plantService.getAll(0, 100).subscribe({
       next: (response: PlantPage) => {
-        this.plants = response.content;
-        this. totalPages = response. totalPages;
+        if (symptomFamily) {
+          this.plants = response.content.filter(plant =>
+            plant.symptomFamilies?.includes(symptomFamily)
+          );
+        } else {
+          this.plants = [];
+        }
+        this.totalPages = 1;
         this.isLoadingPlants = false;
       },
       error: () => {
@@ -110,14 +113,5 @@ export class SymptomDetailComponent implements OnInit {
       'Cutané': '🧴'
     };
     return icons[family] || '🌿';
-  }
-
-  getAdministrationIcon(mode: string): string {
-    const icons:  Record<string, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴'
-    };
-    return icons[mode] || '🌿';
   }
 }

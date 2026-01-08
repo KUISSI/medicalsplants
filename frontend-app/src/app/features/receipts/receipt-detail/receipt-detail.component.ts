@@ -40,7 +40,6 @@ export class ReceiptDetailComponent implements OnInit {
 
   receiptTypeLabels = RECEIPT_TYPE_LABELS;
   receiptStatusLabels = RECEIPT_STATUS_LABELS;
-  administrationModeLabels = ADMINISTRATION_MODE_LABELS;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -169,15 +168,6 @@ export class ReceiptDetailComponent implements OnInit {
       'LOTION': '🧴'
     };
     return icons[type] || '📖';
-  }
-
-  getAdministrationIcon(mode: string): string {
-    const icons:  Record<string, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE': '🧴'
-    };
-    return icons[mode] || '🌿';
   }
 
   formatDate(dateString: string): string {

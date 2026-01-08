@@ -1,0 +1,15 @@
+<div class="custom-dropdown" [class.open]="isOpen">
+  <div class="custom-dropdown__selected" (click)="toggleDropdown()">
+    <span>{{ selectedOption || 'Select an option' }}</span>
+    <span class="custom-dropdown__chevron"></span>
+  </div>
+  <ul class="custom-dropdown__options">
+    <li
+      *ngFor="let option of options"
+      class="custom-dropdown__option"
+      (click)="selectOption(option)"
+    >
+      {{ option }}
+    </li>
+  </ul>
+</div>

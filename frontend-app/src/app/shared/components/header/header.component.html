@@ -95,7 +95,7 @@
     </div>
 
     <!-- Mobile Menu Toggle -->
-    <button class="header__toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
+    <button class="header__toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" [class.header__toggle--open]="isMenuOpen">
       <span class="header__toggle-bar"></span>
       <span class="header__toggle-bar"></span>
       <span class="header__toggle-bar"></span>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,8 +17,8 @@ import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from
     SearchBarComponent,
     LoaderComponent
   ],
-  templateUrl:  './plant-list.component.html',
-  styleUrls:  ['./plant-list.component.scss']
+  templateUrl: './plant-list.component.html',
+  styleUrl: './plant-list.component.scss'
 })
 export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);
@@ -39,12 +39,18 @@ export class PlantListComponent implements OnInit {
   isLoading = true;
   searchTerm = '';
   selectedMode: AdministrationMode | '' = '';
+  isScrolled = false;
 
   // Pagination
   currentPage = 0;
   totalPages = 0;
   totalElements = 0;
   pageSize = 20;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50;
+  }
 
   administrationModes = ADMINISTRATION_MODE_LABELS;
   administrationModeKeys = Object.keys(ADMINISTRATION_MODE_LABELS) as AdministrationMode[];
@@ -120,13 +126,15 @@ export class PlantListComponent implements OnInit {
     }
   }
 
-  getAdministrationIcon(mode: AdministrationMode): string {
+  getAdministrationIcon(mode: AdministrationMode | undefined): string {
     const icons: Record<AdministrationMode, string> = {
       'ORAL_ROUTE': '☕',
       'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴'
+      'EPIDERMAL_ROUTE':  '🧴',
+      'TOPICAL_ROUTE': '🩹',
+      'OTHER': '🌿'
     };
-    return icons[mode] || '🌿';
+    return mode ? icons[mode] : '🌿';
   }
 
   getPages(): number[] {

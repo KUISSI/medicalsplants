@@ -5,7 +5,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { PlantService } from '../../../core/services/plant.service';
 import { ReceiptService } from '../../../core/services/receipt.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Plant, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
 
 @Component({
@@ -71,13 +71,15 @@ export class PlantDetailComponent implements OnInit {
     });
   }
 
-  getAdministrationIcon(mode: string): string {
-    const icons:  Record<string, string> = {
+  getAdministrationIcon(mode: AdministrationMode | undefined): string {
+    const icons:  Record<AdministrationMode, string> = {
       'ORAL_ROUTE': '☕',
       'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE': '🧴'
+      'EPIDERMAL_ROUTE': '🧴',
+      'TOPICAL_ROUTE': '🩹',
+      'OTHER': '🌿'
     };
-    return icons[mode] || '🌿';
+    return mode ? icons[mode] : '🌿';
   }
 
   getReceiptTypeIcon(type: string): string {
