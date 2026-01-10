@@ -28,6 +28,8 @@ export class PlantDetailComponent implements OnInit {
   isLoadingReceipts = true;
   error: string | null = null;
 
+  activeTab: 'properties' | 'recipes' = 'properties';
+
   administrationModeLabels = ADMINISTRATION_MODE_LABELS;
   receiptTypeLabels = RECEIPT_TYPE_LABELS;
 
@@ -38,6 +40,10 @@ export class PlantDetailComponent implements OnInit {
         this.loadPlant(id);
       }
     });
+  }
+
+  switchTab(tab: 'properties' | 'recipes'): void {
+    this.activeTab = tab;
   }
 
   loadPlant(id: string): void {

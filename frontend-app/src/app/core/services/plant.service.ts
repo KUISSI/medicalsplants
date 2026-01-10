@@ -61,7 +61,12 @@ export class PlantService {
   }
 
   getById(id: string): Observable<Plant> {
-    return this.http.get<Plant>(`${this.apiUrl}/${id}`);
+    return this.http.get<Plant>(`${this.apiUrl}/${id}`).pipe(
+      catchError(() => {
+        const plant = this.mockPlants.find(p => p.id === id);
+        return of(plant as Plant);
+      })
+    );
   }
 
   getBySymptomId(symptomId: string, page: number = 0, size: number = 20): Observable<PlantPage> {

@@ -305,7 +305,7 @@
     cursor:  pointer;
     transition: all 0.3s ease;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       background: #45a049;
     }
 
@@ -499,7 +499,7 @@
       border:  none;
       color:  #ffffff;
 
-      &:hover: not(:disabled) {
+      &:hover:not(:disabled) {
         background: #45a049;
       }
 

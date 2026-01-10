@@ -77,7 +77,12 @@ export class ReceiptService {
   }
 
   getById(id:  string): Observable<Receipt> {
-    return this.http.get<Receipt>(`${this.apiUrl}/${id}`);
+    return this.http.get<Receipt>(`${this.apiUrl}/${id}`).pipe(
+      catchError(() => {
+        const receipt = this.mockReceipts.find(r => r.id === id);
+        return of(receipt as Receipt);
+      })
+    );
   }
 
   getByPlantId(plantId: string, page:  number = 0, size: number = 20): Observable<ReceiptPage> {
@@ -85,7 +90,21 @@ export class ReceiptService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<ReceiptPage>(`${this.apiUrl}/plant/${plantId}`, { params });
+    return this.http.get<ReceiptPage>(`${this.apiUrl}/plant/${plantId}`, { params }).pipe(
+      catchError(() => {
+        const filteredReceipts = this.mockReceipts.filter(r => r.plants && r.plants.some(p => p.id === plantId));
+        const receiptPage: ReceiptPage = {
+          content: filteredReceipts,
+          totalElements: filteredReceipts.length,
+          totalPages: 1,
+          size: filteredReceipts.length,
+          number: 0,
+          first: true,
+          last: true
+        };
+        return of(receiptPage);
+      })
+    );
   }
 
   create(request: CreateReceiptRequest): Observable<Receipt> {
