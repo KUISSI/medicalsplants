@@ -93,48 +93,8 @@
 
       <!-- Receipts Grid -->
       <div class="receipts-grid">
-        @for (receipt of filteredReceipts; track receipt. id) {
-          <a [routerLink]="['/receipts', receipt.id]" class="receipt-card" [class.receipt-card--premium]="receipt.isPremium">
-            @if (receipt.isPremium) {
-              <div class="receipt-card__premium-badge">
-                ⭐ Premium
-              </div>
-            }
-
-            <div class="receipt-card__image">
-              @if (receipt.imageUrl) {
-                <img [src]="receipt.imageUrl" [alt]="receipt. title" />
-              } @else {
-                <div class="receipt-card__placeholder">
-                  <span>{{ getReceiptTypeIcon(receipt.type) }}</span>
-                </div>
-              }
-              <span class="receipt-card__type-badge">
-                {{ getReceiptTypeIcon(receipt.type) }} {{ receiptTypes[receipt. type] }}
-              </span>
-            </div>
-
-            <div class="receipt-card__content">
-              <h3 class="receipt-card__title">{{ receipt.title }}</h3>
-              
-              @if (receipt.description) {
-                <p class="receipt-card__description">{{ receipt.description }}</p>
-              }
-
-              <div class="receipt-card__footer">
-                @if (receipt.author) {
-                  <span class="receipt-card__author">
-                    👤 {{ receipt. author.pseudo }}
-                  </span>
-                }
-                @if (receipt. plants && receipt.plants.length > 0) {
-                  <span class="receipt-card__plants">
-                    🌿 {{ receipt.plants.length }} plante(s)
-                  </span>
-                }
-              </div>
-            </div>
-          </a>
+        @for (receipt of filteredReceipts; track receipt.id) {
+          <app-recipe-card [recipe]="receipt"></app-recipe-card>
         }
       </div>
 

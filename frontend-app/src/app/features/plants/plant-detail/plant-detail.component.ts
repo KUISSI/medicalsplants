@@ -7,11 +7,12 @@ import { ReceiptService } from '../../../core/services/receipt.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
 
 @Component({
   selector: 'app-plant-detail',
   standalone: true,
-  imports:  [CommonModule, RouterModule, LoaderComponent],
+  imports:  [CommonModule, RouterModule, LoaderComponent, RecipeCardComponent],
   templateUrl: './plant-detail.component.html',
   styleUrls: ['./plant-detail.component.scss']
 })
@@ -22,7 +23,7 @@ export class PlantDetailComponent implements OnInit {
   authService = inject(AuthService);
 
   plant: Plant | null = null;
-  receipts: Receipt[] = [];
+  receipts: RecipeCardData[] = [];
   
   isLoading = true;
   isLoadingReceipts = true;
@@ -68,7 +69,23 @@ export class PlantDetailComponent implements OnInit {
 
     this.receiptService.getByPlantId(plantId, 0, 6).subscribe({
       next: (response: ReceiptPage) => {
-        this.receipts = response.content;
+        this.receipts = response.content.map(receipt => {
+          const difficulties = ['Facile', 'Moyen', 'Difficile'];
+          const rating = (receipt.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
+          const time = ((receipt.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
+          const difficulty = difficulties[receipt.id.charCodeAt(0) % difficulties.length];
+
+          return {
+            id: receipt.id,
+            title: receipt.title,
+            imageUrl: receipt.imageUrl,
+            category: this.receiptTypeLabels[receipt.type] || 'Recette',
+            isPremium: receipt.isPremium,
+            rating,
+            time,
+            difficulty,
+          };
+        });
         this.isLoadingReceipts = false;
       },
       error:  () => {

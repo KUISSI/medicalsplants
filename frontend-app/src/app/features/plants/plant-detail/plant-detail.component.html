@@ -100,24 +100,7 @@
         } @else {
           <div class="receipts-grid">
             @for (receipt of receipts; track receipt.id) {
-              <a [routerLink]="['/receipts', receipt.id]" class="receipt-card" [class.receipt-card--premium]="receipt.isPremium">
-                @if (receipt.isPremium) {
-                  <span class="receipt-card__premium-badge">⭐ Premium</span>
-                }
-                <div class="receipt-card__header">
-                  <span class="receipt-card__type-icon">{{ getReceiptTypeIcon(receipt.type) }}</span>
-                  <span class="receipt-card__type">{{ receiptTypeLabels[receipt.type] }}</span>
-                </div>
-                <h3 class="receipt-card__title">{{ receipt.title }}</h3>
-                @if (receipt.description) {
-                  <p class="receipt-card__description">{{ receipt.description }}</p>
-                }
-                <div class="receipt-card__footer">
-                  @if (receipt.author) {
-                    <span class="receipt-card__author"> Par {{ receipt.author.pseudo }} </span>
-                  }
-                </div>
-              </a>
+              <app-recipe-card [recipe]="receipt"></app-recipe-card>
             }
           </div>
           <a routerLink="/receipts" [queryParams]="{ plant: plant.id }" class="section__link">

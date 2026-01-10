@@ -7,6 +7,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ReceiptService } from '../../../core/services/receipt.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Receipt, ReceiptPage, ReceiptType, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
 
 @Component({
   selector:  'app-receipt-list',
@@ -16,7 +17,8 @@ import { Receipt, ReceiptPage, ReceiptType, RECEIPT_TYPE_LABELS } from '../../..
     RouterModule,
     FormsModule,
     SearchBarComponent,
-    LoaderComponent
+    LoaderComponent,
+    RecipeCardComponent
   ],
   templateUrl: './receipt-list.component.html',
   styleUrls: ['./receipt-list.component.scss']
@@ -27,16 +29,16 @@ export class ReceiptListComponent implements OnInit {
 
   // Mock receipts data
   mockReceipts: Receipt[] = [
-    { id: '1', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HERBAL_TEA' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
-    { id: '2', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'SYRUP' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
-    { id: '3', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'OINTMENT' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
-    { id: '4', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HERBAL_TEA' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
-    { id: '5', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'ELIXIR' as ReceiptType, createdAt: new Date().toISOString() } as Receipt,
-    { id: '6', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'TINCTURE' as ReceiptType, createdAt: new Date().toISOString() } as Receipt
+    { id: '1', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '2', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '3', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '4', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '5', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'COLD_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '6', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' }
   ];
 
   receipts: Receipt[] = [];
-  filteredReceipts:  Receipt[] = [];
+  filteredReceipts:  RecipeCardData[] = [];
   
   isLoading = true;
   searchTerm = '';
@@ -61,17 +63,17 @@ export class ReceiptListComponent implements OnInit {
     this.receiptService.getPublished(this.currentPage, this.pageSize).subscribe({
       next: (response:  ReceiptPage) => {
         this. receipts = response. content.length > 0 ? response.content : this.mockReceipts;
-        this.filteredReceipts = this.receipts;
         this.totalPages = response.totalPages;
         this. totalElements = response. totalElements;
+        this.applyFilters();
         this.isLoading = false;
       },
       error:  () => {
-        // En cas d'erreur, utiliser les mock data
+        // En cas d\'erreur, utiliser les mock data
         this.receipts = this.mockReceipts;
-        this.filteredReceipts = this.mockReceipts;
         this.totalPages = 1;
         this.totalElements = this.mockReceipts.length;
+        this.applyFilters();
         this.isLoading = false;
       }
     });
@@ -102,13 +104,29 @@ export class ReceiptListComponent implements OnInit {
       result = result.filter(receipt => receipt.type === this.selectedType);
     }
 
-    this.filteredReceipts = result;
+    this.filteredReceipts = result.map(receipt => {
+      const difficulties = ['Facile', 'Moyen', 'Difficile'];
+      const rating = (receipt.id.charCodeAt(0) % 3) + 3;
+      const time = ((receipt.id.charCodeAt(0) % 5) + 1) * 10;
+      const difficulty = difficulties[receipt.id.charCodeAt(0) % difficulties.length];
+
+      return {
+        id: receipt.id,
+        title: receipt.title,
+        imageUrl: receipt.imageUrl,
+        category: this.receiptTypes[receipt.type] || 'Recette',
+        isPremium: receipt.isPremium,
+        rating,
+        time,
+        difficulty,
+      };
+    });
   }
 
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedType = '';
-    this.filteredReceipts = this.receipts;
+    this.applyFilters();
   }
 
   loadPage(page: number): void {
