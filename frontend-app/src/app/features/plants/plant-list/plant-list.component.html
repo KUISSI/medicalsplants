@@ -3,7 +3,6 @@
   <div class="page-header">
     <div class="page-header__content">
       <h1 class="page-header__title">
-        <span class="page-header__icon">🌱</span>
         Plantes médicinales
       </h1>
       <p class="page-header__subtitle">
@@ -57,7 +56,6 @@
     <app-loader message="Chargement des plantes..."></app-loader>
     } @else if (filteredPlants.length === 0) {
     <div class="empty-state">
-      <span class="empty-state__icon">🌱</span>
       <h3 class="empty-state__title">Aucune plante trouvée</h3>
       <p class="empty-state__message">
         @if (searchTerm || selectedMode) { Essayez de modifier vos critères de recherche } @else {

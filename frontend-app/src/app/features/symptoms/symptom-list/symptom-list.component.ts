@@ -191,28 +191,14 @@ export class SymptomListComponent implements OnInit {
   loadSymptoms(): void {
     this.isLoading = true;
     
-    this.symptomService.getAll().subscribe({
-      next: (symptoms) => {
-        this.symptoms = symptoms.length > 0 ? symptoms : this.mockSymptoms;
-        this.filteredSymptoms = this.symptoms;
-        
-        // Extraire les familles uniques
-        this.families = [...new Set(this.symptoms.map(s => s.symptomFamily))].sort();
-        
-        // Grouper par famille
-        this.groupByFamily();
-        
-        this.isLoading = false;
-      },
-      error: () => {
-        // En cas d'erreur, utiliser les mock data
-        this.symptoms = this.mockSymptoms;
-        this.filteredSymptoms = this.mockSymptoms;
-        this.families = [...new Set(this.mockSymptoms.map(s => s.symptomFamily))].sort();
-        this.groupByFamily();
-        this.isLoading = false;
-      }
-    });
+    // Use mock data directly
+    setTimeout(() => {
+      this.symptoms = this.mockSymptoms;
+      this.filteredSymptoms = this.symptoms;
+      this.families = [...new Set(this.symptoms.map(s => s.symptomFamily))].sort();
+      this.groupByFamily();
+      this.isLoading = false;
+    }, 500);
   }
 
   groupByFamily(): void {

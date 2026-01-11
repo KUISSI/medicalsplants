@@ -3,54 +3,50 @@
   <div class="page-header">
     <div class="page-header__content">
       <h1 class="page-header__title">
-        <span class="page-header__icon">📖</span>
         Recettes naturelles
       </h1>
       <p class="page-header__subtitle">
         Découvrez nos recettes à base de plantes médicinales pour votre bien-être
       </p>
-      @if (authService. isAuthenticated()) {
-        <a routerLink="/receipts/create" class="page-header__btn">
-          ✨ Créer une recette
-        </a>
-      }
     </div>
   </div>
 
   <!-- Filters -->
   <div class="filters">
     <div class="filters__container">
-      <div class="filters__search">
-        <app-search-bar
-          placeholder="Rechercher une recette..."
-          (search)="onSearch($event)"
-        ></app-search-bar>
-      </div>
-
-      <div class="filters__options">
-        <!-- Type Filter -->
-        <div class="filter-group">
-          <label for="type" class="filter-label">Type :</label>
-          <select
-            id="type"
-            class="filter-select"
-            [ngModel]="selectedType"
-            (ngModelChange)="onTypeChange($event)"
-          >
-            <option value="">Tous les types</option>
-            @for (type of receiptTypeKeys; track type) {
-              <option [value]="type">
-                {{ getReceiptTypeIcon(type) }} {{ receiptTypes[type] }}
-              </option>
-            }
-          </select>
+      <div class="filters__group">
+        <div class="filters__main">
+          <app-search-bar
+            class="search-bar--receipt"
+            placeholder="Rechercher une recette..."
+            (search)="onSearch($event)"
+          ></app-search-bar>
         </div>
+        <div class="filters__display-options">
+          <!-- Type Filter -->
+          <div class="filter-group">
+            <label for="type" class="filter-label">Type :</label>
+            <select
+              id="type"
+              class="filter-select"
+              [ngModel]="selectedType"
+              (ngModelChange)="onTypeChange($event)"
+            >
+              <option value="">Tous les types</option>
+              @for (type of receiptTypeKeys; track type) {
+                <option [value]="type">
+                  {{ getReceiptTypeIcon(type) }} {{ receiptTypes[type] }}
+                </option>
+              }
+            </select>
+          </div>
 
-        @if (searchTerm || selectedType) {
-          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
-            ✕ Effacer les filtres
-          </button>
-        }
+          @if (searchTerm || selectedType) {
+            <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+              ✕ Effacer les filtres
+            </button>
+          }
+        </div>
       </div>
     </div>
   </div>

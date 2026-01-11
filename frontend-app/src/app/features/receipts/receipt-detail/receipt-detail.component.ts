@@ -149,8 +149,9 @@ export class ReceiptDetailComponent implements OnInit {
         this.isSubmittingReview = false;
         this.toastr.success('Votre avis a été publié', 'Merci !');
       },
-      error: () => {
+      error: (err) => {
         this.isSubmittingReview = false;
+        this.toastr.error(err?.error?.message || 'Une erreur est survenue lors de la publication de votre avis.', 'Erreur');
       }
     });
   }

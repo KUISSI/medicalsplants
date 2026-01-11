@@ -50,17 +50,12 @@
       } @else {
       <div class="plants-grid">
         @for (plant of plants; track plant.id) {
-        <a [routerLink]="['/plants', plant.id]" class="plant-card">
-          <div class="plant-card__image-placeholder"></div>
-          <div class="plant-card__content">
-            <h3 class="plant-card__title">{{ plant.title }}</h3>
-            @if (plant.description) {
-            <p class="plant-card__description">{{ plant.description }}</p>
-            }
-          </div>
-          <div class="plant-card__footer">
-          </div>
-        </a>
+          <app-card
+            [title]="plant.title"
+            [description]="plant.description ?? ''"
+            [image]="plant.imageUrl ?? ''"
+            [link]="'/plants/' + plant.id"
+          ></app-card>
         }
       </div>
 
