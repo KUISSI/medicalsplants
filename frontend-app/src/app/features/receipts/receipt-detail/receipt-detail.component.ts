@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReceiptService } from '../../../core/services/receipt.service';
@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ReceiptDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router); // Inject Router
   private receiptService = inject(ReceiptService);
   private reviewService = inject(ReviewService);
   private toastr = inject(ToastrService);
@@ -31,6 +32,7 @@ export class ReceiptDetailComponent implements OnInit {
   isLoadingReviews = true;
   isSubmittingReview = false;
   error: string | null = null;
+  currentQueryParams: { [key: string]: any } = {}; // Property to store query params
 
   // View-specific properties
   time: number = 0;
@@ -49,12 +51,20 @@ export class ReceiptDetailComponent implements OnInit {
   receiptTypeLabels = RECEIPT_TYPE_LABELS;
   receiptStatusLabels = RECEIPT_STATUS_LABELS;
 
+  @ViewChild('plantsSection') plantsSection!: ElementRef;
+  @ViewChild('reviewsSection') reviewsSection!: ElementRef;
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {
         this.loadReceipt(id);
       }
+    });
+
+    // Capture all query parameters to pass back to the list
+    this.route.queryParams.subscribe(params => {
+      this.currentQueryParams = params;
     });
   }
 
@@ -218,5 +228,28 @@ export class ReceiptDetailComponent implements OnInit {
     const currentUser = this.authService.currentUser();
     if (!currentUser) return false;
     return review.sender.id === currentUser.id || this.authService.isAdmin();
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  scrollToBottom(): void {
+    const headerOffset = 70; // Actual header height
+    const scrollPosition = window.scrollY;
+    let targetScrollPosition: number | null = null;
+
+    // Check if plantsSection exists and is below current view
+    if (this.plantsSection && this.plantsSection.nativeElement.offsetTop > scrollPosition + headerOffset) {
+      targetScrollPosition = this.plantsSection.nativeElement.offsetTop - headerOffset;
+    } 
+    // If plantsSection is not below or already passed, check reviewsSection
+    else if (this.reviewsSection && this.reviewsSection.nativeElement.offsetTop > scrollPosition + headerOffset) {
+      targetScrollPosition = this.reviewsSection.nativeElement.offsetTop - headerOffset;
+    } 
+
+    if (targetScrollPosition !== null) {
+      window.scrollTo({ top: targetScrollPosition, behavior: 'smooth' });
+    }
   }
 }

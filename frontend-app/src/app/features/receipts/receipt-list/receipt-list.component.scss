@@ -6,7 +6,7 @@
 // Page Header
 .page-header {
   background: #f3fbf0; // Light green, inspired by other green-themed areas
-  padding: 50px 20px;
+  padding: 30px 20px;
   color: #1a472a; // Dark green from detail page
 
   &__content {
@@ -16,7 +16,7 @@
   }
 
   &__title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin: 0 0 15px 0;
     font-weight: 700;
     justify-content: center;
@@ -39,10 +39,10 @@
 // Filters
 .filters {
   background: #ffffff;
-  padding: 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
-  top: 80px;
+  top: 70px;
   z-index: 100;
   transition: all 0.3s ease-in-out;
 
@@ -51,12 +51,12 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
   }
 
   &__group {
     display: flex;
-    gap: 20px;
+    gap: 10px;
     align-items: center;
     width: 100%;
 
@@ -73,11 +73,11 @@
 
   &__display-options {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     align-items: center;
     flex-wrap: wrap;
     background-color: #f8f9fa;
-    padding: 10px;
+    padding: 5px;
     border-radius: 8px;
   }
 }
@@ -99,7 +99,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding: 10px 40px 10px 15px;
+  padding: 8px 30px 8px 12px;
   border-radius: 5px;
   font-size: 0.95rem;
   background-color: #ffffff;
@@ -123,7 +123,7 @@
 }
 
 .filter-btn {
-  padding: 10px 15px;
+  padding: 8px 12px;
   border: 1px solid #ced4da;
   border-radius: 5px;
   background: #ffffff;
@@ -162,8 +162,20 @@
 // Receipts Grid
 .receipts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr); // 4 columns by default
   gap: 25px;
+
+  @media (max-width: 1200px) { // Adjust for typical desktop/large tablet
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) { // Adjust for tablets
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) { // Adjust for mobile
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 // Pagination

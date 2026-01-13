@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -26,6 +26,8 @@ import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/
 export class ReceiptListComponent implements OnInit {
   private receiptService = inject(ReceiptService);
   authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // Mock receipts data
   mockReceipts: Receipt[] = [
@@ -48,13 +50,18 @@ export class ReceiptListComponent implements OnInit {
   currentPage = 0;
   totalPages = 0;
   totalElements = 0;
-  pageSize = 12;
+  pageSize = 8;
 
   receiptTypes = RECEIPT_TYPE_LABELS;
   receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
 
   ngOnInit(): void {
-    this.loadReceipts();
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['searchTerm'] || '';
+      this.selectedType = params['selectedType'] || '';
+      this.currentPage = params['page'] ? parseInt(params['page'], 10) : 0;
+      this.loadReceipts();
+    });
   }
 
   loadReceipts(): void {
@@ -81,12 +88,16 @@ export class ReceiptListComponent implements OnInit {
 
   onSearch(term: string): void {
     this.searchTerm = term;
+    this.currentPage = 0; // Reset page on new search
     this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   onTypeChange(type:  ReceiptType | ''): void {
     this.selectedType = type;
+    this.currentPage = 0; // Reset page on type change
     this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   applyFilters(): void {
@@ -126,15 +137,44 @@ export class ReceiptListComponent implements OnInit {
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedType = '';
+    this.currentPage = 0;
     this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this. loadReceipts();
+      this.loadReceipts();
+      this.updateUrlQueryParams(); // Update URL on page change
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  }
+
+  private updateUrlQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        searchTerm: this.searchTerm || null,
+        selectedType: this.selectedType || null,
+        page: this.currentPage > 0 ? this.currentPage : null // Only add page if not 0
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  get currentQueryParams() {
+    const params: any = {};
+    if (this.searchTerm) {
+      params['searchTerm'] = this.searchTerm;
+    }
+    if (this.selectedType) {
+      params['selectedType'] = this.selectedType;
+    }
+    if (this.currentPage > 0) {
+      params['page'] = this.currentPage;
+    }
+    return params;
   }
 
   getReceiptTypeIcon(type: ReceiptType): string {

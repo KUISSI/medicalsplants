@@ -22,6 +22,7 @@ export interface RecipeCardData {
 })
 export class RecipeCardComponent {
   @Input() recipe!: RecipeCardData;
+  @Input() queryParams: any; // Add this line
 
   onImageError(event: Event): void {
     const element = event.target as HTMLImageElement;

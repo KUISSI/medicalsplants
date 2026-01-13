@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { ReceiptService } from '../../../core/services/receipt.service';
@@ -18,6 +18,7 @@ import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/
 })
 export class PlantDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router); // Inject Router
   private plantService = inject(PlantService);
   private receiptService = inject(ReceiptService);
   authService = inject(AuthService);
@@ -28,6 +29,7 @@ export class PlantDetailComponent implements OnInit {
   isLoading = true;
   isLoadingReceipts = true;
   error: string | null = null;
+  currentQueryParams: { [key: string]: any } = {}; // Property to store query params
 
   activeTab: 'properties' | 'recipes' = 'properties';
 
@@ -40,6 +42,11 @@ export class PlantDetailComponent implements OnInit {
       if (id) {
         this.loadPlant(id);
       }
+    });
+
+    // Capture all query parameters to pass back to the list
+    this.route.queryParams.subscribe(params => {
+      this.currentQueryParams = params;
     });
   }
 

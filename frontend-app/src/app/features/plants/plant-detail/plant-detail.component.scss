@@ -40,7 +40,7 @@
 // Detail Header
 .detail-header {
   background: linear-gradient(135deg, #2d5a3d 0%, #4CAF50 100%);
-  padding: 40px 20px 80px;
+  padding: 20px 20px 40px;
   color: #ffffff;
 
   &__container {
@@ -53,7 +53,7 @@
     color: #a8d5a2;
     text-decoration: none;
     font-size: 0.95rem;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     transition: color 0.3s;
 
     &:hover {
@@ -73,9 +73,9 @@
   }
 
   &__image {
-    width: 300px;
-    height: 300px;
-    min-width: 300px;
+    width: 250px;
+    height: 250px;
+    min-width: 250px;
     border-radius: 20px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.1);
@@ -132,8 +132,8 @@
   }
 
   &__title {
-    font-size: 2.5rem;
-    margin:  0 0 20px 0;
+    font-size: 2.2rem;
+    margin:  0 0 15px 0;
     font-weight: 700;
 
     @media (max-width: 768px) {

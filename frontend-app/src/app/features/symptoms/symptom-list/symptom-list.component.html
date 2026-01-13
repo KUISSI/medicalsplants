@@ -102,7 +102,7 @@
 
       <div class="symptom-grid">
         @for (symptom of family.value; track symptom.id) {
-        <a [routerLink]="['/symptoms', symptom.id]" class="symptom-card">
+        <a [routerLink]="['/symptoms', symptom.id]" [queryParams]="currentQueryParams" class="symptom-card">
           <div 
             class="symptom-card__icon" 
             [style.background-color]="getFamilyColor(family.key)"
@@ -131,7 +131,7 @@
       </div>
 
       @for (symptom of filteredSymptoms; track symptom.id) {
-      <a [routerLink]="['/symptoms', symptom.id]" class="symptom-table__row">
+      <a [routerLink]="['/symptoms', symptom.id]" [queryParams]="currentQueryParams" class="symptom-table__row">
         <span class="symptom-table__col symptom-table__col--name">
           <span class="symptom-table__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
           {{ symptom.title }}

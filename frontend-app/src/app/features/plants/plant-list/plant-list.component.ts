@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -22,6 +22,8 @@ import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from
 })
 export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // Mock plants data
   mockPlants: Plant[] = [
@@ -45,7 +47,7 @@ export class PlantListComponent implements OnInit {
   currentPage = 0;
   totalPages = 0;
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 8;
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -56,7 +58,12 @@ export class PlantListComponent implements OnInit {
   administrationModeKeys = Object.keys(ADMINISTRATION_MODE_LABELS) as AdministrationMode[];
 
   ngOnInit(): void {
-    this.loadPlants();
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['searchTerm'] || '';
+      this.selectedMode = params['selectedMode'] || '';
+      this.currentPage = params['page'] ? parseInt(params['page'], 10) : 0;
+      this.loadPlants();
+    });
   }
 
   loadPlants(): void {
@@ -65,7 +72,7 @@ export class PlantListComponent implements OnInit {
     this.plantService.getAll(this.currentPage, this.pageSize).subscribe({
       next: (response:  PlantPage) => {
         this.plants = response.content.length > 0 ? response.content : this.mockPlants;
-        this.filteredPlants = this.plants;
+        this.applyFilters(); // Apply filters to the loaded data
         this.totalPages = response.totalPages;
         this. totalElements = response.totalElements;
         this.isLoading = false;
@@ -73,7 +80,7 @@ export class PlantListComponent implements OnInit {
       error: () => {
         // En cas d'erreur, utiliser les mock data
         this.plants = this.mockPlants;
-        this.filteredPlants = this.mockPlants;
+        this.applyFilters(); // Apply filters to the loaded data
         this.totalPages = 1;
         this.totalElements = this.mockPlants.length;
         this.isLoading = false;
@@ -83,12 +90,16 @@ export class PlantListComponent implements OnInit {
 
   onSearch(term: string): void {
     this.searchTerm = term;
+    this.currentPage = 0; // Reset page on new search
     this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   onModeChange(mode:  AdministrationMode | ''): void {
     this.selectedMode = mode;
+    this.currentPage = 0; // Reset page on mode change
     this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   applyFilters(): void {
@@ -115,15 +126,44 @@ export class PlantListComponent implements OnInit {
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedMode = '';
-    this.filteredPlants = this.plants;
+    this.currentPage = 0;
+    this.applyFilters(); // Apply filters to reset the list
+    this.updateUrlQueryParams(); // Update URL to clear params
   }
 
   loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this. loadPlants();
+      this.loadPlants();
+      this.updateUrlQueryParams(); // Update URL on page change
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  }
+
+  private updateUrlQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        searchTerm: this.searchTerm || null,
+        selectedMode: this.selectedMode || null,
+        page: this.currentPage > 0 ? this.currentPage : null // Only add page if not 0
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  get currentQueryParams() {
+    const params: any = {};
+    if (this.searchTerm) {
+      params['searchTerm'] = this.searchTerm;
+    }
+    if (this.selectedMode) {
+      params['selectedMode'] = this.selectedMode;
+    }
+    if (this.currentPage > 0) {
+      params['page'] = this.currentPage;
+    }
+    return params;
   }
 
   getAdministrationIcon(mode: AdministrationMode | undefined): string {

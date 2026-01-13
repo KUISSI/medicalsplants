@@ -5,13 +5,13 @@
   <div class="error-state">
     <span class="error-state__icon">🌿</span>
     <h2 class="error-state__title">{{ error }}</h2>
-    <a routerLink="/plants" class="error-state__btn"> ← Retour aux plantes </a>
+    <a routerLink="/plants" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux plantes </a>
   </div>
   } @else if (plant) {
   <!-- Header -->
   <div class="detail-header">
     <div class="detail-header__container">
-      <a routerLink="/plants" class="detail-header__back"> ← Retour aux plantes </a>
+      <a routerLink="/plants" [queryParams]="currentQueryParams" class="detail-header__back"> ← Retour aux plantes </a>
 
       <div class="detail-header__main">
         <div class="detail-header__image">

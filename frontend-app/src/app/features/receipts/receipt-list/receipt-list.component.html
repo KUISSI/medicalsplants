@@ -90,7 +90,7 @@
       <!-- Receipts Grid -->
       <div class="receipts-grid">
         @for (receipt of filteredReceipts; track receipt.id) {
-          <app-recipe-card [recipe]="receipt"></app-recipe-card>
+          <app-recipe-card [recipe]="receipt" [queryParams]="currentQueryParams"></app-recipe-card>
         }
       </div>
 

@@ -1,4 +1,4 @@
-<a class="recipe-card" [routerLink]="['/receipts', recipe.id]">
+<a class="recipe-card" [routerLink]="['/receipts', recipe.id]" [queryParams]="queryParams">
   <div class="recipe-card__image">
     <img [src]="recipe.imageUrl" [alt]="recipe.title" (error)="onImageError($event)" />
   </div>

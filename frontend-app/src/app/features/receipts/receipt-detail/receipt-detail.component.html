@@ -13,16 +13,21 @@
       } @else {
         <span class="error-state__icon">📖</span>
         <h2 class="error-state__title">{{ error }}</h2>
-        <a routerLink="/receipts" class="error-state__btn"> ← Retour aux recettes </a>
+        <a routerLink="/receipts" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux recettes </a>
       }
     </div>
   } @else if (receipt) {
     <div class="recipe-content">
+      <!-- Mobile-specific back link, shown only on small screens -->
+      <div class="mobile-back-link-wrapper">
+        <a routerLink="/receipts" [queryParams]="currentQueryParams" class="back-link mobile-only"> ← Retour aux recettes </a>
+      </div>
+
       <!-- Main content grid -->
       <div class="main-grid">
         <!-- Left Column -->
         <div class="left-column">
-          <a routerLink="/receipts" class="back-link"> ← Retour aux recettes </a>
+          <a routerLink="/receipts" [queryParams]="currentQueryParams" class="back-link desktop-only"> ← Retour aux recettes </a>
           <h1 class="recipe-title">{{ receipt.title }}</h1>
           <p class="recipe-type">{{ receiptTypeLabels[receipt.type] }}</p>
           
@@ -86,7 +91,7 @@
 
       <!-- Plants Section -->
       @if (receipt.plants && receipt.plants.length > 0) {
-        <div class="plants-section">
+        <div class="plants-section" #plantsSection>
           <h2 class="section-title">Plantes dans cette recette</h2>
           <div class="plants-grid">
             @for (plant of receipt.plants; track plant.id) {
@@ -118,7 +123,7 @@
       <hr class="divider">
 
       <!-- Reviews Section -->
-      <div class="reviews-section">
+      <div class="reviews-section" #reviewsSection>
         <h2 class="section-title">Avis et commentaires ({{ reviews.length }})</h2>
         
         @if (authService.isAuthenticated()) {
@@ -165,6 +170,10 @@
           </div>
         }
       </div>
+    </div>
+    <div class="scroll-buttons">
+      <button class="scroll-button scroll-up" (click)="scrollToTop()">⬆</button>
+      <button class="scroll-button scroll-down" (click)="scrollToBottom()">⬇</button>
     </div>
   }
 </div>

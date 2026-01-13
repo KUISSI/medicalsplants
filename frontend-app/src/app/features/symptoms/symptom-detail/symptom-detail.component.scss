@@ -39,7 +39,7 @@
 // Detail Header
 .detail-header {
   background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
-  padding: 40px 20px 60px;
+  padding: 20px 20px 30px;
   color: #ffffff;
 
   &__container {
@@ -52,7 +52,7 @@
     color: #a8d5a2;
     text-decoration: none;
     font-size: 0.95rem;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     transition: color 0.3s;
 
     &:hover {
@@ -64,11 +64,11 @@
     display: flex;
     align-items:  center;
     gap: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   &__icon {
-    font-size: 4rem;
+    font-size: 3.5rem;
 
     @media (max-width: 480px) {
       font-size: 3rem;
@@ -89,7 +89,7 @@
   }
 
   &__title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin: 0;
     font-weight: 700;
 

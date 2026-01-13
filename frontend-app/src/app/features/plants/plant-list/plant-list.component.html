@@ -76,7 +76,7 @@
     <!-- Plants Grid -->
     <div class="plants-grid">
       @for (plant of filteredPlants; track plant. id) {
-      <a [routerLink]="['/plants', plant.id]" class="plant-card">
+      <a [routerLink]="['/plants', plant.id]" [queryParams]="currentQueryParams" class="plant-card">
         <div class="plant-card__image">
           @if (plant.imageUrl) {
           <img [src]="plant.imageUrl" [alt]="plant.title" />

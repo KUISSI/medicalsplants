@@ -2,16 +2,15 @@
   @if (isLoading) {
   <app-loader [fullscreen]="true" message="Chargement du symptôme..."></app-loader>
   } @else if (error) {
-  <div class="error-state">
-    <span class="error-state__icon">😕</span>
-    <h2 class="error-state__title">{{ error }}</h2>
-    <a routerLink="/symptoms" class="error-state__btn"> ← Retour aux symptômes </a>
-  </div>
-  } @else if (symptom) {
+      <div class="error-state">
+        <span class="error-state__icon">😕</span>
+        <h2 class="error-state__title">{{ error }}</h2>
+        <a routerLink="/symptoms" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux symptômes </a>
+      </div>  } @else if (symptom) {
   <!-- Header -->
   <div class="detail-header">
     <div class="detail-header__container">
-      <a routerLink="/symptoms" class="detail-header__back"> ← Retour aux symptômes </a>
+      <a routerLink="/symptoms" [queryParams]="currentQueryParams" class="detail-header__back"> ← Retour aux symptômes </a>
 
       <div class="detail-header__content">
         <span class="detail-header__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
