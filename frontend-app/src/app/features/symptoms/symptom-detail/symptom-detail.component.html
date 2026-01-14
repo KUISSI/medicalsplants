@@ -45,12 +45,44 @@
       } @else {
       <div class="plants-grid">
         @for (plant of plants; track plant.id) {
-          <app-card
-            [title]="plant.title"
-            [description]="plant.description ?? ''"
-            [image]="plant.imageUrl ?? ''"
-            [link]="'/plants/' + plant.id"
-          ></app-card>
+        <a [routerLink]="['/plants', plant.id]" [queryParams]="currentQueryParams" class="plant-card">
+          <div class="plant-card__image">
+            @if (plant.imageUrl) {
+            <img [src]="plant.imageUrl" [alt]="plant.title" />
+            } @else {
+            <div class="plant-card__placeholder">
+              <span>🌿</span>
+            </div>
+            }
+            @if (plant.administrationMode) {
+            <span
+              class="plant-card__mode-badge"
+              [title]="administrationModes[plant.administrationMode]"
+            >
+              {{ getAdministrationIcon(plant.administrationMode) }}
+            </span>
+            }
+          </div>
+
+          <div class="plant-card__content">
+            <h3 class="plant-card__title">{{ plant.title }}</h3>
+
+            @if (plant.description) {
+            <p class="plant-card__description">{{ plant.description }}</p>
+            }
+
+            <div class="plant-card__meta">
+              @if (plant.administrationMode) {
+              <span class="plant-card__mode">
+                {{ administrationModes[plant.administrationMode] }}
+              </span>
+              }
+              @if (plant.consumedPart) {
+              <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
+              }
+            </div>
+          </div>
+        </a>
         }
       </div>
 

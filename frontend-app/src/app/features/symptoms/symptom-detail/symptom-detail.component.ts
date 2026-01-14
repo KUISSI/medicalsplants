@@ -12,7 +12,7 @@ import { NavigationService } from '../../../core/services/navigation.service';
 @Component({
   selector:  'app-symptom-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoaderComponent, CardComponent],
+  imports: [CommonModule, RouterModule, LoaderComponent],
   templateUrl: './symptom-detail.component.html',
   styleUrls: ['./symptom-detail.component.scss']
 })
@@ -145,5 +145,18 @@ export class SymptomDetailComponent implements OnInit {
 
   goBack(): void {
     this.navigationService.back();
+  }
+
+  administrationModes = ADMINISTRATION_MODE_LABELS;
+
+  getAdministrationIcon(mode: AdministrationMode | undefined): string {
+    const icons: Record<AdministrationMode, string> = {
+      'ORAL_ROUTE': '☕',
+      'NASAL_ROUTE':  '👃',
+      'EPIDERMAL_ROUTE':  '🧴',
+      'TOPICAL_ROUTE': '🩹',
+      'OTHER': '🌿'
+    };
+    return mode ? icons[mode] : '🌿';
   }
 }
