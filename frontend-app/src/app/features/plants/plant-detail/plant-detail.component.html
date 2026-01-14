@@ -5,13 +5,13 @@
   <div class="error-state">
     <span class="error-state__icon">🌿</span>
     <h2 class="error-state__title">{{ error }}</h2>
-    <a routerLink="/plants" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux plantes </a>
+    <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
   </div>
   } @else if (plant) {
   <!-- Header -->
   <div class="detail-header">
     <div class="detail-header__container">
-      <a routerLink="/plants" [queryParams]="currentQueryParams" class="detail-header__back"> ← Retour aux plantes </a>
+      <button (click)="goBack()" class="detail-header__back"> ← Retour </button>
 
       <div class="detail-header__main">
         <div class="detail-header__image">
@@ -66,7 +66,7 @@
     </div>
 
     <!-- Tab Content -->
-    <div class="tab-content">
+    <div class="tab-content" id="recipesContent">
       <!-- Properties Tab -->
       @if (activeTab === 'properties') {
         @if (plant.properties && plant.properties.length > 0) {

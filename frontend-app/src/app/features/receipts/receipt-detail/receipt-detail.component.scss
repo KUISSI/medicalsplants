@@ -58,6 +58,9 @@
   text-decoration: none;
   font-size: 0.95rem;
   transition: color 0.3s;
+  border: none; /* Add for button */
+  background: none; /* Add for button */
+  cursor: pointer; /* Add for button */
 
   &:hover {
     color: #000;
@@ -459,6 +462,8 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
+    border: none; /* Add for button */
+    cursor: pointer; /* Add for button */
 
     &:hover {
       background: #F57C00;

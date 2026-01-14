@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Receipt, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS } from '../../../core/models/receipt.model';
 import { Review, CreateReviewRequest } from '../../../core/models/review.model';
 import { ToastrService } from 'ngx-toastr';
+import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
   selector: 'app-receipt-detail',
@@ -24,6 +25,7 @@ export class ReceiptDetailComponent implements OnInit {
   private reviewService = inject(ReviewService);
   private toastr = inject(ToastrService);
   authService = inject(AuthService);
+  private navigationService = inject(NavigationService);
 
   receipt:  Receipt | null = null;
   reviews: Review[] = [];
@@ -228,6 +230,10 @@ export class ReceiptDetailComponent implements OnInit {
     const currentUser = this.authService.currentUser();
     if (!currentUser) return false;
     return review.sender.id === currentUser.id || this.authService.isAdmin();
+  }
+
+  goBack(): void {
+    this.navigationService.back();
   }
 
   scrollToTop(): void {

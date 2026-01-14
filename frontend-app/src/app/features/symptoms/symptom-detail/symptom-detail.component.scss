@@ -29,6 +29,8 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
+    border: none; /* Add for button */
+    cursor: pointer; /* Add for button */
 
     &:hover {
       background: #45a049;
@@ -54,6 +56,9 @@
     font-size: 0.95rem;
     margin-bottom: 15px;
     transition: color 0.3s;
+    border: none; /* Add for button */
+    background: none; /* Add for button */
+    cursor: pointer; /* Add for button */
 
     &:hover {
       color:  #ffffff;
@@ -79,13 +84,20 @@
     flex: 1;
   }
 
+  &__title-line {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+
   &__family {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
     padding: 5px 15px;
     border-radius: 20px;
     font-size: 0.85rem;
-    margin-bottom:  10px;
+    margin: 0;
   }
 
   &__title {
@@ -141,13 +153,6 @@
 .section__count {
   color: #666;
   font-size:  0.95rem;
-}
-
-.description-text {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #555;
-  text-align: justify;
 }
 
 // Plants Grid

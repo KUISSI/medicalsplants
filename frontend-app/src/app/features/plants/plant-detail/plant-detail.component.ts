@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
+import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
   selector: 'app-plant-detail',
@@ -22,6 +23,7 @@ export class PlantDetailComponent implements OnInit {
   private plantService = inject(PlantService);
   private receiptService = inject(ReceiptService);
   authService = inject(AuthService);
+  private navigationService = inject(NavigationService);
 
   plant: Plant | null = null;
   receipts: RecipeCardData[] = [];
@@ -52,6 +54,21 @@ export class PlantDetailComponent implements OnInit {
 
   switchTab(tab: 'properties' | 'recipes'): void {
     this.activeTab = tab;
+    if (tab === 'recipes') {
+      // Use a timeout to ensure the view is rendered before scrolling
+      setTimeout(() => {
+        const element = document.getElementById('recipesContent');
+        if (element) {
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.scrollY - 110; // 110px for header height + extra padding
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
   }
 
   loadPlant(id: string): void {
@@ -135,5 +152,9 @@ export class PlantDetailComponent implements OnInit {
       'Cutané': '🧴'
     };
     return icons[family] || '✨';
+  }
+
+  goBack(): void {
+    this.navigationService.back();
   }
 }

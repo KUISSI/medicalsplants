@@ -7,6 +7,7 @@ import { SymptomService } from '../../../core/services/symptom.service';
 import { PlantService } from '../../../core/services/plant.service';
 import { Symptom } from '../../../core/models/symptom.model';
 import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
   selector:  'app-symptom-detail',
@@ -19,6 +20,7 @@ export class SymptomDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private symptomService = inject(SymptomService);
   private plantService = inject(PlantService);
+  private navigationService = inject(NavigationService);
 
   symptom:  Symptom | null = null;
   plants: Plant[] = [];
@@ -38,13 +40,11 @@ export class SymptomDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-      console.log('SymptomDetailComponent: ngOnInit - extracted ID:', id); // Debug log
       if (id) {
         this.isLoading = true;
         
         this.symptomService.getById(id).subscribe({
           next: (symptom) => {
-            console.log('SymptomDetailComponent: symptomService.getById returned:', symptom); // Debug log
             this.symptom = symptom;
             this.isLoading = false;
             this.error = null;
@@ -59,13 +59,11 @@ export class SymptomDetailComponent implements OnInit {
             }
           },
           error: (err) => {
-            console.error('SymptomDetailComponent: Error fetching symptom:', err); // Debug log
             this.error = 'Failed to load symptom details.';
             this.isLoading = false;
           }
         });
       } else {
-        console.log('SymptomDetailComponent: No ID found in route params.'); // Debug log
         this.error = 'Aucun ID de symptôme fourni.';
         this.isLoading = false;
       }
@@ -74,30 +72,25 @@ export class SymptomDetailComponent implements OnInit {
     // Capture all query parameters to pass back to the list
     this.route.queryParams.subscribe(params => {
       this.currentQueryParams = params;
-      console.log('SymptomDetailComponent: currentQueryParams:', this.currentQueryParams); // Debug log
     });
   }
 
   loadPlants(): void {
     if (!this.symptom) {
-      console.log('SymptomDetailComponent: loadPlants called but this.symptom is null.'); // Debug log
       return;
     }
 
     this.isLoadingPlants = true;
-    console.log('SymptomDetailComponent: Loading plants for symptom ID:', this.symptom.id); // Debug log
     
     // Ensure this.symptom.id is accessed only if this.symptom is not null
     const symptomId = this.symptom.id;
     this.plantService.getBySymptomId(symptomId, this.currentPage, this.pageSize).subscribe({
       next: (plantPage) => {
-        console.log('SymptomDetailComponent: plantService.getBySymptomId returned:', plantPage); // Debug log
         this.plants = plantPage.content;
         this.totalPages = plantPage.totalPages;
         this.isLoadingPlants = false;
       },
       error: (err) => {
-        console.error('SymptomDetailComponent: Error fetching plants:', err); // Debug log
         this.isLoadingPlants = false;
         // Optionally, set an error message for plants
       }
@@ -106,22 +99,16 @@ export class SymptomDetailComponent implements OnInit {
 
   loadRelatedSymptoms(family: string): void {
     if (!family) {
-      console.log('SymptomDetailComponent: loadRelatedSymptoms called but family is null/empty.'); // Debug log
       return;
     }
-    console.log('SymptomDetailComponent: Loading related symptoms for family:', family); // Debug log
-
     this.symptomService.getByFamily(family).subscribe({
       next: (symptoms) => {
-        console.log('SymptomDetailComponent: symptomService.getByFamily returned:', symptoms); // Debug log
         // Ensure this.symptom is not null before trying to filter by its id
         this.relatedSymptoms = symptoms
           .filter(s => this.symptom ? s.id !== this.symptom.id : true) // Safer null check
           .slice(0, 4);
-        console.log('SymptomDetailComponent: Filtered related symptoms:', this.relatedSymptoms); // Debug log
       },
       error: (err) => {
-        console.error('SymptomDetailComponent: Error fetching related symptoms:', err); // Debug log
       }
     });
   }
@@ -137,7 +124,6 @@ export class SymptomDetailComponent implements OnInit {
           this.isLoadingPlants = false;
         },
         error: (err) => {
-          console.error('Error fetching more plants:', err);
           this.isLoadingPlants = false;
         }
       });
@@ -155,5 +141,9 @@ export class SymptomDetailComponent implements OnInit {
       'Cutané': '🧴'
     };
     return icons[family] || '🌿';
+  }
+
+  goBack(): void {
+    this.navigationService.back();
   }
 }

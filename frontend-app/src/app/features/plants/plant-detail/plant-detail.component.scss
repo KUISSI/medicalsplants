@@ -30,6 +30,8 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
+    border: none; /* Add for button */
+    cursor: pointer; /* Add for button */
 
     &:hover {
       background: #45a049;
@@ -55,6 +57,9 @@
     font-size: 0.95rem;
     margin-bottom: 15px;
     transition: color 0.3s;
+    border: none; /* Add for button */
+    background: none; /* Add for button */
+    cursor: pointer; /* Add for button */
 
     &:hover {
       color:  #ffffff;
@@ -73,9 +78,9 @@
   }
 
   &__image {
-    width: 250px;
-    height: 250px;
-    min-width: 250px;
+    width: 220px;
+    height: 220px;
+    min-width: 220px;
     border-radius: 20px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.1);
@@ -146,7 +151,7 @@
     color: #d4edda;
     margin: 0;
     line-height: 1.7;
-    max-width: 600px;
+    max-width: 700px;
   }
 }
 
@@ -243,8 +248,21 @@
 // Receipts Grid
 .receipts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  margin: 0 auto;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 

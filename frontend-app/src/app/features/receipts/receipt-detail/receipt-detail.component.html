@@ -8,26 +8,26 @@
         <h2 class="error-state__title">Contenu Premium</h2>
         <p class="error-state__message">{{ error }}</p>
         <div class="error-state__actions">
-          <a routerLink="/receipts" class="error-state__btn"> ← Voir les recettes gratuites </a>
+          <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
         </div>
       } @else {
         <span class="error-state__icon">📖</span>
         <h2 class="error-state__title">{{ error }}</h2>
-        <a routerLink="/receipts" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux recettes </a>
+        <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
       }
     </div>
   } @else if (receipt) {
     <div class="recipe-content">
       <!-- Mobile-specific back link, shown only on small screens -->
       <div class="mobile-back-link-wrapper">
-        <a routerLink="/receipts" [queryParams]="currentQueryParams" class="back-link mobile-only"> ← Retour aux recettes </a>
+        <button (click)="goBack()" class="back-link mobile-only"> ← Retour </button>
       </div>
 
       <!-- Main content grid -->
       <div class="main-grid">
         <!-- Left Column -->
         <div class="left-column">
-          <a routerLink="/receipts" [queryParams]="currentQueryParams" class="back-link desktop-only"> ← Retour aux recettes </a>
+          <button (click)="goBack()" class="back-link desktop-only"> ← Retour </button>
           <h1 class="recipe-title">{{ receipt.title }}</h1>
           <p class="recipe-type">{{ receiptTypeLabels[receipt.type] }}</p>
           

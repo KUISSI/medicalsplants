@@ -5,18 +5,23 @@
       <div class="error-state">
         <span class="error-state__icon">😕</span>
         <h2 class="error-state__title">{{ error }}</h2>
-        <a routerLink="/symptoms" [queryParams]="currentQueryParams" class="error-state__btn"> ← Retour aux symptômes </a>
+        <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
       </div>  } @else if (symptom) {
   <!-- Header -->
   <div class="detail-header">
     <div class="detail-header__container">
-      <a routerLink="/symptoms" [queryParams]="currentQueryParams" class="detail-header__back"> ← Retour aux symptômes </a>
+      <button (click)="goBack()" class="detail-header__back"> ← Retour </button>
 
       <div class="detail-header__content">
         <span class="detail-header__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
         <div class="detail-header__info">
-          <span class="detail-header__family">{{ symptom.symptomFamily }}</span>
-          <h1 class="detail-header__title">{{ symptom.title }}</h1>
+          <div class="detail-header__title-line">
+            <h1 class="detail-header__title">{{ symptom.title }}</h1>
+            <span class="detail-header__family">{{ symptom.symptomFamily }}</span>
+          </div>
+          @if (symptom.description) {
+            <p class="detail-header__description">{{ symptom.description }}</p>
+          }
         </div>
       </div>
     </div>
@@ -24,15 +29,6 @@
 
   <!-- Page Content -->
   <div class="detail-content">
-    <!-- Description Section -->
-    <div class="section">
-      <h2 class="section__title">Description</h2>
-      <hr class="section__divider">
-      @if (symptom.description) {
-      <p class="description-text">{{ symptom.description }}</p>
-      }
-    </div>
-
     <!-- Plants Section -->
     <div class="section">
       <div class="section__header">
