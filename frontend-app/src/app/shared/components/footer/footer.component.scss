@@ -74,6 +74,15 @@
       color: #ffffff;
       padding-left: 5px;
     }
+
+    &--button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
   }
 
   &__contact {

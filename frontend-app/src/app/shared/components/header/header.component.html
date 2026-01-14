@@ -1,62 +1,55 @@
 <header class="header">
   <div class="header__container">
     <!-- Logo -->
-    <a [routerLink]="authService.isAuthenticated() ? '/home' : '/'" class="header__logo" (click)="closeMenu()">
+    <a routerLink="/home" class="header__logo" (click)="closeMenu()">
       <img src="assets/logo.svg" alt="Medicals Plants Logo">
     </a>
 
-
-
     <!-- Navigation Desktop -->
     <nav class="header__nav" [class.header__nav--open]="isMenuOpen">
-        @if(authService.isAuthenticated()){
-          <div class="header__nav-user">
-            <a routerLink="/profile" (click)="closeMenu()">
-              <span class="header__avatar">
-                {{ authService.currentUser()?.pseudo?.charAt(0)?.toUpperCase() }}
-              </span>
-              <span class="header__user-name">{{ authService.currentUser()?.pseudo }}</span>
-            </a>
-          </div>
-        }
-        <a
-          [routerLink]="authService.isAuthenticated() ? '/home' : '/'"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="header__link"
-          (click)="closeMenu()"
-        >
-          Accueil
+      <div class="header__nav-user">
+        <a routerLink="/profile" (click)="closeMenu()">
+          <span class="header__avatar">
+            {{ authService.currentUser()?.pseudo?.charAt(0)?.toUpperCase() }}
+          </span>
+          <span class="header__user-name">{{ authService.currentUser()?.pseudo }}</span>
         </a>
-        <a
-          routerLink="/symptoms"
-          routerLinkActive="active"
-          class="header__link"
-          (click)="closeMenu()"
-        >
-          Symptômes
-        </a>
-        <a routerLink="/plants" routerLinkActive="active" class="header__link" (click)="closeMenu()">
-          Plantes
-        </a>
-        <a
-          routerLink="/receipts"
-          routerLinkActive="active"
-          class="header__link"
-          (click)="closeMenu()"
-        >
-          Recettes
-        </a>
-        
-        <!-- Mobile-only logout button -->
-        @if(authService.isAuthenticated()){
-          <button class="header__btn header__btn--logout-mobile" (click)="logout()">Déconnexion</button>
-        }
-      </nav>
+      </div>
+      <a
+        routerLink="/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="header__link"
+        (click)="closeMenu()"
+      >
+        Accueil
+      </a>
+      <a
+        routerLink="/symptoms"
+        routerLinkActive="active"
+        class="header__link"
+        (click)="closeMenu()"
+      >
+        Symptômes
+      </a>
+      <a routerLink="/plants" routerLinkActive="active" class="header__link" (click)="closeMenu()">
+        Plantes
+      </a>
+      <a
+        routerLink="/receipts"
+        routerLinkActive="active"
+        class="header__link"
+        (click)="closeMenu()"
+      >
+        Recettes
+      </a>
+      
+      <!-- Mobile-only logout button -->
+      <button class="header__btn header__btn--logout-mobile" (click)="logout()">Déconnexion</button>
+    </nav>
 
     <!-- User Menu -->
     <div class="header__user">
-      @if (authService.isAuthenticated()) {
       <div class="header__user-menu">
         <a routerLink="/profile" class="header__link header__link--user" (click)="closeMenu()">
           <span class="header__avatar">
@@ -82,16 +75,6 @@
           }
         </div>
       </div>
-      } @else {
-        <div class="header__guest-menu">
-          <a routerLink="/login" class="header__btn header__btn--login" (click)="closeMenu()">
-            Connexion
-          </a>
-          <a routerLink="/register" class="header__btn header__btn--register" (click)="closeMenu()">
-            Inscription
-          </a>
-        </div>
-      }
     </div>
 
     <!-- Mobile Menu Toggle -->

@@ -15,7 +15,7 @@
     <div class="footer__section">
       <h4 class="footer__title">Navigation</h4>
       <nav class="footer__nav">
-        <a routerLink="/" class="footer__link">Accueil</a>
+        <a [routerLink]="isAuthenticated() ? '/home' : '/'" class="footer__link">Accueil</a>
         <a routerLink="/symptoms" class="footer__link">Symptômes</a>
         <a routerLink="/plants" class="footer__link">Plantes</a>
         <a routerLink="/receipts" class="footer__link">Recettes</a>
@@ -26,9 +26,13 @@
     <div class="footer__section">
       <h4 class="footer__title">Mon compte</h4>
       <nav class="footer__nav">
-        <a routerLink="/login" class="footer__link">Connexion</a>
-        <a routerLink="/register" class="footer__link">Inscription</a>
-        <a routerLink="/profile" class="footer__link">Mon profil</a>
+        @if (!isAuthenticated()) {
+          <a routerLink="/login" class="footer__link">Connexion</a>
+          <a routerLink="/register" class="footer__link">Inscription</a>
+        } @else {
+          <a routerLink="/profile" class="footer__link">Mon profil</a>
+          <button (click)="logout()" class="footer__link footer__link--button">Déconnexion</button>
+        }
       </nav>
     </div>
 
