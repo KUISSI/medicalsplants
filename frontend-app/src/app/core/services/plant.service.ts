@@ -31,7 +31,15 @@ export class PlantService {
       description: 'La camomille est une plante douce, idéale pour les peaux sensibles et irritées. Elle est réputée pour ses propriétés anti-inflammatoires, adoucissantes et apaisantes. Elle est souvent utilisée en cas d\'eczéma, de psoriasis ou de réactions allergiques.',
       symptomFamilies: ['Cutané', 'Digestif'],
       properties: [
-        { id: '10', title: 'Anti-inflammatoire', propertyFamily: 'Anti-inflammatoire', createdAt: new Date().toISOString() }
+        { id: '10', title: 'Anti-inflammatoire', propertyFamily: 'Anti-inflammatoire', createdAt: new Date().toISOString() },
+        { id: '12', title: 'Sédatif', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
+        { id: '13', title: 'Anxiolytique', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
+        { id: '14', title: 'Digestif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
+        { id: '15', title: 'Carminatif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
+        { id: '16', title: 'Antiseptique', propertyFamily: 'Antimicrobien', createdAt: new Date().toISOString() },
+        { id: '17', title: 'Antalgique', propertyFamily: 'Analgésique', createdAt: new Date().toISOString() },
+        { id: '18', title: 'Cicatrisant', propertyFamily: 'Cutané', createdAt: new Date().toISOString() },
+        { id: '19', title: 'Antioxydant', propertyFamily: 'Protecteur', createdAt: new Date().toISOString() }
       ],
       createdAt: new Date().toISOString()
     }
