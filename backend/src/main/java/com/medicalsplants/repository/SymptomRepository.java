@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SymptomRepository extends JpaRepository<Symptom, String> {
+public interface SymptomRepository extends JpaRepository<Symptom, java.util.UUID> {
 
     Optional<Symptom> findByTitle(String title);
 

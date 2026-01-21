@@ -107,11 +107,6 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.f4b6a3</groupId>
-            <artifactId>ulid-creator</artifactId>
-            <version>5.2.2</version>
-        </dependency>
         
         <!-- Environment Variables (.env file support) -->
         <dependency>

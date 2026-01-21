@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, java.util.UUID> {
 
     Optional<User> findByEmail(String email);
 
@@ -28,9 +28,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Modifying
     @Query("UPDATE User u SET u.lastLoginAt = :lastLoginAt WHERE u.id = :userId")
-    void updateLastLoginAt(@Param("userId") String userId, @Param("lastLoginAt") Instant lastLoginAt);
+    void updateLastLoginAt(@Param("userId") java.util.UUID userId, @Param("lastLoginAt") Instant lastLoginAt);
 
     @Modifying
     @Query("UPDATE User u SET u.status = :status WHERE u.id = :userId")
-    void updateStatus(@Param("userId") String userId, @Param("status") UserStatus status);
+    void updateStatus(@Param("userId") java.util.UUID userId, @Param("status") UserStatus status);
 }

@@ -1,39 +1,39 @@
 package com.medicalsplants.service;
 
-import com. medicalsplants. exception.BadRequestException;
-import com. medicalsplants. exception.ConflictException;
+import com.medicalsplants.exception.BadRequestException;
+import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.UnauthorizedException;
-import com.medicalsplants.model. dto.request.LoginRequest;
-import com.medicalsplants.model.dto. request.RegisterRequest;
-import com.medicalsplants.model.dto. response.AuthResponse;
-import com.medicalsplants.model.dto.response. MessageResponse;
+import com.medicalsplants.model.dto.request.LoginRequest;
+import com.medicalsplants.model.dto.request.RegisterRequest;
+import com.medicalsplants.model.dto.response.AuthResponse;
+import com.medicalsplants.model.dto.response.MessageResponse;
 import com.medicalsplants.model.entity.User;
 import com.medicalsplants.model.enums.Role;
-import com.medicalsplants.model. enums.UserStatus;
-import com. medicalsplants. model.mapper.UserMapper;
+import com.medicalsplants.model.enums.UserStatus;
+import com.medicalsplants.model.mapper.UserMapper;
 import com.medicalsplants.repository.RefreshTokenRepository;
-import com.medicalsplants.repository. UserRepository;
+import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import com. medicalsplants. util.UlidGenerator;
-import org. junit.jupiter.api.BeforeEach;
-import org. junit.jupiter.api.DisplayName;
-import org.junit.jupiter. api. Nested;
-import org.junit.jupiter. api.Test;
-import org.junit.jupiter.api. extension.ExtendWith;
-import org. mockito.InjectMocks;
-import org.mockito. Mock;
+import com.medicalsplants.util.UlidGenerator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework. security.authentication.AuthenticationManager;
-import org.springframework.security. authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security. crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org. mockito.ArgumentMatchers.*;
-import static org. mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for AuthService.
@@ -60,9 +60,6 @@ class AuthServiceTest {
     @Mock
     private UserMapper userMapper;
 
-    @Mock
-    private UlidGenerator ulidGenerator;
-
     @InjectMocks
     private AuthService authService;
 
@@ -71,17 +68,17 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         testUser = User.builder()
-            .id("01ARZ3NDEKTSV4RRFFQ69G5FAV")
-            .email("test@example. com")
-            .passwordHash("hashedPassword")
-            .pseudo("TestUser")
-            .firstname("Test")
-            .lastname("User")
-            .role(Role.USER)
-            .status(UserStatus.ACTIVE)
-            .isActive(true)
-            .isEmailVerified(true)
-            .build();
+                .id(java.util.UUID.fromString("00000000-0000-0000-0000-000000000001"))
+                .email("test@example. com")
+                .passwordHash("hashedPassword")
+                .pseudo("TestUser")
+                .firstname("Test")
+                .lastname("User")
+                .role(Role.USER)
+                .status(UserStatus.ACTIVE)
+                .isActive(true)
+                .isEmailVerified(true)
+                .build();
     }
 
     @Nested
@@ -93,27 +90,27 @@ class AuthServiceTest {
         void shouldRegisterUserSuccessfully() {
             // Given
             RegisterRequest request = RegisterRequest.builder()
-                .email("newuser@example.com")
-                .password("Password123!")
-                .confirmPassword("Password123!")
-                .pseudo("NewUser")
-                .firstname("New")
-                .lastname("User")
-                .build();
+                    .email("newuser@example.com")
+                    .password("Password123!")
+                    .confirmPassword("Password123!")
+                    .pseudo("NewUser")
+                    .firstname("New")
+                    .lastname("User")
+                    .build();
 
             when(userRepository.existsByEmail(anyString())).thenReturn(false);
             when(userRepository.existsByPseudo(anyString())).thenReturn(false);
-            when(ulidGenerator.generate()).thenReturn("01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            // id généré automatiquement par le service
             when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
             when(userRepository.save(any(User.class))).thenReturn(testUser);
 
             // When
-            MessageResponse response = authService. register(request);
+            MessageResponse response = authService.register(request);
 
             // Then
             assertThat(response.isSuccess()).isTrue();
             assertThat(response.getMessage()).contains("Registration successful");
-            verify(userRepository).save(any(User. class));
+            verify(userRepository).save(any(User.class));
         }
 
         @Test
@@ -121,35 +118,35 @@ class AuthServiceTest {
         void shouldThrowExceptionWhenPasswordsDontMatch() {
             // Given
             RegisterRequest request = RegisterRequest.builder()
-                .email("test@example.com")
-                .password("Password123!")
-                .confirmPassword("DifferentPassword!")
-                .pseudo("TestUser")
-                .build();
+                    .email("test@example.com")
+                    .password("Password123!")
+                    .confirmPassword("DifferentPassword!")
+                    .pseudo("TestUser")
+                    .build();
 
             // When/Then
             assertThatThrownBy(() -> authService.register(request))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Passwords do not match");
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessageContaining("Passwords do not match");
         }
 
         @Test
         @DisplayName("Should throw exception when email already exists")
         void shouldThrowExceptionWhenEmailExists() {
             // Given
-            RegisterRequest request = RegisterRequest. builder()
-                .email("existing@example.com")
-                .password("Password123!")
-                .confirmPassword("Password123!")
-                .pseudo("NewUser")
-                .build();
+            RegisterRequest request = RegisterRequest.builder()
+                    .email("existing@example.com")
+                    .password("Password123!")
+                    .confirmPassword("Password123!")
+                    .pseudo("NewUser")
+                    .build();
 
             when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
             // When/Then
             assertThatThrownBy(() -> authService.register(request))
-                .isInstanceOf(ConflictException.class)
-                .hasMessageContaining("email already exists");
+                    .isInstanceOf(ConflictException.class)
+                    .hasMessageContaining("email already exists");
         }
 
         @Test
@@ -157,19 +154,19 @@ class AuthServiceTest {
         void shouldThrowExceptionWhenPseudoExists() {
             // Given
             RegisterRequest request = RegisterRequest.builder()
-                .email("new@example.com")
-                .password("Password123!")
-                .confirmPassword("Password123!")
-                .pseudo("ExistingPseudo")
-                .build();
+                    .email("new@example.com")
+                    .password("Password123!")
+                    .confirmPassword("Password123!")
+                    .pseudo("ExistingPseudo")
+                    .build();
 
-            when(userRepository. existsByEmail(anyString())).thenReturn(false);
+            when(userRepository.existsByEmail(anyString())).thenReturn(false);
             when(userRepository.existsByPseudo(anyString())).thenReturn(true);
 
             // When/Then
             assertThatThrownBy(() -> authService.register(request))
-                .isInstanceOf(ConflictException. class)
-                .hasMessageContaining("pseudo is already taken");
+                    .isInstanceOf(ConflictException.class)
+                    .hasMessageContaining("pseudo is already taken");
         }
     }
 
@@ -182,21 +179,21 @@ class AuthServiceTest {
         void shouldLoginSuccessfully() {
             // Given
             LoginRequest request = LoginRequest.builder()
-                .email("test@example.com")
-                .password("Password123!")
-                .build();
+                    .email("test@example.com")
+                    .password("Password123!")
+                    .build();
 
             CustomUserDetails userDetails = CustomUserDetails.fromUser(testUser);
-            UsernamePasswordAuthenticationToken authentication = 
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication
+                    = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             when(authenticationManager.authenticate(any())).thenReturn(authentication);
             when(jwtTokenProvider.generateAccessToken(any(CustomUserDetails.class))).thenReturn("accessToken");
             when(jwtTokenProvider.generateRefreshToken(any(CustomUserDetails.class))).thenReturn("refreshToken");
             when(jwtTokenProvider.getExpirationInSeconds()).thenReturn(900L);
             when(jwtTokenProvider.getRefreshExpirationInSeconds()).thenReturn(604800L);
-            when(userRepository. findById(anyString())).thenReturn(Optional.of(testUser));
-            when(ulidGenerator.generate()).thenReturn("01ARZ3NDEKTSV4RRFFQ69G5FAV");
+            when(userRepository.findById(anyString())).thenReturn(Optional.of(testUser));
+            // id généré automatiquement par le service
 
             // When
             AuthResponse response = authService.login(request);
@@ -213,17 +210,17 @@ class AuthServiceTest {
         void shouldThrowExceptionWithInvalidCredentials() {
             // Given
             LoginRequest request = LoginRequest.builder()
-                .email("test@example.com")
-                .password("WrongPassword!")
-                .build();
+                    .email("test@example.com")
+                    .password("WrongPassword!")
+                    .build();
 
             when(authenticationManager.authenticate(any()))
-                .thenThrow(new BadCredentialsException("Bad credentials"));
+                    .thenThrow(new BadCredentialsException("Bad credentials"));
 
             // When/Then
             assertThatThrownBy(() -> authService.login(request))
-                .isInstanceOf(UnauthorizedException.class)
-                .hasMessageContaining("Invalid email or password");
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasMessageContaining("Invalid email or password");
         }
     }
 
@@ -238,8 +235,8 @@ class AuthServiceTest {
             MessageResponse response = authService.logout("someRefreshToken");
 
             // Then
-            assertThat(response. isSuccess()).isTrue();
-            assertThat(response. getMessage()).contains("Logged out");
+            assertThat(response.isSuccess()).isTrue();
+            assertThat(response.getMessage()).contains("Logged out");
         }
 
         @Test

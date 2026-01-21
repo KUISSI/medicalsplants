@@ -19,8 +19,8 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Id
-    @Column(length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
     @Column(nullable = false, length = 50)
     private String firstname;

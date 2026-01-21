@@ -29,7 +29,6 @@ public class ReceiptService {
     private final ReceiptRepository receiptRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional(readOnly = true)
     public Page<Receipt> getPublishedReceipts(boolean canSeePremium, Pageable pageable) {
@@ -77,7 +76,7 @@ public class ReceiptService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
 
         Receipt receipt = new Receipt();
-        receipt.setId(ulidGenerator.generate());
+        receipt.setId(java.util.UUID.randomUUID());
         receipt.setTitle(title);
         receipt.setType(type);
         receipt.setDescription(description);

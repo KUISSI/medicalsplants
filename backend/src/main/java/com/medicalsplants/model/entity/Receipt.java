@@ -20,8 +20,8 @@ import java.util.Set;
 public class Receipt extends BaseEntity {
 
     @Id
-    @Column(length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
     @Column(nullable = false, length = 200)
     private String title;

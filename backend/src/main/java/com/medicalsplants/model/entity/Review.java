@@ -17,8 +17,8 @@ import java.util.List;
 public class Review extends BaseEntity {
 
     @Id
-    @Column(length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;

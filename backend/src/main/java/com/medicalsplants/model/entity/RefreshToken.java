@@ -15,8 +15,8 @@ import java.time.Instant;
 public class RefreshToken extends BaseEntity {
 
     @Id
-    @Column(length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
     @Column(nullable = false, unique = true, length = 100)
     private String token;
