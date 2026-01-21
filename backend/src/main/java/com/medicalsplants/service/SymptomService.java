@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class SymptomService {
 
     private final SymptomRepository symptomRepository;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional(readOnly = true)
     public List<Symptom> getAllSymptoms() {
@@ -55,7 +54,7 @@ public class SymptomService {
         }
 
         Symptom symptom = new Symptom();
-        symptom.setId(ulidGenerator.generate());
+        symptom.setId(java.util.UUID.randomUUID());
         symptom.setTitle(title);
         symptom.setSymptomFamily(symptomFamily);
         symptom.setSymptomDetail(symptomDetail);

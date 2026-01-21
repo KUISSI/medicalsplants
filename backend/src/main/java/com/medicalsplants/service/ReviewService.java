@@ -25,7 +25,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReceiptRepository receiptRepository;
     private final UserRepository userRepository;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional(readOnly = true)
     public List<Review> getReviewsByReceiptId(String receiptId) {
@@ -57,7 +56,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", senderId));
 
         Review review = new Review();
-        review.setId(ulidGenerator.generate());
+        review.setId(java.util.UUID.randomUUID());
         review.setContent(content);
         review.setReceipt(receipt);
         review.setSender(sender);

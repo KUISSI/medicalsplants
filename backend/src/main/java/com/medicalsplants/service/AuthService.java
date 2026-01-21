@@ -43,7 +43,6 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional
     public MessageResponse register(RegisterRequest request) {
@@ -60,7 +59,7 @@ public class AuthService {
         }
 
         User user = User.builder()
-                .id(ulidGenerator.generate())
+                .id(java.util.UUID.randomUUID())
                 .email(request.getEmail().toLowerCase().trim())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .pseudo(request.getPseudo().trim())
@@ -237,7 +236,7 @@ public class AuthService {
         User user = userRepository.getReferenceById(userId);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .id(ulidGenerator.generate())
+                .id(java.util.UUID.randomUUID())
                 .token(token)
                 .user(user)
                 .expiresAt(Instant.now().plusMillis(jwtTokenProvider.getRefreshExpirationInSeconds() * 1000))

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponse {
 
-    private String id;
+    private java.util.UUID id;
     private String email;
     private String pseudo;
     private String firstname;

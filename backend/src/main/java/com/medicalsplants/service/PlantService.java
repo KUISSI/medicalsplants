@@ -23,7 +23,6 @@ public class PlantService {
 
     private final PlantRepository plantRepository;
     private final PropertyRepository propertyRepository;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional(readOnly = true)
     public Page<Plant> getAllPlants(Pageable pageable) {
@@ -54,7 +53,7 @@ public class PlantService {
         }
 
         Plant plant = new Plant();
-        plant.setId(ulidGenerator.generate());
+        plant.setId(java.util.UUID.randomUUID());
         plant.setTitle(title);
         plant.setDescription(description);
         plant.setAdministrationMode(administrationMode);

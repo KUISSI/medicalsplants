@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface InteractionRepository extends JpaRepository<Interaction, String> {
+public interface InteractionRepository extends JpaRepository<Interaction, java.util.UUID> {
 
-    List<Interaction> findByReviewId(String reviewId);
+    List<Interaction> findByReviewId(java.util.UUID reviewId);
 
-    boolean existsByUserIdAndReviewIdAndTypeAndValue(String userId, String reviewId, InteractionType type, String value);
+    boolean existsByUserIdAndReviewIdAndTypeAndValue(java.util.UUID userId, java.util.UUID reviewId, InteractionType type, String value);
 
-    Optional<Interaction> findByUserIdAndReviewIdAndTypeAndValue(String userId, String reviewId, InteractionType type, String value);
+    Optional<Interaction> findByUserIdAndReviewIdAndTypeAndValue(java.util.UUID userId, java.util.UUID reviewId, InteractionType type, String value);
 
     @Query("SELECT i. type, i.value, COUNT(i) FROM Interaction i WHERE i. review.id = :reviewId GROUP BY i.type, i.value ORDER BY COUNT(i) DESC")
-    List<Object[]> getInteractionSummary(@Param("reviewId") String reviewId);
+    List<Object[]> getInteractionSummary(@Param("reviewId") java.util.UUID reviewId);
 }

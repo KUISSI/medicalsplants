@@ -20,7 +20,6 @@ public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final SymptomRepository symptomRepository;
-    private final UlidGenerator ulidGenerator;
 
     @Transactional(readOnly = true)
     public List<Property> getAllProperties() {
@@ -45,7 +44,7 @@ public class PropertyService {
         }
 
         Property property = new Property();
-        property.setId(ulidGenerator.generate());
+        property.setId(java.util.UUID.randomUUID());
         property.setTitle(title);
         property.setPropertyFamily(propertyFamily);
         property.setPropertyDetail(propertyDetail);

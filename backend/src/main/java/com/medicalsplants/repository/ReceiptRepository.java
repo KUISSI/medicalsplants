@@ -12,13 +12,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReceiptRepository extends JpaRepository<Receipt, String> {
+public interface ReceiptRepository extends JpaRepository<Receipt, java.util.UUID> {
 
     @Query("SELECT r FROM Receipt r WHERE r.status = 'PUBLISHED' AND (r.isPremium = false OR :canSeePremium = true) ORDER BY r.createdAt DESC")
     Page<Receipt> findPublished(@Param("canSeePremium") boolean canSeePremium, Pageable pageable);
 
     @Query("SELECT DISTINCT r FROM Receipt r JOIN r.plants pl WHERE r.status = 'PUBLISHED' AND pl.id = :plantId AND (r.isPremium = false OR :canSeePremium = true) ORDER BY r.createdAt DESC")
-    Page<Receipt> findPublishedByPlantId(@Param("plantId") String plantId, @Param("canSeePremium") boolean canSeePremium, Pageable pageable);
+    Page<Receipt> findPublishedByPlantId(@Param("plantId") java.util.UUID plantId, @Param("canSeePremium") boolean canSeePremium, Pageable pageable);
 
     List<Receipt> findByStatus(ReceiptStatus status);
 

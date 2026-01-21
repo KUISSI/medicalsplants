@@ -14,8 +14,8 @@ import lombok.*;
 public class Interaction extends BaseEntity {
 
     @Id
-    @Column(length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
