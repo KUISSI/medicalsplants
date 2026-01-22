@@ -4,7 +4,6 @@ import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.entity.Plant;
 import com.medicalsplants.model.entity.Property;
-import com.medicalsplants.model.enums.AdministrationMode;
 import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.PropertyRepository;
 import com.medicalsplants.util.UlidGenerator;
@@ -46,8 +45,7 @@ public class PlantService {
     }
 
     @Transactional
-    public Plant createPlant(String title, String description, AdministrationMode administrationMode,
-            String consumedPart, Set<String> propertyIds) {
+    public Plant createPlant(String title, String description, Set<String> propertyIds) {
         if (plantRepository.existsByTitle(title)) {
             throw new ConflictException("A plant with this title already exists");
         }
@@ -56,8 +54,6 @@ public class PlantService {
         plant.setId(java.util.UUID.randomUUID());
         plant.setTitle(title);
         plant.setDescription(description);
-        plant.setAdministrationMode(administrationMode);
-        plant.setConsumedPart(consumedPart);
 
         if (propertyIds != null && !propertyIds.isEmpty()) {
             for (String propertyId : propertyIds) {
@@ -71,8 +67,7 @@ public class PlantService {
     }
 
     @Transactional
-    public Plant updatePlant(String id, String title, String description,
-            AdministrationMode administrationMode, String consumedPart) {
+    public Plant updatePlant(String id, String title, String description) {
         Plant plant = getPlantById(id);
 
         if (!plant.getTitle().equals(title) && plantRepository.existsByTitle(title)) {
@@ -81,8 +76,6 @@ public class PlantService {
 
         plant.setTitle(title);
         plant.setDescription(description);
-        plant.setAdministrationMode(administrationMode);
-        plant.setConsumedPart(consumedPart);
 
         return plantRepository.save(plant);
     }

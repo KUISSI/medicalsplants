@@ -1,7 +1,6 @@
 package com.medicalsplants.controller;
 
 import com.medicalsplants.model.entity.Plant;
-import com.medicalsplants.model.enums.AdministrationMode;
 import com.medicalsplants.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -61,10 +60,8 @@ public class PlantController {
     @PostMapping
     public ResponseEntity<Plant> createPlant(@RequestParam String title,
             @RequestParam(required = false) String description,
-            @RequestParam AdministrationMode administrationMode,
-            @RequestParam(required = false) String consumedPart,
             @RequestParam(required = false) Set<String> propertyIds) {
-        Plant plant = plantService.createPlant(title, description, administrationMode, consumedPart, propertyIds);
+        Plant plant = plantService.createPlant(title, description, propertyIds);
         return ResponseEntity.status(HttpStatus.CREATED).body(plant);
     }
 
@@ -74,10 +71,8 @@ public class PlantController {
     @PutMapping("/{id}")
     public ResponseEntity<Plant> updatePlant(@PathVariable String id,
             @RequestParam String title,
-            @RequestParam(required = false) String description,
-            @RequestParam AdministrationMode administrationMode,
-            @RequestParam(required = false) String consumedPart) {
-        Plant plant = plantService.updatePlant(id, title, description, administrationMode, consumedPart);
+            @RequestParam(required = false) String description) {
+        Plant plant = plantService.updatePlant(id, title, description);
         return ResponseEntity.ok(plant);
     }
 
