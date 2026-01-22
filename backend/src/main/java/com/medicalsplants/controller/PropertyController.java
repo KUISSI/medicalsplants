@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/properties")
@@ -31,15 +32,15 @@ public class PropertyController {
 
     @Operation(summary = "Get property by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Property> getPropertyById(@PathVariable String id) {
-        Property property = propertyService.getPropertyById(id);
+    public ResponseEntity<Property> getPropertyById(@PathVariable UUID id) {
+        Property property = propertyService.getPropertyById(id.toString());
         return ResponseEntity.ok(property);
     }
 
     @Operation(summary = "Get properties by symptom ID")
     @GetMapping("/symptom/{symptomId}")
-    public ResponseEntity<List<Property>> getPropertiesBySymptomId(@PathVariable String symptomId) {
-        List<Property> properties = propertyService.getPropertiesBySymptomId(symptomId);
+    public ResponseEntity<List<Property>> getPropertiesBySymptomId(@PathVariable UUID symptomId) {
+        List<Property> properties = propertyService.getPropertiesBySymptomId(symptomId.toString());
         return ResponseEntity.ok(properties);
     }
 
@@ -59,11 +60,11 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable String id,
+    public ResponseEntity<Property> updateProperty(@PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String propertyFamily,
             @RequestParam(required = false) String propertyDetail) {
-        Property property = propertyService.updateProperty(id, title, propertyFamily, propertyDetail);
+        Property property = propertyService.updateProperty(id.toString(), title, propertyFamily, propertyDetail);
         return ResponseEntity.ok(property);
     }
 

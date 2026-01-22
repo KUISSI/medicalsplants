@@ -40,7 +40,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .subject(userDetails.getId())
+                .subject(userDetails.getId().toString())
                 .claim("email", userDetails.getEmail())
                 .claim("pseudo", userDetails.getPseudo())
                 .claim("role", userDetails.getRole().name())
@@ -56,7 +56,7 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtProperties.getRefreshExpiration());
 
         return Jwts.builder()
-                .subject(userDetails.getId())
+                .subject(userDetails.getId().toString())
                 .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(expiryDate)

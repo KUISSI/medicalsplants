@@ -18,7 +18,6 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import com.medicalsplants.util.UlidGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -174,7 +173,7 @@ public class AuthService {
     }
 
     @Transactional
-    public MessageResponse logoutAll(String userId) {
+    public MessageResponse logoutAll(UUID userId) {
         refreshTokenRepository.revokeAllByUserId(userId);
         return MessageResponse.of("Logged out from all devices successfully");
     }
@@ -233,6 +232,10 @@ public class AuthService {
     }
 
     private void saveRefreshToken(String userId, String token) {
+        saveRefreshToken(UUID.fromString(userId), token);
+    }
+
+    private void saveRefreshToken(UUID userId, String token) {
         User user = userRepository.getReferenceById(userId);
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -244,5 +247,9 @@ public class AuthService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+    }
+
+    public MessageResponse logoutAll(String userId) {
+        return logoutAll(UUID.fromString(userId));
     }
 }

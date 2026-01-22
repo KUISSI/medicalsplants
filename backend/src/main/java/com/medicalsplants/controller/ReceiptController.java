@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/receipts")
@@ -40,20 +41,20 @@ public class ReceiptController {
 
     @Operation(summary = "Get recipe by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Receipt> getReceiptById(@PathVariable String id,
+    public ResponseEntity<Receipt> getReceiptById(@PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Receipt receipt = receiptService.getReceiptById(id, currentUser);
+        Receipt receipt = receiptService.getReceiptById(id.toString(), currentUser);
         return ResponseEntity.ok(receipt);
     }
 
     @Operation(summary = "Get recipes by plant ID")
     @GetMapping("/plant/{plantId}")
     public ResponseEntity<Page<Receipt>> getReceiptsByPlantId(
-            @PathVariable String plantId,
+            @PathVariable UUID plantId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
         boolean canSeePremium = currentUser != null && currentUser.isPremium();
-        Page<Receipt> receipts = receiptService.getReceiptsByPlantId(plantId, canSeePremium, pageable);
+        Page<Receipt> receipts = receiptService.getReceiptsByPlantId(plantId.toString(), canSeePremium, pageable);
         return ResponseEntity.ok(receipts);
     }
 
@@ -75,29 +76,29 @@ public class ReceiptController {
             @RequestParam(required = false) Boolean isPremium,
             @RequestParam(required = false) Set<String> plantIds,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Receipt receipt = receiptService.createReceipt(title, type, description, isPremium, plantIds, currentUser.getId());
+        Receipt receipt = receiptService.createReceipt(title, type, description, isPremium, plantIds, currentUser.getId().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(receipt);
     }
 
     @Operation(summary = "Update a recipe")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public ResponseEntity<Receipt> updateReceipt(@PathVariable String id,
+    public ResponseEntity<Receipt> updateReceipt(@PathVariable UUID id,
             @RequestParam String title,
             @RequestParam ReceiptType type,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) Boolean isPremium,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Receipt receipt = receiptService.updateReceipt(id, title, type, description, isPremium, currentUser);
+        Receipt receipt = receiptService.updateReceipt(id.toString(), title, type, description, isPremium, currentUser);
         return ResponseEntity.ok(receipt);
     }
 
     @Operation(summary = "Submit recipe for review")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{id}/submit")
-    public ResponseEntity<Receipt> submitForReview(@PathVariable String id,
+    public ResponseEntity<Receipt> submitForReview(@PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Receipt receipt = receiptService.submitForReview(id, currentUser);
+        Receipt receipt = receiptService.submitForReview(id.toString(), currentUser);
         return ResponseEntity.ok(receipt);
     }
 
@@ -105,8 +106,8 @@ public class ReceiptController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/approve")
-    public ResponseEntity<Receipt> approveReceipt(@PathVariable String id) {
-        Receipt receipt = receiptService.approveReceipt(id);
+    public ResponseEntity<Receipt> approveReceipt(@PathVariable UUID id) {
+        Receipt receipt = receiptService.approveReceipt(id.toString());
         return ResponseEntity.ok(receipt);
     }
 
@@ -114,17 +115,17 @@ public class ReceiptController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/reject")
-    public ResponseEntity<Receipt> rejectReceipt(@PathVariable String id) {
-        Receipt receipt = receiptService.rejectReceipt(id);
+    public ResponseEntity<Receipt> rejectReceipt(@PathVariable UUID id) {
+        Receipt receipt = receiptService.rejectReceipt(id.toString());
         return ResponseEntity.ok(receipt);
     }
 
     @Operation(summary = "Delete a recipe")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReceipt(@PathVariable String id,
+    public ResponseEntity<Void> deleteReceipt(@PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        receiptService.deleteReceipt(id, currentUser);
+        receiptService.deleteReceipt(id.toString(), currentUser);
         return ResponseEntity.noContent().build();
     }
 }

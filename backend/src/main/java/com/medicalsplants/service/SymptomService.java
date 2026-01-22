@@ -4,13 +4,13 @@ import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.SymptomRepository;
-import com.medicalsplants.util.UlidGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +26,8 @@ public class SymptomService {
 
     @Transactional(readOnly = true)
     public Symptom getSymptomById(String id) {
-        return symptomRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return symptomRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id));
     }
 

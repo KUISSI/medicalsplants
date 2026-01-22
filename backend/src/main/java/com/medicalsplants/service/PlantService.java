@@ -6,7 +6,6 @@ import com.medicalsplants.model.entity.Plant;
 import com.medicalsplants.model.entity.Property;
 import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.PropertyRepository;
-import com.medicalsplants.util.UlidGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,18 +30,21 @@ public class PlantService {
 
     @Transactional(readOnly = true)
     public Plant getPlantById(String id) {
-        return plantRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return plantRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", id));
     }
 
     @Transactional(readOnly = true)
     public Page<Plant> getPlantsBySymptomId(String symptomId, Pageable pageable) {
-        return plantRepository.findBySymptomId(symptomId, pageable);
+        UUID uuid = UUID.fromString(symptomId);
+        return plantRepository.findBySymptomId(uuid, pageable);
     }
 
     @Transactional(readOnly = true)
     public List<Plant> getPlantsByPropertyId(String propertyId) {
-        return plantRepository.findByPropertyId(propertyId);
+        UUID uuid = UUID.fromString(propertyId);
+        return plantRepository.findByPropertyId(uuid);
     }
 
     @Transactional
@@ -51,13 +54,14 @@ public class PlantService {
         }
 
         Plant plant = new Plant();
-        plant.setId(java.util.UUID.randomUUID());
+        plant.setId(UUID.randomUUID());
         plant.setTitle(title);
         plant.setDescription(description);
 
         if (propertyIds != null && !propertyIds.isEmpty()) {
             for (String propertyId : propertyIds) {
-                Property property = propertyRepository.findById(propertyId)
+                UUID uuid = UUID.fromString(propertyId);
+                Property property = propertyRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId));
                 plant.getProperties().add(property);
             }
@@ -89,7 +93,8 @@ public class PlantService {
     @Transactional
     public Plant addPropertyToPlant(String plantId, String propertyId) {
         Plant plant = getPlantById(plantId);
-        Property property = propertyRepository.findById(propertyId)
+        UUID uuid = UUID.fromString(propertyId);
+        Property property = propertyRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId));
 
         plant.getProperties().add(property);
@@ -99,7 +104,8 @@ public class PlantService {
     @Transactional
     public Plant removePropertyFromPlant(String plantId, String propertyId) {
         Plant plant = getPlantById(plantId);
-        plant.getProperties().removeIf(p -> p.getId().equals(propertyId));
+        UUID uuid = UUID.fromString(propertyId);
+        plant.getProperties().removeIf(p -> p.getId().equals(uuid));
         return plantRepository.save(plant);
     }
 }

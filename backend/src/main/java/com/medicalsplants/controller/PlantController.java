@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/plants")
@@ -34,23 +35,23 @@ public class PlantController {
 
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Plant> getPlantById(@PathVariable String id) {
-        Plant plant = plantService.getPlantById(id);
+    public ResponseEntity<Plant> getPlantById(@PathVariable UUID id) {
+        Plant plant = plantService.getPlantById(id.toString());
         return ResponseEntity.ok(plant);
     }
 
     @Operation(summary = "Get plants by symptom ID")
     @GetMapping("/symptom/{symptomId}")
-    public ResponseEntity<Page<Plant>> getPlantsBySymptomId(@PathVariable String symptomId,
+    public ResponseEntity<Page<Plant>> getPlantsBySymptomId(@PathVariable UUID symptomId,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<Plant> plants = plantService.getPlantsBySymptomId(symptomId, pageable);
+        Page<Plant> plants = plantService.getPlantsBySymptomId(symptomId.toString(), pageable);
         return ResponseEntity.ok(plants);
     }
 
     @Operation(summary = "Get plants by property ID")
     @GetMapping("/property/{propertyId}")
-    public ResponseEntity<List<Plant>> getPlantsByPropertyId(@PathVariable String propertyId) {
-        List<Plant> plants = plantService.getPlantsByPropertyId(propertyId);
+    public ResponseEntity<List<Plant>> getPlantsByPropertyId(@PathVariable UUID propertyId) {
+        List<Plant> plants = plantService.getPlantsByPropertyId(propertyId.toString());
         return ResponseEntity.ok(plants);
     }
 
@@ -69,10 +70,10 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Plant> updatePlant(@PathVariable String id,
+    public ResponseEntity<Plant> updatePlant(@PathVariable UUID id,
             @RequestParam String title,
             @RequestParam(required = false) String description) {
-        Plant plant = plantService.updatePlant(id, title, description);
+        Plant plant = plantService.updatePlant(id.toString(), title, description);
         return ResponseEntity.ok(plant);
     }
 
@@ -80,8 +81,8 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlant(@PathVariable String id) {
-        plantService.deletePlant(id);
+    public ResponseEntity<Void> deletePlant(@PathVariable UUID id) {
+        plantService.deletePlant(id.toString());
         return ResponseEntity.noContent().build();
     }
 
@@ -89,9 +90,9 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<Plant> addPropertyToPlant(@PathVariable String id,
-            @PathVariable String propertyId) {
-        Plant plant = plantService.addPropertyToPlant(id, propertyId);
+    public ResponseEntity<Plant> addPropertyToPlant(@PathVariable UUID id,
+            @PathVariable UUID propertyId) {
+        Plant plant = plantService.addPropertyToPlant(id.toString(), propertyId.toString());
         return ResponseEntity.ok(plant);
     }
 
@@ -99,9 +100,9 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<Plant> removePropertyFromPlant(@PathVariable String id,
-            @PathVariable String propertyId) {
-        Plant plant = plantService.removePropertyFromPlant(id, propertyId);
+    public ResponseEntity<Plant> removePropertyFromPlant(@PathVariable UUID id,
+            @PathVariable UUID propertyId) {
+        Plant plant = plantService.removePropertyFromPlant(id.toString(), propertyId.toString());
         return ResponseEntity.ok(plant);
     }
 }

@@ -15,7 +15,7 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import com.medicalsplants.util.UlidGenerator;
+// import com.medicalsplants.util.UlidGenerator; // Removed: not used and does not exist
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -192,7 +192,7 @@ class AuthServiceTest {
             when(jwtTokenProvider.generateRefreshToken(any(CustomUserDetails.class))).thenReturn("refreshToken");
             when(jwtTokenProvider.getExpirationInSeconds()).thenReturn(900L);
             when(jwtTokenProvider.getRefreshExpirationInSeconds()).thenReturn(604800L);
-            when(userRepository.findById(anyString())).thenReturn(Optional.of(testUser));
+            when(userRepository.findById(any(java.util.UUID.class))).thenReturn(Optional.of(testUser));
             // id généré automatiquement par le service
 
             // When

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/symptoms")
@@ -31,8 +32,8 @@ public class SymptomController {
 
     @Operation(summary = "Get symptom by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Symptom> getSymptomById(@PathVariable String id) {
-        Symptom symptom = symptomService.getSymptomById(id);
+    public ResponseEntity<Symptom> getSymptomById(@PathVariable UUID id) {
+        Symptom symptom = symptomService.getSymptomById(id.toString());
         return ResponseEntity.ok(symptom);
     }
 
@@ -72,11 +73,11 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Symptom> updateSymptom(@PathVariable String id,
+    public ResponseEntity<Symptom> updateSymptom(@PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String symptomFamily,
             @RequestParam(required = false) String symptomDetail) {
-        Symptom symptom = symptomService.updateSymptom(id, title, symptomFamily, symptomDetail);
+        Symptom symptom = symptomService.updateSymptom(id.toString(), title, symptomFamily, symptomDetail);
         return ResponseEntity.ok(symptom);
     }
 
@@ -84,8 +85,8 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSymptom(@PathVariable String id) {
-        symptomService.deleteSymptom(id);
+    public ResponseEntity<Void> deleteSymptom(@PathVariable UUID id) {
+        symptomService.deleteSymptom(id.toString());
         return ResponseEntity.noContent().build();
     }
 }
