@@ -18,7 +18,7 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,6 +33,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -41,23 +42,6 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-    private final UlidGenerator ulidGenerator;
-
-    public AuthService(UserRepository userRepository,
-            RefreshTokenRepository refreshTokenRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider,
-            AuthenticationManager authenticationManager,
-            UserMapper userMapper,
-            UlidGenerator ulidGenerator) {
-        this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
-        this.userMapper = userMapper;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional
     public MessageResponse register(RegisterRequest request) {
@@ -74,7 +58,7 @@ public class AuthService {
         }
 
         User user = User.builder()
-                .id(ulidGenerator.generate())
+                .id(java.util.UUID.randomUUID())
                 .email(request.getEmail().toLowerCase().trim())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .pseudo(request.getPseudo().trim())
@@ -189,7 +173,7 @@ public class AuthService {
     }
 
     @Transactional
-    public MessageResponse logoutAll(String userId) {
+    public MessageResponse logoutAll(UUID userId) {
         refreshTokenRepository.revokeAllByUserId(userId);
         return MessageResponse.of("Logged out from all devices successfully");
     }
@@ -248,10 +232,14 @@ public class AuthService {
     }
 
     private void saveRefreshToken(String userId, String token) {
+        saveRefreshToken(UUID.fromString(userId), token);
+    }
+
+    private void saveRefreshToken(UUID userId, String token) {
         User user = userRepository.getReferenceById(userId);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .id(ulidGenerator.generate())
+                .id(java.util.UUID.randomUUID())
                 .token(token)
                 .user(user)
                 .expiresAt(Instant.now().plusMillis(jwtTokenProvider.getRefreshExpirationInSeconds() * 1000))
@@ -259,5 +247,9 @@ public class AuthService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+    }
+
+    public MessageResponse logoutAll(String userId) {
+        return logoutAll(UUID.fromString(userId));
     }
 }

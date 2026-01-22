@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PlantRepository extends JpaRepository<Plant, String> {
+public interface PlantRepository extends JpaRepository<Plant, java.util.UUID> {
 
     Optional<Plant> findByTitle(String title);
 
     boolean existsByTitle(String title);
 
-    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = : symptomId ORDER BY pl.title ASC")
-    Page<Plant> findBySymptomId(@Param("symptomId") String symptomId, Pageable pageable);
+    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = :symptomId ORDER BY pl.title ASC")
+    Page<Plant> findBySymptomId(@Param("symptomId") java.util.UUID symptomId, Pageable pageable);
 
     @Query("SELECT pl FROM Plant pl JOIN pl.properties p WHERE p.id = :propertyId ORDER BY pl.title ASC")
-    List<Plant> findByPropertyId(@Param("propertyId") String propertyId);
+    List<Plant> findByPropertyId(@Param("propertyId") java.util.UUID propertyId);
 }

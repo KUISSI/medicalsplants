@@ -4,24 +4,20 @@ import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.SymptomRepository;
-import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SymptomService {
 
     private final SymptomRepository symptomRepository;
-    private final UlidGenerator ulidGenerator;
-
-    public SymptomService(SymptomRepository symptomRepository, UlidGenerator ulidGenerator) {
-        this.symptomRepository = symptomRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public List<Symptom> getAllSymptoms() {
@@ -30,7 +26,8 @@ public class SymptomService {
 
     @Transactional(readOnly = true)
     public Symptom getSymptomById(String id) {
-        return symptomRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return symptomRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id));
     }
 
@@ -58,7 +55,7 @@ public class SymptomService {
         }
 
         Symptom symptom = new Symptom();
-        symptom.setId(ulidGenerator.generate());
+        symptom.setId(java.util.UUID.randomUUID());
         symptom.setTitle(title);
         symptom.setSymptomFamily(symptomFamily);
         symptom.setSymptomDetail(symptomDetail);

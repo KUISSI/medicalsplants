@@ -1,6 +1,7 @@
 package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -8,108 +9,59 @@ import java.util.List;
 
 @Entity
 @Table(name = "ms_review")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review extends BaseEntity {
 
     @Id
-    @Column(name = "id", length = 26)
-    private String id;
+    @Column(columnDefinition = "uuid")
+    private java.util.UUID id;
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "deleted_at")
-    private Instant deletedAt;
-
+    // Auteur de l'avis
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
+    @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receipt_id", nullable = false)
-    private Receipt receipt;
-
+    // Avis parent (pour les réponses en arborescence)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_review_id")
     private Review parentReview;
 
+    // Réponses à cet avis
     @OneToMany(mappedBy = "parentReview", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Review> replies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Recette concernée
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receipt_id", nullable = false)
+    private Receipt receipt;
+
+    // Soft delete
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
+    // Interactions (émojis, cadeaux)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Interaction> interactions = new ArrayList<>();
 
-    public Review() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Instant getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Instant deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
-    public User getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
-
-    public Receipt getReceipt() {
-        return receipt;
-    }
-
-    public void setReceipt(Receipt receipt) {
-        this.receipt = receipt;
-    }
-
-    public Review getParentReview() {
-        return parentReview;
-    }
-
-    public void setParentReview(Review parentReview) {
-        this.parentReview = parentReview;
-    }
-
-    public List<Review> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<Review> replies) {
-        this.replies = replies;
-    }
-
-    public List<Interaction> getInteractions() {
-        return interactions;
-    }
-
-    public void setInteractions(List<Interaction> interactions) {
-        this.interactions = interactions;
-    }
-
+    // Méthodes utilitaires
     public boolean isDeleted() {
-        return deletedAt != null;
+        return this.deletedAt != null;
     }
 
     public void softDelete() {
         this.deletedAt = Instant.now();
+    }
+
+    public boolean isReply() {
+        return this.parentReview != null;
     }
 }

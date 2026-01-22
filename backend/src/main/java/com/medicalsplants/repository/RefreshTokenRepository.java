@@ -11,15 +11,15 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, String> {
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, java.util.UUID> {
 
     Optional<RefreshToken> findByToken(String token);
 
     @Modifying
     @Query("UPDATE RefreshToken rt SET rt.isRevoked = true WHERE rt.user.id = :userId")
-    void revokeAllByUserId(@Param("userId") String userId);
+    void revokeAllByUserId(@Param("userId") java.util.UUID userId);
 
     @Modifying
-    @Query("DELETE FROM RefreshToken rt WHERE rt.expiresAt < : now")
+    @Query("DELETE FROM RefreshToken rt WHERE rt.expiresAt < :now")
     int deleteExpiredTokens(@Param("now") Instant now);
 }

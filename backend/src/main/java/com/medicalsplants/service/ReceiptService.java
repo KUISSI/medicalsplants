@@ -12,7 +12,7 @@ import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.ReceiptRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
-import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,24 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
-    private final UlidGenerator ulidGenerator;
-
-    public ReceiptService(ReceiptRepository receiptRepository,
-            PlantRepository plantRepository,
-            UserRepository userRepository,
-            UlidGenerator ulidGenerator) {
-        this.receiptRepository = receiptRepository;
-        this.plantRepository = plantRepository;
-        this.userRepository = userRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public Page<Receipt> getPublishedReceipts(boolean canSeePremium, Pageable pageable) {
@@ -46,12 +37,14 @@ public class ReceiptService {
 
     @Transactional(readOnly = true)
     public Page<Receipt> getReceiptsByPlantId(String plantId, boolean canSeePremium, Pageable pageable) {
-        return receiptRepository.findPublishedByPlantId(plantId, canSeePremium, pageable);
+        UUID uuid = UUID.fromString(plantId);
+        return receiptRepository.findPublishedByPlantId(uuid, canSeePremium, pageable);
     }
 
     @Transactional(readOnly = true)
     public Receipt getReceiptById(String id, CustomUserDetails currentUser) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         // Check access
@@ -81,11 +74,12 @@ public class ReceiptService {
     @Transactional
     public Receipt createReceipt(String title, ReceiptType type, String description,
             Boolean isPremium, Set<String> plantIds, String authorId) {
-        User author = userRepository.findById(authorId)
+        UUID authorUuid = UUID.fromString(authorId);
+        User author = userRepository.findById(authorUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
 
         Receipt receipt = new Receipt();
-        receipt.setId(ulidGenerator.generate());
+        receipt.setId(java.util.UUID.randomUUID());
         receipt.setTitle(title);
         receipt.setType(type);
         receipt.setDescription(description);
@@ -95,7 +89,8 @@ public class ReceiptService {
 
         if (plantIds != null && !plantIds.isEmpty()) {
             for (String plantId : plantIds) {
-                Plant plant = plantRepository.findById(plantId)
+                UUID plantUuid = UUID.fromString(plantId);
+                Plant plant = plantRepository.findById(plantUuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
                 receipt.getPlants().add(plant);
             }
@@ -107,7 +102,8 @@ public class ReceiptService {
     @Transactional
     public Receipt updateReceipt(String id, String title, ReceiptType type,
             String description, Boolean isPremium, CustomUserDetails currentUser) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         // Check ownership
@@ -129,7 +125,8 @@ public class ReceiptService {
 
     @Transactional
     public Receipt submitForReview(String id, CustomUserDetails currentUser) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         boolean isOwner = receipt.getAuthor() != null
@@ -148,7 +145,8 @@ public class ReceiptService {
 
     @Transactional
     public Receipt approveReceipt(String id) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         if (receipt.getStatus() != ReceiptStatus.PENDING) {
@@ -161,7 +159,8 @@ public class ReceiptService {
 
     @Transactional
     public Receipt rejectReceipt(String id) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         if (receipt.getStatus() != ReceiptStatus.PENDING) {
@@ -174,7 +173,8 @@ public class ReceiptService {
 
     @Transactional
     public void deleteReceipt(String id, CustomUserDetails currentUser) {
-        Receipt receipt = receiptRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        Receipt receipt = receiptRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", id));
 
         boolean isOwner = receipt.getAuthor() != null

@@ -6,27 +6,20 @@ import com.medicalsplants.model.entity.Property;
 import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.PropertyRepository;
 import com.medicalsplants.repository.SymptomRepository;
-import com.medicalsplants.util.UlidGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final SymptomRepository symptomRepository;
-    private final UlidGenerator ulidGenerator;
-
-    public PropertyService(PropertyRepository propertyRepository,
-            SymptomRepository symptomRepository,
-            UlidGenerator ulidGenerator) {
-        this.propertyRepository = propertyRepository;
-        this.symptomRepository = symptomRepository;
-        this.ulidGenerator = ulidGenerator;
-    }
 
     @Transactional(readOnly = true)
     public List<Property> getAllProperties() {
@@ -35,13 +28,15 @@ public class PropertyService {
 
     @Transactional(readOnly = true)
     public Property getPropertyById(String id) {
-        return propertyRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return propertyRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id));
     }
 
     @Transactional(readOnly = true)
     public List<Property> getPropertiesBySymptomId(String symptomId) {
-        return propertyRepository.findBySymptomId(symptomId);
+        UUID uuid = UUID.fromString(symptomId);
+        return propertyRepository.findBySymptomId(uuid);
     }
 
     @Transactional
@@ -51,14 +46,15 @@ public class PropertyService {
         }
 
         Property property = new Property();
-        property.setId(ulidGenerator.generate());
+        property.setId(java.util.UUID.randomUUID());
         property.setTitle(title);
         property.setPropertyFamily(propertyFamily);
         property.setPropertyDetail(propertyDetail);
 
         if (symptomIds != null && !symptomIds.isEmpty()) {
             for (String symptomId : symptomIds) {
-                Symptom symptom = symptomRepository.findById(symptomId)
+                UUID uuid = UUID.fromString(symptomId);
+                Symptom symptom = symptomRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
                 property.getSymptoms().add(symptom);
             }
@@ -91,9 +87,9 @@ public class PropertyService {
     @Transactional
     public Property addSymptomToProperty(String propertyId, String symptomId) {
         Property property = getPropertyById(propertyId);
-        Symptom symptom = symptomRepository.findById(symptomId)
+        UUID uuid = UUID.fromString(symptomId);
+        Symptom symptom = symptomRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
-
         property.getSymptoms().add(symptom);
         return propertyRepository.save(property);
     }
@@ -101,7 +97,8 @@ public class PropertyService {
     @Transactional
     public Property removeSymptomFromProperty(String propertyId, String symptomId) {
         Property property = getPropertyById(propertyId);
-        property.getSymptoms().removeIf(s -> s.getId().equals(symptomId));
+        UUID uuid = UUID.fromString(symptomId);
+        property.getSymptoms().removeIf(s -> s.getId().equals(uuid));
         return propertyRepository.save(property);
     }
 }

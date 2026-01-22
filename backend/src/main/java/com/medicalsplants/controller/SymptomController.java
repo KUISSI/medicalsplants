@@ -5,6 +5,7 @@ import com.medicalsplants.service.SymptomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,17 +13,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/symptoms")
 @Tag(name = "Symptoms", description = "Symptom management endpoints")
+@RequiredArgsConstructor
 public class SymptomController {
 
     private final SymptomService symptomService;
-
-    public SymptomController(SymptomService symptomService) {
-        this.symptomService = symptomService;
-    }
 
     @Operation(summary = "Get all symptoms")
     @GetMapping
@@ -33,8 +32,8 @@ public class SymptomController {
 
     @Operation(summary = "Get symptom by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Symptom> getSymptomById(@PathVariable String id) {
-        Symptom symptom = symptomService.getSymptomById(id);
+    public ResponseEntity<Symptom> getSymptomById(@PathVariable UUID id) {
+        Symptom symptom = symptomService.getSymptomById(id.toString());
         return ResponseEntity.ok(symptom);
     }
 
@@ -74,11 +73,11 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Symptom> updateSymptom(@PathVariable String id,
+    public ResponseEntity<Symptom> updateSymptom(@PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String symptomFamily,
             @RequestParam(required = false) String symptomDetail) {
-        Symptom symptom = symptomService.updateSymptom(id, title, symptomFamily, symptomDetail);
+        Symptom symptom = symptomService.updateSymptom(id.toString(), title, symptomFamily, symptomDetail);
         return ResponseEntity.ok(symptom);
     }
 
@@ -86,8 +85,8 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSymptom(@PathVariable String id) {
-        symptomService.deleteSymptom(id);
+    public ResponseEntity<Void> deleteSymptom(@PathVariable UUID id) {
+        symptomService.deleteSymptom(id.toString());
         return ResponseEntity.noContent().build();
     }
 }

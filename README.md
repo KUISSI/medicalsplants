@@ -77,10 +77,10 @@ cd medicalsplants
 cp . env.example .env
 
 # Démarrer les services (PostgreSQL, MailHog)
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Lancer le backend
-cd backend && ./mvnw spring-boot:run
+cd backend && ./mvn spring-boot:run
 
 # Lancer le frontend (dans un autre terminal)
 cd frontend-app && npm install && npm start
