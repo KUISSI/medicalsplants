@@ -1,6 +1,5 @@
 package com.medicalsplants.model.entity;
 
-import com.medicalsplants.model.enums.AdministrationMode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,13 +24,6 @@ public class Plant extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "administration_mode", nullable = false, length = 20)
-    private AdministrationMode administrationMode;
-
-    @Column(name = "consumed_part", nullable = false, length = 20)
-    private String consumedPart;
 
     // Relations Many-to-Many avec Property
     @ManyToMany
