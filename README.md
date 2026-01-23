@@ -79,8 +79,14 @@ cp . env.example .env
 # Démarrer les services (PostgreSQL, MailHog)
 docker-compose -f docker-compose.yml up -d
 
-# Lancer le backend
-cd backend && ./mvn spring-boot:run
+
+# Lancer le backend (avec chargement automatique du secret JWT)
+# Sous Linux/Mac :
+cd backend
+./start-backend.sh
+# Sous Windows (PowerShell) :
+cd backend
+./start-backend.ps1
 
 # Lancer le frontend (dans un autre terminal)
 cd frontend-app && npm install && npm start
@@ -99,7 +105,7 @@ Guide de contribution
 🧪 Tests
 bash
 # Tests backend
-cd backend && ./mvnw test
+cd backend && ./mvn test
 
 # Tests frontend
 cd frontend-app && npm test

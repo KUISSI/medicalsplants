@@ -1,4 +1,8 @@
-﻿# ============================================================
+﻿# Fichiers d'environnement de production (jamais versionner de secrets réels)
+.env.prod
+.env.prod.example
+docker-compose.prod.yml
+# ============================================================
 # GITIGNORE - MEDICALS PLANTS
 # ============================================================
 
