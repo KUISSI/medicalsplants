@@ -92,4 +92,43 @@ DROP TABLE tmp_property_symptom;
 - Les doublons sont ignorés automatiquement.
 - Vous pouvez relancer ces commandes sans risque.
 
+## Documentation API & Swagger
+
+L'API Medicals Plants est entièrement documentée et testable via Swagger UI.
+
+### Accès à Swagger
+
+Après avoir démarré le backend (voir section Installation), ouvrez votre navigateur à l'une des adresses suivantes :
+
+- [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+### Utilisation
+
+- Tous les endpoints REST sont listés et documentés dans l'interface Swagger.
+- Vous pouvez tester les requêtes directement depuis Swagger (GET, POST, PUT, DELETE, etc.).
+- Les schémas de données, paramètres et réponses sont affichés pour chaque endpoint.
+- Si certains endpoints nécessitent une authentification, utilisez le bouton "Authorize" pour renseigner votre token JWT.
+
+### Dépendance utilisée
+
+La documentation est générée automatiquement grâce à la librairie [springdoc-openapi](https://springdoc.org/) :
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.3.0</version>
+</dependency>
+```
+
+### Configuration personnalisée
+
+La configuration Swagger peut être ajustée dans le fichier `application.properties` :
+```
+springdoc.api-docs.path=/v3/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.tags-sorter=alpha
+springdoc.swagger-ui.operations-sorter=alpha
+```
+
 ---

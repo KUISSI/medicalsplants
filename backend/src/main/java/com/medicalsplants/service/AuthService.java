@@ -38,6 +38,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
@@ -72,7 +73,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
-
+        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
         return MessageResponse.of("Registration successful.  Please check your email to verify your account.");
     }
 

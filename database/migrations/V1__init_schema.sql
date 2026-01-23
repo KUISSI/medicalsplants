@@ -39,7 +39,7 @@ CREATE INDEX IF NOT EXISTS idx_user_role ON ms_user(role);
 -- ============================================================
 -- REFRESH TOKENS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS ms_refresh_token (
+CREATE TABLE IF NOT EXISTS ms_refresh_tokens (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     token VARCHAR(500) NOT NULL UNIQUE,
     user_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
@@ -49,9 +49,9 @@ CREATE TABLE IF NOT EXISTS ms_refresh_token (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_refresh_token_token ON ms_refresh_token(token);
-CREATE INDEX IF NOT EXISTS idx_refresh_token_user ON ms_refresh_token(user_id);
-CREATE INDEX IF NOT EXISTS idx_refresh_token_expires ON ms_refresh_token(expires_at);
+CREATE INDEX IF NOT EXISTS idx_refresh_token_token ON ms_refresh_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_refresh_token_user ON ms_refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_token_expires ON ms_refresh_tokens(expires_at);
 
 -- ============================================================
 -- SYMPTOMS
