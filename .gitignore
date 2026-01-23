@@ -4,9 +4,15 @@
 
 # Environment
 .env
-.env.local
-.env.*.local
+.env.*
 !.env.example
+.env.dev
+.env.prod
+
+# Spring Boot sensitive properties
+backend/src/main/resources/application-*.properties
+!backend/src/main/resources/application-dev.properties
+!backend/src/main/resources/application-prod.properties
 
 # IDE
 .idea/
