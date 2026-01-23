@@ -2,7 +2,7 @@ package com.medicalsplants.e2e;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +45,7 @@ public class RegistrationEmailVerificationIT {
 
         // 3. Extract the verification link
         Pattern p = Pattern.compile(
-        "http://localhost:[0-9]+/api/v1/auth/verify-email\\?token=([a-zA-Z0-9\-]+)");
+                "http://localhost:[0-9]+/api/v1/auth/verify-email\\?token=([a-zA-Z0-9\\-]+)");
         Matcher m = p.matcher(body);
         assertThat(m.find()).isTrue();
         String verifyUrl = m.group(0);
