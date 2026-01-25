@@ -35,6 +35,9 @@ backend/*.jar
 backend/logs/
 *.log
 
+# Scripts locaux contenant des secrets (à ne jamais versionner)
+backend/start-backend.bat
+
 # Frontend - Node/Angular
 frontend-app/node_modules/
 frontend-app/dist/

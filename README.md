@@ -85,17 +85,23 @@ docker-compose -f docker-compose.prod.yml up -d
 
 
 
+
 # Lancer le backend Spring Boot en développement (avec secret JWT automatique)
 #
 # Sous Linux/Mac :
 cd backend
 ./start-backend.sh
-# Sous Windows (PowerShell) :
+
+# Sous Windows :
 cd backend
-./start-backend.ps1
+REM Copiez le modèle si besoin :
+copy start-backend.example.bat start-backend.bat
+REM Modifiez start-backend.bat pour y mettre votre secret local
+start-backend.bat
 #
-# Ces scripts exportent automatiquement la variable d'environnement JWT_SECRET pour le backend (dev uniquement).
-# En production, configure JWT_SECRET via un .env ou la configuration de ton hébergeur/CI/CD.
+# ⚠️ Ne versionnez jamais backend/start-backend.bat (il est ignoré par git).
+# Utilisez le modèle start-backend.example.bat pour partager la structure du script sans secret.
+# En production, configurez JWT_SECRET via un .env ou la configuration de votre hébergeur/CI/CD.
 
 # Lancer le frontend (dans un autre terminal)
 cd frontend-app && npm install && npm start
