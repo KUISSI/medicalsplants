@@ -76,17 +76,26 @@ cd medicalsplants
 # Copier la configuration
 cp . env.example .env
 
-# Démarrer les services (PostgreSQL, MailHog)
-docker-compose -f docker-compose.yml up -d
+
+# Démarrer les services en développement (PostgreSQL, MailHog, etc.)
+docker-compose -f docker-compose.dev.yml up -d
+
+# Démarrer les services en production (base de données, backend, etc.)
+docker-compose -f docker-compose.prod.yml up -d
 
 
-# Lancer le backend (avec chargement automatique du secret JWT)
+
+# Lancer le backend Spring Boot en développement (avec secret JWT automatique)
+#
 # Sous Linux/Mac :
 cd backend
 ./start-backend.sh
 # Sous Windows (PowerShell) :
 cd backend
 ./start-backend.ps1
+#
+# Ces scripts exportent automatiquement la variable d'environnement JWT_SECRET pour le backend (dev uniquement).
+# En production, configure JWT_SECRET via un .env ou la configuration de ton hébergeur/CI/CD.
 
 # Lancer le frontend (dans un autre terminal)
 cd frontend-app && npm install && npm start
