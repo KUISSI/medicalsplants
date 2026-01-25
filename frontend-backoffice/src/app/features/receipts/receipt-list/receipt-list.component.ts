@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-receipt-list',
   standalone: true,
   imports:  [CommonModule, RouterModule, FormsModule, LoaderComponent],
-  templateUrl:  './receipt-list. component.html',
+  templateUrl:  './receipt-list.component.html',
   styleUrls:  ['./receipt-list.component.scss']
 })
 export class ReceiptListComponent implements OnInit {

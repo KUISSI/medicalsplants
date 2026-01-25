@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-plant-form',
   standalone: true,
   imports:  [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './plant-form. component.html',
+  templateUrl:  './plant-form.component.html',
   styleUrls:  ['./plant-form.component.scss']
 })
 export class PlantFormComponent implements OnInit {

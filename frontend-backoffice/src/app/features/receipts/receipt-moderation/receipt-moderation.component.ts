@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-receipt-moderation',
   standalone:  true,
   imports: [CommonModule, RouterModule, LoaderComponent, ConfirmDialogComponent],
-  templateUrl: './receipt-moderation. component.html',
+  templateUrl: './receipt-moderation.component.html',
   styleUrls:  ['./receipt-moderation.component.scss']
 })
 export class ReceiptModerationComponent implements OnInit {

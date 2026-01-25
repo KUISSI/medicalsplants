@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../../core/services/user.service';
-import { User, UserPage } from '../../../core/models/user. model';
+import { User, UserPage } from '../../../core/models/user.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
     ConfirmDialogComponent
   ],
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list. component.scss']
+  styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
   private userService = inject(UserService);

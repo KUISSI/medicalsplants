@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PlantService } from '../../../core/services/plant.service';
-import { Plant, PlantPage, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant. model';
+import { Plant, PlantPage, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
     ConfirmDialogComponent
   ],
   templateUrl: './plant-list.component.html',
-  styleUrls: ['./plant-list. component.scss']
+  styleUrls: ['./plant-list.component.scss']
 })
 export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);

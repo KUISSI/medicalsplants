@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LoaderComponent } from '../../../shared/components/loader/loader. component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SymptomService } from '../../../core/services/symptom.service';
 import { Symptom } from '../../../core/models/symptom.model';
@@ -18,8 +18,8 @@ import { ToastrService } from 'ngx-toastr';
     LoaderComponent,
     ConfirmDialogComponent
   ],
-  templateUrl: './symptom-list.component. html',
-  styleUrls: ['./symptom-list. component.scss']
+  templateUrl: './symptom-list.component.html',
+  styleUrls: ['./symptom-list.component.scss']
 })
 export class SymptomListComponent implements OnInit {
   private symptomService = inject(SymptomService);

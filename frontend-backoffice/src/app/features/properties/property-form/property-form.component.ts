@@ -6,14 +6,14 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { PropertyService } from '../../../core/services/property.service';
 import { SymptomService } from '../../../core/services/symptom.service';
 import { Property, CreatePropertyRequest, UpdatePropertyRequest } from '../../../core/models/property.model';
-import { Symptom } from '../../../core/models/symptom. model';
+import { Symptom } from '../../../core/models/symptom.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-property-form',
   standalone:  true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './property-form. component.html',
+  templateUrl:  './property-form.component.html',
   styleUrls:  ['./property-form.component.scss']
 })
 export class PropertyFormComponent implements OnInit {

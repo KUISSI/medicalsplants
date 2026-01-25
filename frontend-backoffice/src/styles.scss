@@ -43,7 +43,7 @@ a {
   text-decoration: none;
   transition: color 0.3s ease;
 
-  &: hover {
+  &:hover {
     color: #764ba2;
   }
 }
@@ -78,12 +78,12 @@ select {
 /* ==========================================================================
    SCROLLBAR
    ========================================================================== */
-: :-webkit-scrollbar {
+::-webkit-scrollbar {
   width:  8px;
   height: 8px;
 }
 
-: :-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
@@ -99,7 +99,7 @@ select {
 /* ==========================================================================
    SELECTION
    ========================================================================== */
-:: selection {
+::selection {
   background: #667eea;
   color:  #ffffff;
 }
@@ -107,7 +107,7 @@ select {
 /* ==========================================================================
    TOASTR CUSTOMIZATION
    ========================================================================== */
-. toast-success {
+.toast-success {
   background-color: #4CAF50 !important;
 }
 
@@ -119,6 +119,6 @@ select {
   background-color: #FF9800 !important;
 }
 
-. toast-info {
+.toast-info {
   background-color:  #667eea !important;
 }

@@ -33,7 +33,7 @@ import { RouterModule } from '@angular/router';
       overflow: hidden;
       transition: all 0.3s ease;
 
-      &:: before {
+      &::before {
         content: '';
         position: absolute;
         top: 0;
@@ -43,13 +43,13 @@ import { RouterModule } from '@angular/router';
         background: var(--accent-color, #667eea);
       }
 
-      &: hover {
+      &:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
       }
 
       &__icon {
-        font-size: 2. 5rem;
+        font-size: 2.5rem;
         width: 60px;
         height: 60px;
         display: flex;

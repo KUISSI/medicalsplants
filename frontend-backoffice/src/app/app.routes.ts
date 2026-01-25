@@ -20,7 +20,7 @@ export const routes: Routes = [
       // Dashboard
       {
         path: '',
-        loadComponent:  () => import('./features/dashboard/dashboard. component')
+        loadComponent:  () => import('./features/dashboard/dashboard.component')
           .then(m => m.DashboardComponent),
         title: 'Dashboard - Admin'
       },
@@ -49,12 +49,12 @@ export const routes: Routes = [
       {
         path: 'symptoms/new',
         loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
-          .then(m => m. SymptomFormComponent),
+          .then(m => m.SymptomFormComponent),
         title: 'Nouveau symptôme - Admin'
       },
       {
         path: 'symptoms/: id/edit',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form. component')
+        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
           .then(m => m.SymptomFormComponent),
         title: 'Modifier symptôme - Admin'
       },
@@ -75,7 +75,7 @@ export const routes: Routes = [
       {
         path:  'properties/:id/edit',
         loadComponent: () => import('./features/properties/property-form/property-form.component')
-          .then(m => m. PropertyFormComponent),
+          .then(m => m.PropertyFormComponent),
         title: 'Modifier propriété - Admin'
       },
 
@@ -95,7 +95,7 @@ export const routes: Routes = [
       {
         path:  'plants/:id/edit',
         loadComponent: () => import('./features/plants/plant-form/plant-form.component')
-          .then(m => m. PlantFormComponent),
+          .then(m => m.PlantFormComponent),
         title: 'Modifier plante - Admin'
       },
 

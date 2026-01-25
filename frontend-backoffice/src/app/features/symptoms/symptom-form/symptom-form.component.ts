@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-symptom-form',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl: './symptom-form. component.html',
+  templateUrl: './symptom-form.component.html',
   styleUrls:  ['./symptom-form.component.scss']
 })
 export class SymptomFormComponent implements OnInit {

@@ -14,6 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   authService = inject(AuthService);
+  today = new Date();
 
   isLoading = true;
 

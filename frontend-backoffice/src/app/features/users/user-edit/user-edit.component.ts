@@ -4,14 +4,14 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { UserService } from '../../../core/services/user.service';
-import { User, UpdateUserRequest } from '../../../core/models/user. model';
+import { User, UpdateUserRequest } from '../../../core/models/user.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
   imports:  [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './user-edit. component.html',
+  templateUrl:  './user-edit.component.html',
   styleUrls:  ['./user-edit.component.scss']
 })
 export class UserEditComponent implements OnInit {

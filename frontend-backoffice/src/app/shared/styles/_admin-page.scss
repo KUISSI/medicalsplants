@@ -71,7 +71,7 @@
     outline: none;
     transition: border-color 0.3s;
 
-    &: focus {
+    &:focus {
       border-color: #667eea;
     }
   }
@@ -126,7 +126,7 @@
     background: #f0f0f0;
     color: #666;
 
-    &: hover {
+    &:hover {
       background: #e0e0e0;
     }
   }
@@ -191,7 +191,7 @@
     font-size: 0.9rem;
     transition: all 0.3s;
 
-    &:hover: not(:disabled) {
+    &:hover:not(:disabled) {
       border-color: #667eea;
       color: #667eea;
     }
