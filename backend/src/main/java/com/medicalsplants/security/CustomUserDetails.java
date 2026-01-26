@@ -3,32 +3,29 @@ package com.medicalsplants.security;
 import com.medicalsplants.model.entity.User;
 import com.medicalsplants.model.enums.Role;
 import com.medicalsplants.model.enums.UserStatus;
-import lombok.AllArgsConstructor;
+import lombok.Value;
 import lombok.Builder;
-import lombok.Getter;
 import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 
-@Getter
+@Value
 @Builder
-@AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final UUID id;
-    private final String email;
-    private final String password;
-    private final String pseudo;
-    private final String firstname;
-    private final String lastname;
-    private final Role role;
-    private final UserStatus status;
-    private final Boolean isActive;
-    private final Boolean isEmailVerified;
+    UUID id;
+    String email;
+    String password;
+    String pseudo;
+    String firstname;
+    String lastname;
+    Role role;
+    UserStatus status;
+    Boolean isActive;
+    Boolean isEmailVerified;
 
     public static CustomUserDetails fromUser(User user) {
         return CustomUserDetails.builder()

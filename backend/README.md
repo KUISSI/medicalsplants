@@ -1,3 +1,35 @@
+# Lancer le backend avec gestion d'environnement centralisée
+
+## 1. Depuis la racine du projet, choisir l'environnement (dev ou prod)
+
+**Windows PowerShell**
+```
+cd "C:\Users\Utilisateur\Documents\Simplon_pc\Dossier Projets\Projet certification\medicalsplants"
+./switch-env.ps1 dev  # ou prod
+cd backend
+./start-backend.ps1
+```
+
+**Linux/Mac**
+```
+cd "/chemin/vers/medicalsplants"
+./switch-env.sh dev  # ou prod
+cd backend
+./start-backend.sh
+```
+
+## 2. Depuis le dossier backend directement (Windows)
+
+```
+cd "C:\Users\Utilisateur\Documents\Simplon_pc\Dossier Projets\Projet certification\medicalsplants\backend"
+../switch-env.ps1 dev
+./start-backend.ps1
+```
+
+> **Remarque :**
+> - Le script `switch-env.ps1` doit rester à la racine du projet pour centraliser la gestion des environnements.
+> - Le script `start-backend.ps1` doit rester dans le dossier backend.
+> - Ne pas dupliquer les scripts.
 # Medicals Plants API
 
 API REST pour l'application Medicals Plants. 
@@ -11,6 +43,7 @@ API REST pour l'application Medicals Plants.
 - PostgreSQL
 - Maven
 
+
 ## Installation
 
 ### Prérequis
@@ -22,10 +55,54 @@ API REST pour l'application Medicals Plants.
 
 ### Configuration
 
-1. Copier le fichier d'environnement : 
-```bash
-cp ../.env.example ../.env
+1. Copier le fichier d'environnement :
+  ```bash
+  cp ../.env.example ../.env
+  ```
+
+2. **Configurer vos variables dans `.env`** (voir exemple fourni). Toutes les variables nécessaires (DB, JWT, mail, etc.) sont centralisées dans ce fichier.
+
+
+### Lancement du backend (DRY & Pro)
+
+#### 1. Choisir l'environnement (dev/prod)
+
+À la racine du projet, activez l'environnement voulu :
+
+```powershell
+# Windows PowerShell
+./switch-env.ps1 dev   # ou prod
 ```
+```bash
+# Linux/Mac
+./switch-env.sh dev   # ou prod
+```
+
+Cela copie le bon fichier (.env.dev ou .env.prod) vers .env, utilisé par tous les scripts et Docker.
+
+#### 2. Lancer le backend en local (hors Docker)
+
+Dans le dossier `backend` :
+
+**Windows (PowerShell)**
+```powershell
+./start-backend.ps1
+```
+**Linux/Mac**
+```bash
+./start-backend.sh
+```
+Ces scripts chargent automatiquement toutes les variables du `.env` avant de lancer le backend avec Maven. Plus besoin de modifier le script à chaque changement de variable ou de JWT.
+
+#### 3. Lancer le backend avec Docker Compose
+
+À la racine du projet :
+```bash
+docker-compose -f docker-compose.dev.yml up --build
+```
+Le service backend lit automatiquement le `.env` (et le JWT_SECRET) grâce à la directive `env_file` dans le compose. Les variables sont injectées dans le conteneur.
+
+> **Astuce** : Pour un environnement reproductible, versionnez un `.env.example` et ne commitez jamais votre `.env` personnel.
 
 ## Import de données relationnelles (jointures)
 

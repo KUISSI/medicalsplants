@@ -13,6 +13,7 @@ import java.time.Instant;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+
 @Getter
 @Setter
 public abstract class BaseEntity {
@@ -24,4 +25,6 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    // Lombok génère les getters/setters
 }

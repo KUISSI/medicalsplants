@@ -60,6 +60,28 @@ services:
     networks:
       - medicalsplants-network
 
+  # ========================================
+  # Backend
+  # ========================================
+  backend:
+    image: medicalsplants-backend:latest
+    container_name: medicalsplants-backend-dev
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - medicalsplants-network
+    env_file:
+      - .env
+
 volumes:
   postgres_data:
     name: medicalsplants-postgres-data

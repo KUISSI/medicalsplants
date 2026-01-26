@@ -134,4 +134,30 @@ KUISSI - Projet de fin d'études
 Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
 
 ⚠️ Avertissement médical : Les informations fournies dans cette application sont à titre informatif uniquement et ne remplacent pas l'avis d'un professionnel de santé.
-```
+
+# Utilisation des scripts d'environnement et de lancement backend
+
+1. Pour choisir l'environnement (dev ou prod) :
+   - Ouvre un terminal à la racine du projet.
+   - Lance la commande suivante :
+     
+     switch-env.bat dev   (pour activer le développement)
+     switch-env.bat prod  (pour activer la production)
+
+   Cela copie le bon fichier (.env.dev ou .env.prod) dans .env, qui sera utilisé par le backend.
+
+2. Pour lancer le backend :
+   - Place-toi dans le dossier backend (ou utilise le script start-backend.ps1 qui le fait automatiquement).
+   - Lance le script :
+     
+     backend\start-backend.ps1
+   
+   ou, manuellement :
+     
+     cd backend
+     mvn spring-boot:run
+
+Le backend utilisera alors la configuration de l'environnement actif (défini par le .env courant).
+
+Astuce :
+- Tu peux changer d'environnement à tout moment en relançant switch-env.bat, puis en redémarrant le backend.

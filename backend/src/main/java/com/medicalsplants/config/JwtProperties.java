@@ -1,12 +1,14 @@
 package com.medicalsplants.config;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Data
 @Component
 @ConfigurationProperties(prefix = "app.jwt")
+@Data
+@NoArgsConstructor
 public class JwtProperties {
 
     private String secret;
