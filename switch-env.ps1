@@ -2,9 +2,9 @@
 # Libérer le port 8080 si occupé (ignore l'erreur si rien n'écoute)
 $tcp = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue
 if ($tcp) {
-    $pid = $tcp.OwningProcess
-    Write-Host "Arrêt du processus sur le port 8080 (PID $pid)" -ForegroundColor Yellow
-    Stop-Process -Id $pid -Force
+    $processId = $tcp.OwningProcess
+    Write-Host "Arrêt du processus sur le port 8080 (PID $processId)" -ForegroundColor Yellow
+    Stop-Process -Id $processId -Force
 }
 else {
     Write-Host "Aucun processus n'utilise le port 8080" -ForegroundColor Green
