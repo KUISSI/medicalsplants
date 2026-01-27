@@ -79,8 +79,8 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         return userRepository.findById(java.util.Objects.requireNonNull(currentUser.getId(), "User id cannot be null"))
-            .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
-            .orElse(ResponseEntity.notFound().build());
+                .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Verify email")
@@ -93,6 +93,10 @@ public class AuthController {
     @Operation(summary = "Forgot password")
     @PostMapping("/forgot-password")
     public ResponseEntity<MessageResponse> forgotPassword(@RequestParam String email) {
+        // Validation stricte du format email
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            return ResponseEntity.badRequest().body(MessageResponse.of("Invalid email format"));
+        }
         MessageResponse response = authService.forgotPassword(email);
         return ResponseEntity.ok(response);
     }
