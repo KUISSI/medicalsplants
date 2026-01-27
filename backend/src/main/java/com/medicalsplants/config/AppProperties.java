@@ -1,40 +1,69 @@
 package com.medicalsplants.config;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
 @Component
 @ConfigurationProperties(prefix = "app")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class AppProperties {
 
-    @Builder.Default
     private String name = "Medicals Plants";
-    @Builder.Default
     private String url = "http://localhost:8080";
-    @Builder.Default
     private Cors cors = new Cors();
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
+    public AppProperties() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Cors getCors() {
+        return cors;
+    }
+
+    public void setCors(Cors cors) {
+        this.cors = cors;
+    }
+
     public static class Cors {
 
-        @Builder.Default
         private List<String> allowedOrigins = new ArrayList<>();
-        @Builder.Default
         private long maxAge = 3600;
+
+        public Cors() {
+        }
+
+        public List<String> getAllowedOrigins() {
+            return allowedOrigins;
+        }
+
+        public void setAllowedOrigins(List<String> allowedOrigins) {
+            this.allowedOrigins = allowedOrigins;
+        }
+
+        public long getMaxAge() {
+            return maxAge;
+        }
+
+        public void setMaxAge(long maxAge) {
+            this.maxAge = maxAge;
+        }
     }
 
 }

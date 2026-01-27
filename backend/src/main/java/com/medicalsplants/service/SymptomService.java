@@ -2,9 +2,9 @@ package com.medicalsplants.service;
 
 import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.model.entity.Symptom;
 import com.medicalsplants.repository.SymptomRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +14,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class SymptomService {
 
     private final SymptomRepository symptomRepository;
+
+    public SymptomService(SymptomRepository symptomRepository) {
+        this.symptomRepository = symptomRepository;
+    }
 
     @Transactional(readOnly = true)
     public List<Symptom> getAllSymptoms() {
@@ -27,6 +30,9 @@ public class SymptomService {
     @Transactional(readOnly = true)
     public Symptom getSymptomById(String id) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) {
+            throw new BadRequestException("Symptom id cannot be null");
+        }
         return symptomRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id));
     }
@@ -81,6 +87,9 @@ public class SymptomService {
     @Transactional
     public void deleteSymptom(String id) {
         Symptom symptom = getSymptomById(id);
+        if (symptom == null) {
+            throw new BadRequestException("Symptom cannot be null");
+        }
         symptomRepository.delete(symptom);
     }
 }

@@ -12,16 +12,16 @@ public class UserMapper {
             return null;
         }
 
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .pseudo(user.getPseudo())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .avatar(user.getAvatar())
-                .role(user.getRole() != null ? user.getRole().name() : null)
-                .isEmailVerified(user.getIsEmailVerified())
-                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
-                .build();
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getPseudo(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getAvatar(),
+                user.getRole() != null ? user.getRole().name() : null,
+                user.getIsEmailVerified(),
+                user.getCreatedAt() != null ? user.getCreatedAt().toString() : null
+        );
     }
 }

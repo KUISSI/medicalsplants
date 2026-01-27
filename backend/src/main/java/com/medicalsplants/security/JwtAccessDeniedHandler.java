@@ -30,14 +30,16 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .success(false)
-                .error(ErrorResponse.ErrorDetails.builder()
-                        .code("FORBIDDEN")
-                        .message("Access denied.  Insufficient permissions.")
-                        .build())
-                .timestamp(Instant.now().toString())
-                .build();
+        ErrorResponse.ErrorDetails details = new ErrorResponse.ErrorDetails(
+                "FORBIDDEN",
+                "Access denied.  Insufficient permissions.",
+                null
+        );
+        ErrorResponse errorResponse = new ErrorResponse(
+                false,
+                details,
+                Instant.now().toString()
+        );
 
         objectMapper.writeValue(response.getOutputStream(), errorResponse);
     }

@@ -30,14 +30,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .success(false)
-                .error(ErrorResponse.ErrorDetails.builder()
-                        .code("UNAUTHORIZED")
-                        .message("Authentication required.  Please login.")
-                        .build())
-                .timestamp(Instant.now().toString())
-                .build();
+        ErrorResponse.ErrorDetails details = new ErrorResponse.ErrorDetails(
+                "UNAUTHORIZED",
+                "Authentication required.  Please login.",
+                null
+        );
+        ErrorResponse errorResponse = new ErrorResponse(
+                false,
+                details,
+                Instant.now().toString()
+        );
 
         objectMapper.writeValue(response.getOutputStream(), errorResponse);
     }

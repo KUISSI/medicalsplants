@@ -1,23 +1,12 @@
 package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "ms_review")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Review extends BaseEntity {
 
     @Id
@@ -39,7 +28,6 @@ public class Review extends BaseEntity {
 
     // Réponses à cet avis
     @OneToMany(mappedBy = "parentReview", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Review> replies = new ArrayList<>();
 
     // Recette concernée
@@ -53,8 +41,85 @@ public class Review extends BaseEntity {
 
     // Interactions (émojis, cadeaux)
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Interaction> interactions = new ArrayList<>();
+
+    public Review() {
+    }
+
+    public Review(java.util.UUID id, String content, User sender, Review parentReview, List<Review> replies, Receipt receipt, Instant deletedAt, List<Interaction> interactions) {
+        this.id = id;
+        this.content = content;
+        this.sender = sender;
+        this.parentReview = parentReview;
+        this.replies = replies != null ? replies : new ArrayList<>();
+        this.receipt = receipt;
+        this.deletedAt = deletedAt;
+        this.interactions = interactions != null ? interactions : new ArrayList<>();
+    }
+
+    public java.util.UUID getId() {
+        return id;
+    }
+
+    public void setId(java.util.UUID id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public Review getParentReview() {
+        return parentReview;
+    }
+
+    public void setParentReview(Review parentReview) {
+        this.parentReview = parentReview;
+    }
+
+    public List<Review> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Review> replies) {
+        this.replies = replies;
+    }
+
+    public Receipt getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(Receipt receipt) {
+        this.receipt = receipt;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public List<Interaction> getInteractions() {
+        return interactions;
+    }
+
+    public void setInteractions(List<Interaction> interactions) {
+        this.interactions = interactions;
+    }
 
     // Méthodes utilitaires
     public boolean isDeleted() {

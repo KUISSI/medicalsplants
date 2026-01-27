@@ -5,7 +5,6 @@ import com.medicalsplants.service.SymptomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +17,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/symptoms")
 @Tag(name = "Symptoms", description = "Symptom management endpoints")
-@RequiredArgsConstructor
 public class SymptomController {
 
     private final SymptomService symptomService;
+
+    public SymptomController(SymptomService symptomService) {
+        this.symptomService = symptomService;
+    }
 
     @Operation(summary = "Get all symptoms")
     @GetMapping

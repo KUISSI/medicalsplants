@@ -1,11 +1,7 @@
 package com.medicalsplants.exception;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class BadRequestException extends BaseException {
 
     public BadRequestException(String message) {

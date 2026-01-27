@@ -1,16 +1,25 @@
 package com.medicalsplants.e2e;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.regex.Matcher;
+
 import java.util.regex.Pattern;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = com.medicalsplants.MedicalsPlantsApplication.class)
+@ActiveProfiles("test")
 public class RegistrationEmailVerificationIT {
 
     @LocalServerPort
@@ -48,11 +57,16 @@ public class RegistrationEmailVerificationIT {
                 "http://localhost:[0-9]+/api/v1/auth/verify-email\\?token=([a-zA-Z0-9\\-]+)");
         Matcher m = p.matcher(body);
         assertThat(m.find()).isTrue();
-        String verifyUrl = m.group(0);
+        String verifyUrl = Objects.requireNonNull(m.group(0), "Verification URL not found in email body");
+        assertThat(verifyUrl).isNotNull();
+        assertThat(verifyUrl).isNotNull();
 
         // 4. Call the verification endpoint
         ResponseEntity<String> verifyResp = restTemplate.getForEntity(verifyUrl, String.class);
         assertThat(verifyResp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(verifyResp.getBody()).contains("Email verified successfully");
+        String verifyBody = verifyResp.getBody();
+        assertThat(verifyBody).isNotNull();
+        assertThat(verifyBody).contains("Email verified successfully");
     }
+
 }

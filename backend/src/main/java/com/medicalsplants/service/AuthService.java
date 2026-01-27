@@ -18,7 +18,6 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,7 +32,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -43,6 +41,22 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
+
+    public AuthService(UserRepository userRepository,
+            RefreshTokenRepository refreshTokenRepository,
+            MailService mailService,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider,
+            AuthenticationManager authenticationManager,
+            UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManager = authenticationManager;
+        this.userMapper = userMapper;
+    }
 
     @Transactional
     public MessageResponse register(RegisterRequest request) {
@@ -58,22 +72,25 @@ public class AuthService {
             throw new ConflictException("This pseudo is already taken");
         }
 
-        User user = User.builder()
-                .id(java.util.UUID.randomUUID())
-                .email(request.getEmail().toLowerCase().trim())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .pseudo(request.getPseudo().trim())
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .role(Role.USER)
-                .status(UserStatus.ACTIVE)
-                .isActive(true)
-                .isEmailVerified(false)
-                .emailVerificationToken(UUID.randomUUID().toString())
-                .build();
+        User user = new User(
+                java.util.UUID.randomUUID(),
+                request.getFirstname(),
+                request.getLastname(),
+                request.getPseudo().trim(),
+                null, // phone non fourni par RegisterRequest
+                request.getEmail().toLowerCase().trim(),
+                passwordEncoder.encode(request.getPassword()),
+                null, // avatar
+                Role.USER,
+                UserStatus.ACTIVE,
+                true,
+                false
+        );
+        String emailVerificationToken = UUID.randomUUID().toString();
+        user.setEmailVerificationToken(emailVerificationToken);
 
         userRepository.save(user);
-        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+        mailService.sendEmailVerification(user.getEmail(), emailVerificationToken);
         return MessageResponse.of("Registration successful.  Please check your email to verify your account.");
     }
 
@@ -100,19 +117,20 @@ public class AuthService {
 
             userRepository.updateLastLoginAt(userDetails.getId(), Instant.now());
 
-            User user = userRepository.findById(userDetails.getId()).orElseThrow();
+            User user = userRepository.findById(java.util.Objects.requireNonNull(userDetails.getId(), "User id cannot be null")).orElseThrow();
 
-            return AuthResponse.builder()
-                    .success(true)
-                    .data(AuthResponse.AuthData.builder()
-                            .accessToken(accessToken)
-                            .refreshToken(refreshToken)
-                            .tokenType("Bearer")
-                            .expiresIn(jwtTokenProvider.getExpirationInSeconds())
-                            .user(userMapper.toResponse(user))
-                            .build())
-                    .timestamp(Instant.now().toString())
-                    .build();
+            return new AuthResponse(
+                    true,
+                    new AuthResponse.AuthData(
+                            accessToken,
+                            refreshToken,
+                            "Bearer",
+                            jwtTokenProvider.getExpirationInSeconds(),
+                            userMapper.toResponse(user)
+                    ),
+                    "Login successful",
+                    Instant.now().toString()
+            );
 
         } catch (BadCredentialsException e) {
             throw new UnauthorizedException("Invalid email or password");
@@ -148,17 +166,18 @@ public class AuthService {
 
         saveRefreshToken(user.getId(), newRefreshToken);
 
-        return AuthResponse.builder()
-                .success(true)
-                .data(AuthResponse.AuthData.builder()
-                        .accessToken(newAccessToken)
-                        .refreshToken(newRefreshToken)
-                        .tokenType("Bearer")
-                        .expiresIn(jwtTokenProvider.getExpirationInSeconds())
-                        .user(userMapper.toResponse(user))
-                        .build())
-                .timestamp(Instant.now().toString())
-                .build();
+        AuthResponse.AuthData data = new AuthResponse.AuthData();
+        data.setAccessToken(newAccessToken);
+        data.setRefreshToken(newRefreshToken);
+        data.setTokenType("Bearer");
+        data.setExpiresIn(jwtTokenProvider.getExpirationInSeconds());
+        data.setUser(userMapper.toResponse(user));
+
+        AuthResponse response = new AuthResponse();
+        response.setSuccess(true);
+        response.setData(data);
+        response.setTimestamp(Instant.now().toString());
+        return response;
     }
 
     @Transactional
@@ -232,24 +251,17 @@ public class AuthService {
         return MessageResponse.of("Password reset successfully. Please login with your new password.");
     }
 
-    private void saveRefreshToken(String userId, String token) {
-        saveRefreshToken(UUID.fromString(userId), token);
-    }
-
     private void saveRefreshToken(UUID userId, String token) {
-        User user = userRepository.getReferenceById(userId);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .id(java.util.UUID.randomUUID())
-                .token(token)
-                .user(user)
-                .expiresAt(Instant.now().plusMillis(jwtTokenProvider.getRefreshExpirationInSeconds() * 1000))
-                .isRevoked(false)
-                .build();
-
+        // Enregistre le refresh token pour l'utilisateur
+        User user = userRepository.findById(java.util.Objects.requireNonNull(userId, "userId cannot be null")).orElseThrow();
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setToken(token);
+        refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS)); // exemple durée
         refreshTokenRepository.save(refreshToken);
     }
 
+    // Pour compatibilité API (si besoin d'accepter un String)
     public MessageResponse logoutAll(String userId) {
         return logoutAll(UUID.fromString(userId));
     }
