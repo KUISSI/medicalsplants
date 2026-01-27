@@ -258,6 +258,7 @@ public class AuthService {
         refreshToken.setUser(user);
         refreshToken.setToken(token);
         refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS)); // exemple durée
+        // L'id sera généré automatiquement par Hibernate
         refreshTokenRepository.save(refreshToken);
     }
 

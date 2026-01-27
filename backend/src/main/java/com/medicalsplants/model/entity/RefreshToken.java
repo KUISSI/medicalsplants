@@ -8,7 +8,9 @@ import java.time.Instant;
 public class RefreshToken extends BaseEntity {
 
     @Id
-    @Column(columnDefinition = "uuid")
+    @jakarta.persistence.GeneratedValue
+    @org.hibernate.annotations.UuidGenerator
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private java.util.UUID id;
 
     @Column(nullable = false, unique = true, length = 100)

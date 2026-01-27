@@ -1,4 +1,10 @@
 
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("dev", "prod")]
+    [string]$envName
+)
+
 # Libérer le port 8080 si occupé (ignore l'erreur si rien n'écoute)
 $tcp = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue
 if ($tcp) {
@@ -10,13 +16,6 @@ else {
     Write-Host "Aucun processus n'utilise le port 8080" -ForegroundColor Green
 }
 
-# Gestion de l'environnement
-param(
-    [Parameter(Mandatory = $true)]
-    [ValidateSet("dev", "prod")]
-    [string]$envName
-)
-
 $projectRoot = $PSScriptRoot
 $target = Join-Path $projectRoot ".env"
 $source = Join-Path $projectRoot ".env.$envName"
@@ -26,8 +25,14 @@ if (!(Test-Path $source)) {
     exit 1
 }
 
-Copy-Item $source $target -Force
-Write-Host "Environnement actif : $envName (.env ← .env.$envName)" -ForegroundColor Green
+# Ne copie pas si source et target sont identiques
+if ((Get-Item $source).FullName -eq (Get-Item $target).FullName) {
+    Write-Host "L'environnement $envName est déjà actif (.env ← .env.$envName)" -ForegroundColor Yellow
+}
+else {
+    Copy-Item $source $target -Force
+    Write-Host "Environnement actif : $envName (.env ← .env.$envName)" -ForegroundColor Green
+}
 
 # Aller à la racine du projet
 Set-Location $projectRoot
