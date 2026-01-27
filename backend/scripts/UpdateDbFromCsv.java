@@ -16,7 +16,7 @@ public class UpdateDbFromCsv {
     private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "postgres");
 
     // Dossier contenant les CSV
-    private static final String CSV_DIR = Paths.get("database", "csv").toString();
+    private static final String CSV_DIR = Paths.get("data_import").toString();
 
     // Exemple de structure à adapter selon vos tables
     private static final Map<String, List<String>> TABLES = new HashMap<>();
@@ -42,10 +42,93 @@ public class UpdateDbFromCsv {
                 importCsv(conn, table, columns, csvPath);
                 System.out.println("Table " + table + " mise à jour.");
             }
+            // Import des tables de jointure à partir des fichiers de correspondance
+            importPlantPropertyJoin(conn);
+            importPropertySymptomJoin(conn);
             System.out.println("Import terminé.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Import ms_plant_property à partir de plant_property_title.csv
+    private static void importPlantPropertyJoin(Connection conn) throws IOException, SQLException {
+        Path csvPath = Paths.get(CSV_DIR, "plant_property_title.csv");
+        if (!Files.exists(csvPath)) {
+            System.out.println("Fichier CSV manquant : " + csvPath);
+            return;
+        }
+        try (BufferedReader reader = Files.newBufferedReader(csvPath)) {
+            String header = reader.readLine(); // Ignore l'en-tête
+            String line;
+            String sql = "INSERT INTO ms_plant_property (plant_id, property_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(";");
+                    if (values.length < 2) {
+                        continue;
+                    }
+                    String plantTitle = values[0].trim();
+                    String propertyTitle = values[1].trim();
+                    UUID plantId = getIdByTitle(conn, "ms_plant", "title", plantTitle);
+                    UUID propertyId = getIdByTitle(conn, "ms_property", "title", propertyTitle);
+                    if (plantId != null && propertyId != null) {
+                        pstmt.setObject(1, plantId);
+                        pstmt.setObject(2, propertyId);
+                        pstmt.addBatch();
+                    }
+                }
+                pstmt.executeBatch();
+            }
+        }
+        System.out.println("Table ms_plant_property mise à jour.");
+    }
+
+    // Import ms_property_symptom à partir de property_symptom_title.csv
+    private static void importPropertySymptomJoin(Connection conn) throws IOException, SQLException {
+        Path csvPath = Paths.get(CSV_DIR, "property_symptom_title.csv");
+        if (!Files.exists(csvPath)) {
+            System.out.println("Fichier CSV manquant : " + csvPath);
+            return;
+        }
+        try (BufferedReader reader = Files.newBufferedReader(csvPath)) {
+            String header = reader.readLine(); // Ignore l'en-tête
+            String line;
+            String sql = "INSERT INTO ms_property_symptom (property_id, symptom_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(";");
+                    if (values.length < 2) {
+                        continue;
+                    }
+                    String propertyTitle = values[0].trim();
+                    String symptomTitle = values[1].trim();
+                    UUID propertyId = getIdByTitle(conn, "ms_property", "title", propertyTitle);
+                    UUID symptomId = getIdByTitle(conn, "ms_symptom", "title", symptomTitle);
+                    if (propertyId != null && symptomId != null) {
+                        pstmt.setObject(1, propertyId);
+                        pstmt.setObject(2, symptomId);
+                        pstmt.addBatch();
+                    }
+                }
+                pstmt.executeBatch();
+            }
+        }
+        System.out.println("Table ms_property_symptom mise à jour.");
+    }
+
+    // Utilitaire pour retrouver l'ID d'une entité par son titre
+    private static UUID getIdByTitle(Connection conn, String table, String titleCol, String titleValue) throws SQLException {
+        String sql = String.format("SELECT id FROM %s WHERE %s = ?", table, titleCol);
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, titleValue);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return (UUID) rs.getObject("id");
+                }
+            }
+        }
+        return null;
     }
 
     private static Connection connectDb() throws SQLException {
