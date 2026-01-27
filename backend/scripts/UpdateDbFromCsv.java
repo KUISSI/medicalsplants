@@ -154,7 +154,12 @@ public class UpdateDbFromCsv {
                 while ((line = reader.readLine()) != null) {
                     String[] values = line.split(",");
                     for (int i = 0; i < columns.size(); i++) {
-                        pstmt.setString(i + 1, i < values.length ? values[i] : null);
+                        String col = columns.get(i);
+                        if ((col.equalsIgnoreCase("created_at") || col.equalsIgnoreCase("updated_at")) && (i >= values.length || values[i] == null || values[i].isEmpty())) {
+                            pstmt.setTimestamp(i + 1, new java.sql.Timestamp(System.currentTimeMillis()));
+                        } else {
+                            pstmt.setString(i + 1, i < values.length ? values[i] : null);
+                        }
                     }
                     pstmt.addBatch();
                 }
