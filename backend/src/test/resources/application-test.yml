@@ -20,4 +20,4 @@ app:
 
 logging:
   level:
-    [com.medicalsplants]: DEBUG
+    "[com.medicalsplants]": DEBUG
