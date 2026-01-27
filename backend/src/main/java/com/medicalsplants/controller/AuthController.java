@@ -14,12 +14,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-// ...existing code...
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-// ...existing code...
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -78,7 +76,11 @@ public class AuthController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userRepository.findById(java.util.Objects.requireNonNull(currentUser.getId(), "User id cannot be null"))
+        if (currentUser == null) {
+            // Pas authentifié : retourne 401 Unauthorized
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return userRepository.findById(currentUser.getId())
                 .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
