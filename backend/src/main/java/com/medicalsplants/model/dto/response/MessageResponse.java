@@ -1,21 +1,45 @@
 package com.medicalsplants.model.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.Instant;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MessageResponse {
 
     private boolean success;
     private String message;
     private String timestamp;
+
+    public MessageResponse() {
+    }
+
+    public MessageResponse(boolean success, String message, String timestamp) {
+        this.success = success;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     // Méthodes utilitaires statiques
     public static MessageResponse of(String message) {

@@ -1,12 +1,13 @@
 package com.medicalsplants.controller;
 
 import com.medicalsplants.model.entity.Review;
+import com.medicalsplants.model.dto.response.ReviewResponse;
+import com.medicalsplants.model.mapper.ReviewMapper;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,61 +22,67 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/reviews")
 @Tag(name = "Reviews", description = "Review management endpoints")
-@RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final ReviewMapper reviewMapper;
+
+    public ReviewController(ReviewService reviewService, ReviewMapper reviewMapper) {
+        this.reviewService = reviewService;
+        this.reviewMapper = reviewMapper;
+    }
 
     @Operation(summary = "Get reviews by receipt ID")
     @GetMapping("/receipt/{receiptId}")
-    public ResponseEntity<List<Review>> getReviewsByReceiptId(@PathVariable UUID receiptId) {
+    public ResponseEntity<List<ReviewResponse>> getReviewsByReceiptId(@PathVariable UUID receiptId) {
         List<Review> reviews = reviewService.getReviewsByReceiptId(receiptId.toString());
-        return ResponseEntity.ok(reviews);
+        List<ReviewResponse> dtoList = reviews.stream().map(reviewMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @Operation(summary = "Get review by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable UUID id) {
+    public ResponseEntity<ReviewResponse> getReviewById(@PathVariable UUID id) {
         Review review = reviewService.getReviewById(id.toString());
-        return ResponseEntity.ok(review);
+        return ResponseEntity.ok(reviewMapper.toDto(review));
     }
 
     @Operation(summary = "Get reviews by user ID")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<Review>> getReviewsByUserId(@PathVariable UUID userId,
+    public ResponseEntity<Page<ReviewResponse>> getReviewsByUserId(@PathVariable UUID userId,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<Review> reviews = reviewService.getReviewsByUserId(userId.toString(), pageable);
-        return ResponseEntity.ok(reviews);
+        Page<ReviewResponse> dtoPage = reviewService.getReviewsByUserId(userId.toString(), pageable).map(reviewMapper::toDto);
+        return ResponseEntity.ok(dtoPage);
     }
 
     @Operation(summary = "Get my reviews")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
-    public ResponseEntity<Page<Review>> getMyReviews(@AuthenticationPrincipal CustomUserDetails currentUser,
+    public ResponseEntity<Page<ReviewResponse>> getMyReviews(@AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<Review> reviews = reviewService.getReviewsByUserId(currentUser.getId().toString(), pageable);
-        return ResponseEntity.ok(reviews);
+        Page<ReviewResponse> dtoPage = reviewService.getReviewsByUserId(currentUser.getId().toString(), pageable).map(reviewMapper::toDto);
+        return ResponseEntity.ok(dtoPage);
     }
 
     @Operation(summary = "Create a review")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public ResponseEntity<Review> createReview(@RequestParam String receiptId,
+    public ResponseEntity<ReviewResponse> createReview(@RequestParam String receiptId,
             @RequestParam String content,
             @RequestParam(required = false) String parentReviewId,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         Review review = reviewService.createReview(receiptId, content, parentReviewId, currentUser.getId().toString());
-        return ResponseEntity.status(HttpStatus.CREATED).body(review);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewMapper.toDto(review));
     }
 
     @Operation(summary = "Update a review")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable UUID id,
+    public ResponseEntity<ReviewResponse> updateReview(@PathVariable UUID id,
             @RequestParam String content,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         Review review = reviewService.updateReview(id.toString(), content, currentUser);
-        return ResponseEntity.ok(review);
+        return ResponseEntity.ok(reviewMapper.toDto(review));
     }
 
     @Operation(summary = "Delete a review")

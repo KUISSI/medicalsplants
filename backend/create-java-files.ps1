@@ -307,7 +307,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "ms_refresh_token")
+@Table(name = "ms_refresh_tokens")
 public class RefreshToken extends BaseEntity {
 
     @Id

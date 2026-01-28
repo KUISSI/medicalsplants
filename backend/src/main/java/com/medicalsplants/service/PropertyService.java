@@ -1,25 +1,30 @@
 package com.medicalsplants.service;
 
-import com.medicalsplants.exception.ConflictException;
-import com.medicalsplants.exception.ResourceNotFoundException;
-import com.medicalsplants.model.entity.Property;
-import com.medicalsplants.model.entity.Symptom;
-import com.medicalsplants.repository.PropertyRepository;
-import com.medicalsplants.repository.SymptomRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.medicalsplants.exception.ConflictException;
+import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.exception.BadRequestException;
+import com.medicalsplants.model.entity.Property;
+import com.medicalsplants.model.entity.Symptom;
+import com.medicalsplants.repository.PropertyRepository;
+import com.medicalsplants.repository.SymptomRepository;
+
 @Service
-@RequiredArgsConstructor
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final SymptomRepository symptomRepository;
+
+    public PropertyService(PropertyRepository propertyRepository, SymptomRepository symptomRepository) {
+        this.propertyRepository = propertyRepository;
+        this.symptomRepository = symptomRepository;
+    }
 
     @Transactional(readOnly = true)
     public List<Property> getAllProperties() {
@@ -29,6 +34,9 @@ public class PropertyService {
     @Transactional(readOnly = true)
     public Property getPropertyById(String id) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) {
+            throw new BadRequestException("Property id cannot be null");
+        }
         return propertyRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id));
     }
@@ -36,6 +44,9 @@ public class PropertyService {
     @Transactional(readOnly = true)
     public List<Property> getPropertiesBySymptomId(String symptomId) {
         UUID uuid = UUID.fromString(symptomId);
+        if (uuid == null) {
+            throw new BadRequestException("Symptom id cannot be null");
+        }
         return propertyRepository.findBySymptomId(uuid);
     }
 
@@ -54,6 +65,9 @@ public class PropertyService {
         if (symptomIds != null && !symptomIds.isEmpty()) {
             for (String symptomId : symptomIds) {
                 UUID uuid = UUID.fromString(symptomId);
+                if (uuid == null) {
+                    throw new BadRequestException("Symptom id cannot be null");
+                }
                 Symptom symptom = symptomRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
                 property.getSymptoms().add(symptom);
@@ -81,6 +95,9 @@ public class PropertyService {
     @Transactional
     public void deleteProperty(String id) {
         Property property = getPropertyById(id);
+        if (property == null) {
+            throw new BadRequestException("Property cannot be null");
+        }
         propertyRepository.delete(property);
     }
 
@@ -88,6 +105,9 @@ public class PropertyService {
     public Property addSymptomToProperty(String propertyId, String symptomId) {
         Property property = getPropertyById(propertyId);
         UUID uuid = UUID.fromString(symptomId);
+        if (uuid == null) {
+            throw new BadRequestException("Symptom id cannot be null");
+        }
         Symptom symptom = symptomRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
         property.getSymptoms().add(symptom);
@@ -98,6 +118,9 @@ public class PropertyService {
     public Property removeSymptomFromProperty(String propertyId, String symptomId) {
         Property property = getPropertyById(propertyId);
         UUID uuid = UUID.fromString(symptomId);
+        if (uuid == null) {
+            throw new BadRequestException("Symptom id cannot be null");
+        }
         property.getSymptoms().removeIf(s -> s.getId().equals(uuid));
         return propertyRepository.save(property);
     }

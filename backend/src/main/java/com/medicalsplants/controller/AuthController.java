@@ -1,4 +1,8 @@
+
+
 package com.medicalsplants.controller;
+
+import java.util.UUID;
 
 import com.medicalsplants.model.dto.request.LoginRequest;
 import com.medicalsplants.model.dto.request.RefreshTokenRequest;
@@ -14,22 +18,26 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication and authorization endpoints")
-@RequiredArgsConstructor
+
 public class AuthController {
 
     private final AuthService authService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    public AuthController(AuthService authService, UserRepository userRepository, UserMapper userMapper) {
+        this.authService = authService;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
@@ -71,10 +79,16 @@ public class AuthController {
     @Operation(summary = "Get current user")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
+    @SuppressWarnings("null")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return userRepository.findById(currentUser.getId())
-                .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
-                .orElse(ResponseEntity.notFound().build());
+        if (currentUser == null || currentUser.getId() == null) {
+            // Pas authentifié ou id absent : retourne 401 Unauthorized
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UUID userId = currentUser.getId();
+        return userRepository.findById(userId)
+            .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Verify email")
@@ -87,6 +101,10 @@ public class AuthController {
     @Operation(summary = "Forgot password")
     @PostMapping("/forgot-password")
     public ResponseEntity<MessageResponse> forgotPassword(@RequestParam String email) {
+        // Validation stricte du format email
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            return ResponseEntity.badRequest().body(MessageResponse.of("Invalid email format"));
+        }
         MessageResponse response = authService.forgotPassword(email);
         return ResponseEntity.ok(response);
     }

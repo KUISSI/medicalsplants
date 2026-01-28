@@ -3,7 +3,6 @@ package com.medicalsplants.model.entity;
 import com.medicalsplants.model.enums.ReceiptStatus;
 import com.medicalsplants.model.enums.ReceiptType;
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,12 +11,95 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ms_receipt")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class Receipt extends BaseEntity {
+
+    public Receipt() {
+    }
+
+    public Receipt(java.util.UUID id, String title, ReceiptType type, String description, Boolean isPremium, ReceiptStatus status, User author, Set<Plant> plants, List<Review> reviews) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.isPremium = isPremium;
+        this.status = status;
+        this.author = author;
+        this.plants = plants;
+        this.reviews = reviews;
+    }
+
+    public java.util.UUID getId() {
+        return id;
+    }
+
+    public void setId(java.util.UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ReceiptType getType() {
+        return type;
+    }
+
+    public void setType(ReceiptType type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getIsPremium() {
+        return isPremium;
+    }
+
+    public void setIsPremium(Boolean isPremium) {
+        this.isPremium = isPremium;
+    }
+
+    public ReceiptStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReceiptStatus status) {
+        this.status = status;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Set<Plant> getPlants() {
+        return plants;
+    }
+
+    public void setPlants(Set<Plant> plants) {
+        this.plants = plants;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 
     @Id
     @Column(columnDefinition = "uuid")
@@ -34,12 +116,10 @@ public class Receipt extends BaseEntity {
     private String description;
 
     @Column(name = "is_premium")
-    @Builder.Default
     private Boolean isPremium = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    @Builder.Default
     private ReceiptStatus status = ReceiptStatus.PUBLISHED;
 
     // Relation avec User (auteur)
@@ -54,12 +134,10 @@ public class Receipt extends BaseEntity {
             joinColumns = @JoinColumn(name = "receipt_id"),
             inverseJoinColumns = @JoinColumn(name = "plant_id")
     )
-    @Builder.Default
     private Set<Plant> plants = new HashSet<>();
 
     // Relations One-to-Many avec Review
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     // Méthodes utilitaires

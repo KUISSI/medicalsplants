@@ -5,7 +5,6 @@ import com.medicalsplants.service.PropertyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,37 +17,38 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/properties")
 @Tag(name = "Properties", description = "Property management endpoints")
-@RequiredArgsConstructor
 public class PropertyController {
 
     private final PropertyService propertyService;
 
+    public PropertyController(PropertyService propertyService) {
+        this.propertyService = propertyService;
+    }
+
     @Operation(summary = "Get all properties")
     @GetMapping
     public ResponseEntity<List<Property>> getAllProperties() {
-        List<Property> properties = propertyService.getAllProperties();
-        return ResponseEntity.ok(properties);
+        return ResponseEntity.ok(propertyService.getAllProperties());
     }
 
     @Operation(summary = "Get property by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable UUID id) {
-        Property property = propertyService.getPropertyById(id.toString());
-        return ResponseEntity.ok(property);
+        return ResponseEntity.ok(propertyService.getPropertyById(id.toString()));
     }
 
     @Operation(summary = "Get properties by symptom ID")
     @GetMapping("/symptom/{symptomId}")
     public ResponseEntity<List<Property>> getPropertiesBySymptomId(@PathVariable UUID symptomId) {
-        List<Property> properties = propertyService.getPropertiesBySymptomId(symptomId.toString());
-        return ResponseEntity.ok(properties);
+        return ResponseEntity.ok(propertyService.getPropertiesBySymptomId(symptomId.toString()));
     }
 
     @Operation(summary = "Create a new property (Admin only)")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Property> createProperty(@RequestParam String title,
+    public ResponseEntity<Property> createProperty(
+            @RequestParam String title,
             @RequestParam String propertyFamily,
             @RequestParam(required = false) String propertyDetail,
             @RequestParam(required = false) Set<String> symptomIds) {
@@ -60,7 +60,8 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable UUID id,
+    public ResponseEntity<Property> updateProperty(
+            @PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String propertyFamily,
             @RequestParam(required = false) String propertyDetail) {
@@ -72,8 +73,8 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProperty(@PathVariable String id) {
-        propertyService.deleteProperty(id);
+    public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
+        propertyService.deleteProperty(id.toString());
         return ResponseEntity.noContent().build();
     }
 
@@ -81,9 +82,10 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/symptoms/{symptomId}")
-    public ResponseEntity<Property> addSymptomToProperty(@PathVariable String id,
-            @PathVariable String symptomId) {
-        Property property = propertyService.addSymptomToProperty(id, symptomId);
+    public ResponseEntity<Property> addSymptomToProperty(
+            @PathVariable UUID id,
+            @PathVariable UUID symptomId) {
+        Property property = propertyService.addSymptomToProperty(id.toString(), symptomId.toString());
         return ResponseEntity.ok(property);
     }
 
@@ -91,9 +93,10 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/symptoms/{symptomId}")
-    public ResponseEntity<Property> removeSymptomFromProperty(@PathVariable String id,
-            @PathVariable String symptomId) {
-        Property property = propertyService.removeSymptomFromProperty(id, symptomId);
+    public ResponseEntity<Property> removeSymptomFromProperty(
+            @PathVariable UUID id,
+            @PathVariable UUID symptomId) {
+        Property property = propertyService.removeSymptomFromProperty(id.toString(), symptomId.toString());
         return ResponseEntity.ok(property);
     }
 }

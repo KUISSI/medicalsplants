@@ -1,16 +1,15 @@
 package com.medicalsplants.security;
 
 import com.medicalsplants.config.JwtProperties;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -20,10 +19,8 @@ public class JwtTokenProvider {
 
     public JwtTokenProvider(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
-        byte[] keyBytes = Decoders.BASE64.decode(
-                java.util.Base64.getEncoder().encodeToString(jwtProperties.getSecret().getBytes())
-        );
-        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+        // Utilise le secret tel quel (doit faire au moins 32 caractères pour HS256)
+        this.secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
 
     public String generateAccessToken(Authentication authentication) {
@@ -34,33 +31,24 @@ public class JwtTokenProvider {
     public String generateAccessToken(CustomUserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtProperties.getExpiration());
-
-        String authorities = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
         return Jwts.builder()
                 .subject(userDetails.getId().toString())
-                .claim("email", userDetails.getEmail())
-                .claim("pseudo", userDetails.getPseudo())
                 .claim("role", userDetails.getRole().name())
-                .claim("authorities", authorities)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(secretKey)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     public String generateRefreshToken(CustomUserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtProperties.getRefreshExpiration());
-
         return Jwts.builder()
                 .subject(userDetails.getId().toString())
                 .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(secretKey)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -70,7 +58,6 @@ public class JwtTokenProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
         return claims.getSubject();
     }
 

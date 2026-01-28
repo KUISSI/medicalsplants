@@ -1,6 +1,5 @@
 package com.medicalsplants.exception;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,7 +13,6 @@ import java.time.Instant;
 import java.util.List;
 
 @RestControllerAdvice
-@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     // Méthode utilitaire pour construire une réponse d'erreur
@@ -24,16 +22,15 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(String code, String message,
             List<ErrorResponse.FieldErrorDetails> details, HttpStatus status) {
-        ErrorResponse response = ErrorResponse.builder()
-                .success(false)
-                .error(ErrorResponse.ErrorDetails.builder()
-                        .code(code)
-                        .message(message)
-                        .details(details)
-                        .build())
-                .timestamp(Instant.now().toString())
-                .build();
-        return new ResponseEntity<>(response, status);
+        ErrorResponse.ErrorDetails errorDetails = new ErrorResponse.ErrorDetails();
+        errorDetails.setCode(code);
+        errorDetails.setMessage(message);
+        errorDetails.setDetails(details);
+        ErrorResponse response = new ErrorResponse();
+        response.setSuccess(false);
+        response.setError(errorDetails);
+        response.setTimestamp(Instant.now().toString());
+        return new ResponseEntity<>(response, java.util.Objects.requireNonNull(status, "HttpStatus cannot be null"));
     }
 
     @ExceptionHandler(BaseException.class)
@@ -46,10 +43,12 @@ public class GlobalExceptionHandler {
         List<ErrorResponse.FieldErrorDetails> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> ErrorResponse.FieldErrorDetails.builder()
-                .field(error.getField())
-                .message(error.getDefaultMessage())
-                .build())
+                .map(error -> {
+                    ErrorResponse.FieldErrorDetails fed = new ErrorResponse.FieldErrorDetails();
+                    fed.setField(error.getField());
+                    fed.setMessage(error.getDefaultMessage());
+                    return fed;
+                })
                 .toList();
 
         return buildErrorResponse("VALIDATION_ERROR", "Validation failed", fieldErrors, HttpStatus.BAD_REQUEST);

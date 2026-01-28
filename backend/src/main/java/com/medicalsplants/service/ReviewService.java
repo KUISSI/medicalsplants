@@ -2,6 +2,7 @@ package com.medicalsplants.service;
 
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.model.entity.Receipt;
 import com.medicalsplants.model.entity.Review;
 import com.medicalsplants.model.entity.User;
@@ -9,7 +10,6 @@ import com.medicalsplants.repository.ReceiptRepository;
 import com.medicalsplants.repository.ReviewRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class ReviewService {
+
+    public ReviewService(ReviewRepository reviewRepository, ReceiptRepository receiptRepository, UserRepository userRepository) {
+        this.reviewRepository = reviewRepository;
+        this.receiptRepository = receiptRepository;
+        this.userRepository = userRepository;
+    }
 
     private final ReviewRepository reviewRepository;
     private final ReceiptRepository receiptRepository;
@@ -54,10 +59,16 @@ public class ReviewService {
     @Transactional
     public Review createReview(String receiptId, String content, String parentReviewId, String senderId) {
         UUID receiptUuid = UUID.fromString(receiptId);
+        if (receiptUuid == null) {
+            throw new BadRequestException("Receipt id cannot be null");
+        }
         Receipt receipt = receiptRepository.findById(receiptUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", receiptId));
 
         UUID senderUuid = UUID.fromString(senderId);
+        if (senderUuid == null) {
+            throw new BadRequestException("Sender id cannot be null");
+        }
         User sender = userRepository.findById(senderUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", senderId));
 
@@ -69,6 +80,9 @@ public class ReviewService {
 
         if (parentReviewId != null && !parentReviewId.isBlank()) {
             UUID parentUuid = UUID.fromString(parentReviewId);
+            if (parentUuid == null) {
+                throw new BadRequestException("Parent review id cannot be null");
+            }
             Review parentReview = reviewRepository.findByIdAndNotDeleted(parentUuid)
                     .orElseThrow(() -> new ResourceNotFoundException("Review", "id", parentReviewId));
             review.setParentReview(parentReview);

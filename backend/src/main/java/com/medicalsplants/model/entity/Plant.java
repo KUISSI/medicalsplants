@@ -1,18 +1,12 @@
 package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "ms_plant")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Plant extends BaseEntity {
 
     @Id
@@ -32,13 +26,62 @@ public class Plant extends BaseEntity {
             joinColumns = @JoinColumn(name = "plant_id"),
             inverseJoinColumns = @JoinColumn(name = "property_id")
     )
-    @Builder.Default
     private Set<Property> properties = new HashSet<>();
 
     // Relations Many-to-Many avec Receipt (inverse)
     @ManyToMany(mappedBy = "plants")
-    @Builder.Default
     private Set<Receipt> receipts = new HashSet<>();
+
+    public Plant() {
+    }
+
+    public Plant(java.util.UUID id, String title, String description, Set<Property> properties, Set<Receipt> receipts) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.properties = properties;
+        this.receipts = receipts;
+    }
+
+    public java.util.UUID getId() {
+        return id;
+    }
+
+    public void setId(java.util.UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Property> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Set<Property> properties) {
+        this.properties = properties;
+    }
+
+    public Set<Receipt> getReceipts() {
+        return receipts;
+    }
+
+    public void setReceipts(Set<Receipt> receipts) {
+        this.receipts = receipts;
+    }
 
     // Méthodes utilitaires
     public void addProperty(Property property) {

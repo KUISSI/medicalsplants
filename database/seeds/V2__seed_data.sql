@@ -71,7 +71,6 @@ CREATE TABLE ms_plant (
 
 CREATE INDEX IF NOT EXISTS idx_plant_title ON ms_plant(title);
 
--- RECEIPTS
 CREATE TABLE ms_receipt (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(200) NOT NULL,
@@ -84,7 +83,12 @@ CREATE TABLE ms_receipt (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
-
+-- Exemple d'insertion pour ms_receipt (auteur : gkuissi@gmail.com)
+INSERT INTO ms_receipt (id, title, type, description, is_premium, status, author_id, created_at)
+VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'Tisane relaxante', 'HOT_DRINK', 'Mélange de plantes pour favoriser la détente.', FALSE, 'PUBLISHED', '549ab169-f074-4abb-9610-c35907ab9abb', '2026-01-27 11:00:00'),
+    ('b2c3d4e5-f6a7-8901-bcde-fa2345678901', 'Baume apaisant', 'LOTION', 'Préparation à base de plantes pour application cutanée.', TRUE, 'DRAFT', '549ab169-f074-4abb-9610-c35907ab9abb', '2026-01-27 11:10:00')
+ON CONFLICT (id) DO NOTHING;
 CREATE INDEX IF NOT EXISTS idx_receipt_title ON ms_receipt(title);
 
 -- Many-to-Many tables
@@ -106,7 +110,6 @@ CREATE TABLE ms_receipt_plant (
     PRIMARY KEY (receipt_id, plant_id)
 );
 
--- REVIEWS
 CREATE TABLE ms_review (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     content TEXT NOT NULL,
@@ -117,6 +120,11 @@ CREATE TABLE ms_review (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
+-- Exemple d'insertion pour ms_review (utilisateur : 549ab169-f074-4abb-9610-c35907ab9abb)
+INSERT INTO ms_review (id, content, sender_id, receipt_id, created_at)
+VALUES
+    ('c3d4e5f6-a7b8-9012-cdef-ab3456789012', 'Très efficace, goût agréable.', '549ab169-f074-4abb-9610-c35907ab9abb', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', '2026-01-27 12:00:00'),
+    ('d4e5f6a7-b890-1234-defa-bc4567890123', 'Texture agréable, soulage rapidement.', '549ab169-f074-4abb-9610-c35907ab9abb', 'b2c3d4e5-f6a7-8901-bcde-fa2345678901', '2026-01-27 12:10:00');
 
 CREATE INDEX IF NOT EXISTS idx_review_receipt ON ms_review(receipt_id);
 CREATE INDEX IF NOT EXISTS idx_review_sender ON ms_review(sender_id);

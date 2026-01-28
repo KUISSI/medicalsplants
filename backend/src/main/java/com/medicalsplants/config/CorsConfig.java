@@ -1,6 +1,5 @@
 package com.medicalsplants.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,10 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class CorsConfig {
 
     private final AppProperties appProperties;
+
+    public CorsConfig(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

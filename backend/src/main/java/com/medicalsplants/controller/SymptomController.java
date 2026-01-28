@@ -5,7 +5,6 @@ import com.medicalsplants.service.SymptomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,51 +17,50 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/symptoms")
 @Tag(name = "Symptoms", description = "Symptom management endpoints")
-@RequiredArgsConstructor
 public class SymptomController {
 
     private final SymptomService symptomService;
 
+    public SymptomController(SymptomService symptomService) {
+        this.symptomService = symptomService;
+    }
+
     @Operation(summary = "Get all symptoms")
     @GetMapping
     public ResponseEntity<List<Symptom>> getAllSymptoms() {
-        List<Symptom> symptoms = symptomService.getAllSymptoms();
-        return ResponseEntity.ok(symptoms);
+        return ResponseEntity.ok(symptomService.getAllSymptoms());
     }
 
     @Operation(summary = "Get symptom by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Symptom> getSymptomById(@PathVariable UUID id) {
-        Symptom symptom = symptomService.getSymptomById(id.toString());
-        return ResponseEntity.ok(symptom);
+        return ResponseEntity.ok(symptomService.getSymptomById(id.toString()));
     }
 
     @Operation(summary = "Get symptoms by family")
     @GetMapping("/family/{family}")
     public ResponseEntity<List<Symptom>> getSymptomsByFamily(@PathVariable String family) {
-        List<Symptom> symptoms = symptomService.getSymptomsByFamily(family);
-        return ResponseEntity.ok(symptoms);
+        return ResponseEntity.ok(symptomService.getSymptomsByFamily(family));
     }
 
     @Operation(summary = "Get all symptom families")
     @GetMapping("/families")
     public ResponseEntity<List<String>> getAllFamilies() {
-        List<String> families = symptomService.getAllFamilies();
-        return ResponseEntity.ok(families);
+        return ResponseEntity.ok(symptomService.getAllFamilies());
     }
 
     @Operation(summary = "Get symptoms grouped by family")
     @GetMapping("/grouped")
     public ResponseEntity<Map<String, List<Symptom>>> getSymptomsGroupedByFamily() {
-        Map<String, List<Symptom>> grouped = symptomService.getSymptomsGroupedByFamily();
-        return ResponseEntity.ok(grouped);
+        return ResponseEntity.ok(symptomService.getSymptomsGroupedByFamily());
     }
 
     @Operation(summary = "Create a new symptom (Admin only)")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Symptom> createSymptom(@RequestParam String title,
+    public ResponseEntity<Symptom> createSymptom(
+            @RequestParam String title,
             @RequestParam String symptomFamily,
             @RequestParam(required = false) String symptomDetail) {
         Symptom symptom = symptomService.createSymptom(title, symptomFamily, symptomDetail);
@@ -73,7 +71,8 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Symptom> updateSymptom(@PathVariable UUID id,
+    public ResponseEntity<Symptom> updateSymptom(
+            @PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String symptomFamily,
             @RequestParam(required = false) String symptomDetail) {

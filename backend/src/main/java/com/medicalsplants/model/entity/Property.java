@@ -1,18 +1,12 @@
 package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "ms_property")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Property extends BaseEntity {
 
     @Id
@@ -22,7 +16,7 @@ public class Property extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "property_family", nullable = false, length = 20)
+    @Column(name = "property_family", nullable = false, length = 100)
     private String propertyFamily;
 
     @Column(name = "property_detail", nullable = false, columnDefinition = "TEXT")
@@ -35,13 +29,71 @@ public class Property extends BaseEntity {
             joinColumns = @JoinColumn(name = "property_id"),
             inverseJoinColumns = @JoinColumn(name = "symptom_id")
     )
-    @Builder.Default
     private Set<Symptom> symptoms = new HashSet<>();
 
     // Relations Many-to-Many avec Plant (inverse)
     @ManyToMany(mappedBy = "properties")
-    @Builder.Default
     private Set<Plant> plants = new HashSet<>();
+
+    public Property() {
+    }
+
+    public Property(java.util.UUID id, String title, String propertyFamily, String propertyDetail, Set<Symptom> symptoms, Set<Plant> plants) {
+        this.id = id;
+        this.title = title;
+        this.propertyFamily = propertyFamily;
+        this.propertyDetail = propertyDetail;
+        this.symptoms = symptoms;
+        this.plants = plants;
+    }
+
+    public java.util.UUID getId() {
+        return id;
+    }
+
+    public void setId(java.util.UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPropertyFamily() {
+        return propertyFamily;
+    }
+
+    public void setPropertyFamily(String propertyFamily) {
+        this.propertyFamily = propertyFamily;
+    }
+
+    public String getPropertyDetail() {
+        return propertyDetail;
+    }
+
+    public void setPropertyDetail(String propertyDetail) {
+        this.propertyDetail = propertyDetail;
+    }
+
+    public Set<Symptom> getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(Set<Symptom> symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public Set<Plant> getPlants() {
+        return plants;
+    }
+
+    public void setPlants(Set<Plant> plants) {
+        this.plants = plants;
+    }
 
     // Méthodes utilitaires
     public void addSymptom(Symptom symptom) {

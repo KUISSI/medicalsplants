@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicalsplants.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -14,10 +13,14 @@ import java.io.IOException;
 import java.time.Instant;
 
 @Component
-@RequiredArgsConstructor
+
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void commence(HttpServletRequest request,
@@ -27,14 +30,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .success(false)
-                .error(ErrorResponse.ErrorDetails.builder()
-                        .code("UNAUTHORIZED")
-                        .message("Authentication required.  Please login.")
-                        .build())
-                .timestamp(Instant.now().toString())
-                .build();
+        ErrorResponse.ErrorDetails details = new ErrorResponse.ErrorDetails(
+                "UNAUTHORIZED",
+                "Authentication required.  Please login.",
+                null
+        );
+        ErrorResponse errorResponse = new ErrorResponse(
+                false,
+                details,
+                Instant.now().toString()
+        );
 
         objectMapper.writeValue(response.getOutputStream(), errorResponse);
     }
