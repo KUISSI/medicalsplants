@@ -87,8 +87,8 @@ public class AuthController {
         }
         UUID userId = currentUser.getId();
         return userRepository.findById(userId)
-                .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
-                .orElse(ResponseEntity.notFound().build());
+            .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Verify email")

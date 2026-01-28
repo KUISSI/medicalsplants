@@ -13,7 +13,7 @@ public class RefreshToken extends BaseEntity {
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private java.util.UUID id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 255)
     private String token;
 
     @Column(name = "expires_at", nullable = false)

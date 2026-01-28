@@ -126,7 +126,7 @@ public class AuthService {
                             refreshToken,
                             "Bearer",
                             jwtTokenProvider.getExpirationInSeconds(),
-                            userMapper.toResponse(user)
+                            userMapper.toDto(user)
                     ),
                     "Login successful",
                     Instant.now().toString()
@@ -171,7 +171,7 @@ public class AuthService {
         data.setRefreshToken(newRefreshToken);
         data.setTokenType("Bearer");
         data.setExpiresIn(jwtTokenProvider.getExpirationInSeconds());
-        data.setUser(userMapper.toResponse(user));
+        data.setUser(userMapper.toDto(user));
 
         AuthResponse response = new AuthResponse();
         response.setSuccess(true);
