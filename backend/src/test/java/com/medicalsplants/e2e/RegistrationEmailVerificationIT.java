@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import com.medicalsplants.config.TestMailConfig;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = com.medicalsplants.MedicalsPlantsApplication.class)
+@Import(TestMailConfig.class)
 @ActiveProfiles("test")
 public class RegistrationEmailVerificationIT {
 

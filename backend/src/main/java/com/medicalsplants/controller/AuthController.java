@@ -1,4 +1,8 @@
+
+
 package com.medicalsplants.controller;
+
+import java.util.UUID;
 
 import com.medicalsplants.model.dto.request.LoginRequest;
 import com.medicalsplants.model.dto.request.RefreshTokenRequest;
@@ -75,14 +79,16 @@ public class AuthController {
     @Operation(summary = "Get current user")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
+    @SuppressWarnings("null")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        if (currentUser == null) {
-            // Pas authentifié : retourne 401 Unauthorized
+        if (currentUser == null || currentUser.getId() == null) {
+            // Pas authentifié ou id absent : retourne 401 Unauthorized
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return userRepository.findById(currentUser.getId())
-                .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
-                .orElse(ResponseEntity.notFound().build());
+        UUID userId = currentUser.getId();
+        return userRepository.findById(userId)
+            .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Verify email")

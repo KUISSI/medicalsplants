@@ -16,7 +16,7 @@ public class Property extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "property_family", nullable = false, length = 20)
+    @Column(name = "property_family", nullable = false, length = 100)
     private String propertyFamily;
 
     @Column(name = "property_detail", nullable = false, columnDefinition = "TEXT")
