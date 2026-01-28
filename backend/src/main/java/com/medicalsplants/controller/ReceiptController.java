@@ -23,7 +23,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/receipts")
 @Tag(name = "Receipts", description = "Recipe management endpoints")
-
 public class ReceiptController {
 
     private final ReceiptService receiptService;
@@ -38,16 +37,14 @@ public class ReceiptController {
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
         boolean canSeePremium = currentUser != null && currentUser.isPremium();
-        Page<Receipt> receipts = receiptService.getPublishedReceipts(canSeePremium, pageable);
-        return ResponseEntity.ok(receipts);
+        return ResponseEntity.ok(receiptService.getPublishedReceipts(canSeePremium, pageable));
     }
 
     @Operation(summary = "Get recipe by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Receipt> getReceiptById(@PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Receipt receipt = receiptService.getReceiptById(id.toString(), currentUser);
-        return ResponseEntity.ok(receipt);
+        return ResponseEntity.ok(receiptService.getReceiptById(id.toString(), currentUser));
     }
 
     @Operation(summary = "Get recipes by plant ID")
@@ -57,8 +54,7 @@ public class ReceiptController {
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
         boolean canSeePremium = currentUser != null && currentUser.isPremium();
-        Page<Receipt> receipts = receiptService.getReceiptsByPlantId(plantId.toString(), canSeePremium, pageable);
-        return ResponseEntity.ok(receipts);
+        return ResponseEntity.ok(receiptService.getReceiptsByPlantId(plantId.toString(), canSeePremium, pageable));
     }
 
     @Operation(summary = "Get pending recipes (Admin only)")
@@ -66,14 +62,14 @@ public class ReceiptController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pending")
     public ResponseEntity<List<Receipt>> getPendingReceipts() {
-        List<Receipt> receipts = receiptService.getPendingReceipts();
-        return ResponseEntity.ok(receipts);
+        return ResponseEntity.ok(receiptService.getPendingReceipts());
     }
 
     @Operation(summary = "Create a new recipe")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public ResponseEntity<Receipt> createReceipt(@RequestParam String title,
+    public ResponseEntity<Receipt> createReceipt(
+            @RequestParam String title,
             @RequestParam ReceiptType type,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) Boolean isPremium,
@@ -86,7 +82,8 @@ public class ReceiptController {
     @Operation(summary = "Update a recipe")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public ResponseEntity<Receipt> updateReceipt(@PathVariable UUID id,
+    public ResponseEntity<Receipt> updateReceipt(
+            @PathVariable UUID id,
             @RequestParam String title,
             @RequestParam ReceiptType type,
             @RequestParam(required = false) String description,
@@ -99,7 +96,8 @@ public class ReceiptController {
     @Operation(summary = "Submit recipe for review")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{id}/submit")
-    public ResponseEntity<Receipt> submitForReview(@PathVariable UUID id,
+    public ResponseEntity<Receipt> submitForReview(
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         Receipt receipt = receiptService.submitForReview(id.toString(), currentUser);
         return ResponseEntity.ok(receipt);
@@ -126,7 +124,8 @@ public class ReceiptController {
     @Operation(summary = "Delete a recipe")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReceipt(@PathVariable UUID id,
+    public ResponseEntity<Void> deleteReceipt(
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         receiptService.deleteReceipt(id.toString(), currentUser);
         return ResponseEntity.noContent().build();

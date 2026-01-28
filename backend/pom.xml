@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.10</version>
         <relativePath/>
     </parent>
     
@@ -95,7 +95,6 @@
         </dependency>
         
         <!-- Utilities -->
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -141,7 +140,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-
+                    <release>17</release>
                 </configuration>
             </plugin>
         </plugins>
