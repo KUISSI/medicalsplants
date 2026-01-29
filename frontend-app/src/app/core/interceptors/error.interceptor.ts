@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
@@ -25,13 +25,39 @@ export const errorInterceptor: HttpInterceptorFn = (
 
         case 400:
           errorMessage = error.error?.error?. message || 'Requête invalide';
-          toastr. error(errorMessage, 'Erreur de validation');
+          toastr.error(errorMessage, 'Erreur de validation');
           break;
 
         case 401:
-          errorMessage = 'Session expirée. Veuillez vous reconnecter.';
-          toastr.warning(errorMessage, 'Non autorisé');
-          authService.logout();
+          // Tentative de refresh automatique si refreshToken présent
+          const refreshToken = authService['storage'].get<string>(environment.refreshTokenKey);
+          if (refreshToken) {
+            return authService.refreshToken().pipe(
+              switchMap(() => {
+                // On rejoue la requête initiale avec le nouveau token
+                const newToken = authService.getAccessToken();
+                if (newToken) {
+                  const authReq = req.clone({
+                    setHeaders: { Authorization: `Bearer ${newToken}` }
+                  });
+                  return next(authReq);
+                }
+                // Si pas de nouveau token, logout
+                authService.logout();
+                toastr.warning('Session expirée. Veuillez vous reconnecter.', 'Non autorisé');
+                return throwError(() => error);
+              }),
+              catchError(() => {
+                authService.logout();
+                toastr.warning('Session expirée. Veuillez vous reconnecter.', 'Non autorisé');
+                return throwError(() => error);
+              })
+            );
+          } else {
+            errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+            toastr.warning(errorMessage, 'Non autorisé');
+            authService.logout();
+          }
           break;
 
         case 403:
@@ -41,7 +67,7 @@ export const errorInterceptor: HttpInterceptorFn = (
 
         case 404:
           errorMessage = 'Ressource non trouvée';
-          toastr. error(errorMessage, 'Non trouvé');
+          toastr.error(errorMessage, 'Non trouvé');
           break;
 
         case 409:
