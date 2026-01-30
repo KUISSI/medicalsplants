@@ -74,10 +74,16 @@ git clone https://github.com/KUISSI/medicalsplants.git
 cd medicalsplants
 
 # Copier la configuration
-cp . env.example .env
-
+cp .env.example .env
 
 # Démarrer les services en développement (PostgreSQL, MailHog, etc.)
+
+# Méthode ultra-simple pour lancer le backend (cross-platform)
+# Windows (PowerShell) :
+#   ./scripts/run-dev.ps1
+# Linux / macOS / Git Bash :
+#   bash scripts/run-dev.sh
+```
 docker-compose -f docker-compose.dev.yml up -d
 
 # Démarrer les services en production (base de données, backend, etc.)
