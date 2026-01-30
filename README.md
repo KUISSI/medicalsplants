@@ -7,7 +7,7 @@
 
 ## 📋 Description
 
-**Medicals Plants** est une application web permettant de découvrir les plantes médicinales et leurs propriétés thérapeutiques. Les utilisateurs peuvent rechercher des symptômes, trouver les plantes adaptées, consulter des recettes et partager leurs avis.
+**Medicals Plants** est une application web permettant de découvrir les plantes médicinales et leurs propriétés thérapeutiques. Les utilisateurs event rechercher des symptômes, trouver les plantes adaptées, consulter des recettes et partager leers avis.
 
 ### 🎯 Fonctionnalités principales
 
