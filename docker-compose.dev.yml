@@ -73,6 +73,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=db
+      - DB_PORT=5432
     ports:
       - "8080:8080"
     depends_on:

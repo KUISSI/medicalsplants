@@ -1,5 +1,7 @@
 # Lancer le backend avec gestion d'environnement centralisée
 
+> Compatibilité Java : le projet utilise Lombok et peut nécessiter Java 17 pour le build. Les scripts PowerShell détectent automatiquement un JDK 17 installé (ex. `C:\Program Files\Java\jdk-17`) et l'utilisent temporairement pour Maven si nécessaire. Si vous préférez, définissez manuellement `JAVA_HOME` vers un JDK 17.
+
 ## 1. Depuis la racine du projet, choisir l'environnement (dev ou prod)
 
 **Windows PowerShell**
@@ -92,7 +94,14 @@ Dans le dossier `backend` :
 ```bash
 ./start-backend.sh
 ```
-Ces scripts chargent automatiquement toutes les variables du `.env` avant de lancer le backend avec Maven. Plus besoin de modifier le script à chaque changement de variable ou de JWT.
+
+Options supplémentaires (professionnelles & DRY) :
+- Un script commun centralise la logique d'environnement et la détection de JDK 17 : `scripts/common-env.ps1` (PowerShell) et `scripts/common-env.sh` (bash). Ces helpers sont utilisés par `switch-env.ps1`, `backend/start-backend.ps1` et `scripts/start-backend-java17.ps1`.
+- Si vous voulez démarrer le jar directement avec JDK 17 (test rapide), utilisez :
+  - PowerShell : `scripts\start-backend-java17.ps1`
+  - Bash : `source scripts/common-env.sh && load_dotenv backend && ensure_java17 && java -jar backend/target/medicalsplants-api-1.0.0-SNAPSHOT.jar`
+
+Ces scripts chargent automatiquement toutes les variables du `.env` avant de lancer le backend avec Maven ou directement le jar. Plus besoin de modifier le script à chaque changement de variable ou de JWT.
 
 #### 3. Lancer le backend avec Docker Compose
 

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Pre-commit hook: check local Java version and quick compile
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Check Java
+if ! bash "$ROOT_DIR/scripts/check-java.sh" >/dev/null 2>&1; then
+  echo "Pre-commit: Java 17 required. Run scripts/check-java.sh for details." >&2
+  exit 1
+fi
+
+# Quick compile to catch annotation processing issues
+(cd "$ROOT_DIR/backend" && mvn -q -DskipTests test-compile) || { echo "Pre-commit: mvn test-compile failed" >&2; exit 1 }
+
+exit 0
