@@ -32,6 +32,19 @@ else {
 # Ensure Java 17 is available for this process (use local JDK if found)
 if (Get-Command Ensure-Java17 -ErrorAction SilentlyContinue) { Ensure-Java17 }
 
+# Ensure mvn is available (install locally if missing)
+if (-not (Get-Command mvn -ErrorAction SilentlyContinue)) {
+	$installer = Join-Path $PSScriptRoot "..\scripts\install-maven.ps1"
+	if (Test-Path $installer) {
+		Write-Host "Maven introuvable — installation locale en cours..." -ForegroundColor Cyan
+		try { . $installer } catch { Write-Host "Échec de l'installation locale de Maven : $_" -ForegroundColor Red; throw }
+	}
+ else {
+		Write-Host "Maven introuvable et $installer absent. Installez Maven globalement ou utilisez scripts/run-dev.ps1" -ForegroundColor Red
+		throw "Maven not found"
+	}
+}
+
 # Lancer Spring Boot
 mvn spring-boot:run
 

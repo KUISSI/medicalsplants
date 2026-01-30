@@ -12,7 +12,7 @@ function Get-ProjectRoot {
 
 function Load-DotEnv {
     param(
-        [ValidateSet('root','backend')]
+        [ValidateSet('root', 'backend')]
         [string]$Scope = 'root'
     )
     $proj = Get-ProjectRoot
@@ -20,7 +20,8 @@ function Load-DotEnv {
     if ($Scope -eq 'backend') {
         $candidates += Join-Path $proj 'backend\.env'
         $candidates += Join-Path $proj 'backend\src\main\resources\.env'
-    } else {
+    }
+    else {
         $candidates += Join-Path $proj '.env'
         $candidates += Join-Path $proj '.env.dev'
         $candidates += Join-Path $proj '.env.prod'
@@ -34,7 +35,7 @@ function Load-DotEnv {
                 if ($_ -match '^(.*?)=(.*)$') {
                     $k = $matches[1].Trim()
                     $v = $matches[2].Trim()
-                    $v = $v -replace '"',''
+                    $v = $v -replace '"', ''
                     [System.Environment]::SetEnvironmentVariable($k, $v, 'Process')
                 }
             }
@@ -49,7 +50,8 @@ function Test-JavaMajor {
         $out = & java -version 2>&1
         $major = ($out -join "`n") -replace '.*version "([0-9]+)\..*', '$1'
         if ($major -match '^\d+$') { return [int]$major }
-    } catch { }
+    }
+    catch { }
     return $null
 }
 
@@ -69,7 +71,8 @@ function Ensure-Java17 {
                 $out = & (Join-Path $candidate 'bin\java.exe') -version 2>&1
                 $m = ($out -join "`n") -replace '.*version "([0-9]+)\..*', '$1'
                 if ($m -eq '17') { Write-Host "JAVA_HOME déjà défini sur JDK 17 : $candidate" -ForegroundColor Green; return $true }
-            } catch { }
+            }
+            catch { }
         }
     }
 
@@ -94,4 +97,9 @@ function Ensure-Java17 {
     return $false
 }
 
-Export-ModuleMember -Function Load-DotEnv, Ensure-Java17, Get-ProjectRoot, Test-JavaMajor
+try {
+    Export-ModuleMember -Function Load-DotEnv, Ensure-Java17, Get-ProjectRoot, Test-JavaMajor
+}
+catch {
+    # Ignore: Export-ModuleMember can only be called inside a module. When dot-sourcing this script directly, swallow the error.
+}
