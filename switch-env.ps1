@@ -37,6 +37,16 @@ else {
 # Aller à la racine du projet
 Set-Location $projectRoot
 
+# Dot-source the common helper script and try to ensure Java 17 is available
+$common = Join-Path $projectRoot 'scripts\common-env.ps1'
+if (Test-Path $common) {
+    . $common
+    if (Get-Command Ensure-Java17 -ErrorAction SilentlyContinue) { Ensure-Java17 }
+}
+else {
+    Write-Host "scripts\common-env.ps1 introuvable; la détection automatique de JDK 17 ne sera pas faite." -ForegroundColor Yellow
+}
+
 # Aller dans le dossier backend et démarrer le backend
 Set-Location backend
 ./start-backend.ps1

@@ -4,6 +4,7 @@ import { Observable, catchError, throwError, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 export const errorInterceptor: HttpInterceptorFn = (
   req:  HttpRequest<unknown>,

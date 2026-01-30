@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/KUISSI/medicalsplants)
 [![License:  MIT](https://img.shields.io/badge/License-MIT-yellow. svg)](https://opensource.org/licenses/MIT)
-[![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/)
+[![Java](https://img.shields.io/badge/Java-17-blue)](https://openjdk.org/)
 [![Angular](https://img.shields.io/badge/Angular-17-red)](https://angular.io/)
 
 ## 📋 Description
@@ -28,7 +28,7 @@ Code
 
 ### Backend
 
-- **Java 21** - Langage de programmation
+- **Java 17** - Langage de programmation (obligatoire pour le build, Lombok/MapStruct)
 - **Spring Boot 3.2** - Framework backend
 - **Spring Security** - Authentification & autorisation
 - **Spring Data JPA** - Accès aux données
@@ -61,7 +61,7 @@ Code
 
 ### Prérequis
 
-- Java 21+
+- Java 17 (requis pour le build; utilisez `scripts/check-java.sh` pour vérifier localement)
 - Node.js 20+
 - Docker & Docker Compose
 - Maven 3.9+
@@ -74,10 +74,16 @@ git clone https://github.com/KUISSI/medicalsplants.git
 cd medicalsplants
 
 # Copier la configuration
-cp . env.example .env
-
+cp .env.example .env
 
 # Démarrer les services en développement (PostgreSQL, MailHog, etc.)
+
+# Méthode ultra-simple pour lancer le backend (cross-platform)
+# Windows (PowerShell) :
+#   ./scripts/run-dev.ps1
+# Linux / macOS / Git Bash :
+#   bash scripts/run-dev.sh
+```
 docker-compose -f docker-compose.dev.yml up -d
 
 # Démarrer les services en production (base de données, backend, etc.)
@@ -161,3 +167,14 @@ Le backend utilisera alors la configuration de l'environnement actif (défini pa
 
 Astuce :
 - Tu peux changer d'environnement à tout moment en relançant switch-env.bat, puis en redémarrant le backend.
+
+## 🔧 Scripts utilitaires & CI checks
+
+- Scripts centralisés (DRY) : `scripts/common-env.sh` et `scripts/common-env.ps1` (chargent `.env` et vérifient/forcent Java 17 si possible).
+- Smoke tests : `scripts/smoke-test.sh` (bash) et `scripts/smoke-test.ps1` (PowerShell) démarrent le jar et testent `/actuator/health`.
+- Pre-commit : `scripts/pre-commit` vérifie localement Java 17 et exécute `mvn test-compile`. Installez-le avec `scripts/install-git-hooks.sh`.
+- Makefile (racine) : commandes rapides — `make backend-build`, `make smoke-test`, `make install-hooks`, `make check-java`.
+
+CI : le workflow GitHub Actions exécute un check Java, package backend, smoke tests, puis les tests d'intégration (Testcontainers) avant de builder et pousser l'image backend.
+
+---
