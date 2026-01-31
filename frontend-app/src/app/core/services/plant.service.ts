@@ -15,7 +15,7 @@ export class PlantService {
 
   private mockPlants: Plant[] = [
     {
-      id: '1',
+      id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
       title: 'Lavande',
       description: 'La lavande est une plante aux multiples vertus. Elle est connue pour ses propriétés apaisantes et relaxantes, mais aussi pour ses bienfaits sur la peau. Elle est traditionnellement utilisée pour soulager les irritations cutanées, les piqûres d\'insectes et les coups de soleil.',
       symptomFamilies: ['Cutané', 'Nerveux'],
@@ -26,7 +26,7 @@ export class PlantService {
       createdAt: new Date().toISOString()
     },
     {
-      id: '2',
+      id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
       title: 'Camomille',
       description: 'La camomille est une plante douce, idéale pour les peaux sensibles et irritées. Elle est réputée pour ses propriétés anti-inflammatoires, adoucissantes et apaisantes. Elle est souvent utilisée en cas d\'eczéma, de psoriasis ou de réactions allergiques.',
       symptomFamilies: ['Cutané', 'Digestif'],
@@ -78,7 +78,8 @@ export class PlantService {
   }
 
   getBySymptomId(symptomId: string, page: number = 0, size: number = 20): Observable<PlantPage> {
-    if (symptomId === '16') {
+    // Return mock plants for symptom 'Nausées' during local development
+    if (symptomId === '77777777-7777-7777-7777-777777777777') {
       const plantPage: PlantPage = {
         content: this.mockPlants,
         totalElements: this.mockPlants.length,

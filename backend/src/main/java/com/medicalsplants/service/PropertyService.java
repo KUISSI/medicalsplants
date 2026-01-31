@@ -32,22 +32,20 @@ public class PropertyService {
     }
 
     @Transactional(readOnly = true)
-    public Property getPropertyById(String id) {
-        UUID uuid = UUID.fromString(id);
-        if (uuid == null) {
+    public Property getPropertyById(UUID id) {
+        if (id == null) {
             throw new BadRequestException("Property id cannot be null");
         }
-        return propertyRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id));
+        return propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id.toString()));
     }
 
     @Transactional(readOnly = true)
-    public List<Property> getPropertiesBySymptomId(String symptomId) {
-        UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
+    public List<Property> getPropertiesBySymptomId(UUID symptomId) {
+        if (symptomId == null) {
             throw new BadRequestException("Symptom id cannot be null");
         }
-        return propertyRepository.findBySymptomId(uuid);
+        return propertyRepository.findBySymptomId(symptomId);
     }
 
     @Transactional
@@ -64,10 +62,7 @@ public class PropertyService {
 
         if (symptomIds != null && !symptomIds.isEmpty()) {
             for (String symptomId : symptomIds) {
-                UUID uuid = UUID.fromString(symptomId);
-                if (uuid == null) {
-                    throw new BadRequestException("Symptom id cannot be null");
-                }
+                UUID uuid = com.medicalsplants.util.UuidUtils.parse("symptomId", symptomId);
                 Symptom symptom = symptomRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
                 property.getSymptoms().add(symptom);
@@ -78,7 +73,7 @@ public class PropertyService {
     }
 
     @Transactional
-    public Property updateProperty(String id, String title, String propertyFamily, String propertyDetail) {
+    public Property updateProperty(UUID id, String title, String propertyFamily, String propertyDetail) {
         Property property = getPropertyById(id);
 
         if (!property.getTitle().equals(title) && propertyRepository.existsByTitle(title)) {
@@ -93,7 +88,7 @@ public class PropertyService {
     }
 
     @Transactional
-    public void deleteProperty(String id) {
+    public void deleteProperty(UUID id) {
         Property property = getPropertyById(id);
         if (property == null) {
             throw new BadRequestException("Property cannot be null");
@@ -102,26 +97,24 @@ public class PropertyService {
     }
 
     @Transactional
-    public Property addSymptomToProperty(String propertyId, String symptomId) {
+    public Property addSymptomToProperty(UUID propertyId, UUID symptomId) {
         Property property = getPropertyById(propertyId);
-        UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
+        if (symptomId == null) {
             throw new BadRequestException("Symptom id cannot be null");
         }
-        Symptom symptom = symptomRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
+        Symptom symptom = symptomRepository.findById(symptomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId.toString()));
         property.getSymptoms().add(symptom);
         return propertyRepository.save(property);
     }
 
     @Transactional
-    public Property removeSymptomFromProperty(String propertyId, String symptomId) {
+    public Property removeSymptomFromProperty(UUID propertyId, UUID symptomId) {
         Property property = getPropertyById(propertyId);
-        UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
+        if (symptomId == null) {
             throw new BadRequestException("Symptom id cannot be null");
         }
-        property.getSymptoms().removeIf(s -> s.getId().equals(uuid));
+        property.getSymptoms().removeIf(s -> s.getId().equals(symptomId));
         return propertyRepository.save(property);
     }
 }

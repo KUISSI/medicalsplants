@@ -42,7 +42,7 @@ public class PlantController {
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
     public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
-        Plant plant = plantService.getPlantById(id.toString());
+        Plant plant = plantService.getPlantById(id);
         return ResponseEntity.ok(plantMapper.toDto(plant));
     }
 
@@ -50,14 +50,14 @@ public class PlantController {
     @GetMapping("/symptom/{symptomId}")
     public ResponseEntity<Page<PlantResponse>> getPlantsBySymptomId(@PathVariable UUID symptomId,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<PlantResponse> dtoPage = plantService.getPlantsBySymptomId(symptomId.toString(), pageable).map(plantMapper::toDto);
+        Page<PlantResponse> dtoPage = plantService.getPlantsBySymptomId(symptomId, pageable).map(plantMapper::toDto);
         return ResponseEntity.ok(dtoPage);
     }
 
     @Operation(summary = "Get plants by property ID")
     @GetMapping("/property/{propertyId}")
     public ResponseEntity<List<PlantResponse>> getPlantsByPropertyId(@PathVariable UUID propertyId) {
-        List<Plant> plants = plantService.getPlantsByPropertyId(propertyId.toString());
+        List<Plant> plants = plantService.getPlantsByPropertyId(propertyId);
         List<PlantResponse> dtoList = plants.stream().map(plantMapper::toDto).toList();
         return ResponseEntity.ok(dtoList);
     }
@@ -102,7 +102,7 @@ public class PlantController {
     public ResponseEntity<PlantResponse> addPropertyToPlant(
             @PathVariable UUID id,
             @PathVariable UUID propertyId) {
-        Plant plant = plantService.addPropertyToPlant(id.toString(), propertyId.toString());
+        Plant plant = plantService.addPropertyToPlant(id, propertyId);
         return ResponseEntity.ok(plantMapper.toDto(plant));
     }
 
@@ -113,7 +113,7 @@ public class PlantController {
     public ResponseEntity<PlantResponse> removePropertyFromPlant(
             @PathVariable UUID id,
             @PathVariable UUID propertyId) {
-        Plant plant = plantService.removePropertyFromPlant(id.toString(), propertyId.toString());
+        Plant plant = plantService.removePropertyFromPlant(id, propertyId);
         return ResponseEntity.ok(plantMapper.toDto(plant));
     }
 }

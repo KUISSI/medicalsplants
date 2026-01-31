@@ -34,13 +34,13 @@ public class PropertyController {
     @Operation(summary = "Get property by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable UUID id) {
-        return ResponseEntity.ok(propertyService.getPropertyById(id.toString()));
+        return ResponseEntity.ok(propertyService.getPropertyById(id));
     }
 
     @Operation(summary = "Get properties by symptom ID")
     @GetMapping("/symptom/{symptomId}")
     public ResponseEntity<List<Property>> getPropertiesBySymptomId(@PathVariable UUID symptomId) {
-        return ResponseEntity.ok(propertyService.getPropertiesBySymptomId(symptomId.toString()));
+        return ResponseEntity.ok(propertyService.getPropertiesBySymptomId(symptomId));
     }
 
     @Operation(summary = "Create a new property (Admin only)")
@@ -65,7 +65,7 @@ public class PropertyController {
             @RequestParam String title,
             @RequestParam String propertyFamily,
             @RequestParam(required = false) String propertyDetail) {
-        Property property = propertyService.updateProperty(id.toString(), title, propertyFamily, propertyDetail);
+        Property property = propertyService.updateProperty(id, title, propertyFamily, propertyDetail);
         return ResponseEntity.ok(property);
     }
 
@@ -74,7 +74,7 @@ public class PropertyController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
-        propertyService.deleteProperty(id.toString());
+        propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -85,7 +85,7 @@ public class PropertyController {
     public ResponseEntity<Property> addSymptomToProperty(
             @PathVariable UUID id,
             @PathVariable UUID symptomId) {
-        Property property = propertyService.addSymptomToProperty(id.toString(), symptomId.toString());
+        Property property = propertyService.addSymptomToProperty(id, symptomId);
         return ResponseEntity.ok(property);
     }
 
@@ -96,7 +96,7 @@ public class PropertyController {
     public ResponseEntity<Property> removeSymptomFromProperty(
             @PathVariable UUID id,
             @PathVariable UUID symptomId) {
-        Property property = propertyService.removeSymptomFromProperty(id.toString(), symptomId.toString());
+        Property property = propertyService.removeSymptomFromProperty(id, symptomId);
         return ResponseEntity.ok(property);
     }
 }

@@ -72,7 +72,8 @@ public class SecurityConfig {
                 // Accès public en lecture pour certaines ressources
                 .requestMatchers(HttpMethod.GET,
                         "/api/v1/symptoms/**",
-                        "/api/v1/properties/**"
+                        "/api/v1/properties/**",
+                        "/api/v1/plants/**"
                 ).permitAll()
                 // Admin
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

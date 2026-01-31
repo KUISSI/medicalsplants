@@ -54,7 +54,7 @@ export class SymptomService {
       createdAt: new Date().toISOString()
     },
     {
-      id: '7',
+      id: '77777777-7777-7777-7777-777777777777',
       title: 'Nausées',
       symptomFamily: 'Digestif',
       description: 'La nausée est une sensation désagréable de malaise au niveau de l\'estomac, souvent accompagnée d\'une envie de vomir. Elle peut avoir de nombreuses causes, comme une intoxication alimentaire, le mal des transports ou une grossesse.',
