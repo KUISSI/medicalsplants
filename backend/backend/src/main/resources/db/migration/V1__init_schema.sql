@@ -3,15 +3,13 @@
 -- Version:  1.0.0
 -- ============================================================
 
--- Enable extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+-- Extensions not needed for H2
 
 -- ============================================================
 -- USERS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_user (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     pseudo VARCHAR(50) NOT NULL UNIQUE,
@@ -40,7 +38,7 @@ CREATE INDEX IF NOT EXISTS idx_user_role ON ms_user(role);
 -- REFRESH TOKENS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_refresh_tokens (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     token VARCHAR(500) NOT NULL UNIQUE,
     user_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
     expires_at TIMESTAMP NOT NULL,
@@ -57,7 +55,7 @@ CREATE INDEX IF NOT EXISTS idx_refresh_token_expires ON ms_refresh_tokens(expire
 -- SYMPTOMS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_symptom (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(100) NOT NULL UNIQUE,
     symptom_family VARCHAR(100) NOT NULL,
     symptom_detail TEXT,
@@ -72,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_symptom_family ON ms_symptom(symptom_family);
 -- PROPERTIES
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_property (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(100) NOT NULL UNIQUE,
     property_family VARCHAR(100) NOT NULL,
     property_detail TEXT,
@@ -96,7 +94,7 @@ CREATE TABLE IF NOT EXISTS ms_property_symptom (
 -- PLANTS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_plant (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(150) NOT NULL UNIQUE,
     description TEXT,
     administration_mode VARCHAR(30) NOT NULL,
@@ -122,7 +120,7 @@ CREATE TABLE IF NOT EXISTS ms_plant_property (
 -- RECEIPTS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_receipt (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(200) NOT NULL,
     type VARCHAR(20) NOT NULL,
     description TEXT,
@@ -153,7 +151,7 @@ CREATE TABLE IF NOT EXISTS ms_receipt_plant (
 -- REVIEWS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_review (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     content TEXT NOT NULL,
     sender_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
     receipt_id UUID NOT NULL REFERENCES ms_receipt(id) ON DELETE CASCADE,
@@ -172,7 +170,7 @@ CREATE INDEX IF NOT EXISTS idx_review_deleted ON ms_review(deleted_at);
 -- INTERACTIONS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS ms_interaction (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     type VARCHAR(20) NOT NULL,
     value VARCHAR(50) NOT NULL,
     user_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
@@ -189,7 +187,4 @@ CREATE INDEX IF NOT EXISTS idx_interaction_type ON ms_interaction(type);
 -- ============================================================
 -- SUCCESS MESSAGE
 -- ============================================================
-DO $$
-BEGIN
-    RAISE NOTICE 'Database schema created successfully!';
-END $$;
+-- Schema created successfully for H2!

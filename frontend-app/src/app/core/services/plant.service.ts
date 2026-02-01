@@ -15,31 +15,31 @@ export class PlantService {
 
   private mockPlants: Plant[] = [
     {
-      id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+      id: '33333333-3333-3333-3333-333333333301',
       title: 'Lavande',
-      description: 'La lavande est une plante aux multiples vertus. Elle est connue pour ses propriétés apaisantes et relaxantes, mais aussi pour ses bienfaits sur la peau. Elle est traditionnellement utilisée pour soulager les irritations cutanées, les piqûres d\'insectes et les coups de soleil.',
+      description: 'La lavande est une plante aux multiples vertus. Elle est connue pour ses propriétés apaisantes et relaxantes.',
       symptomFamilies: ['Cutané', 'Nerveux'],
       properties: [
-        { id: '11', title: 'Cicatrisant', propertyFamily: 'Cicatrisant', createdAt: new Date().toISOString() },
-        { id: '10', title: 'Anti-inflammatoire', propertyFamily: 'Anti-inflammatoire', createdAt: new Date().toISOString() }
+        { id: '22222222-2222-2222-2222-222222222206', title: 'Cicatrisant', propertyFamily: 'Cutané', createdAt: new Date().toISOString() },
+        { id: '22222222-2222-2222-2222-222222222203', title: 'Sédatif', propertyFamily: 'Calmant', createdAt: new Date().toISOString() }
       ],
       createdAt: new Date().toISOString()
     },
     {
-      id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+      id: '33333333-3333-3333-3333-333333333302',
       title: 'Camomille',
       description: 'La camomille est une plante douce, idéale pour les peaux sensibles et irritées. Elle est réputée pour ses propriétés anti-inflammatoires, adoucissantes et apaisantes. Elle est souvent utilisée en cas d\'eczéma, de psoriasis ou de réactions allergiques.',
       symptomFamilies: ['Cutané', 'Digestif'],
       properties: [
-        { id: '10', title: 'Anti-inflammatoire', propertyFamily: 'Anti-inflammatoire', createdAt: new Date().toISOString() },
-        { id: '12', title: 'Sédatif', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
-        { id: '13', title: 'Anxiolytique', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
-        { id: '14', title: 'Digestif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
-        { id: '15', title: 'Carminatif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
-        { id: '16', title: 'Antiseptique', propertyFamily: 'Antimicrobien', createdAt: new Date().toISOString() },
-        { id: '17', title: 'Antalgique', propertyFamily: 'Analgésique', createdAt: new Date().toISOString() },
-        { id: '18', title: 'Cicatrisant', propertyFamily: 'Cutané', createdAt: new Date().toISOString() },
-        { id: '19', title: 'Antioxydant', propertyFamily: 'Protecteur', createdAt: new Date().toISOString() }
+        { id: '550e8400-e29b-41d4-a716-446655440010', title: 'Anti-inflammatoire', propertyFamily: 'Anti-inflammatoire', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440012', title: 'Sédatif', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440013', title: 'Anxiolytique', propertyFamily: 'Calmant', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440014', title: 'Digestif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440015', title: 'Carminatif', propertyFamily: 'Digestif', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440016', title: 'Antiseptique', propertyFamily: 'Antimicrobien', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440017', title: 'Antalgique', propertyFamily: 'Analgésique', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440018', title: 'Cicatrisant', propertyFamily: 'Cutané', createdAt: new Date().toISOString() },
+        { id: '550e8400-e29b-41d4-a716-446655440019', title: 'Antioxydant', propertyFamily: 'Protecteur', createdAt: new Date().toISOString() }
       ],
       createdAt: new Date().toISOString()
     }

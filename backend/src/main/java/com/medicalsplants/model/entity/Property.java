@@ -1,5 +1,6 @@
 package com.medicalsplants.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -33,6 +34,7 @@ public class Property extends BaseEntity {
 
     // Relations Many-to-Many avec Plant (inverse)
     @ManyToMany(mappedBy = "properties")
+    @JsonIgnore
     private Set<Plant> plants = new HashSet<>();
 
     public Property() {

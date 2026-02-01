@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+      # Migrations gérées par Flyway dans le backend, pas besoin de volume ici
     healthcheck: 
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

@@ -31,12 +31,12 @@ export class ReceiptListComponent implements OnInit {
 
   // Mock receipts data
   mockReceipts: Receipt[] = [
-    { id: '1', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '2', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '3', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
-    { id: '4', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '5', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'COLD_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
-    { id: '6', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' }
+    { id: '660e8400-e29b-41d4-a716-446655440000', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440001', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440002', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440003', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440004', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'COLD_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440005', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' }
   ];
 
   receipts: Receipt[] = [];

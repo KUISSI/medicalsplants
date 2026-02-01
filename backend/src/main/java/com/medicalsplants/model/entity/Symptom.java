@@ -1,5 +1,6 @@
 package com.medicalsplants.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -52,6 +53,7 @@ public class Symptom extends BaseEntity {
         this.symptomDetail = symptomDetail;
     }
 
+    @JsonIgnore
     public Set<Property> getProperties() {
         return properties;
     }

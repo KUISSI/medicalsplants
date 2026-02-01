@@ -16,15 +16,15 @@ export class ReceiptService {
 
   private mockReceipts: Receipt[] = [
     {
-      id: '1',
+      id: '55555555-5555-5555-5555-555555555501',
       title: 'Tisane relaxante',
       type: 'HOT_DRINK',
-      description: 'Une tisane parfaite pour se détendre avant de dormir.',
+      description: 'Mélange de plantes pour favoriser la détente et le sommeil.',
       isPremium: false,
       status: 'PUBLISHED',
       plants: [
         {
-          id: '2',
+          id: '33333333-3333-3333-3333-333333333302',
           title: 'Camomille',
           symptomFamilies: ['Cutané', 'Digestif'],
           createdAt: new Date().toISOString()
@@ -34,7 +34,7 @@ export class ReceiptService {
       createdAt: new Date().toISOString()
     },
     {
-      id: '2',
+      id: '660e8400-e29b-41d4-a716-446655440001',
       title: 'Lotion apaisante à la lavande',
       type: 'LOTION',
       description: 'Une lotion maison pour apaiser les irritations de la peau.',
@@ -42,7 +42,7 @@ export class ReceiptService {
       status: 'PUBLISHED',
       plants: [
         {
-          id: '1',
+          id: '550e8400-e29b-41d4-a716-446655440003',
           title: 'Lavande',
           symptomFamilies: ['Cutané', 'Nerveux'],
           createdAt: new Date().toISOString()

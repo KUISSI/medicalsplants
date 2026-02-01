@@ -69,12 +69,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, Routes.AUTH_VERIFY_EMAIL).permitAll()
                 // Documentation et monitoring publics
                 .requestMatchers(Routes.DOCS_ACTUATOR).permitAll()
-                // Accès public en lecture pour certaines ressources
-                .requestMatchers(HttpMethod.GET,
-                        "/api/v1/symptoms/**",
-                        "/api/v1/properties/**",
-                        "/api/v1/plants/**"
-                ).permitAll()
+                // En développement, tous les accès /api/v1/** sont publics pour faciliter les tests
+                .requestMatchers("/api/v1/**").permitAll()
                 // Admin
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 // Tout le reste nécessite authentification

@@ -2,12 +2,11 @@
 -- MEDICALS PLANTS - Database Schema (UUID natif, pro & DRY)
 -- ============================================================
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+-- Extensions not needed for H2
 
 -- USERS
-CREATE TABLE ms_user (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_user (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     pseudo VARCHAR(50) NOT NULL UNIQUE,
@@ -34,8 +33,8 @@ CREATE INDEX IF NOT EXISTS idx_user_status ON ms_user(status);
 CREATE INDEX IF NOT EXISTS idx_user_role ON ms_user(role);
 
 -- SYMPTOMS
-CREATE TABLE ms_symptom (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_symptom (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(100) NOT NULL UNIQUE,
     symptom_family VARCHAR(100) NOT NULL,
     symptom_detail TEXT,
@@ -46,8 +45,8 @@ CREATE TABLE ms_symptom (
 CREATE INDEX IF NOT EXISTS idx_symptom_title ON ms_symptom(title);
 
 -- PROPERTIES
-CREATE TABLE ms_property (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_property (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(100) NOT NULL UNIQUE,
     property_family VARCHAR(100) NOT NULL,
     property_detail TEXT,
@@ -58,8 +57,8 @@ CREATE TABLE ms_property (
 CREATE INDEX IF NOT EXISTS idx_property_title ON ms_property(title);
 
 -- PLANTS
-CREATE TABLE ms_plant (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_plant (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(150) NOT NULL UNIQUE,
     description TEXT,
     administration_mode VARCHAR(30) NOT NULL,
@@ -71,8 +70,8 @@ CREATE TABLE ms_plant (
 
 CREATE INDEX IF NOT EXISTS idx_plant_title ON ms_plant(title);
 
-CREATE TABLE ms_receipt (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_receipt (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     title VARCHAR(200) NOT NULL,
     type VARCHAR(20) NOT NULL,
     description TEXT,
@@ -110,8 +109,8 @@ CREATE TABLE ms_receipt_plant (
     PRIMARY KEY (receipt_id, plant_id)
 );
 
-CREATE TABLE ms_review (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_review (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     content TEXT NOT NULL,
     sender_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
     receipt_id UUID NOT NULL REFERENCES ms_receipt(id) ON DELETE CASCADE,
@@ -130,8 +129,8 @@ CREATE INDEX IF NOT EXISTS idx_review_receipt ON ms_review(receipt_id);
 CREATE INDEX IF NOT EXISTS idx_review_sender ON ms_review(sender_id);
 
 -- INTERACTIONS
-CREATE TABLE ms_interaction (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS ms_interaction (
+    id UUID PRIMARY KEY DEFAULT RANDOM_UUID(),
     type VARCHAR(20) NOT NULL,
     value VARCHAR(50) NOT NULL,
     user_id UUID NOT NULL REFERENCES ms_user(id) ON DELETE CASCADE,
@@ -142,7 +141,4 @@ CREATE TABLE ms_interaction (
 );
 
 -- Optional success notice
-DO $$
-BEGIN
-    RAISE NOTICE 'Database schema created successfully!';
-END $$;
+-- Schema created successfully for H2!

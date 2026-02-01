@@ -27,12 +27,12 @@ export class PlantListComponent implements OnInit {
 
   // Mock plants data
   mockPlants: Plant[] = [
-    { id: '1', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '2', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '3', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '4', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', administrationMode: 'EPIDERMAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '5', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', administrationMode: 'NASAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '6', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant
+    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440001', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440002', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440003', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', administrationMode: 'EPIDERMAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440004', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', administrationMode: 'NASAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440005', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant
   ];
 
   plants: Plant[] = [];
