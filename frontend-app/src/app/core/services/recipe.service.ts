@@ -52,11 +52,43 @@ export class RecipeService {
   }
 
   create(request: CreateRecipeRequest): Observable<Recipe> {
-    return this.http.post<Recipe>(this.apiUrl, request);
+    let params = new HttpParams()
+      .set('title', request.title)
+      .set('type', request.type)
+      .set('description', request.description)
+      .set('ingredients', request.ingredients)
+      .set('instructions', request.instructions)
+      .set('preparationTimeMinutes', request.preparationTimeMinutes.toString())
+      .set('difficulty', request.difficulty)
+      .set('servings', request.servings.toString())
+      .set('plantId', request.plantId);
+
+    if (request.imageUrl) {
+      params = params.set('imageUrl', request.imageUrl);
+    }
+
+    return this.http.post<Recipe>(this.apiUrl, null, { params });
   }
 
   update(id: string, request: Partial<CreateRecipeRequest>): Observable<Recipe> {
-    return this.http.put<Recipe>(`${this.apiUrl}/${id}`, request);
+    let params = new HttpParams();
+
+    if (request.title) params = params.set('title', request.title);
+    if (request.type) params = params.set('type', request.type);
+    if (request.description) params = params.set('description', request.description);
+    if (request.ingredients) params = params.set('ingredients', request.ingredients);
+    if (request.instructions) params = params.set('instructions', request.instructions);
+    if (request.preparationTimeMinutes !== undefined) {
+      params = params.set('preparationTimeMinutes', request.preparationTimeMinutes.toString());
+    }
+    if (request.difficulty) params = params.set('difficulty', request.difficulty);
+    if (request.servings !== undefined) {
+      params = params.set('servings', request.servings.toString());
+    }
+    if (request.plantId) params = params.set('plantId', request.plantId);
+    if (request.imageUrl) params = params.set('imageUrl', request.imageUrl);
+
+    return this.http.put<Recipe>(`${this.apiUrl}/${id}`, null, { params });
   }
 
   submitForReview(id: string): Observable<Recipe> {

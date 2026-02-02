@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "mp_recipe")
 public class Recipe extends BaseEntity {
@@ -27,6 +26,9 @@ public class Recipe extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private RecipeType type;
+
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;

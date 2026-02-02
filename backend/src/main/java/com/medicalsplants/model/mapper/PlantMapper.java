@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface PlantMapper {
 
     PlantResponse toDto(Plant entity);
+
+    Plant toEntity(PlantResponse dto);
 }

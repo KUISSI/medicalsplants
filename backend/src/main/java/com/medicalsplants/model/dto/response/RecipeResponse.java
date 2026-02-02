@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
 public class RecipeResponse {
 
     private UUID id;
     private String title;
     private String type;
+    private String image;
     private String description;
     private Short preparationTimeMinutes;
     private String difficulty;
@@ -52,6 +52,14 @@ public class RecipeResponse {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getDescription() {

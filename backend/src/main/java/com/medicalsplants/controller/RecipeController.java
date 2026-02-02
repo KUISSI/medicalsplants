@@ -67,6 +67,27 @@ public class RecipeController {
         return ResponseEntity.ok(dto);
     }
 
+    /**
+     * *********** ✨ Windsurf Command ⭐ ************
+     */
+    /**
+     * Get recipes by plant ID.
+     * <p>
+     * This endpoint returns a page of recipes associated with the given plant
+     * ID. The recipes are filtered by the user's access level: if the user is
+     * not premium, only non-premium recipes are returned.
+     * <p>
+     * The endpoint requires authentication and returns a 401 Unauthorized
+     * response if the user is not authenticated.
+     * <p>
+     * The endpoint returns a 404 Not Found response if the plant ID does not
+     * exist.
+     * <p>
+     * The endpoint returns a 200 OK response with a page of recipes if the
+     * request is successful.
+     *
+     * /******* 1fb421c4-7a50-4993-a1c8-0190aa5fce54 ******
+     */
     @Operation(summary = "Get recipes by plant ID")
     @GetMapping("/plant/{plantId}")
     public ResponseEntity<Page<RecipeResponse>> getRecipesByPlantId(
@@ -106,6 +127,7 @@ public class RecipeController {
     public ResponseEntity<RecipeResponse> createRecipe(
             @RequestParam String title,
             @RequestParam RecipeType type,
+            @RequestParam(required = false) String image,
             @RequestParam String description,
             @RequestParam(required = false) Short preparationTimeMinutes,
             @RequestParam(required = false) String difficulty,
@@ -115,7 +137,7 @@ public class RecipeController {
             @RequestParam(required = false) Boolean isPremium,
             @RequestParam(required = false) Set<String> plantIds,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Recipe recipe = recipeService.createRecipe(title, type, description,
+        Recipe recipe = recipeService.createRecipe(title, type, image, description,
                 preparationTimeMinutes, difficulty, servings, ingredients, instructions,
                 isPremium, plantIds, currentUser.getId().toString());
         RecipeResponse dto = recipeMapper.toDto(recipe);
@@ -129,6 +151,7 @@ public class RecipeController {
             @PathVariable UUID id,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) RecipeType type,
+            @RequestParam(required = false) String image,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) Short preparationTimeMinutes,
             @RequestParam(required = false) String difficulty,
@@ -137,7 +160,7 @@ public class RecipeController {
             @RequestParam(required = false) String instructions,
             @RequestParam(required = false) Boolean isPremium,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Recipe recipe = recipeService.updateRecipe(id.toString(), title, type, description,
+        Recipe recipe = recipeService.updateRecipe(id.toString(), title, type, image, description,
                 preparationTimeMinutes, difficulty, servings, ingredients, instructions,
                 isPremium, currentUser);
         RecipeResponse dto = recipeMapper.toDto(recipe);

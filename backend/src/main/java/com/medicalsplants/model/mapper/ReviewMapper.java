@@ -21,6 +21,8 @@ public interface ReviewMapper {
     @Mapping(target = "createdAt", source = "createdAt", qualifiedByName = "instantToLocalDateTime")
     ReviewResponse toDto(Review entity);
 
+    Review toEntity(ReviewResponse dto);
+
     @Named("instantToLocalDateTime")
     static LocalDateTime instantToLocalDateTime(Instant value) {
         return value == null ? null : LocalDateTime.ofInstant(value, ZoneId.systemDefault());

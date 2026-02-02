@@ -16,4 +16,6 @@ public interface RecipeMapper {
     @Mapping(target = "publishedAt", source = "publishedAt", qualifiedByName = "instantToLocalDateTime")
     @Mapping(target = "premium", source = "isPremium")
     RecipeResponse toDto(Recipe entity);
+
+    Recipe toEntity(RecipeResponse dto);
 }
