@@ -5,36 +5,36 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/recipe.model';
+import { recipe, recipePage, recipe_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-receipt-moderation',
+  selector: 'app-recipe-moderation',
   standalone:  true,
   imports: [CommonModule, RouterModule, LoaderComponent, ConfirmDialogComponent],
-  templateUrl: './receipt-moderation. component.html',
-  styleUrls:  ['./receipt-moderation.component.scss']
+  templateUrl: './recipe-moderation. component.html',
+  styleUrls:  ['./recipe-moderation.component.scss']
 })
-export class ReceiptModerationComponent implements OnInit {
+export class recipeModerationComponent implements OnInit {
   private http = inject(HttpClient);
   private toastr = inject(ToastrService);
-  private apiUrl = `${environment.apiUrl}/admin/receipts`;
+  private apiUrl = `${environment.apiUrl}/admin/recipes`;
 
-  pendingReceipts:  Receipt[] = [];
+  pendingrecipes:  recipe[] = [];
   isLoading = true;
 
-  receiptTypeLabels = RECEIPT_TYPE_LABELS;
+  recipeTypeLabels = recipe_TYPE_LABELS;
 
   // Dialogs
   showApproveDialog = false;
   showRejectDialog = false;
-  selectedReceipt: Receipt | null = null;
+  selectedrecipe: recipe | null = null;
 
   ngOnInit(): void {
-    this.loadPendingReceipts();
+    this.loadPendingrecipes();
   }
 
-  loadPendingReceipts(): void {
+  loadPendingrecipes(): void {
     this. isLoading = true;
 
     const params = new HttpParams()
@@ -42,9 +42,9 @@ export class ReceiptModerationComponent implements OnInit {
       .set('page', '0')
       .set('size', '50');
 
-    this.http.get<ReceiptPage>(this.apiUrl, { params }).subscribe({
+    this.http.get<recipePage>(this.apiUrl, { params }).subscribe({
       next: (response) => {
-        this.pendingReceipts = response. content;
+        this.pendingrecipes = response. content;
         this.isLoading = false;
       },
       error: () => {
@@ -53,21 +53,21 @@ export class ReceiptModerationComponent implements OnInit {
     });
   }
 
-  openApproveDialog(receipt: Receipt): void {
-    this. selectedReceipt = receipt;
+  openApproveDialog(recipe: recipe): void {
+    this. selectedrecipe = recipe;
     this.showApproveDialog = true;
   }
 
-  openRejectDialog(receipt: Receipt): void {
-    this. selectedReceipt = receipt;
+  openRejectDialog(recipe: recipe): void {
+    this. selectedrecipe = recipe;
     this.showRejectDialog = true;
   }
 
   onApproveConfirm(): void {
-    if (this.selectedReceipt) {
-      this.http.patch(`${this.apiUrl}/${this.selectedReceipt.id}/approve`, null).subscribe({
+    if (this.selectedrecipe) {
+      this.http.patch(`${this.apiUrl}/${this.selectedrecipe.id}/approve`, null).subscribe({
         next: () => {
-          this.pendingReceipts = this.pendingReceipts.filter(r => r.id !== this.selectedReceipt?. id);
+          this.pendingrecipes = this.pendingrecipes.filter(r => r.id !== this.selectedrecipe?. id);
           this.toastr.success('Recette approuvée et publiée', 'Succès');
           this.closeDialogs();
         },
@@ -79,10 +79,10 @@ export class ReceiptModerationComponent implements OnInit {
   }
 
   onRejectConfirm(): void {
-    if (this. selectedReceipt) {
-      this. http.patch(`${this.apiUrl}/${this.selectedReceipt.id}/reject`, null).subscribe({
+    if (this. selectedrecipe) {
+      this. http.patch(`${this.apiUrl}/${this.selectedrecipe.id}/reject`, null).subscribe({
         next:  () => {
-          this.pendingReceipts = this. pendingReceipts.filter(r => r.id !== this.selectedReceipt?.id);
+          this.pendingrecipes = this. pendingrecipes.filter(r => r.id !== this.selectedrecipe?.id);
           this.toastr.success('Recette rejetée', 'Succès');
           this.closeDialogs();
         },
@@ -96,10 +96,10 @@ export class ReceiptModerationComponent implements OnInit {
   closeDialogs(): void {
     this.showApproveDialog = false;
     this.showRejectDialog = false;
-    this. selectedReceipt = null;
+    this. selectedrecipe = null;
   }
 
-  getReceiptTypeIcon(type: string): string {
+  getrecipeTypeIcon(type: string): string {
     const icons: Record<string, string> = {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',

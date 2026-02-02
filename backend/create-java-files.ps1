@@ -84,10 +84,10 @@ public enum AdministrationMode {
 }
 '@
 
-Create-JavaFile "$baseDir\model\enums\ReceiptType.java" @'
+Create-JavaFile "$baseDir\model\enums\recipeType.java" @'
 package com.medicalsplants.model.enums;
 
-public enum ReceiptType {
+public enum recipeType {
     HOT_DRINK,
     COLD_DRINK,
     DISH,
@@ -95,10 +95,10 @@ public enum ReceiptType {
 }
 '@
 
-Create-JavaFile "$baseDir\model\enums\ReceiptStatus.java" @'
+Create-JavaFile "$baseDir\model\enums\recipeStatus.java" @'
 package com.medicalsplants.model.enums;
 
-public enum ReceiptStatus {
+public enum recipeStatus {
     DRAFT,
     PENDING,
     PUBLISHED,
@@ -486,7 +486,7 @@ public class Plant extends BaseEntity {
     private Set<Property> properties = new HashSet<>();
 
     @ManyToMany(mappedBy = "plants")
-    private Set<Receipt> receipts = new HashSet<>();
+    private Set<recipe> recipes = new HashSet<>();
 
     public Plant() {}
 
@@ -502,16 +502,16 @@ public class Plant extends BaseEntity {
     public void setConsumedPart(String part) { this.consumedPart = part; }
     public Set<Property> getProperties() { return properties; }
     public void setProperties(Set<Property> props) { this.properties = props; }
-    public Set<Receipt> getReceipts() { return receipts; }
-    public void setReceipts(Set<Receipt> receipts) { this.receipts = receipts; }
+    public Set<recipe> getrecipes() { return recipes; }
+    public void setrecipes(Set<recipe> recipes) { this.recipes = recipes; }
 }
 '@
 
-Create-JavaFile "$baseDir\model\entity\Receipt. java" @'
+Create-JavaFile "$baseDir\model\entity\recipe. java" @'
 package com.medicalsplants.model. entity;
 
-import com.medicalsplants.model.enums.ReceiptStatus;
-import com.medicalsplants.model.enums. ReceiptType;
+import com.medicalsplants.model.enums.recipeStatus;
+import com.medicalsplants.model.enums. recipeType;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java. util.HashSet;
@@ -519,8 +519,8 @@ import java.util.List;
 import java. util.Set;
 
 @Entity
-@Table(name = "ms_receipt")
-public class Receipt extends BaseEntity {
+@Table(name = "ms_recipe")
+public class recipe extends BaseEntity {
 
     @Id
     @Column(name = "id", length = 26)
@@ -531,7 +531,7 @@ public class Receipt extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private ReceiptType type;
+    private recipeType type;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -541,35 +541,35 @@ public class Receipt extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private ReceiptStatus status = ReceiptStatus. DRAFT;
+    private recipeStatus status = recipeStatus. DRAFT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToMany
-    @JoinTable(name = "ms_receipt_plant",
-        joinColumns = @JoinColumn(name = "receipt_id"),
+    @JoinTable(name = "ms_recipe_plant",
+        joinColumns = @JoinColumn(name = "recipe_id"),
         inverseJoinColumns = @JoinColumn(name = "plant_id"))
     private Set<Plant> plants = new HashSet<>();
 
-    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    public Receipt() {}
+    public recipe() {}
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public ReceiptType getType() { return type; }
-    public void setType(ReceiptType type) { this.type = type; }
+    public recipeType getType() { return type; }
+    public void setType(recipeType type) { this.type = type; }
     public String getDescription() { return description; }
     public void setDescription(String desc) { this.description = desc; }
     public Boolean getIsPremium() { return isPremium; }
     public void setIsPremium(Boolean premium) { this.isPremium = premium; }
-    public ReceiptStatus getStatus() { return status; }
-    public void setStatus(ReceiptStatus status) { this.status = status; }
+    public recipeStatus getStatus() { return status; }
+    public void setStatus(recipeStatus status) { this.status = status; }
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
     public Set<Plant> getPlants() { return plants; }
@@ -606,8 +606,8 @@ public class Review extends BaseEntity {
     private User sender;
 
     @ManyToOne(fetch = FetchType. LAZY)
-    @JoinColumn(name = "receipt_id", nullable = false)
-    private Receipt receipt;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private recipe recipe;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_review_id")
@@ -629,8 +629,8 @@ public class Review extends BaseEntity {
     public void setDeletedAt(Instant time) { this.deletedAt = time; }
     public User getSender() { return sender; }
     public void setSender(User sender) { this.sender = sender; }
-    public Receipt getReceipt() { return receipt; }
-    public void setReceipt(Receipt receipt) { this.receipt = receipt; }
+    public recipe getrecipe() { return recipe; }
+    public void setrecipe(recipe recipe) { this.recipe = recipe; }
     public Review getParentReview() { return parentReview; }
     public void setParentReview(Review parent) { this.parentReview = parent; }
     public List<Review> getReplies() { return replies; }

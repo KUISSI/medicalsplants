@@ -22,7 +22,8 @@
           <button class="profile-header__edit-btn">Modifier le profil</button>
         </div>
         <p class="profile-header__bio">
-          "Amateur de plantes et de remèdes naturels. Toujours à la recherche de nouvelles recettes pour le bien-être."
+          "Amateur de plantes et de remèdes naturels. Toujours à la recherche de
+          nouvelles recettes pour le bien-être."
         </p>
         <div class="profile-header__details">
           <div class="detail-item">
@@ -35,7 +36,9 @@
           </div>
           <div class="detail-item">
             <span class="detail-item__label">Membre depuis</span>
-            <span class="detail-item__value">{{ formatDate(user.createdAt) }}</span>
+            <span class="detail-item__value">{{
+              formatDate(user.createdAt)
+            }}</span>
           </div>
         </div>
       </div>
@@ -46,11 +49,13 @@
       <div class="section">
         <h2 class="section__title">⚡ Actions rapides</h2>
         <div class="actions-grid">
-          <a routerLink="/receipts/create" class="action-card">
+          <a routerLink="/recipes/create" class="action-card">
             <span class="action-card__icon">✨</span>
             <div class="action-card__content">
               <h3 class="action-card__title">Créer une recette</h3>
-              <p class="action-card__description">Partagez vos recettes avec la communauté</p>
+              <p class="action-card__description">
+                Partagez vos recettes avec la communauté
+              </p>
             </div>
             <span class="action-card__arrow">→</span>
           </a>
@@ -58,7 +63,9 @@
             <span class="action-card__icon">🔍</span>
             <div class="action-card__content">
               <h3 class="action-card__title">Explorer les symptômes</h3>
-              <p class="action-card__description">Trouvez les plantes adaptées à vos besoins</p>
+              <p class="action-card__description">
+                Trouvez les plantes adaptées à vos besoins
+              </p>
             </div>
             <span class="action-card__arrow">→</span>
           </a>
@@ -66,28 +73,38 @@
             <span class="action-card__icon">🌿</span>
             <div class="action-card__content">
               <h3 class="action-card__title">Catalogue des plantes</h3>
-              <p class="action-card__description">Découvrez toutes les plantes médicinales</p>
+              <p class="action-card__description">
+                Découvrez toutes les plantes médicinales
+              </p>
             </div>
             <span class="action-card__arrow">→</span>
           </a>
         </div>
       </div>
-      
+
       <!-- Favorite Plants -->
       <div class="section">
-        <h2 class="section__title section__title--green">Mes plantes favorites</h2>
+        <h2 class="section__title section__title--green">
+          Mes plantes favorites
+        </h2>
         <div class="divider"></div>
         <div class="plants-grid">
-          <p class="placeholder-text">Vous n'avez pas encore de plante favorite.</p>
+          <p class="placeholder-text">
+            Vous n'avez pas encore de plante favorite.
+          </p>
         </div>
       </div>
 
       <!-- Saved Recipes -->
       <div class="section">
-        <h2 class="section__title section__title--green">Mes recettes sauvegardées</h2>
+        <h2 class="section__title section__title--green">
+          Mes recettes sauvegardées
+        </h2>
         <div class="divider"></div>
         <div class="recipes-grid">
-          <p class="placeholder-text">Vous n'avez pas encore de recette sauvegardée.</p>
+          <p class="placeholder-text">
+            Vous n'avez pas encore de recette sauvegardée.
+          </p>
         </div>
       </div>
 
@@ -98,9 +115,14 @@
           <div class="setting-item setting-item--danger">
             <div class="setting-item__info">
               <h3 class="setting-item__title">Déconnexion</h3>
-              <p class="setting-item__description">Se déconnecter de votre compte</p>
+              <p class="setting-item__description">
+                Se déconnecter de votre compte
+              </p>
             </div>
-            <button class="setting-item__btn setting-item__btn--logout" (click)="logout()">
+            <button
+              class="setting-item__btn setting-item__btn--logout"
+              (click)="logout()"
+            >
               Déconnexion
             </button>
           </div>
@@ -111,7 +133,9 @@
     <div class="not-logged">
       <span class="not-logged__icon">🔒</span>
       <h2 class="not-logged__title">Non connecté</h2>
-      <p class="not-logged__message">Vous devez être connecté pour accéder à votre profil.</p>
+      <p class="not-logged__message">
+        Vous devez être connecté pour accéder à votre profil.
+      </p>
       <a routerLink="/login" class="not-logged__btn"> Se connecter </a>
     </div>
   }

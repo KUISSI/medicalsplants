@@ -7,7 +7,8 @@
         <span class="footer__logo-text">Medicals Plants</span>
       </div>
       <p class="footer__description">
-        Votre guide des plantes médicinales et de leurs bienfaits pour la santé naturelle.
+        Votre guide des plantes médicinales et de leurs bienfaits pour la santé
+        naturelle.
       </p>
     </div>
 
@@ -15,10 +16,12 @@
     <div class="footer__section">
       <h4 class="footer__title">Navigation</h4>
       <nav class="footer__nav">
-        <a [routerLink]="isAuthenticated() ? '/home' : '/'" class="footer__link">Accueil</a>
+        <a [routerLink]="isAuthenticated() ? '/home' : '/'" class="footer__link"
+          >Accueil</a
+        >
         <a routerLink="/symptoms" class="footer__link">Symptômes</a>
         <a routerLink="/plants" class="footer__link">Plantes</a>
-        <a routerLink="/receipts" class="footer__link">Recettes</a>
+        <a routerLink="/recipes" class="footer__link">Recettes</a>
       </nav>
     </div>
 
@@ -31,7 +34,9 @@
           <a routerLink="/register" class="footer__link">Inscription</a>
         } @else {
           <a routerLink="/profile" class="footer__link">Mon profil</a>
-          <button (click)="logout()" class="footer__link footer__link--button">Déconnexion</button>
+          <button (click)="logout()" class="footer__link footer__link--button">
+            Déconnexion
+          </button>
         }
       </nav>
     </div>

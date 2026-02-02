@@ -1,82 +1,88 @@
 <div class="page">
   <div class="page__header">
     <div class="page__header-content">
-      <a routerLink="/receipts" class="page__back">← Retour aux recettes</a>
+      <a routerLink="/recipes" class="page__back">← Retour aux recettes</a>
       <h1 class="page__title">⏳ Modération des recettes</h1>
       <p class="page__subtitle">Approuvez ou rejetez les recettes soumises</p>
     </div>
   </div>
 
   @if (isLoading) {
-  <app-loader message="Chargement des recettes en attente..."></app-loader>
-  } @else if (pendingReceipts. length === 0) {
-  <div class="empty-state empty-state--success">
-    <span class="empty-state__icon">✅</span>
-    <h3 class="empty-state__title">Aucune recette en attente</h3>
-    <p class="empty-state__message">Toutes les recettes ont été modérées. Bravo !</p>
-    <a routerLink="/receipts" class="btn btn--primary"> Voir toutes les recettes </a>
-  </div>
+    <app-loader message="Chargement des recettes en attente..."></app-loader>
+  } @else if (pendingrecipes.length === 0) {
+    <div class="empty-state empty-state--success">
+      <span class="empty-state__icon">✅</span>
+      <h3 class="empty-state__title">Aucune recette en attente</h3>
+      <p class="empty-state__message">Toutes les recettes ont été modérées. Bravo !</p>
+      <a routerLink="/recipes" class="btn btn--primary"> Voir toutes les recettes </a>
+    </div>
   } @else {
-  <div class="page__info">
-    <span class="pending-count"
-      >{{ pendingReceipts.length }} recette(s) en attente de modération</span
-    >
-  </div>
+    <div class="page__info">
+      <span class="pending-count"
+        >{{ pendingrecipes.length }} recette(s) en attente de modération</span
+      >
+    </div>
 
-  <div class="moderation-grid">
-    @for (receipt of pendingReceipts; track receipt.id) {
-    <div class="moderation-card">
-      <div class="moderation-card__header">
-        <span class="moderation-card__type">
-          {{ getReceiptTypeIcon(receipt.type) }} {{ receiptTypeLabels[receipt.type] }}
-        </span>
-        @if (receipt.isPremium) {
-        <span class="moderation-card__premium">⭐ Premium</span>
-        }
-      </div>
+    <div class="moderation-grid">
+      @for (recipe of pendingrecipes; track recipe.id) {
+        <div class="moderation-card">
+          <div class="moderation-card__header">
+            <span class="moderation-card__type">
+              {{ getrecipeTypeIcon(recipe.type) }} {{ recipeTypeLabels[recipe.type] }}
+            </span>
+            @if (recipe.isPremium) {
+              <span class="moderation-card__premium">⭐ Premium</span>
+            }
+          </div>
 
-      <h3 class="moderation-card__title">{{ receipt.title }}</h3>
+          <h3 class="moderation-card__title">{{ recipe.title }}</h3>
 
-      @if (receipt.description) {
-      <p class="moderation-card__description">{{ receipt.description }}</p>
-      }
+          @if (recipe.description) {
+            <p class="moderation-card__description">{{ recipe.description }}</p>
+          }
 
-      <div class="moderation-card__meta">
-        @if (receipt.author) {
-        <div class="moderation-card__author">
-          <span class="moderation-card__author-avatar">
-            {{ receipt.author.pseudo.charAt(0).toUpperCase() }}
-          </span>
-          <div>
-            <span class="moderation-card__author-name">{{ receipt.author.pseudo }}</span>
-            <span class="moderation-card__date">{{ formatDate(receipt.createdAt) }}</span>
+          <div class="moderation-card__meta">
+            @if (recipe.author) {
+              <div class="moderation-card__author">
+                <span class="moderation-card__author-avatar">
+                  {{ recipe.author.pseudo.charAt(0).toUpperCase() }}
+                </span>
+                <div>
+                  <span class="moderation-card__author-name">{{ recipe.author.pseudo }}</span>
+                  <span class="moderation-card__date">{{ formatDate(recipe.createdAt) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (recipe.plants && recipe.plants.length > 0) {
+            <div class="moderation-card__plants">
+              <span class="moderation-card__plants-label">Plantes utilisées :</span>
+              <div class="moderation-card__plants-list">
+                @for (plant of recipe.plants; track plant.id) {
+                  <span class="plant-tag">🌿 {{ plant.title }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="moderation-card__actions">
+            <button
+              class="moderation-btn moderation-btn--reject"
+              (click)="openRejectDialog(recipe)"
+            >
+              ❌ Rejeter
+            </button>
+            <button
+              class="moderation-btn moderation-btn--approve"
+              (click)="openApproveDialog(recipe)"
+            >
+              ✅ Approuver
+            </button>
           </div>
         </div>
-        }
-      </div>
-
-      @if (receipt.plants && receipt.plants.length > 0) {
-      <div class="moderation-card__plants">
-        <span class="moderation-card__plants-label">Plantes utilisées :</span>
-        <div class="moderation-card__plants-list">
-          @for (plant of receipt. plants; track plant. id) {
-          <span class="plant-tag">🌿 {{ plant.title }}</span>
-          }
-        </div>
-      </div>
       }
-
-      <div class="moderation-card__actions">
-        <button class="moderation-btn moderation-btn--reject" (click)="openRejectDialog(receipt)">
-          ❌ Rejeter
-        </button>
-        <button class="moderation-btn moderation-btn--approve" (click)="openApproveDialog(receipt)">
-          ✅ Approuver
-        </button>
-      </div>
     </div>
-    }
-  </div>
   }
 </div>
 
@@ -85,7 +91,7 @@
   [isOpen]="showApproveDialog"
   title="Approuver la recette"
   [message]="
-    'Êtes-vous sûr de vouloir approuver et publier la recette \'' + selectedReceipt?.title + '\' ?'
+    'Êtes-vous sûr de vouloir approuver et publier la recette \'' + selectedrecipe?.title + '\' ?'
   "
   icon="✅"
   type="default"
@@ -98,7 +104,7 @@
 <app-confirm-dialog
   [isOpen]="showRejectDialog"
   title="Rejeter la recette"
-  [message]="'Êtes-vous sûr de vouloir rejeter la recette \'' + selectedReceipt?.title + '\' ?'"
+  [message]="'Êtes-vous sûr de vouloir rejeter la recette \'' + selectedrecipe?.title + '\' ?'"
   icon="❌"
   type="danger"
   confirmText="Rejeter"

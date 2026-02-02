@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   stats = {
     symptoms: 0,
     plants: 50,
-    receipts: 100,
+    recipes: 100,
     users: 500
   };
 

@@ -1,4 +1,4 @@
-.receipt-list-page {
+.recipe-list-page {
   min-height: calc(100vh - 140px);
   background: #ffffff; // Match detail page background
 }
@@ -159,8 +159,8 @@
   }
 }
 
-// Receipts Grid
-.receipts-grid {
+// recipes Grid
+.recipes-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); // 4 columns by default
   gap: 25px;
@@ -284,6 +284,6 @@
   }
 }
 
-::ng-deep .search-bar--receipt .search-bar__input {
+::ng-deep .search-bar--recipe .search-bar__input {
   border-radius: 5px;
 }

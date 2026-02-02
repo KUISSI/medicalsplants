@@ -6,8 +6,9 @@ import { PlantService } from '../../../core/services/plant.service';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
-import { Recipe, RecipePage, Recipe_TYPE_LABELS } from '../../../core/models/recipe.model';
+import { Recipe, RecipePage, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
+
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
@@ -21,12 +22,12 @@ export class PlantDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router); // Inject Router
   private plantService = inject(PlantService);
-  private RecipeService = inject(RecipeService);
+  private recipeService = inject(RecipeService);
   authService = inject(AuthService);
   private navigationService = inject(NavigationService);
 
   plant: Plant | null = null;
-  Recipes: RecipeCardData[] = [];
+  recipes: RecipeCardData[] = [];
   
   isLoading = true;
   isLoadingRecipes = true;
@@ -36,7 +37,7 @@ export class PlantDetailComponent implements OnInit {
   activeTab: 'properties' | 'recipes' = 'properties';
 
   administrationModeLabels = ADMINISTRATION_MODE_LABELS;
-  RecipeTypeLabels = Recipe_TYPE_LABELS;
+  recipeTypeLabels = RECIPE_TYPE_LABELS;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -91,20 +92,19 @@ export class PlantDetailComponent implements OnInit {
   loadRecipes(plantId: string): void {
     this.isLoadingRecipes = true;
 
-    this.RecipeService.getByPlantId(plantId, 0, 6).subscribe({
+    this.recipeService.getByPlantId(plantId, 0, 6).subscribe({
       next: (response: RecipePage) => {
-        this.Recipes = response.content.map(Recipe => {
+        this.recipes = response.content.map(recipe => {
           const difficulties = ['Facile', 'Moyen', 'Difficile'];
-          const rating = (Recipe.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
-          const time = ((Recipe.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
-          const difficulty = difficulties[Recipe.id.charCodeAt(0) % difficulties.length];
+          const rating = (recipe.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
+          const time = ((recipe.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
+          const difficulty = difficulties[recipe.id.charCodeAt(0) % difficulties.length];
 
           return {
-            id: Recipe.id,
-            title: Recipe.title,
-            imageUrl: Recipe.imageUrl,
-            category: this.RecipeTypeLabels[Recipe.type] || 'Recette',
-            isPremium: Recipe.isPremium,
+            id: recipe.id,
+            title: recipe.title,
+            category: this.recipeTypeLabels[recipe.type] || 'Recette',
+            isPremium: recipe.isPremium,
             rating,
             time,
             difficulty,
@@ -134,7 +134,8 @@ export class PlantDetailComponent implements OnInit {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',
       'DISH': '🍽️',
-      'LOTION': '🧴'
+      'LOTION': '🧴',
+      'OTHER': '📦'
     };
     return icons[type] || '📖';
   }

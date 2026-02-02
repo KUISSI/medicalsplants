@@ -8,117 +8,121 @@
       </p>
     </div>
     <div class="dashboard__date">
-      {{ today | date : 'EEEE d MMMM yyyy' : '' : 'fr' }}
+      {{ today | date: 'EEEE d MMMM yyyy' : '' : 'fr' }}
     </div>
   </div>
 
   @if (isLoading) {
-  <app-loader message="Chargement des statistiques..."></app-loader>
+    <app-loader message="Chargement des statistiques..."></app-loader>
   } @else {
-  <!-- Stats Grid -->
-  <div class="stats-grid">
-    <app-stats-card
-      icon="👥"
-      [value]="stats.users"
-      label="Utilisateurs"
-      color="#667eea"
-      link="/users"
-    ></app-stats-card>
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <app-stats-card
+        icon="👥"
+        [value]="stats.users"
+        label="Utilisateurs"
+        color="#667eea"
+        link="/users"
+      ></app-stats-card>
 
-    <app-stats-card
-      icon="🩺"
-      [value]="stats.symptoms"
-      label="Symptômes"
-      color="#2196F3"
-      link="/symptoms"
-    ></app-stats-card>
+      <app-stats-card
+        icon="🩺"
+        [value]="stats.symptoms"
+        label="Symptômes"
+        color="#2196F3"
+        link="/symptoms"
+      ></app-stats-card>
 
-    <app-stats-card
-      icon="✨"
-      [value]="stats.properties"
-      label="Propriétés"
-      color="#9C27B0"
-      link="/properties"
-    ></app-stats-card>
+      <app-stats-card
+        icon="✨"
+        [value]="stats.properties"
+        label="Propriétés"
+        color="#9C27B0"
+        link="/properties"
+      ></app-stats-card>
 
-    <app-stats-card
-      icon="🌿"
-      [value]="stats.plants"
-      label="Plantes"
-      color="#4CAF50"
-      link="/plants"
-    ></app-stats-card>
+      <app-stats-card
+        icon="🌿"
+        [value]="stats.plants"
+        label="Plantes"
+        color="#4CAF50"
+        link="/plants"
+      ></app-stats-card>
 
-    <app-stats-card
-      icon="📖"
-      [value]="stats.receipts"
-      label="Recettes"
-      color="#FF9800"
-      link="/receipts"
-    ></app-stats-card>
+      <app-stats-card
+        icon="📖"
+        [value]="stats.recipes"
+        label="Recettes"
+        color="#FF9800"
+        link="/recipes"
+      ></app-stats-card>
 
-    <app-stats-card
-      icon="⏳"
-      [value]="stats.pendingReceipts"
-      label="En attente"
-      color="#f44336"
-      link="/receipts/moderation"
-    ></app-stats-card>
-  </div>
-
-  <!-- Quick Actions & Recent Activity -->
-  <div class="dashboard__grid">
-    <!-- Quick Actions -->
-    <div class="dashboard__section">
-      <h2 class="section__title">⚡ Actions rapides</h2>
-      <div class="quick-actions">
-        @for (action of quickActions; track action. label) {
-        <a [routerLink]="action.link" class="quick-action" [style.--action-color]="action.color">
-          <span class="quick-action__icon">{{ action.icon }}</span>
-          <span class="quick-action__label">{{ action.label }}</span>
-        </a>
-        }
-      </div>
+      <app-stats-card
+        icon="⏳"
+        [value]="stats.pendingrecipes"
+        label="En attente"
+        color="#f44336"
+        link="/recipes/moderation"
+      ></app-stats-card>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="dashboard__section">
-      <h2 class="section__title">📋 Activité récente</h2>
-      <div class="activity-list">
-        @for (activity of recentActivities; track activity.message) {
-        <div class="activity-item">
-          <span class="activity-item__icon">{{ activity.icon }}</span>
-          <div class="activity-item__content">
-            <p class="activity-item__message">{{ activity.message }}</p>
-            <span class="activity-item__time">{{ activity.time }}</span>
-          </div>
+    <!-- Quick Actions & Recent Activity -->
+    <div class="dashboard__grid">
+      <!-- Quick Actions -->
+      <div class="dashboard__section">
+        <h2 class="section__title">⚡ Actions rapides</h2>
+        <div class="quick-actions">
+          @for (action of quickActions; track action.label) {
+            <a
+              [routerLink]="action.link"
+              class="quick-action"
+              [style.--action-color]="action.color"
+            >
+              <span class="quick-action__icon">{{ action.icon }}</span>
+              <span class="quick-action__label">{{ action.label }}</span>
+            </a>
+          }
         </div>
-        }
       </div>
-    </div>
-  </div>
 
-  <!-- System Info -->
-  <div class="dashboard__section dashboard__section--full">
-    <h2 class="section__title">🖥️ Informations système</h2>
-    <div class="system-info">
-      <div class="system-info__item">
-        <span class="system-info__label">Version API</span>
-        <span class="system-info__value">1.0.0</span>
-      </div>
-      <div class="system-info__item">
-        <span class="system-info__label">Statut serveur</span>
-        <span class="system-info__value system-info__value--success">● En ligne</span>
-      </div>
-      <div class="system-info__item">
-        <span class="system-info__label">Base de données</span>
-        <span class="system-info__value system-info__value--success">● Connectée</span>
-      </div>
-      <div class="system-info__item">
-        <span class="system-info__label">Dernière sauvegarde</span>
-        <span class="system-info__value">Aujourd'hui à 03:00</span>
+      <!-- Recent Activity -->
+      <div class="dashboard__section">
+        <h2 class="section__title">📋 Activité récente</h2>
+        <div class="activity-list">
+          @for (activity of recentActivities; track activity.message) {
+            <div class="activity-item">
+              <span class="activity-item__icon">{{ activity.icon }}</span>
+              <div class="activity-item__content">
+                <p class="activity-item__message">{{ activity.message }}</p>
+                <span class="activity-item__time">{{ activity.time }}</span>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- System Info -->
+    <div class="dashboard__section dashboard__section--full">
+      <h2 class="section__title">🖥️ Informations système</h2>
+      <div class="system-info">
+        <div class="system-info__item">
+          <span class="system-info__label">Version API</span>
+          <span class="system-info__value">1.0.0</span>
+        </div>
+        <div class="system-info__item">
+          <span class="system-info__label">Statut serveur</span>
+          <span class="system-info__value system-info__value--success">● En ligne</span>
+        </div>
+        <div class="system-info__item">
+          <span class="system-info__label">Base de données</span>
+          <span class="system-info__value system-info__value--success">● Connectée</span>
+        </div>
+        <div class="system-info__item">
+          <span class="system-info__label">Dernière sauvegarde</span>
+          <span class="system-info__value">Aujourd'hui à 03:00</span>
+        </div>
+      </div>
+    </div>
   }
 </div>
