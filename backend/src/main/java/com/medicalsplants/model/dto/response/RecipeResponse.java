@@ -4,22 +4,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class ReceiptResponse {
+
+public class RecipeResponse {
 
     private UUID id;
     private String title;
     private String type;
     private String description;
+    private Short preparationTimeMinutes;
+    private String difficulty;
+    private Short servings;
+    private String ingredients;
+    private String instructions;
     private boolean isPremium;
     private String status;
+    private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserResponse author;
     private List<PlantResponse> plants;
     private List<ReviewResponse> reviews;
-    // Ajoutez d'autres champs nécessaires
+    private Long reviewCount;
+    private Double averageRating;
 
-    public ReceiptResponse() {
+    public RecipeResponse() {
     }
 
     public UUID getId() {
@@ -54,12 +62,52 @@ public class ReceiptResponse {
         this.description = description;
     }
 
+    public Short getPreparationTimeMinutes() {
+        return preparationTimeMinutes;
+    }
+
+    public void setPreparationTimeMinutes(Short preparationTimeMinutes) {
+        this.preparationTimeMinutes = preparationTimeMinutes;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public Short getServings() {
+        return servings;
+    }
+
+    public void setServings(Short servings) {
+        this.servings = servings;
+    }
+
+    public String getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
     public boolean isPremium() {
         return isPremium;
     }
 
-    public void setPremium(boolean premium) {
-        isPremium = premium;
+    public void setPremium(boolean isPremium) {
+        this.isPremium = isPremium;
     }
 
     public String getStatus() {
@@ -68,6 +116,14 @@ public class ReceiptResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(LocalDateTime publishedAt) {
+        this.publishedAt = publishedAt;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -109,5 +165,20 @@ public class ReceiptResponse {
     public void setReviews(List<ReviewResponse> reviews) {
         this.reviews = reviews;
     }
-    // Ajoutez d'autres getters/setters si besoin
+
+    public Long getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(Long reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
 }

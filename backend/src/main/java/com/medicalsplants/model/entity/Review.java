@@ -1,67 +1,68 @@
 package com.medicalsplants.model.entity;
 
 import jakarta.persistence.*;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "ms_review")
+@Table(name = "mp_review")
 public class Review extends BaseEntity {
 
     @Id
-    @Column(columnDefinition = "uuid")
-    private java.util.UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column
+    private Short rating;
+
     // Auteur de l'avis
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     // Avis parent (pour les réponses en arborescence)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_review_id")
-    private Review parentReview;
+    @JoinColumn(name = "parent_id")
+    private Review parent;
 
     // Réponses à cet avis
-    @OneToMany(mappedBy = "parentReview", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Review> replies = new ArrayList<>();
 
     // Recette concernée
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receipt_id", nullable = false)
-    private Receipt receipt;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
     // Soft delete
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    // Interactions (émojis, cadeaux)
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<Interaction> interactions = new ArrayList<>();
-
+    // Constructors
     public Review() {
     }
 
-    public Review(java.util.UUID id, String content, User sender, Review parentReview, List<Review> replies, Receipt receipt, Instant deletedAt, List<Interaction> interactions) {
+    public Review(UUID id, String content, Short rating, User author, Recipe recipe) {
         this.id = id;
         this.content = content;
-        this.sender = sender;
-        this.parentReview = parentReview;
-        this.replies = replies != null ? replies : new ArrayList<>();
-        this.receipt = receipt;
-        this.deletedAt = deletedAt;
-        this.interactions = interactions != null ? interactions : new ArrayList<>();
+        this.rating = rating;
+        this.author = author;
+        this.recipe = recipe;
     }
 
-    public java.util.UUID getId() {
+    // Getters and Setters
+    public UUID getId() {
         return id;
     }
 
-    public void setId(java.util.UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -73,20 +74,28 @@ public class Review extends BaseEntity {
         this.content = content;
     }
 
-    public User getSender() {
-        return sender;
+    public Short getRating() {
+        return rating;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setRating(Short rating) {
+        this.rating = rating;
     }
 
-    public Review getParentReview() {
-        return parentReview;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setParentReview(Review parentReview) {
-        this.parentReview = parentReview;
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Review getParent() {
+        return parent;
+    }
+
+    public void setParent(Review parent) {
+        this.parent = parent;
     }
 
     public List<Review> getReplies() {
@@ -97,12 +106,12 @@ public class Review extends BaseEntity {
         this.replies = replies;
     }
 
-    public Receipt getReceipt() {
-        return receipt;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
-    public void setReceipt(Receipt receipt) {
-        this.receipt = receipt;
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public Instant getDeletedAt() {
@@ -113,15 +122,7 @@ public class Review extends BaseEntity {
         this.deletedAt = deletedAt;
     }
 
-    public List<Interaction> getInteractions() {
-        return interactions;
-    }
-
-    public void setInteractions(List<Interaction> interactions) {
-        this.interactions = interactions;
-    }
-
-    // Méthodes utilitaires
+    // Utility methods
     public boolean isDeleted() {
         return this.deletedAt != null;
     }
@@ -131,6 +132,11 @@ public class Review extends BaseEntity {
     }
 
     public boolean isReply() {
-        return this.parentReview != null;
+        return this.parent != null;
+    }
+
+    public void addReply(Review reply) {
+        this.replies.add(reply);
+        reply.setParent(this);
     }
 }

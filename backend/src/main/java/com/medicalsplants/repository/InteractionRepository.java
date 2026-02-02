@@ -9,16 +9,24 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface InteractionRepository extends JpaRepository<Interaction, java.util.UUID> {
+public interface InteractionRepository extends JpaRepository<Interaction, UUID> {
 
-    List<Interaction> findByReviewId(java.util.UUID reviewId);
+    List<Interaction> findByRecipeId(UUID recipeId);
 
-    boolean existsByUserIdAndReviewIdAndTypeAndValue(java.util.UUID userId, java.util.UUID reviewId, InteractionType type, String value);
+    List<Interaction> findByUserId(UUID userId);
 
-    Optional<Interaction> findByUserIdAndReviewIdAndTypeAndValue(java.util.UUID userId, java.util.UUID reviewId, InteractionType type, String value);
+    boolean existsByUserIdAndRecipeIdAndType(UUID userId, UUID recipeId, InteractionType type);
 
-    @Query("SELECT i. type, i.value, COUNT(i) FROM Interaction i WHERE i. review.id = :reviewId GROUP BY i.type, i.value ORDER BY COUNT(i) DESC")
-    List<Object[]> getInteractionSummary(@Param("reviewId") java.util.UUID reviewId);
+    Optional<Interaction> findByUserIdAndRecipeIdAndType(UUID userId, UUID recipeId, InteractionType type);
+
+    @Query("SELECT i.type, COUNT(i) FROM Interaction i WHERE i.recipe.id = :recipeId GROUP BY i.type ORDER BY COUNT(i) DESC")
+    List<Object[]> getInteractionSummaryByRecipeId(@Param("recipeId") UUID recipeId);
+
+    @Query("SELECT COUNT(i) FROM Interaction i WHERE i.recipe.id = :recipeId AND i.type = :type")
+    long countByRecipeIdAndType(@Param("recipeId") UUID recipeId, @Param("type") InteractionType type);
+
+    void deleteByUserIdAndRecipeIdAndType(UUID userId, UUID recipeId, InteractionType type);
 }

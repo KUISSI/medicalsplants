@@ -1,0 +1,157 @@
+﻿title;description;type;image_url;preparation_time_minutes;difficulty;ingredients;instructions;is_premium;status;author_id;created_at;updated_at
+Bain de Pr�le;Bain de plantes remin�ralisant pour soulager les douleurs articulaires.;LOTION;;30 minutes;Easy;Pr�le s�ch�e (100g), Eau (2L);"1. Faire mac�rer la pr�le dans l'eau froide pendant quelques heures.
+2. Faire bouillir le m�lange pendant 20 minutes.
+3. Filtrer et ajouter la d�coction � l'eau du bain.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Cataplasme de Ashwagandha;Pr�paration de plantes � appliquer localement pour apaiser les inflammations.;LOTION;;20 minutes;Medium;Ashwagandha (50g), Argile verte (optionnel), Eau ti�de;"1. Broyer la plante ou utiliser de la poudre.
+2. M�langer avec un peu d'eau pour former une p�te.
+3. Appliquer sur la zone concern�e.";true;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Cataplasme de Chiendent;Cataplasme pour soulager les rhumatismes ou inflammations articulaires.;LOTION;;20 minutes;Medium;Chiendent (50g), Argile verte (optionnel), Eau ti�de;"1. Broyer la plante ou utiliser de la poudre.
+2. M�langer avec un peu d'eau pour former une p�te.
+3. Appliquer sur la zone concern�e.";true;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Cataplasme de Curcuma;Pr�paration externe anti-inflammatoire � base de curcuma.;LOTION;;20 minutes;Medium;Curcuma (50g), Argile verte (optionnel), Eau ti�de;"1. Broyer la plante ou utiliser de la poudre.
+2. M�langer avec un peu d'eau pour former une p�te.
+3. Appliquer sur la zone concern�e.";true;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Asp�rule odorante;Infusion concentr�e de plantes aux vertus relaxantes.;HOT_DRINK;;25 minutes;Medium;Asp�rule odorante (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Astragale;D�coction stimulante pour renforcer les d�fenses immunitaires.;HOT_DRINK;;25 minutes;Medium;Astragale (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Aub�pine;D�coction favorisant la sant� cardiaque et la d�tente.;HOT_DRINK;;25 minutes;Medium;Aub�pine (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Bouleau;Pr�paration drainante pour aider � l'�limination des toxines.;HOT_DRINK;;25 minutes;Medium;Bouleau (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Camomille;D�coction calme et apaisante pour faciliter le sommeil.;HOT_DRINK;;25 minutes;Medium;Camomille (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Courge;D�coction riche en nutriments aidant la digestion.;HOT_DRINK;;25 minutes;Medium;Courge (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction concentr�e de Eucalyptus;Boisson d�congestionnante pr�cieuse en cas d'encombrement des voies respiratoires.;HOT_DRINK;;25 minutes;Medium;Eucalyptus (2 cuill�res � soupe), Eau (500ml);"1. Mettre la plante dans l'eau froide.
+2. Porter � �bullition et laisser r�duire de moiti�.
+3. Filtrer et utiliser en compresse ou lotion.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction de Bardane;Boisson � base de bardane, r�put�e pour ses vertus d�puratives.;HOT_DRINK;;20 minutes;Medium;Racines de Bardane (1 cuill�re � soupe), Eau (500ml);"1. Mettre les racines dans l'eau froide.
+2. Porter � �bullition et laisser bouillir 5 minutes.
+3. Retirer du feu et laisser infuser 10 minutes.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+D�coction de Saule Blanc;Boisson apaisante utilis�e pour soulager les douleurs.;HOT_DRINK;;15 minutes;Easy;�corce de Saule blanc (1 cuill�re � soupe), Eau (250ml);"1. Mettre l'�corce dans une casserole avec l'eau froide.
+2. Porter � �bullition.
+3. Baisser le feu et laisser fr�mir 10 minutes.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Gel Apaisant Aloe Vera;Gel hydratant issu d�aloe vera pour apaiser la peau irrit�e.;LOTION;;10 minutes;Medium;Gel d'Aloe vera (50ml), Huile v�g�tale;"1. Pr�lever le gel de la feuille d'Aloe vera.
+2. Mixer le gel pour le rendre liquide.
+3. Conserver au frais.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Badiane (anis �toil�);Infusion digestive au go�t anis�, id�ale apr�s les repas.;HOT_DRINK;;10 minutes;Easy;Badiane (anis �toil�) (1 cuill�re � caf�), Eau chaude (250ml);"1. Verser l'eau fr�missante sur la plante.
+2. Laisser infuser 5 � 10 minutes.
+3. Filtrer et d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Bruy�re;Infusion aux propri�t�s diur�tiques et apaisantes.;HOT_DRINK;;10 minutes;Easy;Bruy�re (1 cuill�re � caf�), Eau chaude (250ml);"1. Verser l'eau fr�missante sur la plante.
+2. Laisser infuser 5 � 10 minutes.
+3. Filtrer et d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Busserole;Infusion traditionnellement utilis�e pour le confort urinaire.;HOT_DRINK;;10 minutes;Easy;Busserole (1 cuill�re � caf�), Eau chaude (250ml);"1. Verser l'eau fr�missante sur la plante.
+2. Laisser infuser 5 � 10 minutes.
+3. Filtrer et d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Camomille romaine;Infusion calmante � prendre en soir�e pour un meilleur sommeil.;HOT_DRINK;;10 minutes;Easy;Camomille romaine (1 cuill�re � caf�), Eau chaude (250ml);"1. Verser l'eau fr�missante sur la plante.
+2. Laisser infuser 5 � 10 minutes.
+3. Filtrer et d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Consoude;Infusion employ�e pour le confort articulaire et musculaire.;HOT_DRINK;;10 minutes;Easy;Consoude (1 cuill�re � caf�), Eau chaude (250ml);"1. Verser l'eau fr�missante sur la plante.
+2. Laisser infuser 5 � 10 minutes.
+3. Filtrer et d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Thym et Romarin;Infusion protectrice pour les voies respiratoires.;HOT_DRINK;;10 minutes;Easy;Eau (500ml), Miel (1 cuill�re � caf�), Thym (2 branches), Romarin (1 branche);"1. Faire bouillir l'eau.
+2. Retirer du feu et ajouter le thym et le romarin.
+3. Couvrir et laisser infuser 10 minutes.
+4. Filtrer et ajouter le miel avant de d�guster.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Infusion de Tilleul;Infusion relaxante favorisant le sommeil et la d�tente.;HOT_DRINK;;10 minutes;Easy;Fleurs de Tilleul (1 pinc�e), Eau (250ml);"1. Faire bouillir l'eau.
+2. Ajouter les fleurs de tilleul.
+3. Laisser infuser 5 � 10 minutes.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Buis;Lotion vivifiante pour tonifier la peau.;LOTION;;15 minutes;Easy;Buis (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Cassis;Lotion naturelle pour revitaliser et rafra�chir la peau.;LOTION;;15 minutes;Easy;Cassis (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Centella asiatica;Lotion r�paratrice pour favoriser la r�g�n�ration cutan�e.;LOTION;;15 minutes;Easy;Centella asiatica (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Cerise (queue de cerise);Lotion aux queues de cerise pour raffermir et adoucir la peau.;LOTION;;15 minutes;Easy;Cerise (queue de cerise) (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Coquelicot;Lotion adoucissante pour le confort de la peau sensible.;LOTION;;15 minutes;Easy;Coquelicot (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au �chinac�e;Lotion tonique pour stimuler les d�fenses naturelles de la peau.;LOTION;;15 minutes;Easy;�chinac�e (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Lotion tonique au Estragon;Lotion aromatique pour rafra�chir la peau.;LOTION;;15 minutes;Easy;Estragon (1 poign�e), Eau (200ml), Vinaigre de cidre (1 cuill�re � soupe);"1. Faire une infusion forte de la plante.
+2. Laisser refroidir.
+3. Ajouter le vinaigre.
+4. Utiliser sur le visage avec un coton.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Aigremoine;Huile v�g�tale pour apaiser et nourrir la peau.;LOTION;;3 semaines;Easy;Aigremoine (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Arbre � th�;Huile antiseptique pour purifier la peau.;LOTION;;3 semaines;Easy;Arbre � th� (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Boldo;Huile de boldo pour stimuler la circulation.;LOTION;;3 semaines;Easy;Boldo (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Bouillon blanc;Huile adoucissante pour peaux s�ches ou irrit�es.;LOTION;;3 semaines;Easy;Bouillon blanc (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Calendula;Huile r�put�e pour ses propri�t�s apaisantes et r�paratrices.;LOTION;;3 semaines;Easy;Calendula (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Cannelle;Huile aromatique pour r�chauffer la peau.;LOTION;;3 semaines;Easy;Cannelle (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Mac�r�t huileux de Clou de girofle;Huile r�confortante utilis�e pour ses vertus apaisantes.;LOTION;;3 semaines;Easy;Clou de girofle (100g), Huile d'olive ou tournesol (500ml);"1. Mettre la plante s�ch�e dans un bocal.
+2. Recouvrir d'huile.
+3. Laisser mac�rer au soleil pendant 3 semaines.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Pesto au Basilic et � l'Ail;Pr�paration culinaire fraiche � base de basilic et d'ail.;DISH;;15 minutes;Easy;Basilic (1 bouquet), Ail (2 gousses), Pignons de pin, Parmesan, Huile d'olive;"1. Laver et s�cher le basilic.
+2. �plucher l'ail.
+3. Mixer le basilic, l'ail, les pignons et le parmesan.
+4. Ajouter l'huile d'olive petit � petit en continuant de mixer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Salade de Pissenlit;Plat cru riche en nutriments � base de pissenlit frais.;DISH;;15 minutes;Easy;Jeunes feuilles de Pissenlit (200g), Lardons (100g), �ufs mollets (2), Vinaigrette;"1. Laver soigneusement les feuilles de pissenlit.
+2. Faire revenir les lardons.
+3. Cuire les �ufs mollets (6 min).
+4. Dresser la salade avec les lardons chauds et les �ufs.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Sirop de Bourrache;Sirop apaisant pour la gorge � base de bourrache.;HOT_DRINK;;30 minutes;Medium;Fleurs de Bourrache (100g), Sucre (100g), Eau (200ml);"1. Faire un sirop avec l'eau et le sucre.
+2. Ajouter les fleurs hors du feu.
+3. Laisser infuser 24h.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Sirop de Sureau;Sirop traditionnel pour soutenir l�immunit�.;HOT_DRINK;;45 minutes;Medium;Baies de Sureau (1kg), Sucre (800g), Eau (1L), Citron (1);"1. �grener les baies de sureau.
+2. Les faire cuire dans l'eau pendant 20 minutes.
+3. Filtrer pour r�cup�rer le jus.
+4. Ajouter le sucre et le jus de citron.
+5. Faire cuire � nouveau jusqu'� consistance sirupeuse.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Th� Vert � l'Anis;Boisson stimulante � base de th� vert et anis.;HOT_DRINK;;5 minutes;Easy;Th� vert (1 cuill�re � caf�), Graines d'Anis (1/2 cuill�re � caf�), Eau (250ml);"1. Faire chauffer l'eau � 80�C (ne pas faire bouillir).
+2. Mettre le th� et l'anis dans un infuseur.
+3. Verser l'eau chaude et laisser infuser 3 minutes.
+4. Retirer l'infuseur.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Tisane de Val�riane pour le sommeil;M�lange de plantes pour faciliter l�endormissement.;HOT_DRINK;;15 minutes;Easy;Racine de Val�riane (1 cuill�re � caf�), Eau (250ml);"1. Mettre la racine dans l'eau froide.
+2. Porter � �bullition puis �teindre le feu.
+3. Couvrir et laisser infuser 10 � 15 minutes.
+4. Boire 30 minutes avant le coucher.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Vin d'Ang�lique;Vin m�dicinal aux vertus digestives et toniques.;HOT_DRINK;;20 minutes;Easy;Racines d'Ang�lique (50g), Vin blanc (1L);"1. Couper les racines d'ang�lique en petits morceaux.
+2. Les mettre dans un bocal avec le vin blanc.
+3. Laisser mac�rer 15 jours � l'abri de la lumi�re.
+4. Filtrer.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026
+Vin de Sauge;Vin tonique � base de sauge pour soutenir la vitalit�.;HOT_DRINK;;10 minutes;Easy;Feuilles de Sauge (80g), Vin rouge ou blanc (1L), Miel (optionnel);"1. Mettre les feuilles de sauge dans le vin.
+2. Laisser mac�rer pendant 8 � 10 jours.
+3. Filtrer et ajouter du miel si d�sir�.
+4. Conserver en bouteille ferm�e.";false;PUBLISHED;549ab169-f074-4abb-9610-c35907ab9abb;02/02/2026;02/02/2026

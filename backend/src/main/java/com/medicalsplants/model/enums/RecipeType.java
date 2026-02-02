@@ -1,10 +1,6 @@
 package com.medicalsplants.model.enums;
 
-/**
- * @deprecated Utilisez {@link RecipeType} à la place
- */
-@Deprecated
-public enum ReceiptType {
+public enum RecipeType {
     HOT_DRINK,
     COLD_DRINK,
     DISH,

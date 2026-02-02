@@ -3,10 +3,10 @@ package com.medicalsplants.service;
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.exception.BadRequestException;
-import com.medicalsplants.model.entity.Receipt;
+import com.medicalsplants.model.entity.Recipe;
 import com.medicalsplants.model.entity.Review;
 import com.medicalsplants.model.entity.User;
-import com.medicalsplants.repository.ReceiptRepository;
+import com.medicalsplants.repository.RecipeRepository;
 import com.medicalsplants.repository.ReviewRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
@@ -21,20 +21,20 @@ import java.util.UUID;
 @Service
 public class ReviewService {
 
-    public ReviewService(ReviewRepository reviewRepository, ReceiptRepository receiptRepository, UserRepository userRepository) {
+    private final ReviewRepository reviewRepository;
+    private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
+
+    public ReviewService(ReviewRepository reviewRepository, RecipeRepository recipeRepository, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
-        this.receiptRepository = receiptRepository;
+        this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
     }
 
-    private final ReviewRepository reviewRepository;
-    private final ReceiptRepository receiptRepository;
-    private final UserRepository userRepository;
-
     @Transactional(readOnly = true)
-    public List<Review> getReviewsByReceiptId(String receiptId) {
-        UUID uuid = UUID.fromString(receiptId);
-        return reviewRepository.findByReceiptIdAndNotDeleted(uuid);
+    public List<Review> getReviewsByRecipeId(String recipeId) {
+        UUID uuid = UUID.fromString(recipeId);
+        return reviewRepository.findByRecipeIdAndNotDeleted(uuid);
     }
 
     @Transactional(readOnly = true)
@@ -47,59 +47,59 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Page<Review> getReviewsByUserId(String userId, Pageable pageable) {
         UUID uuid = UUID.fromString(userId);
-        return reviewRepository.findBySenderIdAndNotDeleted(uuid, pageable);
+        return reviewRepository.findByAuthorIdAndNotDeleted(uuid, pageable);
     }
 
     @Transactional(readOnly = true)
-    public long getReviewCountByReceiptId(String receiptId) {
-        UUID uuid = UUID.fromString(receiptId);
-        return reviewRepository.countByReceiptId(uuid);
+    public long getReviewCountByRecipeId(String recipeId) {
+        UUID uuid = UUID.fromString(recipeId);
+        return reviewRepository.countByRecipeId(uuid);
+    }
+
+    @Transactional(readOnly = true)
+    public Double getAverageRatingByRecipeId(String recipeId) {
+        UUID uuid = UUID.fromString(recipeId);
+        return reviewRepository.getAverageRatingByRecipeId(uuid);
     }
 
     @Transactional
-    public Review createReview(String receiptId, String content, String parentReviewId, String senderId) {
-        UUID receiptUuid = UUID.fromString(receiptId);
-        if (receiptUuid == null) {
-            throw new BadRequestException("Receipt id cannot be null");
-        }
-        Receipt receipt = receiptRepository.findById(receiptUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", receiptId));
+    public Review createReview(String recipeId, String content, Short rating, String parentId, String authorId) {
+        UUID recipeUuid = UUID.fromString(recipeId);
+        Recipe recipe = recipeRepository.findById(recipeUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", recipeId));
 
-        UUID senderUuid = UUID.fromString(senderId);
-        if (senderUuid == null) {
-            throw new BadRequestException("Sender id cannot be null");
-        }
-        User sender = userRepository.findById(senderUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", senderId));
+        UUID authorUuid = UUID.fromString(authorId);
+        User author = userRepository.findById(authorUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
 
         Review review = new Review();
-        review.setId(java.util.UUID.randomUUID());
+        review.setId(UUID.randomUUID());
         review.setContent(content);
-        review.setReceipt(receipt);
-        review.setSender(sender);
+        review.setRating(rating);
+        review.setRecipe(recipe);
+        review.setAuthor(author);
 
-        if (parentReviewId != null && !parentReviewId.isBlank()) {
-            UUID parentUuid = UUID.fromString(parentReviewId);
-            if (parentUuid == null) {
-                throw new BadRequestException("Parent review id cannot be null");
-            }
-            Review parentReview = reviewRepository.findByIdAndNotDeleted(parentUuid)
-                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", parentReviewId));
-            review.setParentReview(parentReview);
+        if (parentId != null && !parentId.isBlank()) {
+            UUID parentUuid = UUID.fromString(parentId);
+            Review parent = reviewRepository.findByIdAndNotDeleted(parentUuid)
+                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", parentId));
+            review.setParent(parent);
         }
 
         return reviewRepository.save(review);
     }
 
     @Transactional
-    public Review updateReview(String id, String content, CustomUserDetails currentUser) {
+    public Review updateReview(String id, String content, Short rating, CustomUserDetails currentUser) {
         Review review = getReviewById(id);
 
-        if (!review.getSender().getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!review.getAuthor().getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
             throw new ForbiddenException("You can only edit your own reviews");
         }
 
-        review.setContent(content);
+        if (content != null) review.setContent(content);
+        if (rating != null) review.setRating(rating);
+        
         return reviewRepository.save(review);
     }
 
@@ -107,7 +107,7 @@ public class ReviewService {
     public void deleteReview(String id, CustomUserDetails currentUser) {
         Review review = getReviewById(id);
 
-        if (!review.getSender().getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!review.getAuthor().getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
             throw new ForbiddenException("You can only delete your own reviews");
         }
 

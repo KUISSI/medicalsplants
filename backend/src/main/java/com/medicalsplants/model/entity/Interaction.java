@@ -2,28 +2,50 @@ package com.medicalsplants.model.entity;
 
 import com.medicalsplants.model.enums.InteractionType;
 import jakarta.persistence.*;
-// Lombok removed, manual implementation
+
+import java.util.UUID;
 
 @Entity
-@Table(name = "ms_interaction")
+@Table(name = "mp_interaction",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "recipe_id", "type"}))
 public class Interaction extends BaseEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private InteractionType type;
+
+    // Utilisateur ayant interagi
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    // Recette concernée
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
+    // Constructors
     public Interaction() {
     }
 
-    public Interaction(java.util.UUID id, InteractionType type, String value, User user, Review review) {
+    public Interaction(UUID id, InteractionType type, User user, Recipe recipe) {
         this.id = id;
         this.type = type;
-        this.value = value;
         this.user = user;
-        this.review = review;
+        this.recipe = recipe;
     }
 
-    public java.util.UUID getId() {
+    // Getters and Setters
+    public UUID getId() {
         return id;
     }
 
-    public void setId(java.util.UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -35,14 +57,6 @@ public class Interaction extends BaseEntity {
         this.type = type;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public User getUser() {
         return user;
     }
@@ -51,83 +65,45 @@ public class Interaction extends BaseEntity {
         this.user = user;
     }
 
-    public Review getReview() {
-        return review;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
-    public static InteractionBuilder builder() {
-        return new InteractionBuilder();
+    // Static factory methods
+    public static Interaction like(User user, Recipe recipe) {
+        return new Interaction(null, InteractionType.LIKE, user, recipe);
     }
 
-    public static class InteractionBuilder {
-
-        private java.util.UUID id;
-        private InteractionType type;
-        private String value;
-        private User user;
-        private Review review;
-
-        public InteractionBuilder id(java.util.UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public InteractionBuilder type(InteractionType type) {
-            this.type = type;
-            return this;
-        }
-
-        public InteractionBuilder value(String value) {
-            this.value = value;
-            return this;
-        }
-
-        public InteractionBuilder user(User user) {
-            this.user = user;
-            return this;
-        }
-
-        public InteractionBuilder review(Review review) {
-            this.review = review;
-            return this;
-        }
-
-        public Interaction build() {
-            return new Interaction(id, type, value, user, review);
-        }
+    public static Interaction dislike(User user, Recipe recipe) {
+        return new Interaction(null, InteractionType.DISLIKE, user, recipe);
     }
 
-    @Id
-    @Column(columnDefinition = "uuid")
-    private java.util.UUID id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private InteractionType type;
-
-    @Column(nullable = false, length = 50)
-    private String value;
-
-    // Utilisateur ayant réagi
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // Avis concerné
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id", nullable = false)
-    private Review review;
-
-    // Méthodes utilitaires
-    public boolean isGift() {
-        return this.type == InteractionType.GIFT;
+    public static Interaction bookmark(User user, Recipe recipe) {
+        return new Interaction(null, InteractionType.BOOKMARK, user, recipe);
     }
 
-    public boolean isEmoji() {
-        return this.type == InteractionType.EMOJI;
+    public static Interaction report(User user, Recipe recipe) {
+        return new Interaction(null, InteractionType.REPORT, user, recipe);
+    }
+
+    // Utility methods
+    public boolean isLike() {
+        return this.type == InteractionType.LIKE;
+    }
+
+    public boolean isDislike() {
+        return this.type == InteractionType.DISLIKE;
+    }
+
+    public boolean isBookmark() {
+        return this.type == InteractionType.BOOKMARK;
+    }
+
+    public boolean isReport() {
+        return this.type == InteractionType.REPORT;
     }
 }

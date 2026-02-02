@@ -32,10 +32,10 @@ public class ReviewController {
         this.reviewMapper = reviewMapper;
     }
 
-    @Operation(summary = "Get reviews by receipt ID")
-    @GetMapping("/receipt/{receiptId}")
-    public ResponseEntity<List<ReviewResponse>> getReviewsByReceiptId(@PathVariable UUID receiptId) {
-        List<Review> reviews = reviewService.getReviewsByReceiptId(receiptId.toString());
+    @Operation(summary = "Get reviews by recipe ID")
+    @GetMapping("/recipe/{recipeId}")
+    public ResponseEntity<List<ReviewResponse>> getReviewsByRecipeId(@PathVariable UUID recipeId) {
+        List<Review> reviews = reviewService.getReviewsByRecipeId(recipeId.toString());
         List<ReviewResponse> dtoList = reviews.stream().map(reviewMapper::toDto).toList();
         return ResponseEntity.ok(dtoList);
     }
@@ -64,24 +64,42 @@ public class ReviewController {
         return ResponseEntity.ok(dtoPage);
     }
 
+    @Operation(summary = "Get review count for a recipe")
+    @GetMapping("/recipe/{recipeId}/count")
+    public ResponseEntity<Long> getReviewCountByRecipeId(@PathVariable UUID recipeId) {
+        long count = reviewService.getReviewCountByRecipeId(recipeId.toString());
+        return ResponseEntity.ok(count);
+    }
+
+    @Operation(summary = "Get average rating for a recipe")
+    @GetMapping("/recipe/{recipeId}/rating")
+    public ResponseEntity<Double> getAverageRatingByRecipeId(@PathVariable UUID recipeId) {
+        Double rating = reviewService.getAverageRatingByRecipeId(recipeId.toString());
+        return ResponseEntity.ok(rating != null ? rating : 0.0);
+    }
+
     @Operation(summary = "Create a review")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public ResponseEntity<ReviewResponse> createReview(@RequestParam String receiptId,
+    public ResponseEntity<ReviewResponse> createReview(
+            @RequestParam String recipeId,
             @RequestParam String content,
-            @RequestParam(required = false) String parentReviewId,
+            @RequestParam(required = false) Short rating,
+            @RequestParam(required = false) String parentId,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Review review = reviewService.createReview(receiptId, content, parentReviewId, currentUser.getId().toString());
+        Review review = reviewService.createReview(recipeId, content, rating, parentId, currentUser.getId().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewMapper.toDto(review));
     }
 
     @Operation(summary = "Update a review")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewResponse> updateReview(@PathVariable UUID id,
-            @RequestParam String content,
+    public ResponseEntity<ReviewResponse> updateReview(
+            @PathVariable UUID id,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) Short rating,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Review review = reviewService.updateReview(id.toString(), content, currentUser);
+        Review review = reviewService.updateReview(id.toString(), content, rating, currentUser);
         return ResponseEntity.ok(reviewMapper.toDto(review));
     }
 

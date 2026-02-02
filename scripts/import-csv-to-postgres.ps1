@@ -1,18 +1,11 @@
-<#
-.SYNOPSIS
-    Import CSV files into PostgreSQL database
-.DESCRIPTION
-    This script imports data from CSV files into PostgreSQL.
-    It handles UTF-8 encoding and maintains referential integrity.
-.USAGE
-    .\import-csv-to-postgres.ps1
-    .\import-csv-to-postgres.ps1 -Reset  # Clear existing data first
-#>
+# ============================================================
+# MEDICALS PLANTS - Import CSV to PostgreSQL
+# Version: 2.0.0
+# ============================================================
 
 param(
-    [switch]$Reset = $false,
     [string]$DbHost = "localhost",
-    [string]$DbPort = "5433",
+    [int]$DbPort = 5432,
     [string]$DbName = "medicalsplants_dev",
     [string]$DbUser = "postgres",
     [string]$DbPassword = "postgres"
@@ -20,204 +13,209 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ProjectRoot = Split-Path -Parent $ScriptDir
-$DataDir = Join-Path $ProjectRoot "data_import"
+$DataDir = Join-Path (Split-Path -Parent $ScriptDir) "data_import"
 
-# Set PostgreSQL password for psql
-$env:PGPASSWORD = $DbPassword
-
-Write-Host "=== CSV to PostgreSQL Import ===" -ForegroundColor Cyan
-Write-Host "Database: $DbHost:$DbPort/$DbName"
-Write-Host "Data directory: $DataDir"
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "  MEDICALS PLANTS - CSV Import v2.0" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
+Write-Host "Database: $DbHost`:$DbPort/$DbName" -ForegroundColor Yellow
 
-# Check if psql is available
-if (-not (Get-Command "psql" -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: psql not found. Using Docker instead..." -ForegroundColor Yellow
-    $UseDocker = $true
-} else {
-    $UseDocker = $false
+# Function to run SQL via Docker psql
+function Invoke-Psql {
+    param([string]$Sql)
+    $result = docker run --rm -e PGPASSWORD=$DbPassword postgres:16-alpine psql -h host.docker.internal -p $DbPort -U $DbUser -d $DbName -c $Sql 2>&1
+    return $result
 }
 
-function Run-SQL {
-    param([string]$SQL)
-    if ($UseDocker) {
-        docker exec -i medicalsplants-db psql -U $DbUser -d $DbName -c $SQL
-    } else {
-        psql -h $DbHost -p $DbPort -U $DbUser -d $DbName -c $SQL
+# Function to import CSV
+function Import-CsvToTable {
+    param(
+        [string]$CsvFile,
+        [string]$TableName,
+        [hashtable]$ColumnMapping = @{}
+    )
+    
+    Write-Host ""
+    Write-Host "Importing $CsvFile -> $TableName..." -ForegroundColor Green
+    
+    $csvPath = Join-Path $DataDir $CsvFile
+    if (-not (Test-Path $csvPath)) {
+        Write-Host "  File not found: $csvPath" -ForegroundColor Red
+        return
     }
-}
-
-function Run-SQLFile {
-    param([string]$FilePath)
-    if ($UseDocker) {
-        Get-Content $FilePath -Raw -Encoding UTF8 | docker exec -i medicalsplants-db psql -U $DbUser -d $DbName
-    } else {
-        psql -h $DbHost -p $DbPort -U $DbUser -d $DbName -f $FilePath
+    
+    # Read CSV with semicolon delimiter and UTF-8
+    $data = Import-Csv -Path $csvPath -Delimiter ";" -Encoding UTF8
+    
+    if ($data.Count -eq 0) {
+        Write-Host "  No data to import" -ForegroundColor Yellow
+        return
     }
-}
-
-# Generate SQL import script
-$TempSQL = Join-Path $env:TEMP "import_data.sql"
-
-$SqlContent = @"
--- ============================================================
--- MEDICALS PLANTS - CSV Data Import
--- Generated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
--- ============================================================
-
-SET client_encoding TO 'UTF8';
-
--- Create temporary tables for CSV import
-CREATE TEMP TABLE tmp_symptom (
-    title TEXT,
-    symptom_family TEXT,
-    symptom_detail TEXT,
-    created_at TEXT
-);
-
-CREATE TEMP TABLE tmp_property (
-    title TEXT,
-    property_family TEXT,
-    property_detail TEXT,
-    created_at TEXT
-);
-
-CREATE TEMP TABLE tmp_plant (
-    title TEXT,
-    description TEXT,
-    administration_mode TEXT,
-    consumed_part TEXT,
-    created_at TEXT
-);
-
-CREATE TEMP TABLE tmp_plant_property (
-    plant TEXT,
-    property TEXT
-);
-
-CREATE TEMP TABLE tmp_property_symptom (
-    property TEXT,
-    symptom TEXT
-);
-
-"@
-
-if ($Reset) {
-    $SqlContent += @"
-
--- Reset existing data (in correct order for foreign keys)
-DELETE FROM ms_receipt_plant;
-DELETE FROM ms_plant_property;
-DELETE FROM ms_property_symptom;
-DELETE FROM ms_review;
-DELETE FROM ms_receipt;
-DELETE FROM ms_plant;
-DELETE FROM ms_property;
-DELETE FROM ms_symptom;
-
-"@
-}
-
-# Write SQL file
-$SqlContent | Out-File -FilePath $TempSQL -Encoding UTF8
-
-Write-Host "Step 1: Preparing import..." -ForegroundColor Green
-
-# Copy CSV files to Docker container and import
-if ($UseDocker) {
-    # Copy files to container
-    $files = @("symptom.csv", "property.csv", "plant.csv", "plant_property_title.csv", "property_symptom_title.csv")
-    foreach ($file in $files) {
-        $srcPath = Join-Path $DataDir $file
-        if (Test-Path $srcPath) {
-            # Convert to UTF-8 if needed
-            $content = Get-Content $srcPath -Raw -Encoding Default
-            $utf8Path = Join-Path $env:TEMP $file
-            $content | Out-File -FilePath $utf8Path -Encoding UTF8
-            docker cp $utf8Path "medicalsplants-db:/tmp/$file"
-            Write-Host "  Copied $file to container" -ForegroundColor Gray
+    
+    $importedCount = 0
+    $errorCount = 0
+    
+    foreach ($row in $data) {
+        $columns = @()
+        $values = @()
+        
+        foreach ($prop in $row.PSObject.Properties) {
+            $colName = $prop.Name
+            $colValue = $prop.Value
+            
+            # Apply column mapping
+            if ($ColumnMapping.ContainsKey($colName)) {
+                $colName = $ColumnMapping[$colName]
+            }
+            
+            # Skip empty values
+            if ([string]::IsNullOrWhiteSpace($colValue)) { continue }
+            
+            # Skip timestamp columns (let DB handle)
+            if ($colName -in @("created_at", "updated_at")) { continue }
+            
+            $columns += $colName
+            $escapedValue = $colValue -replace "'", "''"
+            $values += "'$escapedValue'"
+        }
+        
+        if ($columns.Count -eq 0) { continue }
+        
+        $columnList = $columns -join ", "
+        $valueList = $values -join ", "
+        
+        $sql = "INSERT INTO $TableName ($columnList) VALUES ($valueList) ON CONFLICT DO NOTHING;"
+        
+        try {
+            $result = Invoke-Psql -Sql $sql
+            if ($result -match "INSERT") { $importedCount++ }
+        } catch {
+            $errorCount++
         }
     }
     
-    # Generate COPY commands for Docker
-    $ImportSQL = @"
-SET client_encoding TO 'UTF8';
-
--- Create temp tables
-CREATE TEMP TABLE tmp_symptom (title TEXT, symptom_family TEXT, symptom_detail TEXT, created_at TEXT);
-CREATE TEMP TABLE tmp_property (title TEXT, property_family TEXT, property_detail TEXT, created_at TEXT);
-CREATE TEMP TABLE tmp_plant (title TEXT, description TEXT, administration_mode TEXT, consumed_part TEXT, created_at TEXT);
-CREATE TEMP TABLE tmp_plant_property (plant TEXT, property TEXT);
-CREATE TEMP TABLE tmp_property_symptom (property TEXT, symptom TEXT);
-
-$(if ($Reset) { "DELETE FROM ms_receipt_plant; DELETE FROM ms_plant_property; DELETE FROM ms_property_symptom; DELETE FROM ms_review; DELETE FROM ms_receipt; DELETE FROM ms_plant; DELETE FROM ms_property; DELETE FROM ms_symptom;" })
-
--- Import CSVs
-\copy tmp_symptom FROM '/tmp/symptom.csv' WITH (FORMAT csv, HEADER true, DELIMITER ';', ENCODING 'UTF8');
-\copy tmp_property FROM '/tmp/property.csv' WITH (FORMAT csv, HEADER true, DELIMITER ';', ENCODING 'UTF8');
-\copy tmp_plant FROM '/tmp/plant.csv' WITH (FORMAT csv, HEADER true, DELIMITER ';', ENCODING 'UTF8');
-\copy tmp_plant_property FROM '/tmp/plant_property_title.csv' WITH (FORMAT csv, HEADER true, DELIMITER ';', ENCODING 'UTF8');
-\copy tmp_property_symptom FROM '/tmp/property_symptom_title.csv' WITH (FORMAT csv, HEADER true, DELIMITER ';', ENCODING 'UTF8');
-
--- Insert into main tables
-INSERT INTO ms_symptom (id, title, symptom_family, symptom_detail, created_at)
-SELECT uuid_generate_v4(), title, symptom_family, symptom_detail, NOW()
-FROM tmp_symptom
-ON CONFLICT (title) DO UPDATE SET
-    symptom_family = EXCLUDED.symptom_family,
-    symptom_detail = EXCLUDED.symptom_detail,
-    updated_at = NOW();
-
-INSERT INTO ms_property (id, title, property_family, property_detail, created_at)
-SELECT uuid_generate_v4(), title, property_family, property_detail, NOW()
-FROM tmp_property
-ON CONFLICT (title) DO UPDATE SET
-    property_family = EXCLUDED.property_family,
-    property_detail = EXCLUDED.property_detail,
-    updated_at = NOW();
-
-INSERT INTO ms_plant (id, title, description, created_at)
-SELECT uuid_generate_v4(), title, description, NOW()
-FROM tmp_plant
-ON CONFLICT (title) DO UPDATE SET
-    description = EXCLUDED.description,
-    updated_at = NOW();
-
--- Insert junction table: plant_property
-INSERT INTO ms_plant_property (plant_id, property_id)
-SELECT p.id, pr.id
-FROM tmp_plant_property t
-JOIN ms_plant p ON p.title = t.plant
-JOIN ms_property pr ON pr.title = TRIM(t.property)
-ON CONFLICT DO NOTHING;
-
--- Insert junction table: property_symptom
-INSERT INTO ms_property_symptom (property_id, symptom_id)
-SELECT p.id, s.id
-FROM tmp_property_symptom t
-JOIN ms_property p ON p.title = TRIM(t.property)
-JOIN ms_symptom s ON s.title = t.symptom
-ON CONFLICT DO NOTHING;
-
--- Summary
-SELECT 'Symptoms: ' || COUNT(*) FROM ms_symptom;
-SELECT 'Properties: ' || COUNT(*) FROM ms_property;
-SELECT 'Plants: ' || COUNT(*) FROM ms_plant;
-SELECT 'Plant-Property links: ' || COUNT(*) FROM ms_plant_property;
-SELECT 'Property-Symptom links: ' || COUNT(*) FROM ms_property_symptom;
-"@
-
-    $ImportSQLPath = Join-Path $env:TEMP "import_full.sql"
-    $ImportSQL | Out-File -FilePath $ImportSQLPath -Encoding UTF8
-    docker cp $ImportSQLPath "medicalsplants-db:/tmp/import_full.sql"
-    
-    Write-Host "Step 2: Importing data..." -ForegroundColor Green
-    docker exec -i medicalsplants-db psql -U $DbUser -d $DbName -f /tmp/import_full.sql
-    
-} else {
-    Write-Host "Direct psql import not implemented yet. Use Docker." -ForegroundColor Yellow
+    Write-Host "  Imported: $importedCount, Errors: $errorCount" -ForegroundColor $(if ($errorCount -gt 0) { "Yellow" } else { "Green" })
 }
 
+# Function to import junction table by title
+function Import-JunctionByTitle {
+    param(
+        [string]$CsvFile,
+        [string]$JunctionTable,
+        [string]$Table1, [string]$Col1,
+        [string]$Table2, [string]$Col2
+    )
+    
+    Write-Host ""
+    Write-Host "Importing $CsvFile -> $JunctionTable..." -ForegroundColor Green
+    
+    $csvPath = Join-Path $DataDir $CsvFile
+    if (-not (Test-Path $csvPath)) {
+        Write-Host "  File not found: $csvPath" -ForegroundColor Red
+        return
+    }
+    
+    $data = Import-Csv -Path $csvPath -Delimiter ";" -Encoding UTF8
+    $importedCount = 0
+    
+    foreach ($row in $data) {
+        $title1 = ($row.PSObject.Properties | Select-Object -First 1).Value -replace "'", "''"
+        $title2 = ($row.PSObject.Properties | Select-Object -Skip 1 -First 1).Value -replace "'", "''"
+        
+        $sql = "INSERT INTO $JunctionTable ($Col1, $Col2) SELECT t1.id, t2.id FROM $Table1 t1, $Table2 t2 WHERE t1.title = '$title1' AND t2.title = '$title2' ON CONFLICT DO NOTHING;"
+        
+        try {
+            $result = Invoke-Psql -Sql $sql
+            if ($result -match "INSERT") { $importedCount++ }
+        } catch {}
+    }
+    
+    Write-Host "  Imported: $importedCount" -ForegroundColor Green
+}
+
+# ============================================
+# Main Import Process
+# ============================================
+
+Write-Host "`nStarting import..." -ForegroundColor Cyan
+
+# 1. Symptoms
+Import-CsvToTable -CsvFile "mp_symptom.csv" -TableName "mp_symptom"
+
+# 2. Properties
+Import-CsvToTable -CsvFile "mp_property.csv" -TableName "mp_property"
+
+# 3. Plants
+Import-CsvToTable -CsvFile "mp_plant.csv" -TableName "mp_plant"
+
+# 4. Property-Symptom junction
+Import-JunctionByTitle -CsvFile "mp_property_symptom_title.csv" -JunctionTable "mp_property_symptom" `
+    -Table1 "mp_property" -Col1 "property_id" -Table2 "mp_symptom" -Col2 "symptom_id"
+
+# 5. Plant-Property junction
+Import-JunctionByTitle -CsvFile "mp_plant_property_title.csv" -JunctionTable "mp_plant_property" `
+    -Table1 "mp_plant" -Col1 "plant_id" -Table2 "mp_property" -Col2 "property_id"
+
+# 6. Recipes (requires author_id - use first admin user)
 Write-Host ""
-Write-Host "=== Import Complete ===" -ForegroundColor Green
+Write-Host "Importing mp_recipe.csv -> mp_recipe..." -ForegroundColor Green
+$recipeCsvPath = Join-Path $DataDir "mp_recipe.csv"
+if (Test-Path $recipeCsvPath) {
+    $recipeData = Import-Csv -Path $recipeCsvPath -Delimiter ";" -Encoding UTF8
+    $importedCount = 0
+    
+    foreach ($row in $recipeData) {
+        $title = $row.title -replace "'", "''"
+        $description = $row.description -replace "'", "''"
+        $type = $row.type
+        $difficulty = if ($row.difficulty) { $row.difficulty } else { "Medium" }
+        $isPremium = if ($row.is_premium -eq "true") { "true" } else { "false" }
+        $status = if ($row.status) { $row.status } else { "PUBLISHED" }
+        $authorId = $row.author_id
+        
+        # Parse preparation time (e.g., "30 minutes" -> 30)
+        $prepTime = "NULL"
+        if ($row.preparation_time_minutes -match "(\d+)") {
+            $prepTime = $Matches[1]
+        }
+        
+        # Convert ingredients and instructions to JSONB
+        $ingredients = "NULL"
+        if ($row.ingredients) {
+            $ingredientList = ($row.ingredients -replace "'", "''") -split ", " | ForEach-Object { "`"$_`"" }
+            $ingredients = "'[" + ($ingredientList -join ", ") + "]'"
+        }
+        
+        $instructions = "NULL"
+        if ($row.instructions) {
+            $instructionText = $row.instructions -replace "'", "''" -replace "`n", " " -replace "`r", ""
+            $instructions = "'`"$instructionText`"'"
+        }
+        
+        $sql = @"
+INSERT INTO mp_recipe (title, type, description, preparation_time_minutes, difficulty, ingredients, instructions, is_premium, status, author_id)
+VALUES ('$title', '$type', '$description', $prepTime, '$difficulty', $ingredients, $instructions, $isPremium, '$status', '$authorId')
+ON CONFLICT DO NOTHING;
+"@
+        
+        try {
+            $result = Invoke-Psql -Sql $sql
+            if ($result -match "INSERT") { $importedCount++ }
+        } catch {}
+    }
+    Write-Host "  Imported: $importedCount" -ForegroundColor Green
+}
+
+# 7. Recipe-Plant junction
+Import-JunctionByTitle -CsvFile "mp_recipe_plant_title.csv" -JunctionTable "mp_recipe_plant" `
+    -Table1 "mp_recipe" -Col1 "recipe_id" -Table2 "mp_plant" -Col2 "plant_id"
+
+Write-Host "`n============================================" -ForegroundColor Cyan
+Write-Host "  Import completed!" -ForegroundColor Green
+Write-Host "============================================" -ForegroundColor Cyan
+
+# Show counts
+Write-Host "`nTable counts:" -ForegroundColor Yellow
+$countSql = "SELECT 'mp_symptom' as t, count(*) as c FROM mp_symptom UNION ALL SELECT 'mp_property', count(*) FROM mp_property UNION ALL SELECT 'mp_plant', count(*) FROM mp_plant UNION ALL SELECT 'mp_recipe', count(*) FROM mp_recipe UNION ALL SELECT 'mp_property_symptom', count(*) FROM mp_property_symptom UNION ALL SELECT 'mp_plant_property', count(*) FROM mp_plant_property UNION ALL SELECT 'mp_recipe_plant', count(*) FROM mp_recipe_plant ORDER BY t;"
+Invoke-Psql -Sql $countSql

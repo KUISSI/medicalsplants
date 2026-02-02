@@ -5,27 +5,48 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name = "ms_symptom")
+@Table(name = "mp_symptom")
 public class Symptom extends BaseEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
+    @Column(nullable = false, length = 200)
+    private String title;
+
+    @Column(nullable = false, length = 100)
+    private String family;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
+
+    // Relations Many-to-Many avec Property (inverse)
+    @ManyToMany(mappedBy = "symptoms")
+    @JsonIgnore
+    private Set<Property> properties = new HashSet<>();
+
+    // Constructors
     public Symptom() {
     }
 
-    public Symptom(java.util.UUID id, String title, String symptomFamily, String symptomDetail, Set<Property> properties) {
+    public Symptom(UUID id, String title, String family, String description) {
         this.id = id;
         this.title = title;
-        this.symptomFamily = symptomFamily;
-        this.symptomDetail = symptomDetail;
-        this.properties = properties;
+        this.family = family;
+        this.description = description;
     }
 
-    public java.util.UUID getId() {
+    // Getters and Setters
+    public UUID getId() {
         return id;
     }
 
-    public void setId(java.util.UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -37,23 +58,22 @@ public class Symptom extends BaseEntity {
         this.title = title;
     }
 
-    public String getSymptomFamily() {
-        return symptomFamily;
+    public String getFamily() {
+        return family;
     }
 
-    public void setSymptomFamily(String symptomFamily) {
-        this.symptomFamily = symptomFamily;
+    public void setFamily(String family) {
+        this.family = family;
     }
 
-    public String getSymptomDetail() {
-        return symptomDetail;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSymptomDetail(String symptomDetail) {
-        this.symptomDetail = symptomDetail;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    @JsonIgnore
     public Set<Property> getProperties() {
         return properties;
     }
@@ -61,21 +81,4 @@ public class Symptom extends BaseEntity {
     public void setProperties(Set<Property> properties) {
         this.properties = properties;
     }
-
-    @Id
-    @Column(columnDefinition = "uuid")
-    private java.util.UUID id;
-
-    @Column(nullable = false, length = 200)
-    private String title;
-
-    @Column(name = "symptom_family", nullable = false, length = 20)
-    private String symptomFamily;
-
-    @Column(name = "symptom_detail", nullable = false, columnDefinition = "TEXT")
-    private String symptomDetail;
-
-    // Relations Many-to-Many avec Property (inverse)
-    @ManyToMany(mappedBy = "symptoms")
-    private Set<Property> properties = new HashSet<>();
 }
