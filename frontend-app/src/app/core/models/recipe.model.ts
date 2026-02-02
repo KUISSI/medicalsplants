@@ -2,17 +2,17 @@ import { Plant } from './plant.model';
 import { User } from './user.model';
 import { Review } from './review.model';
 
-export type ReceiptType = 'HOT_DRINK' | 'COLD_DRINK' | 'DISH' | 'LOTION';
-export type ReceiptStatus = 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED';
+export type RecipeType = 'HOT_DRINK' | 'COLD_DRINK' | 'DISH' | 'LOTION';
+export type RecipeStatus = 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED';
 
-export interface Receipt {
+export interface Recipe {
   id:  string;
   title: string;
-  type: ReceiptType;
+  type: RecipeType;
   description?: string;
   imageUrl?: string;
   isPremium:  boolean;
-  status: ReceiptStatus;
+  status: RecipeStatus;
   author?:  User;
   plants?: Plant[];
   ingredients?: string[];
@@ -21,8 +21,8 @@ export interface Receipt {
   updatedAt?: string;
 }
 
-export interface ReceiptPage {
-  content: Receipt[];
+export interface RecipePage {
+  content: Recipe[];
   totalElements: number;
   totalPages: number;
   size: number;
@@ -31,23 +31,23 @@ export interface ReceiptPage {
   last: boolean;
 }
 
-export interface CreateReceiptRequest {
+export interface CreateRecipeRequest {
   title: string;
-  type: ReceiptType;
+  type: RecipeType;
   description?: string;
   isPremium?:  boolean;
   plantIds?: string[];
   ingredients?: string[];
 }
 
-export const RECEIPT_TYPE_LABELS: Record<ReceiptType, string> = {
+export const Recipe_TYPE_LABELS: Record<RecipeType, string> = {
   'HOT_DRINK': 'Boisson chaude',
   'COLD_DRINK': 'Boisson froide',
   'DISH': 'Plat',
   'LOTION': 'Lotion'
 };
 
-export const RECEIPT_STATUS_LABELS: Record<ReceiptStatus, string> = {
+export const Recipe_STATUS_LABELS: Record<RecipeStatus, string> = {
   'DRAFT':  'Brouillon',
   'PENDING': 'En attente',
   'PUBLISHED': 'Publié',

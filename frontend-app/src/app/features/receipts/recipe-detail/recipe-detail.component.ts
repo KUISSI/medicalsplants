@@ -3,31 +3,31 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
-import { ReceiptService } from '../../../core/services/receipt.service';
+import { RecipeService } from '../../../core/services/recipe.service';
 import { ReviewService } from '../../../core/services/review.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Receipt, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS } from '../../../core/models/receipt.model';
+import { Recipe, Recipe_TYPE_LABELS, Recipe_STATUS_LABELS } from '../../../core/models/recipe.model';
 import { Review, CreateReviewRequest } from '../../../core/models/review.model';
 import { ToastrService } from 'ngx-toastr';
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
-  selector: 'app-receipt-detail',
+  selector: 'app-Recipe-detail',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
-  templateUrl: './receipt-detail.component.html',
-  styleUrls: ['./receipt-detail.component.scss']
+  templateUrl: './Recipe-detail.component.html',
+  styleUrls: ['./Recipe-detail.component.scss']
 })
-export class ReceiptDetailComponent implements OnInit {
+export class RecipeDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router); // Inject Router
-  private receiptService = inject(ReceiptService);
+  private RecipeService = inject(RecipeService);
   private reviewService = inject(ReviewService);
   private toastr = inject(ToastrService);
   authService = inject(AuthService);
   private navigationService = inject(NavigationService);
 
-  receipt:  Receipt | null = null;
+  Recipe:  Recipe | null = null;
   reviews: Review[] = [];
   
   isLoading = true;
@@ -50,8 +50,8 @@ export class ReceiptDetailComponent implements OnInit {
   replyingToId: string | null = null;
   replyContent = '';
 
-  receiptTypeLabels = RECEIPT_TYPE_LABELS;
-  receiptStatusLabels = RECEIPT_STATUS_LABELS;
+  RecipeTypeLabels = Recipe_TYPE_LABELS;
+  RecipeStatusLabels = Recipe_STATUS_LABELS;
 
   @ViewChild('plantsSection') plantsSection!: ElementRef;
   @ViewChild('reviewsSection') reviewsSection!: ElementRef;
@@ -60,7 +60,7 @@ export class ReceiptDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {
-        this.loadReceipt(id);
+        this.loadRecipe(id);
       }
     });
 
@@ -70,30 +70,30 @@ export class ReceiptDetailComponent implements OnInit {
     });
   }
 
-  loadReceipt(id: string): void {
+  loadRecipe(id: string): void {
     this.isLoading = true;
     this.error = null;
 
-    this.receiptService.getById(id).subscribe({
-      next: (receipt: Receipt) => {
-        this.receipt = receipt;
-        if (this.receipt) {
-          this.receipt.imageUrl = 'assets/recipeimg.svg';
+    this.RecipeService.getById(id).subscribe({
+      next: (Recipe: Recipe) => {
+        this.Recipe = Recipe;
+        if (this.Recipe) {
+          this.Recipe.imageUrl = 'assets/recipeimg.svg';
         }
 
         // Populate view-specific properties
         const difficulties = ['Facile', 'Moyen', 'Difficile'];
-        this.time = ((receipt.id.charCodeAt(0) % 5) + 1) * 10;
-        this.difficulty = difficulties[receipt.id.charCodeAt(0) % difficulties.length];
-        this.rating = (receipt.id.charCodeAt(0) % 3) + 3;
+        this.time = ((Recipe.id.charCodeAt(0) % 5) + 1) * 10;
+        this.difficulty = difficulties[Recipe.id.charCodeAt(0) % difficulties.length];
+        this.rating = (Recipe.id.charCodeAt(0) % 3) + 3;
 
-        if (receipt.ingredients) {
-          this.mainIngredients = receipt.ingredients.filter(ing => !ing.toLowerCase().includes('(optionnel)'));
-          this.optionalIngredients = receipt.ingredients.filter(ing => ing.toLowerCase().includes('(optionnel)'));
+        if (Recipe.ingredients) {
+          this.mainIngredients = Recipe.ingredients.filter(ing => !ing.toLowerCase().includes('(optionnel)'));
+          this.optionalIngredients = Recipe.ingredients.filter(ing => ing.toLowerCase().includes('(optionnel)'));
         }
 
-        if (receipt.description && receipt.description.split('\n').length > 1) {
-          this.preparationSteps = receipt.description.split('\n').filter(step => step.trim().length > 0);
+        if (Recipe.description && Recipe.description.split('\n').length > 1) {
+          this.preparationSteps = Recipe.description.split('\n').filter(step => step.trim().length > 0);
         } else {
           this.preparationSteps = [
             "Faire bouillir l'eau dans une casserole.",
@@ -119,10 +119,10 @@ export class ReceiptDetailComponent implements OnInit {
     });
   }
 
-  loadReviews(receiptId: string): void {
+  loadReviews(RecipeId: string): void {
     this.isLoadingReviews = true;
 
-    this.reviewService.getByReceiptId(receiptId).subscribe({
+    this.reviewService.getByrecipeId(RecipeId).subscribe({
       next: (reviews) => {
         this.reviews = reviews;
         this.isLoadingReviews = false;
@@ -143,14 +143,14 @@ export class ReceiptDetailComponent implements OnInit {
   }
 
   submitReview(): void {
-    if (!this.newReviewContent.trim() || !this.receipt) {
+    if (!this.newReviewContent.trim() || !this.Recipe) {
       return;
     }
 
     this.isSubmittingReview = true;
 
     const request:  CreateReviewRequest = {
-      receiptId: this.receipt.id,
+      recipeId: this.Recipe.id,
       content: this.newReviewContent.trim()
     };
 
@@ -179,12 +179,12 @@ export class ReceiptDetailComponent implements OnInit {
   }
 
   submitReply(parentReviewId: string): void {
-    if (!this.replyContent.trim() || !this.receipt) {
+    if (!this.replyContent.trim() || !this.Recipe) {
       return;
     }
 
     const request: CreateReviewRequest = {
-      receiptId: this.receipt.id,
+      recipeId: this.Recipe.id,
       content: this.replyContent.trim(),
       parentReviewId
     };

@@ -5,7 +5,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

@@ -1,114 +1,131 @@
 <div class="plant-detail-page">
   @if (isLoading) {
-  <app-loader [fullscreen]="true" message="Chargement de la plante... "></app-loader>
+    <app-loader
+      [fullscreen]="true"
+      message="Chargement de la plante... "
+    ></app-loader>
   } @else if (error) {
-  <div class="error-state">
-    <span class="error-state__icon">🌿</span>
-    <h2 class="error-state__title">{{ error }}</h2>
-    <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
-  </div>
+    <div class="error-state">
+      <span class="error-state__icon">🌿</span>
+      <h2 class="error-state__title">{{ error }}</h2>
+      <button (click)="goBack()" class="error-state__btn">← Retour</button>
+    </div>
   } @else if (plant) {
-  <!-- Header -->
-  <div class="detail-header">
-    <div class="detail-header__container">
-      <button (click)="goBack()" class="detail-header__back"> ← Retour </button>
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="detail-header__container">
+        <button (click)="goBack()" class="detail-header__back">← Retour</button>
 
-      <div class="detail-header__main">
-        <div class="detail-header__image">
-          @if (plant.imageUrl) {
-          <img [src]="plant.imageUrl" [alt]="plant.title" />
-          } @else {
-          <div class="detail-header__placeholder">
-            <span>🌿</span>
-          </div>
-          }
-        </div>
-
-        <div class="detail-header__info">
-          <div class="detail-header__badges">
-            @if (plant.administrationMode) {
-            <span class="detail-header__badge detail-header__badge--mode">
-              {{ getAdministrationIcon(plant.administrationMode) }}
-              {{ administrationModeLabels[plant.administrationMode] }}
-            </span>
-            }
-            @if (plant.consumedPart) {
-            <span class="detail-header__badge"> 🍃 {{ plant.consumedPart }} </span>
-            }
-          </div>
-
-          <h1 class="detail-header__title">{{ plant.title }}</h1>
-
-          @if (plant.description) {
-          <p class="detail-header__description">{{ plant.description }}</p>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Content -->
-  <div class="detail-content">
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-      <button 
-        class="tab-nav__btn" 
-        [class.tab-nav__btn--active]="activeTab === 'properties'"
-        (click)="switchTab('properties')">
-        ✨ Propriétés
-      </button>
-      <button 
-        class="tab-nav__btn" 
-        [class.tab-nav__btn--active]="activeTab === 'recipes'"
-        (click)="switchTab('recipes')">
-        📖 Recettes
-      </button>
-    </div>
-
-    <!-- Tab Content -->
-    <div class="tab-content" id="recipesContent">
-      <!-- Properties Tab -->
-      @if (activeTab === 'properties') {
-        @if (plant.properties && plant.properties.length > 0) {
-          <div class="properties-grid">
-            @for (property of plant.properties; track property.id) {
-              <div class="property-tag">
-                <span class="property-tag__icon">{{ getPropertyIcon(property.propertyFamily) }}</span>
-                <span class="property-tag__title">{{ property.title }}</span>
+        <div class="detail-header__main">
+          <div class="detail-header__image">
+            @if (plant.imageUrl) {
+              <img [src]="plant.imageUrl" [alt]="plant.title" />
+            } @else {
+              <div class="detail-header__placeholder">
+                <span>🌿</span>
               </div>
             }
           </div>
-        } @else {
-          <div class="empty-state">
-            <p>Aucune propriété répertoriée pour cette plante.</p>
-          </div>
-        }
-      }
 
-      <!-- Recipes Tab -->
-      @if (activeTab === 'recipes') {
-        @if (isLoadingReceipts) {
-          <app-loader message="Chargement des recettes..."></app-loader>
-        } @else if (receipts.length === 0) {
-          <div class="empty-state">
-            <span class="empty-state__icon">📖</span>
-            <p class="empty-state__message">Aucune recette disponible pour cette plante.</p>
-            @if (authService.isAuthenticated()) {
-              <a routerLink="/receipts/create" class="empty-state__btn"> Créer une recette </a>
+          <div class="detail-header__info">
+            <div class="detail-header__badges">
+              @if (plant.administrationMode) {
+                <span class="detail-header__badge detail-header__badge--mode">
+                  {{ getAdministrationIcon(plant.administrationMode) }}
+                  {{ administrationModeLabels[plant.administrationMode] }}
+                </span>
+              }
+              @if (plant.consumedPart) {
+                <span class="detail-header__badge">
+                  🍃 {{ plant.consumedPart }}
+                </span>
+              }
+            </div>
+
+            <h1 class="detail-header__title">{{ plant.title }}</h1>
+
+            @if (plant.description) {
+              <p class="detail-header__description">{{ plant.description }}</p>
             }
           </div>
-        } @else {
-          <div class="receipts-grid">
-            @for (receipt of receipts; track receipt.id) {
-              <app-recipe-card [recipe]="receipt"></app-recipe-card>
-            }
-          </div>
-          <a routerLink="/receipts" [queryParams]="{ plant: plant.id }" class="section__link">
-            Voir toutes les recettes →
-          </a>
-        }
-      }
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- Content -->
+    <div class="detail-content">
+      <!-- Tab Navigation -->
+      <div class="tab-nav">
+        <button
+          class="tab-nav__btn"
+          [class.tab-nav__btn--active]="activeTab === 'properties'"
+          (click)="switchTab('properties')"
+        >
+          ✨ Propriétés
+        </button>
+        <button
+          class="tab-nav__btn"
+          [class.tab-nav__btn--active]="activeTab === 'recipes'"
+          (click)="switchTab('recipes')"
+        >
+          📖 Recettes
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="recipesContent">
+        <!-- Properties Tab -->
+        @if (activeTab === "properties") {
+          @if (plant.properties && plant.properties.length > 0) {
+            <div class="properties-grid">
+              @for (property of plant.properties; track property.id) {
+                <div class="property-tag">
+                  <span class="property-tag__icon">{{
+                    getPropertyIcon(property.propertyFamily)
+                  }}</span>
+                  <span class="property-tag__title">{{ property.title }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <p>Aucune propriété répertoriée pour cette plante.</p>
+            </div>
+          }
+        }
+
+        <!-- Recipes Tab -->
+        @if (activeTab === "recipes") {
+          @if (isLoadingRecipes) {
+            <app-loader message="Chargement des recettes..."></app-loader>
+          } @else if (recipes.length === 0) {
+            <div class="empty-state">
+              <span class="empty-state__icon">📖</span>
+              <p class="empty-state__message">
+                Aucune recette disponible pour cette plante.
+              </p>
+              @if (authService.isAuthenticated()) {
+                <a routerLink="/recipes/create" class="empty-state__btn">
+                  Créer une recette
+                </a>
+              }
+            </div>
+          } @else {
+            <div class="recipes-grid">
+              @for (recipe of recipes; track recipe.id) {
+                <app-recipe-card [recipe]="recipe"></app-recipe-card>
+              }
+            </div>
+            <a
+              routerLink="/recipes"
+              [queryParams]="{ plant: plant.id }"
+              class="section__link"
+            >
+              Voir toutes les recettes →
+            </a>
+          }
+        }
+      </div>
+    </div>
   }
 </div>

@@ -57,8 +57,8 @@ public class PropertyService {
         Property property = new Property();
         property.setId(java.util.UUID.randomUUID());
         property.setTitle(title);
-        property.setPropertyFamily(propertyFamily);
-        property.setPropertyDetail(propertyDetail);
+        property.setFamily(propertyFamily);
+        property.setDescription(propertyDetail);
 
         if (symptomIds != null && !symptomIds.isEmpty()) {
             for (String symptomId : symptomIds) {
@@ -81,8 +81,8 @@ public class PropertyService {
         }
 
         property.setTitle(title);
-        property.setPropertyFamily(propertyFamily);
-        property.setPropertyDetail(propertyDetail);
+        property.setFamily(propertyFamily);
+        property.setDescription(propertyDetail);
 
         return propertyRepository.save(property);
     }

@@ -4,17 +4,16 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { Receipt, ReceiptPage, CreateReceiptRequest } from '../models/receipt.model';
+import { Recipe, RecipePage, CreateRecipeRequest } from '../models/recipe.model';
 import { MessageResponse } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ReceiptService {
+export class RecipeService {
 
-  private readonly apiUrl = `${environment.apiUrl}/receipts`;
-
-  private mockReceipts: Receipt[] = [
+private readonly apiUrl = `${environment.apiUrl}/recipes`;
+  private mockRecipes: Recipe[] = [
     {
       id: '55555555-5555-5555-5555-555555555501',
       title: 'Tisane relaxante',
@@ -55,59 +54,59 @@ export class ReceiptService {
 
   constructor(private http: HttpClient) {}
 
-  getPublished(page: number = 0, size: number = 20): Observable<ReceiptPage> {
+  getPublished(page: number = 0, size: number = 20): Observable<RecipePage> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<ReceiptPage>(this.apiUrl, { params }).pipe(
+    return this.http.get<RecipePage>(this.apiUrl, { params }).pipe(
       catchError(() => {
-        const receiptPage: ReceiptPage = {
-          content: this.mockReceipts,
-          totalElements: this.mockReceipts.length,
+        const RecipePage: RecipePage = {
+          content: this.mockRecipes,
+          totalElements: this.mockRecipes.length,
           totalPages: 1,
-          size: this.mockReceipts.length,
+          size: this.mockRecipes.length,
           number: 0,
           first: true,
           last: true
         };
-        return of(receiptPage);
+        return of(RecipePage);
       })
     );
   }
 
-  getById(id:  string): Observable<Receipt> {
-    return this.http.get<Receipt>(`${this.apiUrl}/${id}`).pipe(
+  getById(id:  string): Observable<Recipe> {
+    return this.http.get<Recipe>(`${this.apiUrl}/${id}`).pipe(
       catchError(() => {
-        const receipt = this.mockReceipts.find(r => r.id === id);
-        return of(receipt as Receipt);
+        const Recipe = this.mockRecipes.find(r => r.id === id);
+        return of(Recipe as Recipe);
       })
     );
   }
 
-  getByPlantId(plantId: string, page:  number = 0, size: number = 20): Observable<ReceiptPage> {
+  getByPlantId(plantId: string, page:  number = 0, size: number = 20): Observable<RecipePage> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<ReceiptPage>(`${this.apiUrl}/plant/${plantId}`, { params }).pipe(
+    return this.http.get<RecipePage>(`${this.apiUrl}/plant/${plantId}`, { params }).pipe(
       catchError(() => {
-        const filteredReceipts = this.mockReceipts.filter(r => r.plants && r.plants.some(p => p.id === plantId));
-        const receiptPage: ReceiptPage = {
-          content: filteredReceipts,
-          totalElements: filteredReceipts.length,
+        const filteredRecipes = this.mockRecipes.filter(r => r.plants && r.plants.some(p => p.id === plantId));
+        const RecipePage: RecipePage = {
+          content: filteredRecipes,
+          totalElements: filteredRecipes.length,
           totalPages: 1,
-          size: filteredReceipts.length,
+          size: filteredRecipes.length,
           number: 0,
           first: true,
           last: true
         };
-        return of(receiptPage);
+        return of(RecipePage);
       })
     );
   }
 
-  create(request: CreateReceiptRequest): Observable<Receipt> {
+  create(request: CreateRecipeRequest): Observable<Recipe> {
     let params = new HttpParams()
       .set('title', request.title)
       .set('type', request.type)
@@ -126,10 +125,10 @@ export class ReceiptService {
       });
     }
 
-    return this.http.post<Receipt>(this.apiUrl, null, { params });
+    return this.http.post<Recipe>(this.apiUrl, null, { params });
   }
 
-  update(id: string, request:  Partial<CreateReceiptRequest>): Observable<Receipt> {
+  update(id: string, request:  Partial<CreateRecipeRequest>): Observable<Recipe> {
     let params = new HttpParams();
 
     if (request. title) params = params.set('title', request. title);
@@ -137,11 +136,11 @@ export class ReceiptService {
     if (request.description !== undefined) params = params.set('description', request.description);
     if (request. isPremium !== undefined) params = params.set('isPremium', request.isPremium.toString());
 
-    return this.http.put<Receipt>(`${this.apiUrl}/${id}`, null, { params });
+    return this.http.put<Recipe>(`${this.apiUrl}/${id}`, null, { params });
   }
 
-  submitForReview(id: string): Observable<Receipt> {
-    return this.http.post<Receipt>(`${this.apiUrl}/${id}/submit`, null);
+  submitForReview(id: string): Observable<Recipe> {
+    return this.http.post<Recipe>(`${this.apiUrl}/${id}/submit`, null);
   }
 
   delete(id: string): Observable<void> {

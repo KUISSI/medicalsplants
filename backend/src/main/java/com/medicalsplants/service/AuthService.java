@@ -74,16 +74,15 @@ public class AuthService {
 
         User user = new User(
                 java.util.UUID.randomUUID(),
+                request.getEmail().toLowerCase().trim(),
+                request.getPseudo().trim(),
                 request.getFirstname(),
                 request.getLastname(),
-                request.getPseudo().trim(),
-                null, // phone non fourni par RegisterRequest
-                request.getEmail().toLowerCase().trim(),
+                null,
+                null,
                 passwordEncoder.encode(request.getPassword()),
-                null, // avatar
                 Role.USER,
                 UserStatus.ACTIVE,
-                true,
                 false
         );
         String emailVerificationToken = UUID.randomUUID().toString();

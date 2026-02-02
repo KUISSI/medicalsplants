@@ -14,8 +14,8 @@ export class ReviewService {
 
   constructor(private http: HttpClient) {}
 
-  getByReceiptId(receiptId: string): Observable<Review[]> {
-    return this.http.get<Review[]>(`${this.apiUrl}/receipt/${receiptId}`);
+  getByrecipeId(recipeId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.apiUrl}/recipe/${recipeId}`);
   }
 
   getById(id: string): Observable<Review> {
@@ -32,7 +32,7 @@ export class ReviewService {
 
   create(request:  CreateReviewRequest): Observable<Review> {
     let params = new HttpParams()
-      .set('receiptId', request. receiptId)
+      .set('recipeId', request. recipeId)
       .set('content', request.content);
 
     if (request.parentReviewId) {

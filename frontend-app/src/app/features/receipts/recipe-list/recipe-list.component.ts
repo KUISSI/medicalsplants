@@ -4,13 +4,13 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
-import { ReceiptService } from '../../../core/services/receipt.service';
+import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Receipt, ReceiptPage, ReceiptType, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { Recipe, RecipePage, RecipeType, Recipe_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
 
 @Component({
-  selector:  'app-receipt-list',
+  selector:  'app-Recipe-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -20,31 +20,31 @@ import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/
     LoaderComponent,
     RecipeCardComponent
   ],
-  templateUrl: './receipt-list.component.html',
-  styleUrls: ['./receipt-list.component.scss']
+  templateUrl: './Recipe-list.component.html',
+  styleUrls: ['./Recipe-list.component.scss']
 })
-export class ReceiptListComponent implements OnInit {
-  private receiptService = inject(ReceiptService);
+export class RecipeListComponent implements OnInit {
+  private RecipeService = inject(RecipeService);
   authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // Mock receipts data
-  mockReceipts: Receipt[] = [
-    { id: '660e8400-e29b-41d4-a716-446655440000', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '660e8400-e29b-41d4-a716-446655440001', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '660e8400-e29b-41d4-a716-446655440002', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
-    { id: '660e8400-e29b-41d4-a716-446655440003', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HOT_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
-    { id: '660e8400-e29b-41d4-a716-446655440004', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'COLD_DRINK' as ReceiptType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
-    { id: '660e8400-e29b-41d4-a716-446655440005', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'LOTION' as ReceiptType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' }
+  // Mock Recipes data
+  mockRecipes: Recipe[] = [
+    { id: '660e8400-e29b-41d4-a716-446655440000', title: 'Infusion relaxante', description: 'Une infusion apaisante pour se détendre', type: 'HOT_DRINK' as RecipeType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440001', title: 'Sirop pour la toux', description: 'Un sirop naturel pour soulager la toux', type: 'HOT_DRINK' as RecipeType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440002', title: 'Baume apaisant', description: 'Un baume pour calmer les inflammations', type: 'LOTION' as RecipeType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440003', title: 'Tisane digestive', description: 'Aide à la digestion après les repas', type: 'HOT_DRINK' as RecipeType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440004', title: 'Elixir énergisant', description: 'Boost d\'énergie naturelle pour la journée', type: 'COLD_DRINK' as RecipeType, createdAt: new Date().toISOString(), isPremium: true, status: 'PUBLISHED' },
+    { id: '660e8400-e29b-41d4-a716-446655440005', title: 'Teinture pour la peau', description: 'Soin naturel pour une peau saine', type: 'LOTION' as RecipeType, createdAt: new Date().toISOString(), isPremium: false, status: 'PUBLISHED' }
   ];
 
-  receipts: Receipt[] = [];
-  filteredReceipts:  RecipeCardData[] = [];
+  Recipes: Recipe[] = [];
+  filteredRecipes:  RecipeCardData[] = [];
   
   isLoading = true;
   searchTerm = '';
-  selectedType: ReceiptType | '' = '';
+  selectedType: RecipeType | '' = '';
 
   // Pagination
   currentPage = 0;
@@ -52,24 +52,24 @@ export class ReceiptListComponent implements OnInit {
   totalElements = 0;
   pageSize = 8;
 
-  receiptTypes = RECEIPT_TYPE_LABELS;
-  receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
+  RecipeTypes = Recipe_TYPE_LABELS;
+  RecipeTypeKeys = Object.keys(Recipe_TYPE_LABELS) as RecipeType[];
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['searchTerm'] || '';
       this.selectedType = params['selectedType'] || '';
       this.currentPage = params['page'] ? parseInt(params['page'], 10) : 0;
-      this.loadReceipts();
+      this.loadRecipes();
     });
   }
 
-  loadReceipts(): void {
+  loadRecipes(): void {
     this.isLoading = true;
 
-    this.receiptService.getPublished(this.currentPage, this.pageSize).subscribe({
-      next: (response:  ReceiptPage) => {
-        this. receipts = response. content.length > 0 ? response.content : this.mockReceipts;
+    this.RecipeService.getPublished(this.currentPage, this.pageSize).subscribe({
+      next: (response:  RecipePage) => {
+        this. Recipes = response. content.length > 0 ? response.content : this.mockRecipes;
         this.totalPages = response.totalPages;
         this. totalElements = response. totalElements;
         this.applyFilters();
@@ -77,9 +77,9 @@ export class ReceiptListComponent implements OnInit {
       },
       error:  () => {
         // En cas d\'erreur, utiliser les mock data
-        this.receipts = this.mockReceipts;
+        this.Recipes = this.mockRecipes;
         this.totalPages = 1;
-        this.totalElements = this.mockReceipts.length;
+        this.totalElements = this.mockRecipes.length;
         this.applyFilters();
         this.isLoading = false;
       }
@@ -93,7 +93,7 @@ export class ReceiptListComponent implements OnInit {
     this.updateUrlQueryParams();
   }
 
-  onTypeChange(type:  ReceiptType | ''): void {
+  onTypeChange(type:  RecipeType | ''): void {
     this.selectedType = type;
     this.currentPage = 0; // Reset page on type change
     this.applyFilters();
@@ -101,32 +101,32 @@ export class ReceiptListComponent implements OnInit {
   }
 
   applyFilters(): void {
-    let result = this.receipts;
+    let result = this.Recipes;
 
     if (this.searchTerm. trim()) {
       const lowerTerm = this.searchTerm.toLowerCase();
-      result = result.filter(receipt =>
-        receipt.title.toLowerCase().includes(lowerTerm) ||
-        receipt. description?. toLowerCase().includes(lowerTerm)
+      result = result.filter(Recipe =>
+        Recipe.title.toLowerCase().includes(lowerTerm) ||
+        Recipe. description?. toLowerCase().includes(lowerTerm)
       );
     }
 
     if (this.selectedType) {
-      result = result.filter(receipt => receipt.type === this.selectedType);
+      result = result.filter(Recipe => Recipe.type === this.selectedType);
     }
 
-    this.filteredReceipts = result.map(receipt => {
+    this.filteredRecipes = result.map(Recipe => {
       const difficulties = ['Facile', 'Moyen', 'Difficile'];
-      const rating = (receipt.id.charCodeAt(0) % 3) + 3;
-      const time = ((receipt.id.charCodeAt(0) % 5) + 1) * 10;
-      const difficulty = difficulties[receipt.id.charCodeAt(0) % difficulties.length];
+      const rating = (Recipe.id.charCodeAt(0) % 3) + 3;
+      const time = ((Recipe.id.charCodeAt(0) % 5) + 1) * 10;
+      const difficulty = difficulties[Recipe.id.charCodeAt(0) % difficulties.length];
 
       return {
-        id: receipt.id,
-        title: receipt.title,
-        imageUrl: receipt.imageUrl,
-        category: this.receiptTypes[receipt.type] || 'Recette',
-        isPremium: receipt.isPremium,
+        id: Recipe.id,
+        title: Recipe.title,
+        imageUrl: Recipe.imageUrl,
+        category: this.RecipeTypes[Recipe.type] || 'Recette',
+        isPremium: Recipe.isPremium,
         rating,
         time,
         difficulty,
@@ -145,7 +145,7 @@ export class ReceiptListComponent implements OnInit {
   loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this.loadReceipts();
+      this.loadRecipes();
       this.updateUrlQueryParams(); // Update URL on page change
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -177,8 +177,8 @@ export class ReceiptListComponent implements OnInit {
     return params;
   }
 
-  getReceiptTypeIcon(type: ReceiptType): string {
-    const icons:  Record<ReceiptType, string> = {
+  getRecipeTypeIcon(type: RecipeType): string {
+    const icons:  Record<RecipeType, string> = {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',
       'DISH': '🍽️',

@@ -5,40 +5,40 @@ import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { Receipt, ReceiptPage, ReceiptStatus, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS, RECEIPT_STATUS_COLORS } from '../../../core/models/receipt.model';
+import { Recipe, RecipePage, RecipeStatus, RECIPE_TYPE_LABELS, RECIPE_STATUS_LABELS, RECIPE_STATUS_COLORS } from '../../../core/models/recipe.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-receipt-list',
+  selector: 'app-recipe-list',
   standalone: true,
   imports:  [CommonModule, RouterModule, FormsModule, LoaderComponent],
-  templateUrl:  './receipt-list. component.html',
-  styleUrls:  ['./receipt-list.component.scss']
+  templateUrl:  './recipe-list.component.html',
+  styleUrls:  ['./recipe-list.component.scss']
 })
-export class ReceiptListComponent implements OnInit {
+export class RecipeListComponent implements OnInit {
   private http = inject(HttpClient);
   private toastr = inject(ToastrService);
-  private apiUrl = `${environment.apiUrl}/admin/receipts`;
+  private apiUrl = `${environment.apiUrl}/admin/recipes`;
 
-  receipts: Receipt[] = [];
+  recipes: Recipe[] = [];
   isLoading = true;
-  selectedStatus: ReceiptStatus | '' = '';
+  selectedStatus: RecipeStatus | '' = '';
 
   currentPage = 0;
   totalPages = 0;
   totalElements = 0;
   pageSize = 20;
 
-  receiptTypeLabels = RECEIPT_TYPE_LABELS;
-  receiptStatusLabels = RECEIPT_STATUS_LABELS;
-  receiptStatusColors = RECEIPT_STATUS_COLORS;
-  statusKeys = Object.keys(RECEIPT_STATUS_LABELS) as ReceiptStatus[];
+  recipeTypeLabels = RECIPE_TYPE_LABELS;
+  recipeStatusLabels = RECIPE_STATUS_LABELS;
+  recipeStatusColors = RECIPE_STATUS_COLORS;
+  statusKeys = Object.keys(RECIPE_STATUS_LABELS) as RecipeStatus[];
 
   ngOnInit(): void {
-    this.loadReceipts();
+    this.loadRecipes();
   }
 
-  loadReceipts(): void {
+  loadRecipes(): void {
     this.isLoading = true;
 
     let params = new HttpParams()
@@ -49,9 +49,9 @@ export class ReceiptListComponent implements OnInit {
       params = params.set('status', this.selectedStatus);
     }
 
-    this.http.get<ReceiptPage>(this.apiUrl, { params }).subscribe({
+    this.http.get<RecipePage>(this.apiUrl, { params }).subscribe({
       next: (response) => {
-        this.receipts = response.content;
+        this.recipes = response.content;
         this.totalPages = response.totalPages;
         this. totalElements = response. totalElements;
         this.isLoading = false;
@@ -64,17 +64,17 @@ export class ReceiptListComponent implements OnInit {
 
   onStatusChange(): void {
     this.currentPage = 0;
-    this.loadReceipts();
+    this.loadRecipes();
   }
 
   loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this. loadReceipts();
+      this. loadRecipes();
     }
   }
 
-  getReceiptTypeIcon(type: string): string {
+  getRecipeTypeIcon(type: string): string {
     const icons:  Record<string, string> = {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',

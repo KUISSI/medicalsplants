@@ -30,6 +30,3 @@ public abstract class AbstractIntegrationTest {
     // Classe de base pour les tests d'intégration
     // Les configurations sont héritées automatiquement
 }
- 
- * 
- *

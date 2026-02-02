@@ -102,13 +102,13 @@ export const routes: Routes = [
       // Receipts
       {
         path: 'receipts',
-        loadComponent: () => import('./features/receipts/receipt-list/receipt-list.component')
+        loadComponent: () => import('./features/recipes/recipe-list/recipe-list.component')
           .then(m => m.ReceiptListComponent),
         title: 'Recettes - Admin'
       },
       {
         path: 'receipts/moderation',
-        loadComponent: () => import('./features/receipts/receipt-moderation/receipt-moderation.component')
+        loadComponent: () => import('./features/recipes/receipt-moderation/receipt-moderation.component)
           .then(m => m.ReceiptModerationComponent),
         title: 'Modération - Admin'
       }

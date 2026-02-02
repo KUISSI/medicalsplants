@@ -65,8 +65,8 @@ public class User extends BaseEntity {
     }
 
     public User(UUID id, String email, String pseudo, String firstname, String lastname,
-                String phone, String avatar, String passwordHash, Role role, UserStatus status,
-                Boolean isEmailVerified) {
+            String phone, String avatar, String passwordHash, Role role, UserStatus status,
+            Boolean isEmailVerified) {
         this.id = id;
         this.email = email;
         this.pseudo = pseudo;
@@ -207,7 +207,7 @@ public class User extends BaseEntity {
     }
 
     public boolean isModerator() {
-        return this.role == Role.MODERATOR || this.role == Role.ADMIN;
+        return this.role == Role.ADMIN;
     }
 
     public boolean isActive() {

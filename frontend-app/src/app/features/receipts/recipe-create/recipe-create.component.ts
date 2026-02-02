@@ -6,21 +6,21 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { PlantService } from '../../../core/services/plant.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Plant } from '../../../core/models/plant.model';
-import { ReceiptType, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { RecipeType, Recipe_TYPE_LABELS } from '../../../core/models/recipe.model';
 
 @Component({
-  selector: 'app-receipt-create',
+  selector: 'app-Recipe-create',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl: './receipt-create.component.html',
-  styleUrls: ['./receipt-create.component.scss']
+  templateUrl: './Recipe-create.component.html',
+  styleUrls: ['./Recipe-create.component.scss']
 })
-export class ReceiptCreateComponent implements OnInit {
+export class RecipeCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private plantService = inject(PlantService);
   authService = inject(AuthService);
 
-  receiptForm: FormGroup = this.fb.group({
+  RecipeForm: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
     type: ['', Validators.required],
     description: [''],
@@ -28,8 +28,8 @@ export class ReceiptCreateComponent implements OnInit {
     ingredients: this.fb.array([])
   });
 
-  receiptTypeKeys = Object.keys(RECEIPT_TYPE_LABELS) as ReceiptType[];
-  receiptTypes: Record<ReceiptType, string> = RECEIPT_TYPE_LABELS;
+  RecipeTypeKeys = Object.keys(Recipe_TYPE_LABELS) as RecipeType[];
+  RecipeTypes: Record<RecipeType, string> = Recipe_TYPE_LABELS;
 
   plants: Plant[] = [];
   selectedPlantIds: string[] = [];
@@ -51,10 +51,10 @@ export class ReceiptCreateComponent implements OnInit {
     });
   }
 
-  get title() { return this.receiptForm.get('title'); }
-  get type() { return this.receiptForm.get('type'); }
-  get description() { return this.receiptForm.get('description'); }
-  get ingredients() { return this.receiptForm.get('ingredients') as FormArray; }
+  get title() { return this.RecipeForm.get('title'); }
+  get type() { return this.RecipeForm.get('type'); }
+  get description() { return this.RecipeForm.get('description'); }
+  get ingredients() { return this.RecipeForm.get('ingredients') as FormArray; }
 
   addIngredient(): void {
     this.ingredients.push(this.fb.group({
@@ -67,8 +67,8 @@ export class ReceiptCreateComponent implements OnInit {
     this.ingredients.removeAt(index);
   }
 
-  getReceiptTypeIcon(type: ReceiptType): string {
-    const icons: Record<ReceiptType, string> = {
+  getRecipeTypeIcon(type: RecipeType): string {
+    const icons: Record<RecipeType, string> = {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',
       'DISH': '🍽️',
@@ -98,13 +98,13 @@ export class ReceiptCreateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.receiptForm.invalid || this.selectedPlantIds.length === 0) return;
+    if (this.RecipeForm.invalid || this.selectedPlantIds.length === 0) return;
     this.isSubmitting = true;
 
     // Minimal stub: replace with real service call
     setTimeout(() => {
       this.isSubmitting = false;
-      this.receiptForm.reset();
+      this.RecipeForm.reset();
       this.selectedPlantIds = [];
       this.ingredients.clear(); // Clear ingredients as well
     }, 800);

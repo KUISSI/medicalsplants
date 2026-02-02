@@ -51,7 +51,7 @@ public class SymptomService {
     public Map<String, List<Symptom>> getSymptomsGroupedByFamily() {
         List<Symptom> allSymptoms = symptomRepository.findAllOrderByFamily();
         return allSymptoms.stream()
-                .collect(Collectors.groupingBy(Symptom::getSymptomFamily));
+                .collect(Collectors.groupingBy(Symptom::getFamily));
     }
 
     @Transactional
@@ -63,8 +63,8 @@ public class SymptomService {
         Symptom symptom = new Symptom();
         symptom.setId(java.util.UUID.randomUUID());
         symptom.setTitle(title);
-        symptom.setSymptomFamily(symptomFamily);
-        symptom.setSymptomDetail(symptomDetail);
+        symptom.setFamily(symptomFamily);
+        symptom.setDescription(symptomDetail);
 
         return symptomRepository.save(symptom);
     }
@@ -78,8 +78,8 @@ public class SymptomService {
         }
 
         symptom.setTitle(title);
-        symptom.setSymptomFamily(symptomFamily);
-        symptom.setSymptomDetail(symptomDetail);
+        symptom.setFamily(symptomFamily);
+        symptom.setDescription(symptomDetail);
 
         return symptomRepository.save(symptom);
     }

@@ -4,7 +4,7 @@ export interface Review {
   id: string;
   content: string;
   sender: User;
-  receiptId: string;
+  recipeId: string;
   parentReviewId?: string;
   replies?: Review[];
   createdAt: string;
@@ -13,7 +13,7 @@ export interface Review {
 }
 
 export interface CreateReviewRequest {
-  receiptId: string;
+  recipeId: string;
   content: string;
   parentReviewId?: string;
 }
