@@ -15,6 +15,7 @@ public class TestContainersConfig {
 
     /**
      * Container PostgreSQL partagé entre tous les tests. L'annotation
+     *
      * @ServiceConnection configure automatiquement les propriétés DataSource.
      */
     @Bean
@@ -27,5 +28,3 @@ public class TestContainersConfig {
                 .withReuse(true); // Réutilise le container entre les tests pour plus de rapidité
     }
 }
- 
-     * 

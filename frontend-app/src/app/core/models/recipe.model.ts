@@ -51,16 +51,16 @@ export interface CreateRecipeRequest {
 }
 
 export const RECIPE_TYPE_LABELS: Record<RecipeType, string> = {
-  'HOT_DRINK': 'Boisson chaude',
-  'COLD_DRINK': 'Boisson froide',
-  'DISH': 'Plat',
-  'LOTION': 'Lotion',
-  'OTHER': 'Autre'
+  HOT_DRINK: 'Boisson chaude',
+  COLD_DRINK: 'Boisson froide',
+  DISH: 'Plat',
+  LOTION: 'Lotion',
+  OTHER: 'Autre'
 };
 
 export const RECIPE_STATUS_LABELS: Record<RecipeStatus, string> = {
-  'DRAFT': 'Brouillon',
-  'PENDING': 'En attente',
-  'PUBLISHED': 'Publié',
-  'ARCHIVED': 'Archivé'
+  DRAFT: 'Brouillon',
+  PENDING: 'En attente',
+  PUBLISHED: 'Publié',
+  ARCHIVED: 'Archivé'
 };

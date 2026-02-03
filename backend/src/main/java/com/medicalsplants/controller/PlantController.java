@@ -1,12 +1,12 @@
 package com.medicalsplants.controller;
 
-import com.medicalsplants.model.entity.Plant;
+import com.medicalsplants.model.dto.request.PlantRequest;
 import com.medicalsplants.model.dto.response.PlantResponse;
-import com.medicalsplants.model.mapper.PlantMapper;
 import com.medicalsplants.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,8 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/plants")
@@ -25,95 +23,82 @@ import java.util.UUID;
 public class PlantController {
 
     private final PlantService plantService;
-    private final PlantMapper plantMapper;
 
-    public PlantController(PlantService plantService, PlantMapper plantMapper) {
+    public PlantController(PlantService plantService) {
         this.plantService = plantService;
-        this.plantMapper = plantMapper;
     }
 
     @Operation(summary = "Get all plants (paginated)")
     @GetMapping
     public ResponseEntity<Page<PlantResponse>> getAllPlants(@PageableDefault(size = 20) Pageable pageable) {
-        Page<PlantResponse> dtoPage = plantService.getAllPlants(pageable).map(plantMapper::toDto);
-        return ResponseEntity.ok(dtoPage);
+        return ResponseEntity.ok(plantService.getAllPlants(pageable));
     }
 
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
-        Plant plant = plantService.getPlantById(id);
-        return ResponseEntity.ok(plantMapper.toDto(plant));
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable String id) {
+        return ResponseEntity.ok(plantService.getPlantById(id));
     }
 
     @Operation(summary = "Get plants by symptom ID")
     @GetMapping("/symptom/{symptomId}")
-    public ResponseEntity<Page<PlantResponse>> getPlantsBySymptomId(@PathVariable UUID symptomId,
+    public ResponseEntity<Page<PlantResponse>> getPlantsBySymptomId(
+            @PathVariable String symptomId,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<PlantResponse> dtoPage = plantService.getPlantsBySymptomId(symptomId, pageable).map(plantMapper::toDto);
-        return ResponseEntity.ok(dtoPage);
+        return ResponseEntity.ok(plantService.getPlantsBySymptomId(symptomId, pageable));
     }
 
     @Operation(summary = "Get plants by property ID")
     @GetMapping("/property/{propertyId}")
-    public ResponseEntity<List<PlantResponse>> getPlantsByPropertyId(@PathVariable UUID propertyId) {
-        List<Plant> plants = plantService.getPlantsByPropertyId(propertyId);
-        List<PlantResponse> dtoList = plants.stream().map(plantMapper::toDto).toList();
-        return ResponseEntity.ok(dtoList);
+    public ResponseEntity<List<PlantResponse>> getPlantsByPropertyId(@PathVariable String propertyId) {
+        return ResponseEntity.ok(plantService.getPlantsByPropertyId(propertyId));
     }
 
-    @Operation(summary = "Create a new plant (Admin only)")
+    @Operation(summary = "Create a new plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<PlantResponse> createPlant(
-            @RequestParam String title,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) Set<String> propertyIds) {
-        Plant plant = plantService.createPlant(title, description, propertyIds);
-        return ResponseEntity.status(HttpStatus.CREATED).body(plantMapper.toDto(plant));
+    public ResponseEntity<PlantResponse> createPlant(@Valid @RequestBody PlantRequest request) {
+        PlantResponse created = plantService.createPlant(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @Operation(summary = "Update a plant (Admin only)")
+    @Operation(summary = "Update a plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PlantResponse> updatePlant(
-            @PathVariable UUID id,
-            @RequestParam String title,
-            @RequestParam(required = false) String description) {
-        Plant plant = plantService.updatePlant(id.toString(), title, description);
-        return ResponseEntity.ok(plantMapper.toDto(plant));
+            @PathVariable String id,
+            @Valid @RequestBody PlantRequest request) {
+        return ResponseEntity.ok(plantService.updatePlant(id, request));
     }
 
-    @Operation(summary = "Delete a plant (Admin only)")
+    @Operation(summary = "Delete a plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlant(@PathVariable UUID id) {
-        plantService.deletePlant(id.toString());
+    public ResponseEntity<Void> deletePlant(@PathVariable String id) {
+        plantService.deletePlant(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Add property to plant (Admin only)")
+    @Operation(summary = "Add property to plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/properties/{propertyId}")
     public ResponseEntity<PlantResponse> addPropertyToPlant(
-            @PathVariable UUID id,
-            @PathVariable UUID propertyId) {
-        Plant plant = plantService.addPropertyToPlant(id, propertyId);
-        return ResponseEntity.ok(plantMapper.toDto(plant));
+            @PathVariable String id,
+            @PathVariable String propertyId) {
+        return ResponseEntity.ok(plantService.addPropertyToPlant(id, propertyId));
     }
 
-    @Operation(summary = "Remove property from plant (Admin only)")
+    @Operation(summary = "Remove property from plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/properties/{propertyId}")
     public ResponseEntity<PlantResponse> removePropertyFromPlant(
-            @PathVariable UUID id,
-            @PathVariable UUID propertyId) {
-        Plant plant = plantService.removePropertyFromPlant(id, propertyId);
-        return ResponseEntity.ok(plantMapper.toDto(plant));
+            @PathVariable String id,
+            @PathVariable String propertyId) {
+        return ResponseEntity.ok(plantService.removePropertyFromPlant(id, propertyId));
     }
 }

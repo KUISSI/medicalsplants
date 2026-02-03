@@ -1,18 +1,18 @@
 package com.medicalsplants.controller;
 
-import com.medicalsplants.model.entity.Property;
+import com.medicalsplants.model.dto.request.PropertyRequest;
+import com.medicalsplants.model.dto.response.PropertyResponse;
 import com.medicalsplants.service.PropertyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/properties")
@@ -27,76 +27,59 @@ public class PropertyController {
 
     @Operation(summary = "Get all properties")
     @GetMapping
-    public ResponseEntity<List<Property>> getAllProperties() {
+    public ResponseEntity<List<PropertyResponse>> getAllProperties() {
         return ResponseEntity.ok(propertyService.getAllProperties());
     }
 
     @Operation(summary = "Get property by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Property> getPropertyById(@PathVariable UUID id) {
+    public ResponseEntity<PropertyResponse> getPropertyById(@PathVariable String id) {
         return ResponseEntity.ok(propertyService.getPropertyById(id));
     }
 
     @Operation(summary = "Get properties by symptom ID")
     @GetMapping("/symptom/{symptomId}")
-    public ResponseEntity<List<Property>> getPropertiesBySymptomId(@PathVariable UUID symptomId) {
+    public ResponseEntity<List<PropertyResponse>> getPropertiesBySymptomId(@PathVariable String symptomId) {
         return ResponseEntity.ok(propertyService.getPropertiesBySymptomId(symptomId));
     }
 
-    @Operation(summary = "Create a new property (Admin only)")
+    @Operation(summary = "Get properties by family")
+    @GetMapping("/family/{family}")
+    public ResponseEntity<List<PropertyResponse>> getPropertiesByFamily(@PathVariable String family) {
+        return ResponseEntity.ok(propertyService.getPropertiesByFamily(family));
+    }
+
+    @Operation(summary = "Get all property families")
+    @GetMapping("/families")
+    public ResponseEntity<List<String>> getAllFamilies() {
+        return ResponseEntity.ok(propertyService.getAllFamilies());
+    }
+
+    @Operation(summary = "Create a new property")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PostMapping
-    public ResponseEntity<Property> createProperty(
-            @RequestParam String title,
-            @RequestParam String propertyFamily,
-            @RequestParam(required = false) String propertyDetail,
-            @RequestParam(required = false) Set<String> symptomIds) {
-        Property property = propertyService.createProperty(title, propertyFamily, propertyDetail, symptomIds);
-        return ResponseEntity.status(HttpStatus.CREATED).body(property);
+    public ResponseEntity<PropertyResponse> createProperty(@Valid @RequestBody PropertyRequest request) {
+        PropertyResponse created = propertyService.createProperty(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @Operation(summary = "Update a property (Admin only)")
+    @Operation(summary = "Update a property")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(
-            @PathVariable UUID id,
-            @RequestParam String title,
-            @RequestParam String propertyFamily,
-            @RequestParam(required = false) String propertyDetail) {
-        Property property = propertyService.updateProperty(id, title, propertyFamily, propertyDetail);
-        return ResponseEntity.ok(property);
+    public ResponseEntity<PropertyResponse> updateProperty(
+            @PathVariable String id,
+            @Valid @RequestBody PropertyRequest request) {
+        return ResponseEntity.ok(propertyService.updateProperty(id, request));
     }
 
-    @Operation(summary = "Delete a property (Admin only)")
+    @Operation(summary = "Delete a property")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteProperty(@PathVariable String id) {
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Add symptom to property (Admin only)")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/symptoms/{symptomId}")
-    public ResponseEntity<Property> addSymptomToProperty(
-            @PathVariable UUID id,
-            @PathVariable UUID symptomId) {
-        Property property = propertyService.addSymptomToProperty(id, symptomId);
-        return ResponseEntity.ok(property);
-    }
-
-    @Operation(summary = "Remove symptom from property (Admin only)")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}/symptoms/{symptomId}")
-    public ResponseEntity<Property> removeSymptomFromProperty(
-            @PathVariable UUID id,
-            @PathVariable UUID symptomId) {
-        Property property = propertyService.removeSymptomFromProperty(id, symptomId);
-        return ResponseEntity.ok(property);
     }
 }

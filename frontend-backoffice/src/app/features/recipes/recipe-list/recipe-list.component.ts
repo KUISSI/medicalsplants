@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Recipe, RecipePage, RecipeType, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
-import { RecipeCardComponent } from '../../../shared/components/recipe-card/recipe-card.component';
+import { RecipeCardComponent } from '../../../features/recipes/recipe-card/recipe-card.component';
 
 @Component({
   selector: 'app-recipe-list',

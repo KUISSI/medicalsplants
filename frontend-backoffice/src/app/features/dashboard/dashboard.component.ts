@@ -59,4 +59,5 @@ export class DashboardComponent implements OnInit {
       this.isLoading = false;
     }, 500);
   }
+  today: string = new Date().toLocaleDateString();
 }

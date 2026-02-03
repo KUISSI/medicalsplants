@@ -3,11 +3,14 @@ package com.medicalsplants.service;
 import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.model.dto.request.RecipeRequest;
+import com.medicalsplants.model.dto.response.RecipeResponse;
 import com.medicalsplants.model.entity.Plant;
 import com.medicalsplants.model.entity.Recipe;
 import com.medicalsplants.model.entity.User;
 import com.medicalsplants.model.enums.RecipeStatus;
 import com.medicalsplants.model.enums.RecipeType;
+import com.medicalsplants.model.mapper.RecipeMapper;
 import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.RecipeRepository;
 import com.medicalsplants.repository.UserRepository;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,30 +32,34 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
+    private final RecipeMapper recipeMapper;
 
-    public RecipeService(RecipeRepository recipeRepository, PlantRepository plantRepository, UserRepository userRepository) {
+    public RecipeService(RecipeRepository recipeRepository,
+            PlantRepository plantRepository,
+            UserRepository userRepository,
+            RecipeMapper recipeMapper) {
         this.recipeRepository = recipeRepository;
         this.plantRepository = plantRepository;
         this.userRepository = userRepository;
+        this.recipeMapper = recipeMapper;
     }
 
     @Transactional(readOnly = true)
-    public Page<Recipe> getPublishedRecipes(boolean canSeePremium, Pageable pageable) {
-        return recipeRepository.findPublished(canSeePremium, pageable);
+    public Page<RecipeResponse> getPublishedRecipes(boolean canSeePremium, Pageable pageable) {
+        return recipeRepository.findPublished(canSeePremium, pageable)
+                .map(recipeMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<Recipe> getRecipesByPlantId(String plantId, boolean canSeePremium, Pageable pageable) {
+    public Page<RecipeResponse> getRecipesByPlantId(String plantId, boolean canSeePremium, Pageable pageable) {
         UUID uuid = UUID.fromString(plantId);
-        return recipeRepository.findPublishedByPlantId(uuid, canSeePremium, pageable);
+        return recipeRepository.findPublishedByPlantId(uuid, canSeePremium, pageable)
+                .map(recipeMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Recipe getRecipeById(String id, CustomUserDetails currentUser) {
+    public RecipeResponse getRecipeById(String id, CustomUserDetails currentUser) {
         UUID uuid = UUID.fromString(id);
-        if (uuid == null) {
-            throw new BadRequestException("Recipe id cannot be null");
-        }
         Recipe recipe = recipeRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
 
@@ -71,67 +79,68 @@ public class RecipeService {
             throw new ForbiddenException("This is a premium recipe. Please upgrade your account.");
         }
 
-        return recipe;
+        return recipeMapper.toDto(recipe);
     }
 
     @Transactional(readOnly = true)
-    public List<Recipe> getPendingRecipes() {
-        return recipeRepository.findPendingRecipes();
+    public List<RecipeResponse> getPendingRecipes() {
+        return recipeRepository.findPendingRecipes()
+                .stream()
+                .map(recipeMapper::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public Page<Recipe> getRecipesByAuthor(String authorId, Pageable pageable) {
+    public Page<RecipeResponse> getRecipesByAuthor(String authorId, Pageable pageable) {
         UUID uuid = UUID.fromString(authorId);
-        return recipeRepository.findByAuthorId(uuid, pageable);
+        return recipeRepository.findByAuthorId(uuid, pageable)
+                .map(recipeMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<Recipe> searchRecipes(String search, boolean canSeePremium, Pageable pageable) {
-        return recipeRepository.searchByTitle(search, canSeePremium, pageable);
+    public Page<RecipeResponse> searchRecipes(String search, boolean canSeePremium, Pageable pageable) {
+        return recipeRepository.searchByTitle(search, canSeePremium, pageable)
+                .map(recipeMapper::toDto);
     }
 
     @Transactional
-    public Recipe createRecipe(String title, RecipeType type, String description,
-            Short preparationTimeMinutes, String difficulty, Short servings,
-            String ingredients, String instructions,
-            Boolean isPremium, Set<String> plantIds, String authorId) {
-
+    public RecipeResponse createRecipe(RecipeRequest request, String authorId) {
         UUID authorUuid = UUID.fromString(authorId);
         User author = userRepository.findById(authorUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
 
         Recipe recipe = new Recipe();
         recipe.setId(UUID.randomUUID());
-        recipe.setTitle(title);
-        recipe.setType(type);
-        recipe.setDescription(description);
-        recipe.setPreparationTimeMinutes(preparationTimeMinutes);
-        recipe.setDifficulty(difficulty);
-        recipe.setServings(servings);
-        recipe.setIngredients(ingredients);
-        recipe.setInstructions(instructions);
-        recipe.setIsPremium(isPremium != null ? isPremium : false);
+        recipe.setTitle(request.getTitle());
+        recipe.setType(RecipeType.valueOf(request.getType()));
+        recipe.setDescription(request.getDescription());
+        recipe.setPreparationTimeMinutes(request.getPreparationTimeMinutes());
+        recipe.setDifficulty(request.getDifficulty());
+        recipe.setServings(request.getServings());
+        recipe.setIngredients(request.getIngredients());
+        recipe.setInstructions(request.getInstructions());
+        recipe.setIsPremium(request.getIsPremium() != null ? request.getIsPremium() : false);
         recipe.setStatus(RecipeStatus.DRAFT);
         recipe.setAuthor(author);
 
-        if (plantIds != null && !plantIds.isEmpty()) {
-            for (String plantId : plantIds) {
+        // Associer les plantes
+        if (request.getPlantIds() != null && !request.getPlantIds().isEmpty()) {
+            Set<Plant> plants = new HashSet<>();
+            for (String plantId : request.getPlantIds()) {
                 UUID plantUuid = UUID.fromString(plantId);
                 Plant plant = plantRepository.findById(plantUuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
-                recipe.getPlants().add(plant);
+                plants.add(plant);
             }
+            recipe.setPlants(plants);
         }
 
-        return recipeRepository.save(recipe);
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDto(saved);
     }
 
     @Transactional
-    public Recipe updateRecipe(String id, String title, RecipeType type,
-            String description, Short preparationTimeMinutes, String difficulty,
-            Short servings, String ingredients, String instructions,
-            Boolean isPremium, CustomUserDetails currentUser) {
-
+    public RecipeResponse updateRecipe(String id, RecipeRequest request, CustomUserDetails currentUser) {
         UUID uuid = UUID.fromString(id);
         Recipe recipe = recipeRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
@@ -143,39 +152,52 @@ public class RecipeService {
             throw new ForbiddenException("You can only edit your own recipes");
         }
 
-        if (title != null) {
-            recipe.setTitle(title);
+        if (request.getTitle() != null) {
+            recipe.setTitle(request.getTitle());
         }
-        if (type != null) {
-            recipe.setType(type);
+        if (request.getType() != null) {
+            recipe.setType(RecipeType.valueOf(request.getType()));
         }
-        if (description != null) {
-            recipe.setDescription(description);
+        if (request.getDescription() != null) {
+            recipe.setDescription(request.getDescription());
         }
-        if (preparationTimeMinutes != null) {
-            recipe.setPreparationTimeMinutes(preparationTimeMinutes);
+        if (request.getPreparationTimeMinutes() != null) {
+            recipe.setPreparationTimeMinutes(request.getPreparationTimeMinutes());
         }
-        if (difficulty != null) {
-            recipe.setDifficulty(difficulty);
+        if (request.getDifficulty() != null) {
+            recipe.setDifficulty(request.getDifficulty());
         }
-        if (servings != null) {
-            recipe.setServings(servings);
+        if (request.getServings() != null) {
+            recipe.setServings(request.getServings());
         }
-        if (ingredients != null) {
-            recipe.setIngredients(ingredients);
+        if (request.getIngredients() != null) {
+            recipe.setIngredients(request.getIngredients());
         }
-        if (instructions != null) {
-            recipe.setInstructions(instructions);
+        if (request.getInstructions() != null) {
+            recipe.setInstructions(request.getInstructions());
         }
-        if (isPremium != null) {
-            recipe.setIsPremium(isPremium);
+        if (request.getIsPremium() != null) {
+            recipe.setIsPremium(request.getIsPremium());
         }
 
-        return recipeRepository.save(recipe);
+        // Mettre à jour les plantes si fournis
+        if (request.getPlantIds() != null) {
+            Set<Plant> plants = new HashSet<>();
+            for (String plantId : request.getPlantIds()) {
+                UUID plantUuid = UUID.fromString(plantId);
+                Plant plant = plantRepository.findById(plantUuid)
+                        .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
+                plants.add(plant);
+            }
+            recipe.setPlants(plants);
+        }
+
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDto(saved);
     }
 
     @Transactional
-    public Recipe submitForReview(String id, CustomUserDetails currentUser) {
+    public RecipeResponse submitForReview(String id, CustomUserDetails currentUser) {
         UUID uuid = UUID.fromString(id);
         Recipe recipe = recipeRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
@@ -191,11 +213,12 @@ public class RecipeService {
         }
 
         recipe.setStatus(RecipeStatus.PENDING);
-        return recipeRepository.save(recipe);
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDto(saved);
     }
 
     @Transactional
-    public Recipe approveRecipe(String id) {
+    public RecipeResponse approveRecipe(String id) {
         UUID uuid = UUID.fromString(id);
         Recipe recipe = recipeRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
@@ -206,11 +229,12 @@ public class RecipeService {
 
         recipe.setStatus(RecipeStatus.PUBLISHED);
         recipe.setPublishedAt(Instant.now());
-        return recipeRepository.save(recipe);
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDto(saved);
     }
 
     @Transactional
-    public Recipe archiveRecipe(String id, CustomUserDetails currentUser) {
+    public RecipeResponse archiveRecipe(String id, CustomUserDetails currentUser) {
         UUID uuid = UUID.fromString(id);
         Recipe recipe = recipeRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
@@ -222,7 +246,8 @@ public class RecipeService {
         }
 
         recipe.setStatus(RecipeStatus.ARCHIVED);
-        return recipeRepository.save(recipe);
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDto(saved);
     }
 
     @Transactional

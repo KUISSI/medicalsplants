@@ -30,22 +30,13 @@ export class ReviewService {
     return this.http.get(`${this.apiUrl}/me`, { params });
   }
 
-  create(request:  CreateReviewRequest): Observable<Review> {
-    let params = new HttpParams()
-      .set('recipeId', request. recipeId)
-      .set('content', request.content);
+  create(request: CreateReviewRequest): Observable<Review> {
+  return this.http.post<Review>(this.apiUrl, request);
+}
 
-    if (request.parentReviewId) {
-      params = params.set('parentReviewId', request. parentReviewId);
-    }
-
-    return this.http.post<Review>(this.apiUrl, null, { params });
-  }
-
-  update(id:  string, content: string): Observable<Review> {
-    const params = new HttpParams().set('content', content);
-    return this.http.put<Review>(`${this.apiUrl}/${id}`, null, { params });
-  }
+update(id: string, request: CreateReviewRequest): Observable<Review> {
+  return this.http.put<Review>(`${this.apiUrl}/${id}`, request);
+}
 
   delete(id: string): Observable<void> {
     return this. http.delete<void>(`${this.apiUrl}/${id}`);
