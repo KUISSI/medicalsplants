@@ -46,23 +46,23 @@ function Update-CsvHeader {
 }
 
 # 1. Mettre à jour mp_symptom.csv
-# symptom_family → family, symptom_detail → description
+# symptom_family → family, symptom_description → description
 Update-CsvHeader -FilePath "$DataImportPath\mp_symptom.csv" -HeaderMappings @{
-    'symptom_family' = 'family'
-    'symptom_detail' = 'description'
+    'symptom_family' = 'symptom_family'
+    'symptom_description' = 'symptom_description'
 }
 
 # 2. Mettre à jour mp_property.csv
-# property_family → family, property_detail → description
+# property_family → family, property_description → description
 Update-CsvHeader -FilePath "$DataImportPath\mp_property.csv" -HeaderMappings @{
-    'property_family' = 'family'
-    'property_detail' = 'description'
+    'property_family' = 'property_family'
+    'property_description' = 'property_description'
 }
 
 # 3. Mettre à jour mp_plant.csv
-# short_history → history
+# plant_history → plant_history
 Update-CsvHeader -FilePath "$DataImportPath\mp_plant.csv" -HeaderMappings @{
-    'short_history' = 'history'
+    'plant_history' = 'plant_history'
 }
 
 # 4. Renommer mp_recipe.csv en mp_recipe.csv et mettre à jour les en-têtes
@@ -76,9 +76,9 @@ if (Test-Path $recipePath) {
     if ($content.Count -gt 0) {
         # Mettre à jour l'en-tête
         $header = $content[0]
-        # preparation_time → preparation_time_minutes, difficulte → difficulty
+        # preparation_time → preparation_time, difficulte → difficulty
         # ingredient → ingredients, author_id reste author_id
-        $header = $header -replace 'preparation_time', 'preparation_time_minutes'
+        $header = $header -replace 'preparation_time', 'preparation_time'
         $header = $header -replace 'difficulte', 'difficulty'
         $header = $header -replace ';ingredient;', ';ingredients;'
         $content[0] = $header
@@ -95,7 +95,7 @@ if (Test-Path $recipePath) {
 elseif (Test-Path $recipePath) {
     # Le fichier a déjà été renommé, juste mettre à jour les en-têtes
     Update-CsvHeader -FilePath $recipePath -HeaderMappings @{
-        'preparation_time' = 'preparation_time_minutes'
+        'preparation_time' = 'preparation_time'
         'difficulte'       = 'difficulty'
     }
 }
@@ -106,7 +106,7 @@ elseif (Test-Path $recipePath) {
 Update-CsvHeader -FilePath "$DataImportPath\mp_review.csv" -HeaderMappings @{
     'sender_id'        = 'author_id'
     'recipe_id'        = 'recipe_id'
-    'parent_review_id' = 'parent_id'
+    'parent_review_id' = 'parent_review_id'
     'created_id'       = 'created_at'
     'updated_id'       = 'updated_at'
     'deleted_id'       = 'deleted_at'
@@ -146,10 +146,10 @@ Write-Host ""
 Write-Host "=== Mise à jour des fichiers CSV terminée ===" -ForegroundColor Magenta
 Write-Host ""
 Write-Host "Résumé des changements d'en-têtes:" -ForegroundColor White
-Write-Host "  mp_symptom.csv: symptom_family → family, symptom_detail → description" -ForegroundColor Gray
-Write-Host "  mp_property.csv: property_family → family, property_detail → description" -ForegroundColor Gray
+Write-Host "  mp_symptom.csv: symptom_family → family, symptom_description → description" -ForegroundColor Gray
+Write-Host "  mp_property.csv: property_family → family, property_description → description" -ForegroundColor Gray
 Write-Host "  mp_plant.csv: short_history → history" -ForegroundColor Gray
-Write-Host "  mp_recipe.csv → mp_recipe.csv: preparation_time → preparation_time_minutes, difficulte → difficulty" -ForegroundColor Gray
+Write-Host "  mp_recipe.csv → mp_recipe.csv: preparation_time → preparation_time, difficulte → difficulty" -ForegroundColor Gray
 Write-Host "  mp_review.csv: sender_id → author_id, recipe_id → recipe_id, parent_review_id → parent_id" -ForegroundColor Gray
 Write-Host "  mp_interaction.csv: review_id → recipe_id (value column removed from schema)" -ForegroundColor Gray
 Write-Host "  mp_recipe_plant_title.csv → mp_recipe_plant_title.csv" -ForegroundColor Gray
