@@ -1,44 +1,46 @@
-recipe_title;plant_title
-Bain de Prêle;Prêle
-Cataplasme d'Ashwagandha;Ashwagandha
-Cataplasme de Chiendent;Chiendent
-Cataplasme de Curcuma;Curcuma
-Décoction concentrée d'Aspérule odorante;Aspérule odorante
-Décoction concentrée d'Astragale;Astragale
-Décoction concentrée d'Aubépine;Aubépine
-Décoction concentrée de Bouleau;Bouleau
-Décoction concentrée de Camomille;Camomille
-Décoction concentrée de Courge;Courge
-Décoction concentrée d'Eucalyptus;Eucalyptus
-Décoction de Bardane;Bardane (racines)
-Décoction de Saule Blanc;Saule blanc
-Gel Apaisant Aloe Vera;Aloe vera
-Infusion de Badiane (anis étoilé);Badiane (anis étoilé)
-Infusion de Bruyère;Bruyère
-Infusion de Busserole;Busserole
-Infusion de Camomille romaine;Camomille romaine
-Infusion de Consoude;Consoude
-Infusion de Thym et Romarin;Thym / Romarin
-Infusion de Tilleul;Tilleul
-Lotion tonique au Buis;Buis
-Lotion tonique au Cassis;Cassis
-Lotion tonique au Centella asiatica;Centella asiatica
-Lotion tonique à la Cerise (queue de cerise);Cerise (queue de cerise)
-Lotion tonique au Coquelicot;Coquelicot
-Lotion tonique à l'Échinacée;Échinacée
-Lotion tonique à l'Estragon;Estragon
-Macérât huileux d'Aigremoine;Aigremoine
-Macérât huileux d'Arbre à thé;Arbre à thé
-Macérât huileux de Boldo;Boldo
-Macérât huileux de Bouillon blanc;Bouillon blanc
-Macérât huileux de Calendula;Calendula
-Macérât huileux de Cannelle;Cannelle
-Macérât huileux de Clou de girofle;Clou de girofle
-Pesto au Basilic et à l'Ail;Basilic / Ail
-Salade de Pissenlit;Pissenlit
-Sirop de Bourrache;Bourrache
-Sirop de Sureau;Sureau
-Thé Vert à l'Anis;Thé vert / Anis
-Tisane de Valériane pour le sommeil;Valériane
-Vin d'Angélique;Angélique
-Vin de Sauge;Sauge
+recipe_title;plant_title;recipe_id;plant_id
+Lotion tonique à l'Echinacée;Echinacée;dc0a9bb2-4e29-4758-bed1-8e37c0dfd160;3d5d5d6a-188a-4f7d-8580-4c5f2bf60f67
+Décoction de Bardane;Bardane;be5be498-0009-41f8-bd9b-969ec1f3dd8b;66570b1d-7235-4952-8356-f233f231d59f
+Infusion de Thym et Romarin;Thym;91d5e247-ed2a-4044-8863-119c8856fbe0;426098d6-7b4f-493f-a8ed-af6d96433495
+Infusion de Thym et Romarin;Romarin;91d5e247-ed2a-4044-8863-119c8856fbe0;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1
+Thé Vert à l'Anis;Thé vert;8090351c-c41e-4834-a41d-d1419c442421;aa11b194-8e2b-4602-8b9f-a88e018bbf23
+Lotion tonique à la Cerise (queue de cerise);Cerise;74a72ddd-0f24-483c-a28b-3560a0bf56aa;192e11bf-412c-4114-a66b-9ae1c0d21b21
+Pesto au Basilic et à l'Ail;Basilic;68693847-6498-4dc2-8e25-6cf7bdb38345;acd3a4a5-f8ef-4991-9504-828259f9c66c
+Pesto au Basilic et à l'Ail;Ail;68693847-6498-4dc2-8e25-6cf7bdb38345;7d07c738-09ac-4fe8-80c6-461f7e614976
+Macérât huileux d'Arbre à thé;Arbre à thé;0f933211-67c5-4da0-a4a4-84dd63ecfc81;fe8b9898-78e8-406d-8887-f8b8b90040d5
+Salade de Pissenlit;Pissenlit;ed7a40d9-7fcc-45a4-9ccc-7ff82f5253c6;fa3e741a-19ca-4999-a819-7705b220e78a
+Décoction concentrée de Camomille;Camomille;90ef8c76-33c3-4c2c-91c3-3bc5b6350f53;f939bdf2-767e-42b2-98da-cb5bc542ff0d
+Lotion tonique au Buis;Buis;34b9b64d-c731-45ba-adb8-fdcf0cec588e;f1af1699-0246-44d1-824a-4606d1fba431
+Gel Apaisant Aloe Vera;Aloe vera;0b691a45-91ed-4e67-a03c-f5c5d7ba4373;f025e488-a394-4f95-8404-c48969189288
+Décoction concentrée de Bouleau;Bouleau;e76f2a97-b938-4907-8ada-7429d0d4fb54;cbf06ad8-0e31-4f01-8bb0-9d04f459198e
+Vin de Sauge;Sauge;282d29f8-cf95-4e3e-9c18-6b261921d77f;b7612fb2-5267-43ef-9157-76cc43ff29eb
+Cataplasme d'Ashwagandha;Ashwagandha;326a221c-1389-4a87-9f80-1dc77a4ab57a;b6fcded5-0f3d-42ca-bf5a-ca6433424801
+Macérât huileux de Calendula;Calendula;711489f1-d279-4f4f-858c-a3fbfa79e2a6;ab79039a-1a9e-4f95-8955-a1766ef55426
+Cataplasme de Chiendent;Chiendent;33465585-6565-4660-abaa-8681f0b06ffa;a672c0aa-7750-43cf-b43e-9de772865cce
+Tisane de Valériane pour le sommeil;Valériane;028706a5-94a5-4db7-9006-e35b06b1efcd;a467ce46-b2c1-4704-826b-ee9aaad44ac2
+Lotion tonique au Coquelicot;Coquelicot;b6bc61aa-7965-4cc8-a717-af5db93ecc00;8f4653bb-e813-48bf-b10c-f2445ffa3242
+Cataplasme de Curcuma;Curcuma;87a55ce3-ae5e-4657-8866-d9947bd1b694;8dbc20d4-d958-4ac2-a627-599c8058c127
+Vin d'Angélique;Angélique;f3aa3561-46c1-4c1c-a331-9f129d47ee96;8c8203c5-d93d-46ae-af83-e362bba9de14
+Infusion de Consoude;Consoude;1d9c0b3b-35cd-4a35-8415-1d43eddff74b;8c78b11c-e6bd-406c-ada2-c83139979b18
+Décoction de Saule Blanc;Saule blanc;d12b2221-1d03-4ea8-be49-09dde104524f;8a697bf3-0a93-404e-993f-c876908bf185
+Macérât huileux de Boldo;Boldo;bc66a3aa-5257-4481-8d8f-36995c4fd2c1;7e881abb-35b2-4205-976e-13885da6a333
+Infusion de Bruyère;Bruyère;8112cf55-a7eb-43a4-aa0b-8055e9ccbcb8;7e69f5d5-ca8d-407a-bdd4-f71120a779df
+Macérât huileux de Bouillon blanc;Bouillon blanc;e2806ab2-e451-42a1-a55d-784a79523a9e;7da39b13-d3a5-47b2-b5a6-167f2161e65c
+Décoction concentrée d'Eucalyptus;Eucalyptus;90353419-3555-40d4-b269-866548a75d1c;795d35a5-5672-40aa-910c-b8f9ae4da15a
+Lotion tonique à l'Estragon;Estragon;760cf999-b4c3-4e29-af33-68fce7002707;704d0214-7067-4d4c-8a50-0164f33af9ca
+Lotion tonique au Centella asiatica;Centella asiatica;01c1e1b2-7d30-4e05-88a0-1592fa7a8778;6f787c24-e220-4953-a1a8-2519e16cefa4
+Infusion de Busserole;Busserole;ce9c7505-673a-4ef1-ae86-330a98b1156a;66a3dc1a-5047-4c02-851a-97b9ce320031
+Décoction concentrée d'Aubépine;Aubépine;99ffd5c4-430f-4325-8d92-107afb345d4d;63faf9ed-9b91-4b79-893c-f924f3cbe45b
+Sirop de Sureau;Sureau;a8b5afc6-b3fd-4f61-b0fa-b9232db89f1c;5d0ae18b-d1b5-4e2d-baed-37a5097f76ee
+Bain de Prêle;Prêle;fd122d9f-d864-4af5-a63e-4c1a47d9c8cc;5bd2e811-d6de-4671-9210-657c2cb85932
+Décoction concentrée de Courge;Courge;ab20b533-7c54-418f-9ead-b7e6a1abe3b0;59eff040-eb4a-4bc1-849f-e11e9c4eb691
+Sirop de Bourrache;Bourrache;814e3c31-5439-4c38-bab6-11da9579e137;56579909-6f4b-4f92-a47f-55dbc1b921b2
+Lotion tonique au Cassis;Cassis;66ebdd5d-5564-4072-abaf-f4743f6fb6e5;4e1e777d-b689-4f3f-935b-2a50e3921439
+Infusion de Badiane (anis étoilé);Badiane (anis étoilé);1a8690ad-b308-4fbf-a56a-1f3ed261198f;42fca17f-af90-41a5-a2b4-08036d79fcfc
+Infusion de Camomille romaine;Camomille romaine;8a44d15d-99a2-4f85-b763-3b5aee2b4023;3d0fc302-6274-4eb2-b6d6-5252efb08021
+Infusion de Tilleul;Tilleul;ae21f676-b580-427a-a29b-a88a8906225f;301ba23a-b1b2-469f-bcde-3e66999c5818
+Macérât huileux de Cannelle;Cannelle;0c439568-c725-471d-8673-3fd3db82d490;2ec0f15c-5c64-443f-9617-61c5b0a56b7a
+Macérât huileux d'Aigremoine;Aigremoine;8d71166a-1125-4f2d-80eb-1096c672dc1e;262d5354-45f1-4580-bad0-412600b5f441
+Macérât huileux de Clou de girofle;Clou de girofle;1423e375-0651-4b70-9ef4-91e7e242e9ea;0ea671c6-4d5b-47ec-87dc-8f0f123cf8a3
+Décoction concentrée d'Astragale;Astragale;ebd5e14e-1c6a-42b7-83ec-f72951fc20de;0b46a574-8632-4c4a-be99-05730ce28c9a
+Décoction concentrée d'Aspérule odorante;Aspérule odorante;6cfaafa3-62f0-4dbc-83db-4212512a8087;09ca0aa5-aea2-4035-bfd7-a869ba2a9395

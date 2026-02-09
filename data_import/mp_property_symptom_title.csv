@@ -1,147 +1,148 @@
-property_title;symptom_title
-Adaptogène;Anxiété
-Adaptogène;Fatigue
-Adaptogène;Manque d'énergie
-Adaptogène;Stress
-Adoucissant;Inflammation gastrique
-Analgésique;Crampes
-Analgésique;Douleurs légères
-Antalgique;Courbatures fébriles
-Antalgique;Tendinite
-Antiacide;Aigreurs d'estomac
-Antiallergique;Allergies
-Antiallergique;Rhinite
-Antibactérienne;Champignons - levures - moisissures
-Antibactérienne;Gastro-intestinales
-Antibactérienne;Infections cutanées
-Antibactérienne;Infections intestinales
-Antibactérienne;respiratoire
-Anti-diabétique;Prise de poids
-Antidiarrhéique;Diarrhée
-Antiveongique;Champignons - levures - moisissures
-Antiveongique;Infections cutanées
-Antiveongique;Presence de champignon
-Anti-inflammatoire;Arthrite
-Anti-inflammatoire;Douleurs musculosquelettiques
-Anti-inflammatoire;Douleurs rhumatismales
-Anti-inflammatoire;Gène prostatique
-Anti-inflammatoire;Infections aigües et chroniques
-Anti-inflammatoire;Inflammation de l'arbre urinaire et prostate
-Anti-inflammatoire;Inflammation gastrique
-Anti-inflammatoire;Inflammations cutanées
-Anti-inflammatoire;Rhumatismes
-Anti-inflammatoire;Tendinite
-Anti-inflammatoire circulatoire;Inflammation vasculaire
-Antilaiteuse;Douleur mammaire
-Antilithique;Calculs rénaux
-Antinévralgique;Douleur névralgique
-Antioxydant;Fatigue chronique
-Antioxydant;Stress oxydative
-Antioxydant;Trouble de la circulation et de la ménopause
-Antioxydant;Vieillissement cellulaire
-Antirhumatismale;Rhumatisme
-Antiseptique;Bronchites aiguës
-Antiseptique;Conjonctivite
-Antiseptique;Gène pulmonaire
-Antiseptique;Infection urinaire
-Antiseptique;Infections des voies urinaires
-Antiseptique;Infections respiratoire
-Antiseptique;Inflammations buccales
-Antiseptique;Microbe
-Antiseptique;Plaie
-Antiseptique;Plaie / microbe
-Antiseptique;Rhume
-Antiseptique urinaire;Cystite
-Antispasmodique;Asthme
-Antispasmodique;Colite
-Antispasmodique;Crampes abdominales
-Antispasmodique;Douleurs et spasmes abdominaux
-Antispasmodique;Règles douloureuses
-Antispasmodique;Spasmes abdominaux
-Antispasmodique;Trouble abdominal
-Antisudorale;Bouffées de chaleur
-Antisudorale;Transpiration excessive
-Antitussive;Toux
-Antiviral;Grippe
-Antiviral;Infections virales Oto-Rhino-Laryngologie (Nez-Gorge-Oreilles)
-Antiviral;Rhume
-Astringente;Angine
-Astringente;Angine / Diarrhés
-Astringente;Diarrhées
-Astringente;Douleurs Digestives
-Astringente;Extinction de voix
-Astringente;Laryngite
-Astringente;Trouble Digestive
-Bactricide;Bactérie
-Calmante;Anxiété
-Calmante;Insomnie
-Calmante;Nervosité
-Cardiotonique;Palpitations
-Carminative;Aérophagie
-Carminative;Ballonnements
-Carminative;Trouble Digestive
-Cholagogue;Calculs biliaires
-Cholagogue;Crise de foie
-Cholérétique;Calculs biliaires
-Cholérétique;Digestion diveficile
-Cholérétique;Trouble Digestive
-Cicatrisant / Regénérant;Brûlures légères
-Cicatrisant / Regénérant;Peau irritée
-Cicatrisant / Regénérant;Hémorroïdes
-Cicatrisant / Regénérant;Plaies
-Dépurative;Acné
-Dépurative;Eczéma
-Dépurative;Goutte
-Diurétique;Calculs
-Diurétique;Coliques néphrétiques
-Diurétique;Diurétique
-Diurétique;hypertension légère
-Diurétique;Oedèmes
-Diurétique;Calculs rénaux
-Diurétique;Rétention d'eau
-Emménagogue;Douleurs menstruelles
-Emolliente;Enrouements
-Expectorant;Affection bronches
-Expectorant;Encombrement bronchique
-Expectorant;Rhume
-Expectorant;Toux grasse
-Hépatoprotecteur;Digestion lente
-Hépatoprotecteur;Fatigue liée au foie
-Hépatoprotecteur;Surcharge hépatique
-Hépatoprotecteur;Trouble Digestive
-Hépatoprotectrice;Insuffisance hépatique
-Hypotenseur;Hypertension
-Immunostymulant;Faiblesse Infectieux
-Immunostymulant;Infections à  répétition
-Laxative;Constipation
-Neurologique;Maux de tàªte
-Pectorale;Affection bronches
-Pectorale;Emphysème
-Régénérante;Rides
-Régénérante;Sécheresse et vieillissement cutané
-Reminéralisante;Arthrose
-Reminéralisante;Consolidation des fractures
-Reminéralisante;Ostéoporose
-Reminéralisante;Reminéralisant osseux
-Restructurante;Vergetures
-Sédative;Anxiété
-Sédative;Asthme
-Sédative;Emotivité
-Sédative;Insomnie
-Sédative;Nervosité
-Sédative;Sédative
-Stimulante;Asthénie
-Stimulante;Grippe
-Stimulante;Refroidissements
-Stomachique;Digestion diveficile
-Stomachique;Digestion lente
-Stomachique;Dyspepsie
-Stomachique;Trouble Digestive
-Sudoriveique;Grippe
-Sudoriveique;Rhume
-Tonique vasculaire;Varices
-Vermiveuge;Présence de vers
-Vermiveuge;Vermiveuge
-Vulnéraire;Cicatrisation
-Vulnéraire;Ulcères
-Vulnéraire;Ulcères variqueux
+property_title;symptom_title;property_id;symptom_id
+Adaptogène;Anxiété;d39f2df8-77ca-4860-85d1-b631cf8c3138;d444cafc-e760-4f8a-92a5-ac52afe380b6
+Adaptogène;Manque d'énergie;d39f2df8-77ca-4860-85d1-b631cf8c3138;3df5cc63-60ea-42b5-8cfb-4875ea183b71
+Adaptogène;Stress;d39f2df8-77ca-4860-85d1-b631cf8c3138;2f8c3eb7-3f24-4fb4-a9a0-4f0451c6db7a
+Adaptogène;Fatigue;d39f2df8-77ca-4860-85d1-b631cf8c3138;2f495741-cd48-4c64-91df-bfcb4af34f7d
+Adoucissant;Inflammation gastrique;42efdb06-36e8-4151-8a3d-5bf78712c4f1;3a3e35d3-f326-4f02-ab7b-bc9d730b9422
+Analgésique;Douleurs légères;ba30212b-03c2-41a7-a344-4f0e290347d0;dc4fbb93-85a9-4edb-9502-638e18b6b7ec
+Analgésique;Crampes;ba30212b-03c2-41a7-a344-4f0e290347d0;8af0e53e-e730-431a-9fbf-892c3c8dda55
+Antalgique;Tendinites;a1aeb82d-34b7-473d-9d0c-60c037800e99;86e3bece-da8b-4701-a7e9-e5d52e9c638b
+Antalgique;Courbatures fébriles;a1aeb82d-34b7-473d-9d0c-60c037800e99;be178ab5-805a-4ce2-bbca-5f218604a020
+Antiacide;Aigreurs d'estomac;45f50d5c-6e57-4cc3-9ccb-1475bc5ac5da;767682b9-45f6-4585-a033-b9828c7cb43e
+Antiallergique;Allergies;4322efb6-a226-43d1-98e5-fba4c337a576;ea81ba07-7cfb-438a-a531-b7c41576b683
+Antiallergique;Rhinite;4322efb6-a226-43d1-98e5-fba4c337a576;876b7f15-4838-49aa-8f85-6186d1d28766
+Antibactérienne;Champignons - levures - moisissures;a187dbb3-2182-41f1-9159-787930d68ab0;f94a56dc-b98b-49ec-8e68-87cacde06e64
+Antibactérienne;respiratoire;a187dbb3-2182-41f1-9159-787930d68ab0;d447a572-18d1-42e5-99dd-35399bab384a
+Antibactérienne;Gastro-intestinales;a187dbb3-2182-41f1-9159-787930d68ab0;a13561bf-c61c-4e7c-8ae6-19470c397c16
+Antibactérienne;Infections intestinales;a187dbb3-2182-41f1-9159-787930d68ab0;9dd4b3f2-9386-46df-bf07-87f9d7d6e553
+Antibactérienne;Infections cutanées;a187dbb3-2182-41f1-9159-787930d68ab0;9333624e-1512-4b17-a3fd-741a492fbec4
+Anti-diabétique;Prise de poids;72a00c82-1160-4e72-b8e0-b5d13fb2869b;6edddb35-fbcc-4f09-96b9-7b64fe104688
+Antidiarrhéique;Diarrhée;582a7e84-6f09-4519-92ef-f74f9e1e7a75;4283e3cb-3be0-49e8-9ae4-3836b241d7b1
+Antifongique;Champignons - levures - moisissures;f87951b9-402f-4f2d-92e7-2d8896a4e5e9;f94a56dc-b98b-49ec-8e68-87cacde06e64
+Antifongique;Infections cutanées;f87951b9-402f-4f2d-92e7-2d8896a4e5e9;9333624e-1512-4b17-a3fd-741a492fbec4
+Antifongique;Presence de champignon;f87951b9-402f-4f2d-92e7-2d8896a4e5e9;392fb055-e2aa-49ce-aec2-e694e5bff5fd
+Anti-inflammatoire;Gêne prostatique;5e1d3a96-9408-4887-9f9a-783c3f21be4e;d59eb03a-4678-42c2-ab9b-0b745aabaa3e
+Anti-inflammatoire;Infections aiguës et chroniques;5e1d3a96-9408-4887-9f9a-783c3f21be4e;0a1fcd1b-53f2-4d07-8a71-f7274204200b
+Anti-inflammatoire;Tendinites;5e1d3a96-9408-4887-9f9a-783c3f21be4e;86e3bece-da8b-4701-a7e9-e5d52e9c638b
+Anti-inflammatoire;Douleurs musculosquelettiques;5e1d3a96-9408-4887-9f9a-783c3f21be4e;eefc0c92-5fe0-4d79-9ccd-54ee659f48ab
+Anti-inflammatoire;Rhumatismes;5e1d3a96-9408-4887-9f9a-783c3f21be4e;dc7a6955-b224-4552-ab64-cc71a604fb9f
+Anti-inflammatoire;Inflammation de l'arbre urinaire et prostate;5e1d3a96-9408-4887-9f9a-783c3f21be4e;b95cb162-3f3b-403c-b96f-03ac8198ee84
+Anti-inflammatoire;Arthrite;5e1d3a96-9408-4887-9f9a-783c3f21be4e;507a9932-724f-4291-8597-0ce480f35600
+Anti-inflammatoire;Inflammation gastrique;5e1d3a96-9408-4887-9f9a-783c3f21be4e;3a3e35d3-f326-4f02-ab7b-bc9d730b9422
+Anti-inflammatoire;Inflammations cutanées;5e1d3a96-9408-4887-9f9a-783c3f21be4e;1ad0b7ef-fe04-4b0a-a353-6e3b6b51894e
+Anti-inflammatoire;Douleurs rhumatismales;5e1d3a96-9408-4887-9f9a-783c3f21be4e;02104b36-bf26-4fda-bbb0-296525344744
+Anti-inflammatoire circulatoire;Inflammation vasculaire;8895c88b-cfab-48d0-abaa-e434fdbf19db;094bfe94-d85d-4116-aed2-cf0cbd8e8d5c
+Antilactée;Douleur mammaire;8a1546e9-bbc7-49a5-994b-d6707894c83f;e6018684-1384-49d0-af7a-289cdcb89855
+Antilithique;Calculs rénaux;13731181-f223-46c1-ab5a-5c55900e58ed;a4079337-93e5-457c-99ff-02e0deaa3ad4
+Antinévralgique;Douleur névralgique;6621d944-46d7-469b-b26c-f031c1fa7d56;7fcd30b6-9baa-4fbf-b77f-72fdeaae9737
+Antioxydant;Stress oxydatif;dea97559-1937-41c2-8490-f247e47e9fbd;3a2d34cc-993b-4461-b533-117b3841301a
+Antioxydant;Trouble de la circulation et de la ménopause;dea97559-1937-41c2-8490-f247e47e9fbd;c1f38b7e-af5f-4767-9198-ee1acbb5466e
+Antioxydant;Fatigue chronique;dea97559-1937-41c2-8490-f247e47e9fbd;4e27e956-493d-4a76-acd0-6bbfaff81c7b
+Antioxydant;Vieillissement cellulaire;dea97559-1937-41c2-8490-f247e47e9fbd;01f98072-308b-4455-ab41-e08cbaa94338
+Antirhumatismale;Rhumatisme;771c2e5b-778d-4f5d-9015-115b84e57162;a9fda553-a6d6-4fd6-9d0a-a6c021c52d6e
+Antiseptique;Gêne pulmonaire;42616908-8822-4f4a-997a-a2092a9c06c6;9bb91236-eab8-4191-969c-9c697781a3b5
+Antiseptique;Rhume;42616908-8822-4f4a-997a-a2092a9c06c6;f5ef3094-c4c2-4a69-98bb-c6ba493f3d08
+Antiseptique;Bronchites aiguës;42616908-8822-4f4a-997a-a2092a9c06c6;c5d3134a-e657-4b38-a9f4-4cafd3c58afb
+Antiseptique;Conjonctivite;42616908-8822-4f4a-997a-a2092a9c06c6;84eadb6e-e7c2-4526-9651-f76e99484517
+Antiseptique;Infection urinaire;42616908-8822-4f4a-997a-a2092a9c06c6;75da0df3-24ec-4430-8cda-5707cfd58d9e
+Antiseptique;Plaie / microbe;42616908-8822-4f4a-997a-a2092a9c06c6;71551ae8-9d02-4c57-b418-9b8f666befa6
+Antiseptique;Plaie;42616908-8822-4f4a-997a-a2092a9c06c6;53a740f8-0941-43b5-9b43-b30e6a6d1372
+Antiseptique;Microbe;42616908-8822-4f4a-997a-a2092a9c06c6;41af5f10-b61d-46bd-be54-e9bf237ed8ff
+Antiseptique;Infections des voies urinaires;42616908-8822-4f4a-997a-a2092a9c06c6;19ab8887-2418-4d6b-bde5-06b8cc66dff0
+Antiseptique;Infections respiratoire;42616908-8822-4f4a-997a-a2092a9c06c6;0dff76d2-5874-446f-8d77-d431d2d4f8d7
+Antiseptique;Inflammations buccales;42616908-8822-4f4a-997a-a2092a9c06c6;0651e89c-611e-4be8-a37b-bea873f5fd3a
+Antiseptique urinaire;Cystite;4eb2f358-c057-443a-a146-623894da8040;d1530982-c9ce-416a-abae-2c6a4ddaa53a
+Antispasmodique;Asthme;ee658558-b572-42a1-bee7-a51b2a5812bb;d4220bc6-6c3e-40ae-ada9-085b8a149a9b
+Antispasmodique;Crampes abdominales;ee658558-b572-42a1-bee7-a51b2a5812bb;9e7a380c-7ef3-4bdf-ae43-55d7d02a7396
+Antispasmodique;Trouble abdominal;ee658558-b572-42a1-bee7-a51b2a5812bb;6a868d4c-a9a7-4a03-b78b-7bf08539e4fd
+Antispasmodique;Douleurs et spasmes abdominaux;ee658558-b572-42a1-bee7-a51b2a5812bb;47bb5ff0-9933-40e6-85f8-9827ea57a90e
+Antispasmodique;Règles douloureuses;ee658558-b572-42a1-bee7-a51b2a5812bb;3edfec10-f7a8-4b6e-947e-989d4298a8f2
+Antispasmodique;Colite;ee658558-b572-42a1-bee7-a51b2a5812bb;357e6269-13c3-42f6-b89e-d33104c73ee7
+Antispasmodique;Spasmes abdominaux;ee658558-b572-42a1-bee7-a51b2a5812bb;26180823-fc4f-4f3d-957a-8ca71e17b6a5
+Antisudorale;Bouffées de chaleur;35bd6176-8aa3-4b61-9ec2-9bdf0e7412d7;7f4052a5-c372-41c7-8e97-1655302fac7d
+Antisudorale;Transpiration excessive;35bd6176-8aa3-4b61-9ec2-9bdf0e7412d7;4e748ced-ab20-4abc-ac0a-9032140aeb8e
+Antitussive;Toux;e1dbc4c8-5756-4a45-9538-4232bb48e758;2680d5db-bc22-46e8-9ad1-254b37cf87ba
+Antiviral;Infections virales ORL (Nez-Gorge-Oreilles);6c50dee3-0a17-4a4c-9e31-573154ca6982;3756a1ec-e160-48ef-894e-e0fd4f59302a
+Antiviral;Rhume;6c50dee3-0a17-4a4c-9e31-573154ca6982;f5ef3094-c4c2-4a69-98bb-c6ba493f3d08
+Antiviral;Grippe;6c50dee3-0a17-4a4c-9e31-573154ca6982;2fb9cee3-34ca-4f64-af40-915497f40ecd
+Astringente;Angine / Diarrhée;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;c0458ab3-6a31-40c4-be81-77dcd922c30e
+Astringente;Diarrhée;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;4283e3cb-3be0-49e8-9ae4-3836b241d7b1
+Astringente;Trouble digestif;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;3587e38c-bfb8-4fa2-a523-d71670e51b5a
+Astringente;Laryngite;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;f3258922-6513-462f-9c32-3a15b48b441a
+Astringente;Douleurs Digestives;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;98e2d0c2-f4a8-460b-8253-793b99c4985e
+Astringente;Angine;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;7d73f5c4-aeff-4c94-a2cf-11520eddd59b
+Astringente;Extinction de voix;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd;53281b0a-e20c-49c0-9aa9-234da35cbdb1
+Bactéricide;Bactérie;6911a258-f583-4fea-bb2d-8e63f5cdd870;646ed34b-9956-4f5a-94c6-189941d01019
+Calmante;Nervosité;1990b8bf-1623-4ab3-a119-a9f989c19f7c;ed99aeb2-5765-4fa5-9298-1ee2a5ec0eed
+Calmante;Anxiété;1990b8bf-1623-4ab3-a119-a9f989c19f7c;d444cafc-e760-4f8a-92a5-ac52afe380b6
+Calmante;Insomnie;1990b8bf-1623-4ab3-a119-a9f989c19f7c;43d88790-08fe-4f43-874f-fbbc2320e33f
+Cardiotonique;Palpitations;c94eef5e-9832-41d6-bea7-02ab6961db5c;d86bb0c4-0bbf-4c41-b0b9-613494740fff
+Carminative;Trouble digestif;e7402868-41ab-4630-98fc-2fe24cd1cbd7;3587e38c-bfb8-4fa2-a523-d71670e51b5a
+Carminative;Ballonnements;e7402868-41ab-4630-98fc-2fe24cd1cbd7;f247c97a-b491-4208-8e9e-cd08568de31a
+Carminative;Aérophagie;e7402868-41ab-4630-98fc-2fe24cd1cbd7;9f412da1-5b63-4201-b47d-2118d25872ff
+Cholagogue;Calculs biliaires;aeefdaf5-6a77-4752-ab11-92c3c60649e6;81251554-416e-4181-9089-8515a4c74d2f
+Cholagogue;Crise de foie;aeefdaf5-6a77-4752-ab11-92c3c60649e6;4ed5b9e3-5bbe-4657-bcc2-c3e4d870f4e1
+Cholérétique;Digestion difficile;eba3b828-d4c2-4118-9085-e14045430af9;4194d33c-7e0c-4f19-bbd0-ba9343dd9e4d
+Cholérétique;Trouble digestif;eba3b828-d4c2-4118-9085-e14045430af9;3587e38c-bfb8-4fa2-a523-d71670e51b5a
+Cholérétique;Calculs biliaires;eba3b828-d4c2-4118-9085-e14045430af9;81251554-416e-4181-9089-8515a4c74d2f
+Cicatrisant / Régénérant;Hémorroïdes;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c;c144686a-5034-442e-8bc9-c5f64dc20ae8
+Cicatrisant / Régénérant;Brûlures légères;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c;ae236008-5430-4bce-b3f3-649fdd261b91
+Cicatrisant / Régénérant;Peau irritée;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c;5b170cd9-a087-4ea7-9e84-fb457177dc7f
+Cicatrisant / Régénérant;Plaie;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c;53a740f8-0941-43b5-9b43-b30e6a6d1372
+Dépurative;Acné;926623a6-92d0-4dfb-86c2-644479e117a0;ebf871c9-e0df-4a98-831b-c094b65a331d
+Dépurative;Eczéma;926623a6-92d0-4dfb-86c2-644479e117a0;5e56cc68-1f55-4ac3-8914-8a97859bce9c
+Dépurative;Goutte;926623a6-92d0-4dfb-86c2-644479e117a0;2d46eb30-a02e-401d-b27a-1541ea60c262
+Diurétique;Trouble diurétique;aba22227-6dd6-4b8c-87af-48e8eae7c552;0f24b02d-cbc5-4212-b75a-cf000c9dd8ef
+Diurétique;Rétention d'eau;aba22227-6dd6-4b8c-87af-48e8eae7c552;ea97bca3-0630-4d9b-842b-a8309b808d47
+Diurétique;hypertension légère;aba22227-6dd6-4b8c-87af-48e8eae7c552;d4c914b8-a0c8-4736-8fa2-29aa625e5194
+Diurétique;Coliques néphrétiques;aba22227-6dd6-4b8c-87af-48e8eae7c552;a91cfd72-b741-4f71-acab-74849fd80c8b
+Diurétique;Calculs rénaux;aba22227-6dd6-4b8c-87af-48e8eae7c552;a4079337-93e5-457c-99ff-02e0deaa3ad4
+Diurétique;Calculs;aba22227-6dd6-4b8c-87af-48e8eae7c552;326c906e-78df-4910-8b40-9bcb84ef4d6f
+Diurétique;Oedèmes;aba22227-6dd6-4b8c-87af-48e8eae7c552;04f07def-b439-4104-b25e-43cafa9d1bfd
+Emménagogue;Douleurs menstruelles;808b1ead-367a-48d4-a6d3-10fb39b7acd0;a8923606-b0d6-4c4f-aa04-af8e073970bd
+Emolliente;Enrouements;6dd925e3-8a32-4bb8-a4dc-efa00419ab46;9469a554-5bd1-4762-8af2-047555591fe3
+Expectorant;Affection bronchique;9ec4f194-b670-4932-89f1-99b2f5b809ae;d0e0f9ef-c0a0-4e2d-ad11-a4f96c6b905c
+Expectorant;Rhume;9ec4f194-b670-4932-89f1-99b2f5b809ae;f5ef3094-c4c2-4a69-98bb-c6ba493f3d08
+Expectorant;Toux grasse;9ec4f194-b670-4932-89f1-99b2f5b809ae;6273eca8-b50d-4423-92b7-48eea26c8926
+Expectorant;Encombrement bronchique;9ec4f194-b670-4932-89f1-99b2f5b809ae;268ae362-02a3-410c-8b44-7f4ee00eaa61
+Hépatoprotecteur;Trouble digestif;56a48288-e80e-4e1a-8812-a968adc84b89;3587e38c-bfb8-4fa2-a523-d71670e51b5a
+Hépatoprotecteur;Surcharge hépatique;56a48288-e80e-4e1a-8812-a968adc84b89;e84d06b5-acd0-4d3d-9c08-5b65018ff5dd
+Hépatoprotecteur;Insuffisance hépatique;56a48288-e80e-4e1a-8812-a968adc84b89;d1dbf2d8-eef9-42bf-8491-a1681e610eb5
+Hépatoprotecteur;Digestion lente;56a48288-e80e-4e1a-8812-a968adc84b89;43bca1dd-d8d1-49c1-9de0-c74e3e12cbe5
+Hépatoprotecteur;Fatigue liée au foie;56a48288-e80e-4e1a-8812-a968adc84b89;40611885-ea36-4707-80d2-005f338b4306
+Hypotenseur;Hypertension;b551dee3-e7e2-4029-8d3e-ca2760c700b1;991b6485-895c-4f65-83c6-136aad31b390
+Immunostimulant;Faiblesse Infectieux;ed68bdc1-76fe-4002-a764-f4cf5287c010;36d6a465-8541-41ee-96f1-47286742f113
+Immunostimulant;Infections à répétition;ed68bdc1-76fe-4002-a764-f4cf5287c010;075d32c8-f633-4295-a3f2-03b4f86431f6
+Laxative;Constipation;4422b05f-cd22-4d7e-82d7-f9cfc2f8657e;9c790310-c160-4ce3-ae8e-2cb7606926b5
+Neurologique;Maux de tête;849c0a81-b18a-4677-b5f5-ddf6ee3165b5;08462af1-572c-4d82-abc3-6b941a4ad1a2
+Pectorale;Affection bronchique;1c177133-89ec-4362-8c38-c3f82337e0eb;d0e0f9ef-c0a0-4e2d-ad11-a4f96c6b905c
+Pectorale;Emphysème;1c177133-89ec-4362-8c38-c3f82337e0eb;497c7013-030d-4f06-ac1d-7468ca5cbfca
+Régénérante;Rides;426ab145-fd6d-4d52-bac4-04a6cbb46bc0;e2248229-a5bf-4f58-ad15-43940b0af277
+Régénérante;Sécheresse et vieillissement cutané;426ab145-fd6d-4d52-bac4-04a6cbb46bc0;8c838981-e8cf-4c5d-b195-31a6355e769e
+Reminéralisante;Ostéoporose;2b292759-64fa-4eb2-a89f-62a878bfee3b;f9b47d9d-7ae0-4a70-9c0b-5a95a1604730
+Reminéralisante;Consolidation des fractures;2b292759-64fa-4eb2-a89f-62a878bfee3b;b4ba9f4c-c725-4f6a-9f44-a2dfbc00ff98
+Reminéralisante;Reminéralisant osseux;2b292759-64fa-4eb2-a89f-62a878bfee3b;9d14e150-2bbe-4cd7-a0a7-868dbd07a8ad
+Reminéralisante;Arthrose;2b292759-64fa-4eb2-a89f-62a878bfee3b;771b4a66-99ef-41aa-8f4c-1f37fc3cdf06
+Restructurante;Vergetures;1d2272e0-779a-4604-a7d1-f67024b4bf6a;8653c7d4-0c5b-4cd9-aa1a-2aeae8bd38f1
+Sédative;Emotivité;4de70bca-6a83-43ee-85c0-a0af1cef58e0;e6b54d93-6153-456e-8b8a-155d2998d5e8
+Sédative;Sédatif;4de70bca-6a83-43ee-85c0-a0af1cef58e0;48519113-a372-469d-9679-df93a15afca8
+Sédative;Nervosité;4de70bca-6a83-43ee-85c0-a0af1cef58e0;ed99aeb2-5765-4fa5-9298-1ee2a5ec0eed
+Sédative;Anxiété;4de70bca-6a83-43ee-85c0-a0af1cef58e0;d444cafc-e760-4f8a-92a5-ac52afe380b6
+Sédative;Asthme;4de70bca-6a83-43ee-85c0-a0af1cef58e0;d4220bc6-6c3e-40ae-ada9-085b8a149a9b
+Sédative;Insomnie;4de70bca-6a83-43ee-85c0-a0af1cef58e0;43d88790-08fe-4f43-874f-fbbc2320e33f
+Stimulante;Asthénie;8c2b3f1a-9068-4e8f-b313-d7feee9b899d;be76d0dd-6f23-4b14-a565-fac1f348c109
+Stimulante;Grippe;8c2b3f1a-9068-4e8f-b313-d7feee9b899d;2fb9cee3-34ca-4f64-af40-915497f40ecd
+Stimulante;Refroidissements;8c2b3f1a-9068-4e8f-b313-d7feee9b899d;22fc5a58-ca01-429e-b7f4-71ef10a0522f
+Stomachique;Digestion difficile;bc69e644-da45-4e3d-a70d-e0e16a9f80ea;4194d33c-7e0c-4f19-bbd0-ba9343dd9e4d
+Stomachique;Trouble digestif;bc69e644-da45-4e3d-a70d-e0e16a9f80ea;3587e38c-bfb8-4fa2-a523-d71670e51b5a
+Stomachique;Dyspepsie;bc69e644-da45-4e3d-a70d-e0e16a9f80ea;a8c0ac5f-28ca-4038-a737-6c5e5ba1175a
+Stomachique;Digestion lente;bc69e644-da45-4e3d-a70d-e0e16a9f80ea;43bca1dd-d8d1-49c1-9de0-c74e3e12cbe5
+Sudorifique;Rhume;6eb455aa-9331-4bf1-a916-3108e16609fa;f5ef3094-c4c2-4a69-98bb-c6ba493f3d08
+Sudorifique;Grippe;6eb455aa-9331-4bf1-a916-3108e16609fa;2fb9cee3-34ca-4f64-af40-915497f40ecd
+Tonique vasculaire;Varices;1d25d3cc-2c6f-4b5f-b9a8-e4584790da05;306e4d39-f6ec-4446-843a-e6e913e7c557
+Vermifuge;Présence de vers;7484635a-ba3d-4eb4-835a-a3a7a712c9da;62b6fa39-fb4e-43f7-8e16-4575d685c615
+Vermifuge;Vermifuge;7484635a-ba3d-4eb4-835a-a3a7a712c9da;18651a26-93e3-4ad1-a9cc-6b425be1405a
+Vulnéraire;Cicatrisation;a1b70834-6c7c-4e31-9ec0-e649e434f17d;c36c2b30-054c-4f48-8782-05ad51f2fd9b
+Vulnéraire;Ulcères;a1b70834-6c7c-4e31-9ec0-e649e434f17d;3ba3fb87-8423-4ce4-95f0-d4e472a63850
+Vulnéraire;Ulcères variqueux;a1b70834-6c7c-4e31-9ec0-e649e434f17d;2849ad4a-226f-4a36-a9e0-fcc993f24215
+Antispasmodique;Spasmes digestifs;ee658558-b572-42a1-bee7-a51b2a5812bb;c85c19b8-b04d-4ed4-9ab7-cd4ccaa2a5a5

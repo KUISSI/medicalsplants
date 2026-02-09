@@ -1,5 +1,18 @@
 package com.medicalsplants.service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ForbiddenException;
@@ -18,18 +31,6 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -73,7 +74,7 @@ public class AuthService {
         }
 
         User user = new User(
-                java.util.UUID.randomUUID(),
+                UUID.randomUUID(),
                 request.getEmail().toLowerCase().trim(),
                 request.getPseudo().trim(),
                 request.getFirstname(),
@@ -82,15 +83,23 @@ public class AuthService {
                 null,
                 passwordEncoder.encode(request.getPassword()),
                 Role.USER,
-                UserStatus.ACTIVE,
+                UserStatus.PENDING, // Statut PENDING pour forcer la vérif email
                 false
         );
         String emailVerificationToken = UUID.randomUUID().toString();
         user.setEmailVerificationToken(emailVerificationToken);
 
-        userRepository.save(user);
-        mailService.sendEmailVerification(user.getEmail(), emailVerificationToken);
-        return MessageResponse.of("Registration successful.  Please check your email to verify your account.");
+        // 1. Save and flush
+        user = userRepository.saveAndFlush(user);
+
+        // 2. Reload from DB
+        user = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("User not found after save"));
+
+        // 3. Utilise cet user pour toute opération suivante
+        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+
+        return MessageResponse.of("Registration successful. Please check your email to verify your account.");
     }
 
     @Transactional

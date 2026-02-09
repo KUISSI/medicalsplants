@@ -1,132 +1,132 @@
-plant_title;property_title
-Aigremoine;Astringente
-Aigremoine;Vulnéraire
-Aigremoine;Emménagogue
-Aigremoine;Emolliente
-Aigremoine;Anti-inflammatoire
-Aigremoine;Anti-diabétique
-Ail;Hypotenseur
-Ail;Antifongique
-Ail;Vermifuge
-Aloe vera;Cicatrisant / Régénérant
-Angélique;Carminative
-Angélique;Cholagogue
-Angélique;Antispasmodique
-Angélique;Antilactée
-Angélique;Calmante
-Arbre à thé;Antifongique
-Ashwagandha;Adaptogène
-Aspérule odorante;Sédative
-Aspérule odorante;Hépatoprotecteur
-Astragale;Immunostimulant
-Aubépine;Calmante
-Aubépine;Adoucissant
-Aubépine;Anti-inflammatoire circulatoire
-Aubépine;Cardiotonique
-Aubépine;Astringente
-Aubépine;Tonique vasculaire
-Badiane (anis étoilé);Calmante
-Badiane (anis étoilé);Carminative
-Bardane;Antifongique
-Bardane;Antibactérienne
-Bardane (racines);Dépuratif
-Basilic;Antispasmodique
-Boldo;Cholagogue
-Boldo;Cholérétique
-Boldo;Hépatoprotecteur
-Bouillon blanc;Pectorale
-Bouillon blanc;Sédative
-Bouleau;Diurétique
-Bouleau;Dépuratif
-Bourrache;Régénérante
-Bourrache;Restructurante
-Bruyère;Bactéricide
-Bruyère;Antiseptique urinaire
-Bruyère;Antidiarrhéique
-Bruyère;Antiseptique
-Bruyère;Anti-inflammatoire
-Buis;Antiseptique
-Buis;Sédative
-Busserole;Antiseptique urinaire
-Busserole;Antidiarrhéique
-Busserole;Antiseptique
-Busserole;Anti-inflammatoire
-Calendula;Cicatrisant / Régénérant
-Camomille;Carminative
-Camomille;Antiseptique
-Camomille;Antinévralgique
-Camomille;Anti-inflammatoire
-Camomille;Stomachique
-Camomille;
-Camomille;Antispasmodique
-Camomille;Vulnéraire
-Camomille romaine;Analgésique
-Camomille romaine;Neurologique
-Cannelle;Stimulante
-Cannelle;Antalgique
-Cannelle;Stomachique
-Cannelle;Antibactérienne
-Cassis;Antiacide
-Cassis;Diurétique
-Cassis;Anti-inflammatoire
-Cassis;Antioxydant
-Centella asiatica;Cicatrisant / Régénérant
-Cerise;Diurétique
-Chiendent;Diurétique
-Chiendent;Antiseptique
-Clou de girofle;Analgésique
-Clou de girofle;Neurologique
-Consoude;Cicatrisant / Régénérant
-Consoude;Astringente
-Coquelicot;Sédative
-Coquelicot;Adoucissant
-Coquelicot;Antitussive
-Courge;Laxative
-Courge;Anti-inflammatoire
-Courge;Vermifuge
-Curcuma;Anti-inflammatoire
-Curcuma;Hépatoprotecteur
-Curcuma;Antioxydant
-Échinacée;Immunostimulant
-Échinacée;Antiviral
-Estragon;Carminative
-Estragon;Antiallergique
-Estragon;Antispasmodique
-Estragon;Stomachique
-Eucalyptus;Antiseptique
-Eucalyptus;Expectorant
-Eucalyptus;Anti-inflammatoire
-Eucalyptus;Antirhumatismale
-Eucalyptus;Antitussive
-Pissenlit;Hépatoprotecteur
-Pissenlit;Diurétique
-Pissenlit;Cholérétique
-Prêle;Reminéralisante
-Prêle;Antilithique
-Prêle;Antiseptique
-Prêle;Anti-inflammatoire
-Prêle;Antalgique
-Prêle;Astringente
-Romarin;Carminative
-Romarin;Cholagogue
-Romarin;Antispasmodique
-Romarin;Antioxydant
-Romarin;Antiseptique
-Romarin;Stomachique
-Sauge;Carminative
-Sauge;Antisudorale
-Sauge;Stomachique
-Sauge;Antiseptique
-Sauge;Adoucissant
-Sauge;Antitussive
-Saule blanc;Analgésique
-Saule blanc;Neurologique
-Sureau;Expectorant
-Sureau;Sudorifique
-Sureau;Antiviral
-Sureau;Antitussive
-Thé vert;Antioxydant
-Thym;Expectorant
-Tilleul;Sédative
-Tilleul;Sudorifique
-Valériane;Sédative
+plant_title;property_title;plant_id;porperty_id
+Aigremoine;Astringente;262d5354-45f1-4580-bad0-412600b5f441;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd
+Aigremoine;Vulnéraire;262d5354-45f1-4580-bad0-412600b5f441;a1b70834-6c7c-4e31-9ec0-e649e434f17d
+Aigremoine;Emménagogue;262d5354-45f1-4580-bad0-412600b5f441;808b1ead-367a-48d4-a6d3-10fb39b7acd0
+Aigremoine;Emolliente;262d5354-45f1-4580-bad0-412600b5f441;6dd925e3-8a32-4bb8-a4dc-efa00419ab46
+Aigremoine;Anti-inflammatoire;262d5354-45f1-4580-bad0-412600b5f441;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Aigremoine;Anti-diabétique;262d5354-45f1-4580-bad0-412600b5f441;72a00c82-1160-4e72-b8e0-b5d13fb2869b
+Ail;Hypotenseur;7d07c738-09ac-4fe8-80c6-461f7e614976;b551dee3-e7e2-4029-8d3e-ca2760c700b1
+Ail;Antifongique;7d07c738-09ac-4fe8-80c6-461f7e614976;f87951b9-402f-4f2d-92e7-2d8896a4e5e9
+Ail;Vermifuge;7d07c738-09ac-4fe8-80c6-461f7e614976;7484635a-ba3d-4eb4-835a-a3a7a712c9da
+Aloe vera;Cicatrisant / Régénérant;f025e488-a394-4f95-8404-c48969189288;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c
+Angélique;Carminative;8c8203c5-d93d-46ae-af83-e362bba9de14;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Angélique;Cholagogue;8c8203c5-d93d-46ae-af83-e362bba9de14;aeefdaf5-6a77-4752-ab11-92c3c60649e6
+Angélique;Antispasmodique;8c8203c5-d93d-46ae-af83-e362bba9de14;ee658558-b572-42a1-bee7-a51b2a5812bb
+Angélique;Antilactée;8c8203c5-d93d-46ae-af83-e362bba9de14;8a1546e9-bbc7-49a5-994b-d6707894c83f
+Angélique;Calmante;8c8203c5-d93d-46ae-af83-e362bba9de14;1990b8bf-1623-4ab3-a119-a9f989c19f7c
+Arbre à thé;Antifongique;fe8b9898-78e8-406d-8887-f8b8b90040d5;f87951b9-402f-4f2d-92e7-2d8896a4e5e9
+Ashwagandha;Adaptogène;b6fcded5-0f3d-42ca-bf5a-ca6433424801;d39f2df8-77ca-4860-85d1-b631cf8c3138
+Aspérule odorante;Sédative;09ca0aa5-aea2-4035-bfd7-a869ba2a9395;4de70bca-6a83-43ee-85c0-a0af1cef58e0
+Aspérule odorante;Hépatoprotecteur;09ca0aa5-aea2-4035-bfd7-a869ba2a9395;56a48288-e80e-4e1a-8812-a968adc84b89
+Astragale;Immunostimulant;0b46a574-8632-4c4a-be99-05730ce28c9a;ed68bdc1-76fe-4002-a764-f4cf5287c010
+Aubépine;Calmante;63faf9ed-9b91-4b79-893c-f924f3cbe45b;1990b8bf-1623-4ab3-a119-a9f989c19f7c
+Aubépine;Adoucissant;63faf9ed-9b91-4b79-893c-f924f3cbe45b;42efdb06-36e8-4151-8a3d-5bf78712c4f1
+Aubépine;Anti-inflammatoire circulatoire;63faf9ed-9b91-4b79-893c-f924f3cbe45b;8895c88b-cfab-48d0-abaa-e434fdbf19db
+Aubépine;Cardiotonique;63faf9ed-9b91-4b79-893c-f924f3cbe45b;c94eef5e-9832-41d6-bea7-02ab6961db5c
+Aubépine;Astringente;63faf9ed-9b91-4b79-893c-f924f3cbe45b;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd
+Aubépine;Tonique vasculaire;63faf9ed-9b91-4b79-893c-f924f3cbe45b;1d25d3cc-2c6f-4b5f-b9a8-e4584790da05
+Badiane (anis étoilé);Calmante;42fca17f-af90-41a5-a2b4-08036d79fcfc;1990b8bf-1623-4ab3-a119-a9f989c19f7c
+Badiane (anis étoilé);Carminative;42fca17f-af90-41a5-a2b4-08036d79fcfc;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Bardane;Antifongique;66570b1d-7235-4952-8356-f233f231d59f;f87951b9-402f-4f2d-92e7-2d8896a4e5e9
+Bardane;Antibactérienne;66570b1d-7235-4952-8356-f233f231d59f;a187dbb3-2182-41f1-9159-787930d68ab0
+Bardane (racines);Dépuratif;#N/A;#N/A
+Basilic;Antispasmodique;acd3a4a5-f8ef-4991-9504-828259f9c66c;ee658558-b572-42a1-bee7-a51b2a5812bb
+Boldo;Cholagogue;7e881abb-35b2-4205-976e-13885da6a333;aeefdaf5-6a77-4752-ab11-92c3c60649e6
+Boldo;Cholérétique;7e881abb-35b2-4205-976e-13885da6a333;eba3b828-d4c2-4118-9085-e14045430af9
+Boldo;Hépatoprotecteur;7e881abb-35b2-4205-976e-13885da6a333;56a48288-e80e-4e1a-8812-a968adc84b89
+Bouillon blanc;Pectorale;7da39b13-d3a5-47b2-b5a6-167f2161e65c;1c177133-89ec-4362-8c38-c3f82337e0eb
+Bouillon blanc;Sédative;7da39b13-d3a5-47b2-b5a6-167f2161e65c;4de70bca-6a83-43ee-85c0-a0af1cef58e0
+Bouleau;Diurétique;cbf06ad8-0e31-4f01-8bb0-9d04f459198e;aba22227-6dd6-4b8c-87af-48e8eae7c552
+Bouleau;Dépuratif;cbf06ad8-0e31-4f01-8bb0-9d04f459198e;#N/A
+Bourrache;Régénérante;56579909-6f4b-4f92-a47f-55dbc1b921b2;426ab145-fd6d-4d52-bac4-04a6cbb46bc0
+Bourrache;Restructurante;56579909-6f4b-4f92-a47f-55dbc1b921b2;1d2272e0-779a-4604-a7d1-f67024b4bf6a
+Bruyère;Bactéricide;7e69f5d5-ca8d-407a-bdd4-f71120a779df;6911a258-f583-4fea-bb2d-8e63f5cdd870
+Bruyère;Antiseptique urinaire;7e69f5d5-ca8d-407a-bdd4-f71120a779df;4eb2f358-c057-443a-a146-623894da8040
+Bruyère;Antidiarrhéique;7e69f5d5-ca8d-407a-bdd4-f71120a779df;582a7e84-6f09-4519-92ef-f74f9e1e7a75
+Bruyère;Antiseptique;7e69f5d5-ca8d-407a-bdd4-f71120a779df;42616908-8822-4f4a-997a-a2092a9c06c6
+Bruyère;Anti-inflammatoire;7e69f5d5-ca8d-407a-bdd4-f71120a779df;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Buis;Antiseptique;f1af1699-0246-44d1-824a-4606d1fba431;42616908-8822-4f4a-997a-a2092a9c06c6
+Buis;Sédative;f1af1699-0246-44d1-824a-4606d1fba431;4de70bca-6a83-43ee-85c0-a0af1cef58e0
+Busserole;Antiseptique urinaire;66a3dc1a-5047-4c02-851a-97b9ce320031;4eb2f358-c057-443a-a146-623894da8040
+Busserole;Antidiarrhéique;66a3dc1a-5047-4c02-851a-97b9ce320031;582a7e84-6f09-4519-92ef-f74f9e1e7a75
+Busserole;Antiseptique;66a3dc1a-5047-4c02-851a-97b9ce320031;42616908-8822-4f4a-997a-a2092a9c06c6
+Busserole;Anti-inflammatoire;66a3dc1a-5047-4c02-851a-97b9ce320031;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Calendula;Cicatrisant / Régénérant;ab79039a-1a9e-4f95-8955-a1766ef55426;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c
+Camomille;Carminative;f939bdf2-767e-42b2-98da-cb5bc542ff0d;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Camomille;Antiseptique;f939bdf2-767e-42b2-98da-cb5bc542ff0d;42616908-8822-4f4a-997a-a2092a9c06c6
+Camomille;Antinévralgique;f939bdf2-767e-42b2-98da-cb5bc542ff0d;6621d944-46d7-469b-b26c-f031c1fa7d56
+Camomille;Anti-inflammatoire;f939bdf2-767e-42b2-98da-cb5bc542ff0d;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Camomille;Stomachique;f939bdf2-767e-42b2-98da-cb5bc542ff0d;bc69e644-da45-4e3d-a70d-e0e16a9f80ea
+Camomille;;f939bdf2-767e-42b2-98da-cb5bc542ff0d;#N/A
+Camomille;Antispasmodique;f939bdf2-767e-42b2-98da-cb5bc542ff0d;ee658558-b572-42a1-bee7-a51b2a5812bb
+Camomille;Vulnéraire;f939bdf2-767e-42b2-98da-cb5bc542ff0d;a1b70834-6c7c-4e31-9ec0-e649e434f17d
+Camomille romaine;Analgésique;3d0fc302-6274-4eb2-b6d6-5252efb08021;ba30212b-03c2-41a7-a344-4f0e290347d0
+Camomille romaine;Neurologique;3d0fc302-6274-4eb2-b6d6-5252efb08021;849c0a81-b18a-4677-b5f5-ddf6ee3165b5
+Cannelle;Stimulante;2ec0f15c-5c64-443f-9617-61c5b0a56b7a;8c2b3f1a-9068-4e8f-b313-d7feee9b899d
+Cannelle;Antalgique;2ec0f15c-5c64-443f-9617-61c5b0a56b7a;a1aeb82d-34b7-473d-9d0c-60c037800e99
+Cannelle;Stomachique;2ec0f15c-5c64-443f-9617-61c5b0a56b7a;bc69e644-da45-4e3d-a70d-e0e16a9f80ea
+Cannelle;Antibactérienne;2ec0f15c-5c64-443f-9617-61c5b0a56b7a;a187dbb3-2182-41f1-9159-787930d68ab0
+Cassis;Antiacide;4e1e777d-b689-4f3f-935b-2a50e3921439;45f50d5c-6e57-4cc3-9ccb-1475bc5ac5da
+Cassis;Diurétique;4e1e777d-b689-4f3f-935b-2a50e3921439;aba22227-6dd6-4b8c-87af-48e8eae7c552
+Cassis;Anti-inflammatoire;4e1e777d-b689-4f3f-935b-2a50e3921439;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Cassis;Antioxydant;4e1e777d-b689-4f3f-935b-2a50e3921439;dea97559-1937-41c2-8490-f247e47e9fbd
+Centella asiatica;Cicatrisant / Régénérant;6f787c24-e220-4953-a1a8-2519e16cefa4;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c
+Cerise;Diurétique;192e11bf-412c-4114-a66b-9ae1c0d21b21;aba22227-6dd6-4b8c-87af-48e8eae7c552
+Chiendent;Diurétique;a672c0aa-7750-43cf-b43e-9de772865cce;aba22227-6dd6-4b8c-87af-48e8eae7c552
+Chiendent;Antiseptique;a672c0aa-7750-43cf-b43e-9de772865cce;42616908-8822-4f4a-997a-a2092a9c06c6
+Clou de girofle;Analgésique;0ea671c6-4d5b-47ec-87dc-8f0f123cf8a3;ba30212b-03c2-41a7-a344-4f0e290347d0
+Clou de girofle;Neurologique;0ea671c6-4d5b-47ec-87dc-8f0f123cf8a3;849c0a81-b18a-4677-b5f5-ddf6ee3165b5
+Consoude;Cicatrisant / Régénérant;8c78b11c-e6bd-406c-ada2-c83139979b18;7be4cd05-1c65-443d-b87d-77d9f9fb7e2c
+Consoude;Astringente;8c78b11c-e6bd-406c-ada2-c83139979b18;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd
+Coquelicot;Sédative;8f4653bb-e813-48bf-b10c-f2445ffa3242;4de70bca-6a83-43ee-85c0-a0af1cef58e0
+Coquelicot;Adoucissant;8f4653bb-e813-48bf-b10c-f2445ffa3242;42efdb06-36e8-4151-8a3d-5bf78712c4f1
+Coquelicot;Antitussive;8f4653bb-e813-48bf-b10c-f2445ffa3242;e1dbc4c8-5756-4a45-9538-4232bb48e758
+Courge;Laxative;59eff040-eb4a-4bc1-849f-e11e9c4eb691;4422b05f-cd22-4d7e-82d7-f9cfc2f8657e
+Courge;Anti-inflammatoire;59eff040-eb4a-4bc1-849f-e11e9c4eb691;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Courge;Vermifuge;59eff040-eb4a-4bc1-849f-e11e9c4eb691;7484635a-ba3d-4eb4-835a-a3a7a712c9da
+Curcuma;Anti-inflammatoire;8dbc20d4-d958-4ac2-a627-599c8058c127;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Curcuma;Hépatoprotecteur;8dbc20d4-d958-4ac2-a627-599c8058c127;56a48288-e80e-4e1a-8812-a968adc84b89
+Curcuma;Antioxydant;8dbc20d4-d958-4ac2-a627-599c8058c127;dea97559-1937-41c2-8490-f247e47e9fbd
+Échinacée;Immunostimulant;#N/A;ed68bdc1-76fe-4002-a764-f4cf5287c010
+Échinacée;Antiviral;#N/A;6c50dee3-0a17-4a4c-9e31-573154ca6982
+Estragon;Carminative;704d0214-7067-4d4c-8a50-0164f33af9ca;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Estragon;Antiallergique;704d0214-7067-4d4c-8a50-0164f33af9ca;4322efb6-a226-43d1-98e5-fba4c337a576
+Estragon;Antispasmodique;704d0214-7067-4d4c-8a50-0164f33af9ca;ee658558-b572-42a1-bee7-a51b2a5812bb
+Estragon;Stomachique;704d0214-7067-4d4c-8a50-0164f33af9ca;bc69e644-da45-4e3d-a70d-e0e16a9f80ea
+Eucalyptus;Antiseptique;795d35a5-5672-40aa-910c-b8f9ae4da15a;42616908-8822-4f4a-997a-a2092a9c06c6
+Eucalyptus;Expectorant;795d35a5-5672-40aa-910c-b8f9ae4da15a;9ec4f194-b670-4932-89f1-99b2f5b809ae
+Eucalyptus;Anti-inflammatoire;795d35a5-5672-40aa-910c-b8f9ae4da15a;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Eucalyptus;Antirhumatismale;795d35a5-5672-40aa-910c-b8f9ae4da15a;771c2e5b-778d-4f5d-9015-115b84e57162
+Eucalyptus;Antitussive;795d35a5-5672-40aa-910c-b8f9ae4da15a;e1dbc4c8-5756-4a45-9538-4232bb48e758
+Pissenlit;Hépatoprotecteur;fa3e741a-19ca-4999-a819-7705b220e78a;56a48288-e80e-4e1a-8812-a968adc84b89
+Pissenlit;Diurétique;fa3e741a-19ca-4999-a819-7705b220e78a;aba22227-6dd6-4b8c-87af-48e8eae7c552
+Pissenlit;Cholérétique;fa3e741a-19ca-4999-a819-7705b220e78a;eba3b828-d4c2-4118-9085-e14045430af9
+Prêle;Reminéralisante;5bd2e811-d6de-4671-9210-657c2cb85932;2b292759-64fa-4eb2-a89f-62a878bfee3b
+Prêle;Antilithique;5bd2e811-d6de-4671-9210-657c2cb85932;13731181-f223-46c1-ab5a-5c55900e58ed
+Prêle;Antiseptique;5bd2e811-d6de-4671-9210-657c2cb85932;42616908-8822-4f4a-997a-a2092a9c06c6
+Prêle;Anti-inflammatoire;5bd2e811-d6de-4671-9210-657c2cb85932;5e1d3a96-9408-4887-9f9a-783c3f21be4e
+Prêle;Antalgique;5bd2e811-d6de-4671-9210-657c2cb85932;a1aeb82d-34b7-473d-9d0c-60c037800e99
+Prêle;Astringente;5bd2e811-d6de-4671-9210-657c2cb85932;2ffd1539-aeb0-4d45-ae0a-b9ce1db684cd
+Romarin;Carminative;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Romarin;Cholagogue;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;aeefdaf5-6a77-4752-ab11-92c3c60649e6
+Romarin;Antispasmodique;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;ee658558-b572-42a1-bee7-a51b2a5812bb
+Romarin;Antioxydant;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;dea97559-1937-41c2-8490-f247e47e9fbd
+Romarin;Antiseptique;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;42616908-8822-4f4a-997a-a2092a9c06c6
+Romarin;Stomachique;3b4fd3ad-913b-466d-b7d2-79c1ad3565e1;bc69e644-da45-4e3d-a70d-e0e16a9f80ea
+Sauge;Carminative;b7612fb2-5267-43ef-9157-76cc43ff29eb;e7402868-41ab-4630-98fc-2fe24cd1cbd7
+Sauge;Antisudorale;b7612fb2-5267-43ef-9157-76cc43ff29eb;35bd6176-8aa3-4b61-9ec2-9bdf0e7412d7
+Sauge;Stomachique;b7612fb2-5267-43ef-9157-76cc43ff29eb;bc69e644-da45-4e3d-a70d-e0e16a9f80ea
+Sauge;Antiseptique;b7612fb2-5267-43ef-9157-76cc43ff29eb;42616908-8822-4f4a-997a-a2092a9c06c6
+Sauge;Adoucissant;b7612fb2-5267-43ef-9157-76cc43ff29eb;42efdb06-36e8-4151-8a3d-5bf78712c4f1
+Sauge;Antitussive;b7612fb2-5267-43ef-9157-76cc43ff29eb;e1dbc4c8-5756-4a45-9538-4232bb48e758
+Saule blanc;Analgésique;8a697bf3-0a93-404e-993f-c876908bf185;ba30212b-03c2-41a7-a344-4f0e290347d0
+Saule blanc;Neurologique;8a697bf3-0a93-404e-993f-c876908bf185;849c0a81-b18a-4677-b5f5-ddf6ee3165b5
+Sureau;Expectorant;5d0ae18b-d1b5-4e2d-baed-37a5097f76ee;9ec4f194-b670-4932-89f1-99b2f5b809ae
+Sureau;Sudorifique;5d0ae18b-d1b5-4e2d-baed-37a5097f76ee;6eb455aa-9331-4bf1-a916-3108e16609fa
+Sureau;Antiviral;5d0ae18b-d1b5-4e2d-baed-37a5097f76ee;6c50dee3-0a17-4a4c-9e31-573154ca6982
+Sureau;Antitussive;5d0ae18b-d1b5-4e2d-baed-37a5097f76ee;e1dbc4c8-5756-4a45-9538-4232bb48e758
+Thé vert;Antioxydant;aa11b194-8e2b-4602-8b9f-a88e018bbf23;dea97559-1937-41c2-8490-f247e47e9fbd
+Thym;Expectorant;426098d6-7b4f-493f-a8ed-af6d96433495;9ec4f194-b670-4932-89f1-99b2f5b809ae
+Tilleul;Sédative;301ba23a-b1b2-469f-bcde-3e66999c5818;4de70bca-6a83-43ee-85c0-a0af1cef58e0
+Tilleul;Sudorifique;301ba23a-b1b2-469f-bcde-3e66999c5818;6eb455aa-9331-4bf1-a916-3108e16609fa
+Valériane;Sédative;a467ce46-b2c1-4704-826b-ee9aaad44ac2;4de70bca-6a83-43ee-85c0-a0af1cef58e0
