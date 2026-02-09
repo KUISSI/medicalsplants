@@ -1,11 +1,21 @@
 package com.medicalsplants.model.entity;
 
-import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "mp_review")
@@ -29,7 +39,7 @@ public class Review extends BaseEntity {
 
     // Avis parent (pour les réponses en arborescence)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_review_id")
     private Review parent;
 
     // Réponses à cet avis
@@ -49,10 +59,9 @@ public class Review extends BaseEntity {
     public Review() {
     }
 
-    public Review(UUID id, String content, Short rating, User author, Recipe recipe) {
+    public Review(UUID id, String content, User author, Recipe recipe) {
         this.id = id;
         this.content = content;
-        this.rating = rating;
         this.author = author;
         this.recipe = recipe;
     }

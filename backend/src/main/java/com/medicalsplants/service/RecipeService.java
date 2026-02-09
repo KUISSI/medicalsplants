@@ -11,7 +11,6 @@ import com.medicalsplants.model.entity.User;
 import com.medicalsplants.model.enums.RecipeStatus;
 import com.medicalsplants.model.enums.RecipeType;
 import com.medicalsplants.model.mapper.RecipeMapper;
-import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.RecipeRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
@@ -20,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,18 +27,20 @@ import java.util.UUID;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
-    private final PlantRepository plantRepository;
     private final UserRepository userRepository;
     private final RecipeMapper recipeMapper;
+    private final PlantService plantService;
 
-    public RecipeService(RecipeRepository recipeRepository,
-            PlantRepository plantRepository,
+    public RecipeService(
+            RecipeRepository recipeRepository,
             UserRepository userRepository,
-            RecipeMapper recipeMapper) {
+            RecipeMapper recipeMapper,
+            PlantService plantService
+    ) {
         this.recipeRepository = recipeRepository;
-        this.plantRepository = plantRepository;
         this.userRepository = userRepository;
         this.recipeMapper = recipeMapper;
+        this.plantService = plantService;
     }
 
     @Transactional(readOnly = true)
@@ -75,7 +74,7 @@ public class RecipeService {
             }
         }
 
-        if (recipe.getPremium() && currentUser != null && !currentUser.isPremium()) {
+        if (recipe.isPremium() && currentUser != null && !currentUser.isPremium()) {
             throw new ForbiddenException("This is a premium recipe. Please upgrade your account.");
         }
 
@@ -123,15 +122,9 @@ public class RecipeService {
         recipe.setStatus(RecipeStatus.DRAFT);
         recipe.setAuthor(author);
 
-        // Associer les plantes
+        // Association des plantes (DRY, via PlantService)
         if (request.getPlantIds() != null && !request.getPlantIds().isEmpty()) {
-            Set<Plant> plants = new HashSet<>();
-            for (String plantId : request.getPlantIds()) {
-                UUID plantUuid = UUID.fromString(plantId);
-                Plant plant = plantRepository.findById(plantUuid)
-                        .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
-                plants.add(plant);
-            }
+            Set<Plant> plants = plantService.resolvePlants(request.getPlantIds());
             recipe.setPlants(plants);
         }
 
@@ -180,15 +173,9 @@ public class RecipeService {
             recipe.setPremium(request.getPremium());
         }
 
-        // Mettre à jour les plantes si fournis
+        // Mise à jour des plantes (DRY, via PlantService)
         if (request.getPlantIds() != null) {
-            Set<Plant> plants = new HashSet<>();
-            for (String plantId : request.getPlantIds()) {
-                UUID plantUuid = UUID.fromString(plantId);
-                Plant plant = plantRepository.findById(plantUuid)
-                        .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
-                plants.add(plant);
-            }
+            Set<Plant> plants = plantService.resolvePlants(request.getPlantIds());
             recipe.setPlants(plants);
         }
 

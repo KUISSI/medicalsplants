@@ -8,13 +8,13 @@ public class ReviewResponse {
 
     private UUID id;
     private String content;
-    private Short rating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserResponse author;
     private UUID recipeId;
-    private UUID parentId;
+    private UUID parentReviewId;
     private List<ReviewResponse> replies;
+    private Short rating; // Ajout du champ rating
 
     public ReviewResponse() {
     }
@@ -33,14 +33,6 @@ public class ReviewResponse {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Short getRating() {
-        return rating;
-    }
-
-    public void setRating(Short rating) {
-        this.rating = rating;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -75,12 +67,12 @@ public class ReviewResponse {
         this.recipeId = recipeId;
     }
 
-    public UUID getParentId() {
-        return parentId;
+    public UUID getParentReviewId() {
+        return parentReviewId;
     }
 
-    public void setParentId(UUID parentId) {
-        this.parentId = parentId;
+    public void setParentReviewId(UUID parentReviewId) {
+        this.parentReviewId = parentReviewId;
     }
 
     public List<ReviewResponse> getReplies() {
@@ -89,5 +81,13 @@ public class ReviewResponse {
 
     public void setReplies(List<ReviewResponse> replies) {
         this.replies = replies;
+    }
+
+    public Short getRating() {
+        return rating;
+    }
+
+    public void setRating(Short rating) {
+        this.rating = rating;
     }
 }

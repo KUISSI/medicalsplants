@@ -106,14 +106,6 @@ public enum recipeStatus {
 }
 '@
 
-Create-JavaFile "$baseDir\model\enums\InteractionType.java" @'
-package com.medicalsplants.model.enums;
-
-public enum InteractionType {
-    EMOJI,
-    GIFT
-}
-'@
 
 # ============================================================
 # UTIL

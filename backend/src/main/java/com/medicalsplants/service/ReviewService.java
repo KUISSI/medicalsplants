@@ -1,5 +1,14 @@
 package com.medicalsplants.service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.dto.request.ReviewRequest;
@@ -12,14 +21,6 @@ import com.medicalsplants.repository.RecipeRepository;
 import com.medicalsplants.repository.ReviewRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ReviewService {
@@ -92,10 +93,9 @@ public class ReviewService {
         review.setRecipe(recipe);
         review.setAuthor(author);
 
-        if (request.getParentId() != null && !request.getParentId().isBlank()) {
-            UUID parentUuid = UUID.fromString(request.getParentId());
-            Review parent = reviewRepository.findByIdAndNotDeleted(parentUuid)
-                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", request.getParentId()));
+        if (request.getParentReviewId() != null) {
+            UUID parentUuid = request.getParentReviewId();
+            Review parent = reviewRepository.findById(parentUuid).orElse(null);
             review.setParent(parent);
         }
 

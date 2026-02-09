@@ -1,9 +1,11 @@
 package com.medicalsplants.model.dto.request;
 
+import java.util.Set;
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.Set;
 
 public class RecipeRequest {
 
@@ -32,7 +34,9 @@ public class RecipeRequest {
 
     private Boolean premium;
 
-    private Set<String> plantIds;
+    private String status;
+
+    private Set<UUID> plantIds;
 
     public RecipeRequest() {
     }
@@ -118,11 +122,19 @@ public class RecipeRequest {
         this.premium = premium;
     }
 
-    public Set<String> getPlantIds() {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Set<UUID> getPlantIds() {
         return plantIds;
     }
 
-    public void setPlantIds(Set<String> plantIds) {
+    public void setPlantIds(Set<UUID> plantIds) {
         this.plantIds = plantIds;
     }
 }

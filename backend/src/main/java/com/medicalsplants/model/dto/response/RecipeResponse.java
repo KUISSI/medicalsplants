@@ -25,6 +25,7 @@ public class RecipeResponse {
     private List<ReviewResponse> reviews;
     private Long reviewCount;
     private Double averageRating;
+    private LocalDateTime publishedAt;
 
     public RecipeResponse() {
     }
@@ -179,5 +180,13 @@ public class RecipeResponse {
 
     public void setAverageRating(Double averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(LocalDateTime publishedAt) {
+        this.publishedAt = publishedAt;
     }
 }

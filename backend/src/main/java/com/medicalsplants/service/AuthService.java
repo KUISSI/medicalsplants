@@ -89,14 +89,16 @@ public class AuthService {
         String emailVerificationToken = UUID.randomUUID().toString();
         user.setEmailVerificationToken(emailVerificationToken);
 
-        // 1. Save and flush
+        // PATCH: Save and flush, puis log existence
         user = userRepository.saveAndFlush(user);
+        System.out.println("User saved with ID: " + user.getId());
+        boolean exists = userRepository.existsById(user.getId());
+        System.out.println("User exists in DB: " + exists);
 
-        // 2. Reload from DB
+        // Reload from DB
         user = userRepository.findById(user.getId())
                 .orElseThrow(() -> new IllegalStateException("User not found after save"));
 
-        // 3. Utilise cet user pour toute opération suivante
         mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
 
         return MessageResponse.of("Registration successful. Please check your email to verify your account.");

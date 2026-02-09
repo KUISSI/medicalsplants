@@ -6,7 +6,7 @@ export interface Review {
   rating?: number;
   author?: User;
   recipeId?: string;
-  parentId?: string;
+  parentReviewId?: string;
   replies?: Review[];
   createdAt: string;
   updatedAt?: string;
@@ -16,5 +16,5 @@ export interface CreateReviewRequest {
   recipeId: string;
   content: string;
   rating?: number;
-  parentId?: string;
+  parentReviewId?: string;
 }

@@ -2,7 +2,6 @@ package com.medicalsplants.service;
 
 import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
-import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.model.dto.request.PlantRequest;
 import com.medicalsplants.model.dto.response.PlantResponse;
 import com.medicalsplants.model.entity.Plant;
@@ -15,10 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PlantService {
@@ -27,12 +24,31 @@ public class PlantService {
     private final PropertyRepository propertyRepository;
     private final PlantMapper plantMapper;
 
-    public PlantService(PlantRepository plantRepository,
+    public PlantService(
+            PlantRepository plantRepository,
             PropertyRepository propertyRepository,
-            PlantMapper plantMapper) {
+            PlantMapper plantMapper
+    ) {
         this.plantRepository = plantRepository;
         this.propertyRepository = propertyRepository;
         this.plantMapper = plantMapper;
+    }
+
+    /**
+     * Résout une liste d'UUID en entités Plant, ou lève une
+     * ResourceNotFoundException si un ou plusieurs manquent.
+     */
+    public Set<Plant> resolvePlants(Set<UUID> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptySet();
+        }
+        List<Plant> found = plantRepository.findAllById(ids);
+        if (found.size() != ids.size()) {
+            Set<UUID> foundIds = found.stream().map(Plant::getId).collect(Collectors.toSet());
+            Set<UUID> missing = ids.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toSet());
+            throw new ResourceNotFoundException("Plant", "ids", missing.toString());
+        }
+        return new HashSet<>(found);
     }
 
     @Transactional(readOnly = true)

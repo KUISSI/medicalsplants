@@ -1,15 +1,16 @@
 package com.medicalsplants.model.entity;
 
-import com.medicalsplants.model.enums.RecipeStatus;
-import com.medicalsplants.model.enums.RecipeType;
-import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import com.medicalsplants.model.enums.RecipeStatus;
+import com.medicalsplants.model.enums.RecipeType;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "mp_recipe")
@@ -58,12 +59,10 @@ public class Recipe extends BaseEntity {
     @Column(name = "published_at")
     private Instant publishedAt;
 
-    // Relation avec User (auteur)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    // Relations Many-to-Many avec Plant
     @ManyToMany
     @JoinTable(
             name = "mp_recipe_plant",
@@ -72,15 +71,9 @@ public class Recipe extends BaseEntity {
     )
     private Set<Plant> plants = new HashSet<>();
 
-    // Relations One-to-Many avec Review
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
-    // Relations One-to-Many avec Interaction
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<Interaction> interactions = new ArrayList<>();
-
-    // Constructors
     public Recipe() {
     }
 
@@ -173,12 +166,14 @@ public class Recipe extends BaseEntity {
         this.instructions = instructions;
     }
 
-    public Boolean getPremium() {
-        return premium;
+    // DRY: Getter retourne toujours un primitif
+    public boolean isPremium() {
+        return Boolean.TRUE.equals(premium);
     }
 
+    // Setter force une valeur non nulle
     public void setPremium(Boolean premium) {
-        this.premium = premium;
+        this.premium = premium != null ? premium : false;
     }
 
     public RecipeStatus getStatus() {
@@ -213,14 +208,6 @@ public class Recipe extends BaseEntity {
         this.reviews = reviews;
     }
 
-    public List<Interaction> getInteractions() {
-        return interactions;
-    }
-
-    public void setInteractions(List<Interaction> interactions) {
-        this.interactions = interactions;
-    }
-
     public Instant getPublishedAt() {
         return publishedAt;
     }
@@ -249,4 +236,20 @@ public class Recipe extends BaseEntity {
         this.status = RecipeStatus.ARCHIVED;
     }
 
+    @Transient
+    public Long getReviewCount() {
+        return reviews != null ? (long) reviews.size() : 0L;
+    }
+
+    @Transient
+    public Double getAverageRating() {
+        if (reviews == null || reviews.isEmpty()) {
+            return null;
+        }
+        return reviews.stream()
+                .filter(r -> r.getRating() != null)
+                .mapToInt(r -> r.getRating() != null ? r.getRating() : 0)
+                .average()
+                .orElse(0.0);
+    }
 }
