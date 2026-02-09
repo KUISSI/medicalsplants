@@ -17,12 +17,12 @@ public class RecipeRequest {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private Short preparationTimeMinutes;
+    private String preparationTime;
 
     @Size(max = 20, message = "Difficulty must be less than 20 characters")
     private String difficulty;
 
-    private Short servings;
+    private Integer servings;
 
     private String ingredients;
 
@@ -30,7 +30,7 @@ public class RecipeRequest {
 
     private String imageUrl;
 
-    private Boolean isPremium;
+    private Boolean premium;
 
     private Set<String> plantIds;
 
@@ -62,12 +62,12 @@ public class RecipeRequest {
         this.description = description;
     }
 
-    public Short getPreparationTimeMinutes() {
-        return preparationTimeMinutes;
+    public String getPreparationTime() {
+        return preparationTime;
     }
 
-    public void setPreparationTimeMinutes(Short preparationTimeMinutes) {
-        this.preparationTimeMinutes = preparationTimeMinutes;
+    public void setPreparationTime(String preparationTime) {
+        this.preparationTime = preparationTime;
     }
 
     public String getDifficulty() {
@@ -78,11 +78,11 @@ public class RecipeRequest {
         this.difficulty = difficulty;
     }
 
-    public Short getServings() {
+    public Integer getServings() {
         return servings;
     }
 
-    public void setServings(Short servings) {
+    public void setServings(Integer servings) {
         this.servings = servings;
     }
 
@@ -110,12 +110,12 @@ public class RecipeRequest {
         this.imageUrl = imageUrl;
     }
 
-    public Boolean getIsPremium() {
-        return isPremium;
+    public Boolean getPremium() {
+        return premium;
     }
 
-    public void setIsPremium(Boolean isPremium) {
-        this.isPremium = isPremium;
+    public void setPremium(Boolean premium) {
+        this.premium = premium;
     }
 
     public Set<String> getPlantIds() {

@@ -1,4 +1,4 @@
-plant;property
+plant_title;property_title
 Aigremoine;Astringente
 Aigremoine;Vulnéraire
 Aigremoine;Emménagogue
@@ -8,17 +8,17 @@ Aigremoine;Anti-diabétique
 Ail;Hypotenseur
 Ail;Antifongique
 Ail;Vermifuge
-Aloe vera;Cicatrisant / Regénérant
+Aloe vera;Cicatrisant / Régénérant
 Angélique;Carminative
 Angélique;Cholagogue
 Angélique;Antispasmodique
-Angélique;Antilaiteuse
+Angélique;Antilactée
 Angélique;Calmante
 Arbre à thé;Antifongique
 Ashwagandha;Adaptogène
 Aspérule odorante;Sédative
-Aspérule odorante;Hépatoprotectrice
-Astragale;Immunostymulant
+Aspérule odorante;Hépatoprotecteur
+Astragale;Immunostimulant
 Aubépine;Calmante
 Aubépine;Adoucissant
 Aubépine;Anti-inflammatoire circulatoire
@@ -33,14 +33,14 @@ Bardane (racines);Dépuratif
 Basilic;Antispasmodique
 Boldo;Cholagogue
 Boldo;Cholérétique
-Boldo;Hépatoprotectrice
+Boldo;Hépatoprotecteur
 Bouillon blanc;Pectorale
 Bouillon blanc;Sédative
 Bouleau;Diurétique
 Bouleau;Dépuratif
 Bourrache;Régénérante
 Bourrache;Restructurante
-Bruyère;Bactricide
+Bruyère;Bactéricide
 Bruyère;Antiseptique urinaire
 Bruyère;Antidiarrhéique
 Bruyère;Antiseptique
@@ -51,7 +51,7 @@ Busserole;Antiseptique urinaire
 Busserole;Antidiarrhéique
 Busserole;Antiseptique
 Busserole;Anti-inflammatoire
-Calendula;Cicatrisant / Regénérant
+Calendula;Cicatrisant / Régénérant
 Camomille;Carminative
 Camomille;Antiseptique
 Camomille;Antinévralgique
@@ -70,13 +70,13 @@ Cassis;Antiacide
 Cassis;Diurétique
 Cassis;Anti-inflammatoire
 Cassis;Antioxydant
-Centella asiatica;Cicatrisant / Regénérant
+Centella asiatica;Cicatrisant / Régénérant
 Cerise;Diurétique
 Chiendent;Diurétique
 Chiendent;Antiseptique
 Clou de girofle;Analgésique
 Clou de girofle;Neurologique
-Consoude;Cicatrisant / Regénérant
+Consoude;Cicatrisant / Régénérant
 Consoude;Astringente
 Coquelicot;Sédative
 Coquelicot;Adoucissant
@@ -87,7 +87,7 @@ Courge;Vermifuge
 Curcuma;Anti-inflammatoire
 Curcuma;Hépatoprotecteur
 Curcuma;Antioxydant
-Échinacée;Immunostymulant
+Échinacée;Immunostimulant
 Échinacée;Antiviral
 Estragon;Carminative
 Estragon;Antiallergique

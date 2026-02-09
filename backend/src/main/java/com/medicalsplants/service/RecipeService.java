@@ -75,7 +75,7 @@ public class RecipeService {
             }
         }
 
-        if (recipe.getIsPremium() && currentUser != null && !currentUser.isPremium()) {
+        if (recipe.getPremium() && currentUser != null && !currentUser.isPremium()) {
             throw new ForbiddenException("This is a premium recipe. Please upgrade your account.");
         }
 
@@ -114,12 +114,12 @@ public class RecipeService {
         recipe.setTitle(request.getTitle());
         recipe.setType(RecipeType.valueOf(request.getType()));
         recipe.setDescription(request.getDescription());
-        recipe.setPreparationTimeMinutes(request.getPreparationTimeMinutes());
+        recipe.setPreparationTime(request.getPreparationTime());
         recipe.setDifficulty(request.getDifficulty());
         recipe.setServings(request.getServings());
         recipe.setIngredients(request.getIngredients());
         recipe.setInstructions(request.getInstructions());
-        recipe.setIsPremium(request.getIsPremium() != null ? request.getIsPremium() : false);
+        recipe.setPremium(request.getPremium() != null ? request.getPremium() : false);
         recipe.setStatus(RecipeStatus.DRAFT);
         recipe.setAuthor(author);
 
@@ -161,8 +161,8 @@ public class RecipeService {
         if (request.getDescription() != null) {
             recipe.setDescription(request.getDescription());
         }
-        if (request.getPreparationTimeMinutes() != null) {
-            recipe.setPreparationTimeMinutes(request.getPreparationTimeMinutes());
+        if (request.getPreparationTime() != null) {
+            recipe.setPreparationTime(request.getPreparationTime());
         }
         if (request.getDifficulty() != null) {
             recipe.setDifficulty(request.getDifficulty());
@@ -176,8 +176,8 @@ public class RecipeService {
         if (request.getInstructions() != null) {
             recipe.setInstructions(request.getInstructions());
         }
-        if (request.getIsPremium() != null) {
-            recipe.setIsPremium(request.getIsPremium());
+        if (request.getPremium() != null) {
+            recipe.setPremium(request.getPremium());
         }
 
         // Mettre à jour les plantes si fournis
@@ -227,8 +227,7 @@ public class RecipeService {
             throw new BadRequestException("Only pending recipes can be approved");
         }
 
-        recipe.setStatus(RecipeStatus.PUBLISHED);
-        recipe.setPublishedAt(Instant.now());
+        recipe.publish();
         Recipe saved = recipeRepository.save(recipe);
         return recipeMapper.toDto(saved);
     }

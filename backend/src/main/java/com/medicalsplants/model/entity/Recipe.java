@@ -27,19 +27,20 @@ public class Recipe extends BaseEntity {
     @Column(nullable = false, length = 20)
     private RecipeType type;
 
+    @Column(name = "servings")
+    private Integer servings;
+
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "preparation_time_minutes")
-    private Short preparationTimeMinutes;
+    @Column(name = "preparation_time")
+    private String preparationTime;
 
     @Column(length = 20)
     private String difficulty;
-
-    private Short servings;
 
     @Column(columnDefinition = "JSONB")
     private String ingredients;
@@ -48,7 +49,7 @@ public class Recipe extends BaseEntity {
     private String instructions;
 
     @Column(name = "is_premium", nullable = false)
-    private Boolean isPremium = false;
+    private Boolean premium = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -116,6 +117,14 @@ public class Recipe extends BaseEntity {
         this.type = type;
     }
 
+    public Integer getServings() {
+        return servings;
+    }
+
+    public void setServings(Integer servings) {
+        this.servings = servings;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -132,12 +141,12 @@ public class Recipe extends BaseEntity {
         this.description = description;
     }
 
-    public Short getPreparationTimeMinutes() {
-        return preparationTimeMinutes;
+    public String getPreparationTime() {
+        return preparationTime;
     }
 
-    public void setPreparationTimeMinutes(Short preparationTimeMinutes) {
-        this.preparationTimeMinutes = preparationTimeMinutes;
+    public void setPreparationTime(String preparationTime) {
+        this.preparationTime = preparationTime;
     }
 
     public String getDifficulty() {
@@ -146,14 +155,6 @@ public class Recipe extends BaseEntity {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
-    }
-
-    public Short getServings() {
-        return servings;
-    }
-
-    public void setServings(Short servings) {
-        this.servings = servings;
     }
 
     public String getIngredients() {
@@ -172,12 +173,12 @@ public class Recipe extends BaseEntity {
         this.instructions = instructions;
     }
 
-    public Boolean getIsPremium() {
-        return isPremium;
+    public Boolean getPremium() {
+        return premium;
     }
 
-    public void setIsPremium(Boolean isPremium) {
-        this.isPremium = isPremium;
+    public void setPremium(Boolean premium) {
+        this.premium = premium;
     }
 
     public RecipeStatus getStatus() {
@@ -186,14 +187,6 @@ public class Recipe extends BaseEntity {
 
     public void setStatus(RecipeStatus status) {
         this.status = status;
-    }
-
-    public Instant getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(Instant publishedAt) {
-        this.publishedAt = publishedAt;
     }
 
     public User getAuthor() {
@@ -228,6 +221,14 @@ public class Recipe extends BaseEntity {
         this.interactions = interactions;
     }
 
+    public Instant getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(Instant publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
     // Utility methods
     public void addPlant(Plant plant) {
         this.plants.add(plant);
@@ -248,7 +249,4 @@ public class Recipe extends BaseEntity {
         this.status = RecipeStatus.ARCHIVED;
     }
 
-    public boolean isPublished() {
-        return this.status == RecipeStatus.PUBLISHED;
-    }
 }

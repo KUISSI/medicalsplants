@@ -1,1 +1,1 @@
-content;rating;author_id;recipe_id;parent_id;created_at;updated_at;deleted_at
+content;author_id;recipe_id;parent_review_id;created_at;updated_at;deleted_at

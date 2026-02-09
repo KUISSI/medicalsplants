@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS mp_recipe (
     description TEXT,
     image_url TEXT,
     type VARCHAR(20) NOT NULL,
-    preparation_time_minutes SMALLINT,
+    preparation_time SMALLINT,
     difficulty SMALLINT,
     servings SMALLINT DEFAULT 1,
     ingredients JSONB,

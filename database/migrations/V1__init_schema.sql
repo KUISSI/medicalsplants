@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS mp_recipe (
     title VARCHAR(200) NOT NULL,
     type VARCHAR(20) NOT NULL CHECK (type IN ('HOT_DRINK', 'COLD_DRINK', 'DISH', 'LOTION', 'OTHER')),
     description TEXT NOT NULL,
-    preparation_time_minutes SMALLINT,
+    preparation_time SMALLINT,
     difficulty VARCHAR(20) CHECK (difficulty IN ('Easy', 'Medium', 'Hard')),
     servings SMALLINT,
     ingredients JSONB,

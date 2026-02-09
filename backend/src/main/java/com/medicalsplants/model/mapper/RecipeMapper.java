@@ -13,8 +13,8 @@ public interface RecipeMapper {
     @Mapping(target = "reviews", source = "reviews")
     @Mapping(target = "updatedAt", source = "updatedAt", qualifiedByName = "instantToLocalDateTime")
     @Mapping(target = "createdAt", source = "createdAt", qualifiedByName = "instantToLocalDateTime")
-    @Mapping(target = "publishedAt", source = "publishedAt", qualifiedByName = "instantToLocalDateTime")
-    @Mapping(target = "premium", source = "isPremium")
+    @Mapping(target = "premium", source = "premium")
+
     @Mapping(target = "image", source = "imageUrl")
     @Mapping(target = "reviewCount", ignore = true)
     @Mapping(target = "averageRating", ignore = true)

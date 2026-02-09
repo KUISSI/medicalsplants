@@ -11,14 +11,13 @@ public class RecipeResponse {
     private String type;
     private String image;
     private String description;
-    private Short preparationTimeMinutes;
+    private String preparationTime;
     private String difficulty;
-    private Short servings;
+    private Integer servings;
     private String ingredients;
     private String instructions;
-    private boolean isPremium;
+    private boolean premium;
     private String status;
-    private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserResponse author;
@@ -70,12 +69,12 @@ public class RecipeResponse {
         this.description = description;
     }
 
-    public Short getPreparationTimeMinutes() {
-        return preparationTimeMinutes;
+    public String getPreparationTime() {
+        return preparationTime;
     }
 
-    public void setPreparationTimeMinutes(Short preparationTimeMinutes) {
-        this.preparationTimeMinutes = preparationTimeMinutes;
+    public void setPreparationTime(String preparationTime) {
+        this.preparationTime = preparationTime;
     }
 
     public String getDifficulty() {
@@ -86,11 +85,11 @@ public class RecipeResponse {
         this.difficulty = difficulty;
     }
 
-    public Short getServings() {
+    public Integer getServings() {
         return servings;
     }
 
-    public void setServings(Short servings) {
+    public void setServings(Integer servings) {
         this.servings = servings;
     }
 
@@ -111,11 +110,11 @@ public class RecipeResponse {
     }
 
     public boolean isPremium() {
-        return isPremium;
+        return premium;
     }
 
-    public void setPremium(boolean isPremium) {
-        this.isPremium = isPremium;
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 
     public String getStatus() {
@@ -124,14 +123,6 @@ public class RecipeResponse {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public LocalDateTime getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(LocalDateTime publishedAt) {
-        this.publishedAt = publishedAt;
     }
 
     public LocalDateTime getCreatedAt() {

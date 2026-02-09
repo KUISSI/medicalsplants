@@ -27,10 +27,8 @@
 
       <!-- Infos rapides -->
       <div class="recipe-meta">
-        @if (recipe.preparationTimeMinutes) {
-          <span class="meta-item"
-            >⏱️ {{ recipe.preparationTimeMinutes }} min</span
-          >
+        @if (recipe.preparationTime) {
+          <span class="meta-item">⏱️ {{ recipe.preparationTime }} min</span>
         }
         @if (recipe.difficulty) {
           <span class="meta-item"

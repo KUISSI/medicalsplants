@@ -37,4 +37,9 @@ export class PlantService {
   getByPropertyId(propertyId: string): Observable<Plant[]> {
     return this.http.get<Plant[]>(`${this.apiUrl}/property/${propertyId}`);
   }
+
+  getPlantsForSymptom(symptomId: string): Observable<Plant[]> {
+  return this.http.get<Plant[]>(`${environment.apiUrl}/symptoms/${symptomId}/plants`);
 }
+}
+

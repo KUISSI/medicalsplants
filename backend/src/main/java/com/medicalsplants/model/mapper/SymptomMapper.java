@@ -1,7 +1,7 @@
 package com.medicalsplants.model.mapper;
 
-import com.medicalsplants.model.dto.request.SymptomRequest;
 import com.medicalsplants.model.dto.response.SymptomResponse;
+import com.medicalsplants.model.dto.request.SymptomRequest;
 import com.medicalsplants.model.entity.Symptom;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

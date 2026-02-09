@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.medicalsplants.model.dto.response.PlantResponse;
+
 
 import java.util.List;
 import java.util.Map;
@@ -83,4 +85,10 @@ public class SymptomController {
         symptomService.deleteSymptom(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/plants")
+public List<PlantResponse> getPlantsBySymptom(@PathVariable String id) {
+    return symptomService.getPlantsBySymptomId(id);
+}
+
 }

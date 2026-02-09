@@ -10,7 +10,7 @@ export interface Recipe {
   title: string;
   type: RecipeType;
   description?: string;
-  preparationTimeMinutes?: number;
+  preparationTime?: number;
   difficulty?: string;
   servings?: number;
   ingredients?: string;
@@ -41,7 +41,7 @@ export interface CreateRecipeRequest {
   title: string;
   type: RecipeType;
   description?: string;
-  preparationTimeMinutes?: number;
+  preparationTime?: number;
   difficulty?: string;
   servings?: number;
   ingredients?: string;
