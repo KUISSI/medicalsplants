@@ -44,7 +44,7 @@ export const routes: Routes = [
   {
     path: 'symptoms/:id',
     loadComponent: () => import('./features/symptoms/symptom-detail/symptom-detail.component')
-      .then(m => m.SymptomDetailComponent),
+      .then(m => m.descriptionComponent),
     title: 'Détail du symptôme - Medicals Plants'
   },
 

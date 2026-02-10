@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Symptom } from '../models/symptom.model';
 import { environment } from '../../../environments/environment';
@@ -28,7 +28,23 @@ export class SymptomService {
     return this.http.get<string[]>(`${this.apiUrl}/families`);
   }
 
-  getGroupedByFamily(): Observable<{ [family: string]: Symptom[] }> {
-    return this.http.get<{ [family: string]: Symptom[] }>(`${this.apiUrl}/grouped`);
+  /**
+   * Récupère les symptômes groupés par famille, avec filtres optionnels.
+   * @param searchTerm Filtre de recherche (optionnel)
+   * @param selectedFamily Famille sélectionnée (optionnel)
+   */
+  getGroupedByFamily(
+    searchTerm?: string,
+    selectedFamily?: string
+  ): Observable<{ [family: string]: Symptom[] }> {
+    let params = new HttpParams();
+    if (searchTerm) params = params.set('searchTerm', searchTerm);
+    if (selectedFamily) params = params.set('selectedFamily', selectedFamily);
+
+    // Appel du bon endpoint groupé
+    return this.http.get<{ [family: string]: Symptom[] }>(
+      `${this.apiUrl}/grouped`,
+      { params }
+    );
   }
 }

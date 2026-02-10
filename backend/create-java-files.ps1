@@ -369,10 +369,10 @@ public class Symptom extends BaseEntity {
     private String title;
 
     @Column(name = "symptom_family", nullable = false, length = 100)
-    private String symptomFamily;
+    private String family;
 
     @Column(name = "symptom_detail", columnDefinition = "TEXT")
-    private String symptomDetail;
+    private String description;
 
     @ManyToMany(mappedBy = "symptoms")
     private Set<Property> properties = new HashSet<>();
@@ -383,10 +383,10 @@ public class Symptom extends BaseEntity {
     public void setId(String id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public String getSymptomFamily() { return symptomFamily; }
-    public void setSymptomFamily(String family) { this.symptomFamily = family; }
-    public String getSymptomDetail() { return symptomDetail; }
-    public void setSymptomDetail(String detail) { this.symptomDetail = detail; }
+    public String getfamily() { return family; }
+    public void setfamily(String family) { this.family = family; }
+    public String getdescription() { return description; }
+    public void setdescription(String detail) { this.description = detail; }
     public Set<Property> getProperties() { return properties; }
     public void setProperties(Set<Property> properties) { this.properties = properties; }
 }

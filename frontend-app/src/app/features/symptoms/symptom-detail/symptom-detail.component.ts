@@ -16,7 +16,7 @@ import { NavigationService } from '../../../core/services/navigation.service';
   templateUrl: './symptom-detail.component.html',
   styleUrls: ['./symptom-detail.component.scss']
 })
-export class SymptomDetailComponent implements OnInit {
+export class descriptionComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private symptomService = inject(SymptomService);
   private plantService = inject(PlantService);
@@ -50,8 +50,8 @@ export class SymptomDetailComponent implements OnInit {
             this.error = null;
             if (symptom) { // Check if symptom is not null before proceeding
               this.loadPlants();
-              if (symptom.symptomFamily) {
-                this.loadRelatedSymptoms(symptom.symptomFamily);
+              if (symptom.family) {
+                this.loadRelatedSymptoms(symptom.family);
               }
             } else {
               this.error = 'Symptôme non trouvé. (ID: ' + id + ')';

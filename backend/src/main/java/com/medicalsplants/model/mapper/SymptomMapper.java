@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 public interface SymptomMapper {
 
     @Mapping(target = "createdAt", source = "createdAt", qualifiedByName = "instantToLocalDateTime")
+    @Mapping(target = "family", source = "family")
+    @Mapping(target = "description", source = "description")
     SymptomResponse toDto(Symptom entity);
 
     @Mapping(target = "id", ignore = true)

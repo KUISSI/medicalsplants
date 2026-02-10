@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-symptom-form',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl: './symptom-form. component.html',
+  templateUrl: './symptom-form.component.html',
   styleUrls:  ['./symptom-form.component.scss']
 })
 export class SymptomFormComponent implements OnInit {
@@ -47,8 +47,8 @@ export class SymptomFormComponent implements OnInit {
   constructor() {
     this. symptomForm = this. fb.group({
       title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      symptomFamily: ['', [Validators.required]],
-      symptomDetail: ['', [Validators.maxLength(1000)]]
+      family: ['', [Validators.required]],
+      description: ['', [Validators.maxLength(1000)]]
     });
   }
 
@@ -81,8 +81,8 @@ export class SymptomFormComponent implements OnInit {
         this.symptom = symptom;
         this.symptomForm.patchValue({
           title: symptom.title,
-          symptomFamily: symptom. symptomFamily,
-          symptomDetail:  symptom.symptomDetail || ''
+          family: symptom. family,
+          description:  symptom.description || ''
         });
         this.isLoadingData = false;
       },
@@ -94,8 +94,8 @@ export class SymptomFormComponent implements OnInit {
   }
 
   get title() { return this.symptomForm.get('title'); }
-  get symptomFamily() { return this.symptomForm.get('symptomFamily'); }
-  get symptomDetail() { return this.symptomForm.get('symptomDetail'); }
+  get family() { return this.symptomForm.get('family'); }
+  get description() { return this.symptomForm.get('description'); }
 
   onSubmit(): void {
     if (this.symptomForm.invalid) {

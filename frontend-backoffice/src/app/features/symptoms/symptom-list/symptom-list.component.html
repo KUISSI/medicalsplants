@@ -17,95 +17,99 @@
         class="search-box__input"
         placeholder="Rechercher un symptôme..."
         [(ngModel)]="searchTerm"
-        (ngModelChange)="applyFilters()"
+        (ngModelChange)="onSearch($event)"
       />
-      @if (searchTerm) {
-      <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()">✕</button>
-      }
+      <button *ngIf="searchTerm" class="search-box__clear" (click)="clearFilters()">✕</button>
     </div>
 
-    <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()">
+    <select
+      class="filter-select"
+      [(ngModel)]="selectedFamily"
+      (ngModelChange)="onFamilyChange($event)"
+    >
       <option value="">Toutes les familles</option>
-      @for (family of families; track family) {
-      <option [value]="family">{{ family }}</option>
-      }
+      <option *ngFor="let family of families" [value]="family">{{ family }}</option>
     </select>
 
-    @if (searchTerm || selectedFamily) {
-    <button class="btn btn--secondary" (click)="clearFilters()">✕ Effacer</button>
-    }
+    <button
+      *ngIf="searchTerm || selectedFamily"
+      class="btn btn--secondary"
+      (click)="clearFilters()"
+    >
+      ✕ Effacer
+    </button>
   </div>
 
   <!-- Content -->
-  @if (isLoading) {
-  <app-loader message="Chargement des symptômes... "></app-loader>
-  } @else if (filteredSymptoms. length === 0) {
-  <div class="empty-state">
-    <span class="empty-state__icon">🩺</span>
-    <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
-    <p class="empty-state__message">
-      @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche } @else { Commencez
-      par créer un symptôme }
-    </p>
-    @if (! searchTerm && ! selectedFamily) {
-    <a routerLink="/symptoms/new" class="btn btn--primary"> ➕ Créer un symptôme </a>
-    }
-  </div>
-  } @else {
-  <div class="page__info">
-    <span>{{ filteredSymptoms.length }} symptôme(s)</span>
-  </div>
+  <ng-container *ngIf="isLoading; else loadedContent">
+    <app-loader message="Chargement des symptômes... "></app-loader>
+  </ng-container>
 
-  <div class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Titre</th>
-          <th>Famille</th>
-          <th>Description</th>
-          <th>Créé le</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (symptom of filteredSymptoms; track symptom. id) {
-        <tr>
-          <td>
-            <strong>{{ symptom.title }}</strong>
-          </td>
-          <td>
-            <span class="badge badge--info">{{ symptom.symptomFamily }}</span>
-          </td>
-          <td>
-            <span class="description-cell">
-              {{ symptom.symptomDetail || '-' }}
-            </span>
-          </td>
-          <td>{{ formatDate(symptom.createdAt) }}</td>
-          <td>
-            <div class="actions">
-              <a
-                [routerLink]="['/symptoms', symptom.id, 'edit']"
-                class="action-btn"
-                title="Modifier"
-              >
-                ✏️
-              </a>
-              <button
-                class="action-btn action-btn--danger"
-                (click)="confirmDelete(symptom)"
-                title="Supprimer"
-              >
-                🗑️
-              </button>
-            </div>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  }
+  <ng-template #loadedContent>
+    <ng-container *ngIf="families.length === 0">
+      <div class="empty-state">
+        <span class="empty-state__icon">🩺</span>
+        <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+        <p class="empty-state__message">
+          <ng-container *ngIf="searchTerm || selectedFamily; else createMsg">
+            Modifiez vos critères de recherche
+          </ng-container>
+          <ng-template #createMsg> Commencez par créer un symptôme </ng-template>
+        </p>
+        <a
+          *ngIf="!searchTerm && !selectedFamily"
+          routerLink="/symptoms/new"
+          class="btn btn--primary"
+        >
+          ➕ Créer un symptôme
+        </a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="families.length > 0">
+      <div *ngFor="let family of families">
+        <h2>{{ family }}</h2>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Créé le</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let symptom of groupedSymptoms[family]">
+                <td>
+                  <strong>{{ symptom.title }}</strong>
+                </td>
+                <td>{{ symptom.description || '-' }}</td>
+                <td>{{ formatDate(symptom.createdAt) }}</td>
+                <td>
+                  <div class="actions">
+                    <a
+                      [routerLink]="['/symptoms', symptom.id, 'edit']"
+                      class="action-btn"
+                      title="Modifier"
+                    >
+                      ✏️
+                    </a>
+                    <button
+                      class="action-btn action-btn--danger"
+                      (click)="confirmDelete(symptom)"
+                      title="Supprimer"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
 </div>
 
 <app-confirm-dialog

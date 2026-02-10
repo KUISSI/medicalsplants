@@ -4,11 +4,14 @@
   <div *ngIf="!isLoading && symptom" class="symptom-card">
     <div class="card-header">
       <h1 class="symptom-title">{{ symptom.title }}</h1>
-      <span class="symptom-family" [style.backgroundColor]="getFamilyColor(symptom.symptomFamily)">
-        {{ getSymptomIcon(symptom.symptomFamily) }} {{ symptom.symptomFamily }}
+      <span
+        class="symptom-family"
+        [style.backgroundColor]="getFamilyColor(symptom.family)"
+      >
+        {{ getSymptomIcon(symptom.family) }} {{ symptom.family }}
       </span>
     </div>
-    
+
     <div class="card-body">
       <p class="symptom-description">{{ symptom.description }}</p>
     </div>
