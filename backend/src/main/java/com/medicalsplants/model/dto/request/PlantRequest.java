@@ -3,6 +3,7 @@ package com.medicalsplants.model.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
+import java.util.UUID;
 
 public class PlantRequest {
 
@@ -17,7 +18,7 @@ public class PlantRequest {
 
     private String imageUrl;
 
-    private Set<String> propertyIds;
+    private Set<UUID> propertyIds; // UUID au lieu de String
 
     public PlantRequest() {
     }
@@ -55,11 +56,11 @@ public class PlantRequest {
         this.imageUrl = imageUrl;
     }
 
-    public Set<String> getPropertyIds() {
+    public Set<UUID> getPropertyIds() {
         return propertyIds;
     }
 
-    public void setPropertyIds(Set<String> propertyIds) {
+    public void setPropertyIds(Set<UUID> propertyIds) {
         this.propertyIds = propertyIds;
     }
 }

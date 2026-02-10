@@ -74,16 +74,6 @@ public enum UserStatus {
 }
 '@
 
-Create-JavaFile "$baseDir\model\enums\AdministrationMode.java" @'
-package com.medicalsplants.model.enums;
-
-public enum AdministrationMode {
-    ORAL_ROUTE,
-    NASAL_ROUTE,
-    EPIDERMAL_ROUTE
-}
-'@
-
 Create-JavaFile "$baseDir\model\enums\recipeType.java" @'
 package com.medicalsplants.model.enums;
 
@@ -269,7 +259,7 @@ public class User extends BaseEntity {
         return pseudo;
     }
     public boolean isAdmin() { return role == Role. ADMIN; }
-    public boolean isPremium() { return role == Role.PREMIUM || role == Role. ADMIN; }
+    public boolean premium() { return role == Role.PREMIUM || role == Role. ADMIN; }
     public boolean isBlocked() { return status == UserStatus. BLOCKED; }
 
     public static UserBuilder builder() { return new UserBuilder(); }
@@ -445,7 +435,6 @@ public class Property extends BaseEntity {
 Create-JavaFile "$baseDir\model\entity\Plant.java" @'
 package com.medicalsplants.model.entity;
 
-import com.medicalsplants.model.enums.AdministrationMode;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util. Set;
@@ -463,10 +452,6 @@ public class Plant extends BaseEntity {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "administration_mode", nullable = false, length = 30)
-    private AdministrationMode administrationMode;
 
     @Column(name = "consumed_part", length = 100)
     private String consumedPart;
@@ -488,14 +473,12 @@ public class Plant extends BaseEntity {
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
     public void setDescription(String desc) { this.description = desc; }
-    public AdministrationMode getAdministrationMode() { return administrationMode; }
-    public void setAdministrationMode(AdministrationMode mode) { this.administrationMode = mode; }
     public String getConsumedPart() { return consumedPart; }
     public void setConsumedPart(String part) { this.consumedPart = part; }
     public Set<Property> getProperties() { return properties; }
     public void setProperties(Set<Property> props) { this.properties = props; }
-    public Set<recipe> getrecipes() { return recipes; }
-    public void setrecipes(Set<recipe> recipes) { this.recipes = recipes; }
+    public Set<recipe> getRecipes() { return recipes; }
+    public void setRecipes(Set<recipe> recipes) { this.recipes = recipes; }
 }
 '@
 
@@ -529,7 +512,7 @@ public class recipe extends BaseEntity {
     private String description;
 
     @Column(name = "is_premium", nullable = false)
-    private Boolean isPremium = false;
+    private Boolean premium = false;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
@@ -558,8 +541,8 @@ public class recipe extends BaseEntity {
     public void setType(recipeType type) { this.type = type; }
     public String getDescription() { return description; }
     public void setDescription(String desc) { this.description = desc; }
-    public Boolean getIsPremium() { return isPremium; }
-    public void setIsPremium(Boolean premium) { this.isPremium = premium; }
+    public Boolean getpremium() { return premium; }
+    public void setpremium(Boolean premium) { this.premium = premium; }
     public recipeStatus getStatus() { return status; }
     public void setStatus(recipeStatus status) { this.status = status; }
     public User getAuthor() { return author; }

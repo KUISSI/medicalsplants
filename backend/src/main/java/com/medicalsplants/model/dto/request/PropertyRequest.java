@@ -3,6 +3,7 @@ package com.medicalsplants.model.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Set;
+import java.util.UUID;
 
 public class PropertyRequest {
 
@@ -17,7 +18,7 @@ public class PropertyRequest {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private Set<String> symptomIds;
+    private Set<UUID> symptomIds;
 
     public PropertyRequest() {
     }
@@ -47,11 +48,11 @@ public class PropertyRequest {
         this.description = description;
     }
 
-    public Set<String> getSymptomIds() {
+    public Set<UUID> getSymptomIds() {
         return symptomIds;
     }
 
-    public void setSymptomIds(Set<String> symptomIds) {
+    public void setSymptomIds(Set<UUID> symptomIds) {
         this.symptomIds = symptomIds;
     }
 }

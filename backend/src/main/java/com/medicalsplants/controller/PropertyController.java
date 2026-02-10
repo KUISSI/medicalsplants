@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/properties")
@@ -33,13 +34,13 @@ public class PropertyController {
 
     @Operation(summary = "Get property by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PropertyResponse> getPropertyById(@PathVariable String id) {
+    public ResponseEntity<PropertyResponse> getPropertyById(@PathVariable UUID id) {
         return ResponseEntity.ok(propertyService.getPropertyById(id));
     }
 
     @Operation(summary = "Get properties by symptom ID")
     @GetMapping("/symptom/{symptomId}")
-    public ResponseEntity<List<PropertyResponse>> getPropertiesBySymptomId(@PathVariable String symptomId) {
+    public ResponseEntity<List<PropertyResponse>> getPropertiesBySymptomId(@PathVariable UUID symptomId) {
         return ResponseEntity.ok(propertyService.getPropertiesBySymptomId(symptomId));
     }
 
@@ -69,7 +70,7 @@ public class PropertyController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<PropertyResponse> updateProperty(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @Valid @RequestBody PropertyRequest request) {
         return ResponseEntity.ok(propertyService.updateProperty(id, request));
     }
@@ -78,7 +79,7 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProperty(@PathVariable String id) {
+    public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
     }

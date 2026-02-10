@@ -19,7 +19,7 @@
     />
     <p *ngIf="recipe.description">{{ recipe.description }}</p>
     <div class="recipe-details">
-      <span *ngIf="recipe.isPremium" class="premium">Premium</span>
+      <span *ngIf="recipe.premium" class="premium">Premium</span>
       <span *ngIf="recipe.author">Auteur : {{ recipe.author.pseudo }}</span>
       <span>Date de création : {{ recipe.createdAt | date: 'mediumDate' }}</span>
     </div>

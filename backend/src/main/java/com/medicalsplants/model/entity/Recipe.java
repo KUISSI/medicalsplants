@@ -167,7 +167,7 @@ public class Recipe extends BaseEntity {
     }
 
     // DRY: Getter retourne toujours un primitif
-    public boolean isPremium() {
+    public boolean premium() {
         return Boolean.TRUE.equals(premium);
     }
 

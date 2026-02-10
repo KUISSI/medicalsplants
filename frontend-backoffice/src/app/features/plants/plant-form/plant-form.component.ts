@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { PropertyService } from '../../../core/services/property.service';
-import { Plant, CreatePlantRequest, UpdatePlantRequest, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant, CreatePlantRequest, UpdatePlantRequest } from '../../../core/models/plant.model';
 import { Property } from '../../../core/models/property.model';
 import { ToastrService } from 'ngx-toastr';
 
@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-plant-form',
   standalone: true,
   imports:  [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './plant-form. component.html',
+  templateUrl:  './plant-form.component.html',
   styleUrls:  ['./plant-form.component.scss']
 })
 export class PlantFormComponent implements OnInit {
@@ -33,15 +33,11 @@ export class PlantFormComponent implements OnInit {
   isSaving = false;
   isEditMode = false;
 
-  administrationModes = ADMINISTRATION_MODE_LABELS;
-  administrationModeKeys = Object.keys(ADMINISTRATION_MODE_LABELS) as AdministrationMode[];
 
   constructor() {
     this.plantForm = this.fb. group({
       title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
       description: ['', [Validators.maxLength(2000)]],
-      administrationMode: ['', [Validators.required]],
-      consumedPart: ['', [Validators. maxLength(100)]]
     });
   }
 
@@ -71,8 +67,6 @@ export class PlantFormComponent implements OnInit {
         this.plantForm.patchValue({
           title:  plant.title,
           description: plant. description || '',
-          administrationMode: plant.administrationMode,
-          consumedPart: plant.consumedPart || ''
         });
         this.selectedPropertyIds = plant.properties?. map(p => p.id) || [];
         this.isLoadingData = false;
@@ -85,7 +79,6 @@ export class PlantFormComponent implements OnInit {
   }
 
   get title() { return this.plantForm.get('title'); }
-  get administrationMode() { return this.plantForm. get('administrationMode'); }
 
   toggleProperty(propertyId:  string): void {
     const index = this.selectedPropertyIds. indexOf(propertyId);

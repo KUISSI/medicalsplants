@@ -2,11 +2,10 @@
   <!-- Header -->
   <div class="page-header">
     <div class="page-header__content">
-      <h1 class="page-header__title">
-        Plantes médicinales
-      </h1>
+      <h1 class="page-header__title">Plantes médicinales</h1>
       <p class="page-header__subtitle">
-        Explorez notre catalogue de plantes et découvrez leurs propriétés thérapeutiques
+        Explorez notre catalogue de plantes et découvrez leurs propriétés
+        thérapeutiques
       </p>
     </div>
   </div>
@@ -21,30 +20,8 @@
             (search)="onSearch($event)"
           ></app-search-bar>
         </div>
-
         <div class="filters__display-options">
-          <!-- Mode Filter -->
-          <div class="filter-group">
-            <label for="mode" class="filter-label">Mode d'administration :</label>
-            <select
-              id="mode"
-              class="filter-select"
-              [ngModel]="selectedMode"
-              (ngModelChange)="onModeChange($event)"
-            >
-              <option value="">Tous les modes</option>
-              @for (mode of administrationModeKeys; track mode) {
-              <option [value]="mode">{{ administrationModes[mode] }}</option>
-              }
-            </select>
-          </div>
-
-          <!-- Clear Filters -->
-          @if (searchTerm || selectedMode) {
-          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
-            ✕ Effacer les filtres
-          </button>
-          }
+          <!-- (Mode filter supprimé) -->
         </div>
       </div>
     </div>
@@ -53,109 +30,101 @@
   <!-- Content -->
   <div class="page-content">
     @if (isLoading) {
-    <app-loader message="Chargement des plantes..."></app-loader>
+      <app-loader message="Chargement des plantes..."></app-loader>
     } @else if (filteredPlants.length === 0) {
-    <div class="empty-state">
-      <h3 class="empty-state__title">Aucune plante trouvée</h3>
-      <p class="empty-state__message">
-        @if (searchTerm || selectedMode) { Essayez de modifier vos critères de recherche } @else {
-        Aucune plante n'est disponible pour le moment }
-      </p>
-      @if (searchTerm || selectedMode) {
-      <button class="empty-state__btn" (click)="clearFilters()">Effacer les filtres</button>
-      }
-    </div>
-    } @else {
-    <!-- Results Info -->
-    <div class="results-info">
-      <span class="results-info__count">
-        {{ filteredPlants.length }} plante(s) sur {{ totalElements }}
-      </span>
-    </div>
-
-    <!-- Plants Grid -->
-    <div class="plants-grid">
-      @for (plant of filteredPlants; track plant. id) {
-      <a [routerLink]="['/plants', plant.id]" [queryParams]="currentQueryParams" class="plant-card">
-        <div class="plant-card__image">
-          @if (plant.imageUrl) {
-          <img [src]="plant.imageUrl" [alt]="plant.title" />
+      <div class="empty-state">
+        <h3 class="empty-state__title">Aucune plante trouvée</h3>
+        <p class="empty-state__message">
+          @if (searchTerm) {
+            Essayez de modifier vos critères de recherche
           } @else {
-          <div class="plant-card__placeholder">
-            <span>🌿</span>
-          </div>
+            Aucune plante n'est disponible pour le moment
           }
-          @if (plant.administrationMode) {
-          <span
-            class="plant-card__mode-badge"
-            [title]="administrationModes[plant.administrationMode]"
+        </p>
+        @if (searchTerm) {
+          <button class="empty-state__btn" (click)="clearFilters()">
+            Effacer les filtres
+          </button>
+        }
+      </div>
+    } @else {
+      <!-- Results Info -->
+      <div class="results-info">
+        <span class="results-info__count">
+          {{ filteredPlants.length }} plante(s) sur {{ totalElements }}
+        </span>
+      </div>
+
+      <!-- Plants Grid -->
+      <div class="plants-grid">
+        @for (plant of filteredPlants; track plant.id) {
+          <a
+            [routerLink]="['/plants', plant.id]"
+            [queryParams]="currentQueryParams"
+            class="plant-card"
           >
-            {{ getAdministrationIcon(plant.administrationMode) }}
-          </span>
+            <div class="plant-card__image">
+              @if (plant.imageUrl) {
+                <img [src]="plant.imageUrl" [alt]="plant.title" />
+              } @else {
+                <div class="plant-card__placeholder">
+                  <span>🌿</span>
+                </div>
+              }
+            </div>
+            <div class="plant-card__content">
+              <h3 class="plant-card__title">{{ plant.title }}</h3>
+              @if (plant.description) {
+                <p class="plant-card__description">{{ plant.description }}</p>
+              }
+              <div class="plant-card__meta"></div>
+            </div>
+          </a>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(0)"
+          >
+            ««
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(currentPage - 1)"
+          >
+            ‹
+          </button>
+          @for (page of getPages(); track page) {
+            <button
+              class="pagination__btn"
+              [class.pagination__btn--active]="page === currentPage"
+              (click)="loadPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
           }
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(currentPage + 1)"
+          >
+            ›
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(totalPages - 1)"
+          >
+            »»
+          </button>
         </div>
-
-        <div class="plant-card__content">
-          <h3 class="plant-card__title">{{ plant.title }}</h3>
-
-          @if (plant.description) {
-          <p class="plant-card__description">{{ plant.description }}</p>
-          }
-
-          <div class="plant-card__meta">
-            @if (plant.administrationMode) {
-            <span class="plant-card__mode">
-              {{ administrationModes[plant.administrationMode] }}
-            </span>
-            }
-            @if (plant.consumedPart) {
-            <span class="plant-card__part"> 🍃 {{ plant.consumedPart }} </span>
-            }
-          </div>
-        </div>
-      </a>
       }
-    </div>
-
-    <!-- Pagination -->
-    @if (totalPages > 1) {
-    <div class="pagination">
-      <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">
-        ««
-      </button>
-      <button
-        class="pagination__btn"
-        [disabled]="currentPage === 0"
-        (click)="loadPage(currentPage - 1)"
-      >
-        ‹
-      </button>
-
-      @for (page of getPages(); track page) {
-      <button
-        class="pagination__btn"
-        [class.pagination__btn--active]="page === currentPage"
-        (click)="loadPage(page)"
-      >
-        {{ page + 1 }}
-      </button>
-      }
-
-      <button
-        class="pagination__btn"
-        [disabled]="currentPage === totalPages - 1"
-        (click)="loadPage(currentPage + 1)"
-      >
-        ›
-      </button>
-      <button
-        class="pagination__btn"
-        [disabled]="currentPage === totalPages - 1"
-        (click)="loadPage(totalPages - 1)"
-      >
-        »»
-      </button>
-    </div>
-    } }
+    }
   </div>
 </div>

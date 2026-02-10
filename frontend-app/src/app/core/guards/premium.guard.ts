@@ -16,7 +16,7 @@ export const premiumGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  if (authService.isPremium()) {
+  if (authService.premium()) {
     return true;
   }
 

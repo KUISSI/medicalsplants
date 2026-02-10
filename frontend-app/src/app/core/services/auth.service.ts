@@ -30,7 +30,7 @@ export class AuthService {
   readonly isLoading = this.isLoadingSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
   readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'ADMIN');
-  readonly isPremium = computed(() => {
+  readonly premium = computed(() => {
     const role = this.currentUserSignal()?.role;
     return role === 'PREMIUM' || role === 'ADMIN';
   });

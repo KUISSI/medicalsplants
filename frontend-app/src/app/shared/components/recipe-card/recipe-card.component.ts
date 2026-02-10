@@ -10,7 +10,7 @@ export interface RecipeCardData {
   rating?: number;
   time?: number;
   difficulty?: string;
-  isPremium?: boolean;
+  premium?: boolean;
 }
 
 @Component({

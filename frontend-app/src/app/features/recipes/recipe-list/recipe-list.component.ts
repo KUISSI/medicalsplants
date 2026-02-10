@@ -111,7 +111,7 @@ export class RecipeListComponent implements OnInit {
         id: recipe.id,
         title: recipe.title,
         category: this.RecipeTypes[recipe.type] || 'Recette',
-        isPremium: recipe.isPremium,
+        premium: recipe.premium,
         rating,
         time,
         difficulty,

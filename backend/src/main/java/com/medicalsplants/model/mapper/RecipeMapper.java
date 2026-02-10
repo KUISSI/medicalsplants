@@ -36,6 +36,6 @@ public interface RecipeMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "publishedAt", ignore = true)
     @Mapping(target = "author", ignore = true)
-    @Mapping(target = "plants", ignore = true) // <--- IGNORE plants, handled in service
+    @Mapping(target = "plants", ignore = true)
     Recipe toEntity(RecipeRequest recipeRequest);
 }

@@ -72,7 +72,7 @@
             authService.currentUser()?.pseudo
           }}</span>
         </a>
-        @if (authService.isPremium()) {
+        @if (authService.premium()) {
           <span class="header__badge header__badge--premium">Premium</span>
         }
 

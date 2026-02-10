@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PlantService } from '../../../core/services/plant.service';
-import { Plant, PlantPage, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant. model';
+import { Plant, PlantPage } from '../../../core/models/plant.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
     ConfirmDialogComponent
   ],
   templateUrl: './plant-list.component.html',
-  styleUrls: ['./plant-list. component.scss']
+  styleUrls: ['./plant-list.component.scss']
 })
 export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);
@@ -36,8 +36,6 @@ export class PlantListComponent implements OnInit {
 
   showDeleteDialog = false;
   plantToDelete: Plant | null = null;
-
-  administrationModeLabels = ADMINISTRATION_MODE_LABELS;
 
   ngOnInit(): void {
     this.loadPlants();
@@ -92,12 +90,4 @@ export class PlantListComponent implements OnInit {
     return new Date(dateString).toLocaleDateString('fr-FR');
   }
 
-  getAdministrationIcon(mode: string): string {
-    const icons:  Record<string, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴'
-    };
-    return icons[mode] || '🌿';
-  }
 }

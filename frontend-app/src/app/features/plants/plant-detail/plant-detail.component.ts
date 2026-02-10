@@ -5,7 +5,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { PlantService } from '../../../core/services/plant.service';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant} from '../../../core/models/plant.model';
 import { Recipe, RecipePage, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
 
@@ -36,7 +36,6 @@ export class PlantDetailComponent implements OnInit {
 
   activeTab: 'properties' | 'recipes' = 'properties';
 
-  administrationModeLabels = ADMINISTRATION_MODE_LABELS;
   recipeTypeLabels = RECIPE_TYPE_LABELS;
 
   ngOnInit(): void {
@@ -104,7 +103,7 @@ export class PlantDetailComponent implements OnInit {
             id: recipe.id,
             title: recipe.title,
             category: this.recipeTypeLabels[recipe.type] || 'Recette',
-            isPremium: recipe.isPremium,
+            premium: recipe.premium,
             rating,
             time,
             difficulty,
@@ -116,17 +115,6 @@ export class PlantDetailComponent implements OnInit {
         this.isLoadingRecipes = false;
       }
     });
-  }
-
-  getAdministrationIcon(mode: AdministrationMode | undefined): string {
-    const icons:  Record<AdministrationMode, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE': '🧴',
-      'TOPICAL_ROUTE': '🩹',
-      'OTHER': '🌿'
-    };
-    return mode ? icons[mode] : '🌿';
   }
 
   getRecipeTypeIcon(type: string): string {

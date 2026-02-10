@@ -87,4 +87,12 @@ export class RecipeDetailComponent implements OnInit {
     };
     return labels[difficulty] || difficulty;
   }
+
+  get preparationSteps(): string[] {
+  // Adapte le split selon la structure de tes instructions
+  return this.recipe?.instructions
+    ? this.recipe.instructions.split(/\d+\s*-\s*/).filter(Boolean)
+    : [];
+}
+
 }

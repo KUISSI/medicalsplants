@@ -11,7 +11,7 @@ public class ReviewRequest {
     private String content;
 
     @NotNull(message = "Recipe ID is required")
-    private String recipeId;
+    private UUID recipeId; // UUID au lieu de String
 
     private UUID parentReviewId;
 
@@ -30,11 +30,11 @@ public class ReviewRequest {
         this.content = content;
     }
 
-    public String getRecipeId() {
+    public UUID getRecipeId() {
         return recipeId;
     }
 
-    public void setRecipeId(String recipeId) {
+    public void setRecipeId(UUID recipeId) {
         this.recipeId = recipeId;
     }
 

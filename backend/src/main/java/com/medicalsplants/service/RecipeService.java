@@ -74,7 +74,7 @@ public class RecipeService {
             }
         }
 
-        if (recipe.isPremium() && currentUser != null && !currentUser.isPremium()) {
+        if (recipe.premium() && currentUser != null && !currentUser.premium()) {
             throw new ForbiddenException("This is a premium recipe. Please upgrade your account.");
         }
 

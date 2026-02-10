@@ -49,7 +49,7 @@ export class RecipeCreateComponent implements OnInit {
       servings: [null, [Validators.min(1), Validators.max(50)]],
       ingredients: ['', Validators.maxLength(2000)],
       instructions: ['', Validators.maxLength(5000)],
-      isPremium: [false]
+      premium: [false]
     });
   }
 
@@ -104,7 +104,7 @@ export class RecipeCreateComponent implements OnInit {
       servings: formValue.servings || undefined,
       ingredients: formValue.ingredients || undefined,
       instructions: formValue.instructions || undefined,
-      isPremium: formValue.isPremium || false,
+      premium: formValue.premium || false,
       plantIds: this.selectedPlantIds
     };
 

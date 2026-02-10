@@ -110,7 +110,7 @@ public class RecipeResponse {
         this.instructions = instructions;
     }
 
-    public boolean isPremium() {
+    public boolean premium() {
         return premium;
     }
 

@@ -13,9 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.medicalsplants.model.dto.response.PlantResponse;
 
-
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/symptoms")
@@ -36,7 +36,7 @@ public class SymptomController {
 
     @Operation(summary = "Get symptom by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<SymptomResponse> getSymptomById(@PathVariable String id) {
+    public ResponseEntity<SymptomResponse> getSymptomById(@PathVariable UUID id) {
         return ResponseEntity.ok(symptomService.getSymptomById(id));
     }
 
@@ -72,7 +72,7 @@ public class SymptomController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<SymptomResponse> updateSymptom(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @Valid @RequestBody SymptomRequest request) {
         return ResponseEntity.ok(symptomService.updateSymptom(id, request));
     }
@@ -81,14 +81,13 @@ public class SymptomController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSymptom(@PathVariable String id) {
+    public ResponseEntity<Void> deleteSymptom(@PathVariable UUID id) {
         symptomService.deleteSymptom(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/plants")
-public List<PlantResponse> getPlantsBySymptom(@PathVariable String id) {
-    return symptomService.getPlantsBySymptomId(id);
-}
-
+    public List<PlantResponse> getPlantsBySymptom(@PathVariable UUID id) {
+        return symptomService.getPlantsBySymptomId(id);
+    }
 }

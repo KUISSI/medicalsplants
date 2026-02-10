@@ -17,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import java.util.List;
 
 @RestController
@@ -35,7 +37,7 @@ public class RecipeController {
     public ResponseEntity<Page<RecipeResponse>> getPublishedRecipes(
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
-        boolean canSeePremium = currentUser != null && currentUser.isPremium();
+        boolean canSeePremium = currentUser != null && currentUser.premium();
         return ResponseEntity.ok(recipeService.getPublishedRecipes(canSeePremium, pageable));
     }
 
@@ -45,14 +47,14 @@ public class RecipeController {
             @RequestParam String q,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
-        boolean canSeePremium = currentUser != null && currentUser.isPremium();
+        boolean canSeePremium = currentUser != null && currentUser.premium();
         return ResponseEntity.ok(recipeService.searchRecipes(q, canSeePremium, pageable));
     }
 
     @Operation(summary = "Get recipe by ID")
     @GetMapping("/{id}")
     public ResponseEntity<RecipeResponse> getRecipeById(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         return ResponseEntity.ok(recipeService.getRecipeById(id, currentUser));
     }
@@ -63,7 +65,7 @@ public class RecipeController {
             @PathVariable String plantId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
-        boolean canSeePremium = currentUser != null && currentUser.isPremium();
+        boolean canSeePremium = currentUser != null && currentUser.premium();
         return ResponseEntity.ok(recipeService.getRecipesByPlantId(plantId, canSeePremium, pageable));
     }
 

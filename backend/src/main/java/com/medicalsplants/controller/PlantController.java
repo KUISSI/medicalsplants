@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,7 @@ public class PlantController {
 
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PlantResponse> getPlantById(@PathVariable String id) {
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
         return ResponseEntity.ok(plantService.getPlantById(id));
     }
 

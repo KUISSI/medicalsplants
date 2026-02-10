@@ -30,7 +30,7 @@
             <span class="moderation-card__type">
               {{ getrecipeTypeIcon(recipe.type) }} {{ recipeTypeLabels[recipe.type] }}
             </span>
-            @if (recipe.isPremium) {
+            @if (recipe.premium) {
               <span class="moderation-card__premium">⭐ Premium</span>
             }
           </div>

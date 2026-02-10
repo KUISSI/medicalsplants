@@ -171,7 +171,7 @@ public class CustomUserDetails implements UserDetails {
         return role == Role.ADMIN;
     }
 
-    public boolean isPremium() {
+    public boolean premium() {
         return role == Role.PREMIUM || role == Role.ADMIN;
     }
 

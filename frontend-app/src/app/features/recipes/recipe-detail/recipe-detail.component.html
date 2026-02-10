@@ -11,7 +11,7 @@
   } @else if (recipe) {
     <div class="recipe-content">
       <!-- Header -->
-      <div class="recipe-header">
+      <div class="recipe-header section-spacing">
         <a routerLink="/recipes" class="btn-back">← Retour</a>
         <div class="recipe-title-section">
           <h1 class="recipe-title">{{ recipe.title }}</h1>
@@ -19,14 +19,14 @@
             {{ getRecipeTypeIcon(recipe.type) }}
             {{ RecipeTypeLabels[recipe.type] }}
           </p>
-          @if (recipe.isPremium) {
+          @if (recipe.premium) {
             <span class="premium-badge">👑 Premium</span>
           }
         </div>
       </div>
 
       <!-- Infos rapides -->
-      <div class="recipe-meta">
+      <div class="recipe-meta section-spacing">
         @if (recipe.preparationTime) {
           <span class="meta-item">⏱️ {{ recipe.preparationTime }} min</span>
         }
@@ -47,7 +47,7 @@
 
       <!-- Description -->
       @if (recipe.description) {
-        <div class="recipe-description">
+        <div class="recipe-description section-spacing">
           <h2>Description</h2>
           <p>{{ recipe.description }}</p>
         </div>
@@ -55,7 +55,7 @@
 
       <!-- Plantes utilisées -->
       @if (recipe.plants && recipe.plants.length > 0) {
-        <div class="recipe-plants">
+        <div class="recipe-plants section-spacing">
           <h2>🌿 Plantes utilisées</h2>
           <div class="plants-list">
             @for (plant of recipe.plants; track plant.id) {
@@ -69,9 +69,9 @@
 
       <!-- Ingrédients -->
       @if (ingredientsList.length > 0) {
-        <div class="recipe-ingredients">
+        <div class="recipe-ingredients section-spacing">
           <h2>📝 Ingrédients</h2>
-          <ul>
+          <ul class="spaced-list">
             @for (ingredient of ingredientsList; track ingredient) {
               <li>{{ ingredient }}</li>
             }
@@ -81,15 +81,21 @@
 
       <!-- Instructions -->
       @if (recipe.instructions) {
-        <div class="recipe-instructions">
+        <div class="recipe-instructions section-spacing">
           <h2>👨‍🍳 Préparation</h2>
-          <p>{{ recipe.instructions }}</p>
+          <ul class="spaced-list">
+            @for (step of preparationSteps; track $index) {
+              <li>
+                <strong>Étape {{ $index + 1 }} :</strong> {{ step.trim() }}
+              </li>
+            }
+          </ul>
         </div>
       }
 
       <!-- Auteur -->
       @if (recipe.author) {
-        <div class="recipe-author">
+        <div class="recipe-author section-spacing">
           <p>
             Recette proposée par
             <strong>{{
@@ -100,7 +106,7 @@
       }
 
       <!-- Avis -->
-      <div class="recipe-reviews">
+      <div class="recipe-reviews section-spacing">
         <h2>💬 Avis ({{ recipe.reviewCount || 0 }})</h2>
 
         @if (!authService.isAuthenticated()) {

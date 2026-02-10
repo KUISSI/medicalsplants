@@ -27,36 +27,6 @@
           }
         </div>
 
-        <!-- Administration Mode -->
-        <div class="form-group">
-          <label class="form-label">Mode d'administration *</label>
-          <select
-            formControlName="administrationMode"
-            class="form-select"
-            [class.form-input--error]="administrationMode?.invalid && administrationMode?.touched"
-          >
-            <option value="">Sélectionnez un mode</option>
-            @for (mode of administrationModeKeys; track mode) {
-            <option [value]="mode">{{ administrationModes[mode] }}</option>
-            }
-          </select>
-          @if (administrationMode?.invalid && administrationMode?.touched) {
-          <span class="form-error">Le mode est requis</span>
-          }
-        </div>
-
-        <!-- Consumed Part -->
-        <div class="form-group">
-          <label class="form-label">Partie consommée</label>
-          <input
-            type="text"
-            formControlName="consumedPart"
-            class="form-input"
-            placeholder="Ex: Fleurs, Feuilles, Racine..."
-          />
-        </div>
-      </div>
-
       <!-- Description -->
       <div class="form-group form-group--full">
         <label class="form-label">Description</label>

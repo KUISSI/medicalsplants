@@ -512,3 +512,17 @@
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Smaller shadow on press */
   }
 }
+
+// Utilitaire pour espacer les sections verticalement
+.section-spacing {
+  margin-bottom: 2rem;
+}
+
+// Utilitaire pour espacer les éléments de liste
+.spaced-list {
+  padding-left: 1.2em;
+  list-style: disc;
+}
+.spaced-list li {
+  margin-bottom: 0.8em;
+}

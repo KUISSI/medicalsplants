@@ -12,7 +12,7 @@ export interface Recipe {
   type: RecipeType;
   description?: string;
   imageUrl?: string;
-  isPremium: boolean;
+  premium: boolean;
   status: RecipeStatus;
   author?: User;
   plants?: Plant[];
@@ -25,7 +25,7 @@ export interface CreateRecipeRequest {
   type: RecipeType;
   description?: string;
   imageUrl?: string;
-  isPremium?: boolean;
+  premium?: boolean;
   plantIds?: string[];
 }
 
