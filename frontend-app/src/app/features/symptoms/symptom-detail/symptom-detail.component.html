@@ -68,14 +68,6 @@
                       <span>🌿</span>
                     </div>
                   }
-                  @if (plant.administrationMode) {
-                    <span
-                      class="plant-card__mode-badge"
-                      [title]="administrationModes[plant.administrationMode]"
-                    >
-                      {{ getAdministrationIcon(plant.administrationMode) }}
-                    </span>
-                  }
                 </div>
 
                 <div class="plant-card__content">
@@ -86,19 +78,6 @@
                       {{ plant.description }}
                     </p>
                   }
-
-                  <div class="plant-card__meta">
-                    @if (plant.administrationMode) {
-                      <span class="plant-card__mode">
-                        {{ administrationModes[plant.administrationMode] }}
-                      </span>
-                    }
-                    @if (plant.consumedPart) {
-                      <span class="plant-card__part">
-                        🍃 {{ plant.consumedPart }}
-                      </span>
-                    }
-                  </div>
                 </div>
               </a>
             }

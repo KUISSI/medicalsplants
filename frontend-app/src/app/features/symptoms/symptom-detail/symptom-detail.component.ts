@@ -6,7 +6,7 @@ import { CardComponent } from '../../../shared/components/card/card.component';
 import { SymptomService } from '../../../core/services/symptom.service';
 import { PlantService } from '../../../core/services/plant.service';
 import { Symptom } from '../../../core/models/symptom.model';
-import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant, PlantPage } from '../../../core/models/plant.model';
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
@@ -142,17 +142,5 @@ export class descriptionComponent implements OnInit {
   goBack(): void {
     this.navigationService.back();
   }
-
-  administrationModes = ADMINISTRATION_MODE_LABELS;
-
-  getAdministrationIcon(mode: AdministrationMode | undefined): string {
-    const icons: Record<AdministrationMode, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴',
-      'TOPICAL_ROUTE': '🩹',
-      'OTHER': '🌿'
-    };
-    return mode ? icons[mode] : '🌿';
-  }
+ 
 }

@@ -28,8 +28,7 @@ export class PlantService {
 
   create(request: CreatePlantRequest): Observable<Plant> {
     let params = new HttpParams()
-      .set('title', request. title)
-      .set('administrationMode', request. administrationMode);
+      .set('title', request. title);
 
     if (request.description) {
       params = params.set('description', request.description);
@@ -49,14 +48,11 @@ export class PlantService {
   update(id:  string, request: UpdatePlantRequest): Observable<Plant> {
     let params = new HttpParams()
       .set('title', request. title)
-      .set('administrationMode', request.administrationMode);
 
     if (request.description !== undefined) {
       params = params.set('description', request. description);
     }
-    if (request.consumedPart !== undefined) {
-      params = params. set('consumedPart', request.consumedPart);
-    }
+    
 
     return this.http.put<Plant>(`${this.apiUrl}/${id}`, null, { params });
   }

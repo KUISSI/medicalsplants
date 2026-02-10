@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
-import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant, PlantPage } from '../../../core/models/plant.model';
 
 @Component({
   selector: 'app-plant-list',
@@ -27,12 +27,12 @@ export class PlantListComponent implements OnInit {
 
   // Mock plants data
   mockPlants: Plant[] = [
-    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440001', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440002', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440003', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', administrationMode: 'EPIDERMAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440004', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', administrationMode: 'NASAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440005', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', administrationMode: 'ORAL_ROUTE' as AdministrationMode, createdAt: new Date().toISOString() } as Plant
+    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440001', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440002', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440003', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440004', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant,
+    { id: '550e8400-e29b-41d4-a716-446655440005', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant
   ];
 
   plants: Plant[] = [];
@@ -40,7 +40,6 @@ export class PlantListComponent implements OnInit {
   
   isLoading = true;
   searchTerm = '';
-  selectedMode: AdministrationMode | '' = '';
   isScrolled = false;
 
   // Pagination
@@ -53,14 +52,9 @@ export class PlantListComponent implements OnInit {
   onWindowScroll() {
     this.isScrolled = window.scrollY > 50;
   }
-
-  administrationModes = ADMINISTRATION_MODE_LABELS;
-  administrationModeKeys = Object.keys(ADMINISTRATION_MODE_LABELS) as AdministrationMode[];
-
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['searchTerm'] || '';
-      this.selectedMode = params['selectedMode'] || '';
       this.currentPage = params['page'] ? parseInt(params['page'], 10) : 0;
       this.loadPlants();
     });
@@ -95,13 +89,6 @@ export class PlantListComponent implements OnInit {
     this.updateUrlQueryParams();
   }
 
-  onModeChange(mode:  AdministrationMode | ''): void {
-    this.selectedMode = mode;
-    this.currentPage = 0; // Reset page on mode change
-    this.applyFilters();
-    this.updateUrlQueryParams();
-  }
-
   applyFilters(): void {
     let result = this.plants;
 
@@ -115,17 +102,11 @@ export class PlantListComponent implements OnInit {
       );
     }
 
-    // Filtre par mode d'administration
-    if (this.selectedMode) {
-      result = result.filter(plant => plant.administrationMode === this. selectedMode);
-    }
-
     this. filteredPlants = result;
   }
 
   clearFilters(): void {
     this.searchTerm = '';
-    this.selectedMode = '';
     this.currentPage = 0;
     this.applyFilters(); // Apply filters to reset the list
     this.updateUrlQueryParams(); // Update URL to clear params
@@ -145,7 +126,6 @@ export class PlantListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         searchTerm: this.searchTerm || null,
-        selectedMode: this.selectedMode || null,
         page: this.currentPage > 0 ? this.currentPage : null // Only add page if not 0
       },
       queryParamsHandling: 'merge'
@@ -157,25 +137,12 @@ export class PlantListComponent implements OnInit {
     if (this.searchTerm) {
       params['searchTerm'] = this.searchTerm;
     }
-    if (this.selectedMode) {
-      params['selectedMode'] = this.selectedMode;
-    }
     if (this.currentPage > 0) {
       params['page'] = this.currentPage;
     }
     return params;
   }
 
-  getAdministrationIcon(mode: AdministrationMode | undefined): string {
-    const icons: Record<AdministrationMode, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴',
-      'TOPICAL_ROUTE': '🩹',
-      'OTHER': '🌿'
-    };
-    return mode ? icons[mode] : '🌿';
-  }
 
   getPages(): number[] {
     const pages: number[] = [];
