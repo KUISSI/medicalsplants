@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/plants")
@@ -37,7 +37,7 @@ public class PlantController {
 
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable String id) {
         return ResponseEntity.ok(plantService.getPlantById(id));
     }
 
@@ -87,19 +87,19 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<PlantResponse> addPropertyToPlant(
-            @PathVariable String id,
-            @PathVariable String propertyId) {
-        return ResponseEntity.ok(plantService.addPropertyToPlant(id, propertyId));
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
+        return ResponseEntity.ok(plantService.getPlantById(id));
     }
 
     @Operation(summary = "Remove property from plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<PlantResponse> removePropertyFromPlant(
+    public ResponseEntity<PlantResponse> addPropertyToPlant(
             @PathVariable String id,
             @PathVariable String propertyId) {
-        return ResponseEntity.ok(plantService.removePropertyFromPlant(id, propertyId));
+        UUID plantUuid = UUID.fromString(id);
+        UUID propertyUuid = UUID.fromString(propertyId);
+        return ResponseEntity.ok(plantService.addPropertyToPlant(plantUuid, propertyUuid));
     }
 }

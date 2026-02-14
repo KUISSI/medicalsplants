@@ -2,11 +2,9 @@ package com.medicalsplants.service;
 
 import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ResourceNotFoundException;
-import com.medicalsplants.model.dto.request.PlantRequest;
-import com.medicalsplants.model.dto.response.PlantResponse;
+import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.model.entity.Plant;
 import com.medicalsplants.model.entity.Property;
-import com.medicalsplants.model.mapper.PlantMapper;
 import com.medicalsplants.repository.PlantRepository;
 import com.medicalsplants.repository.PropertyRepository;
 import org.springframework.data.domain.Page;
@@ -14,163 +12,118 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class PlantService {
 
     private final PlantRepository plantRepository;
     private final PropertyRepository propertyRepository;
-    private final PlantMapper plantMapper;
 
-    public PlantService(
-            PlantRepository plantRepository,
-            PropertyRepository propertyRepository,
-            PlantMapper plantMapper
-    ) {
+    public PlantService(PlantRepository plantRepository, PropertyRepository propertyRepository) {
         this.plantRepository = plantRepository;
         this.propertyRepository = propertyRepository;
-        this.plantMapper = plantMapper;
     }
 
-    /**
-     * Résout une liste d'UUID en entités Plant, ou lève une
-     * ResourceNotFoundException si un ou plusieurs manquent.
-     */
-    public Set<Plant> resolvePlants(Set<UUID> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return Collections.emptySet();
+    @Transactional(readOnly = true)
+    public Page<Plant> getAllPlants(Pageable pageable) {
+        return plantRepository.findAll(java.util.Objects.requireNonNull(pageable, "Pageable cannot be null"));
+    }
+
+    @Transactional(readOnly = true)
+    public Plant getPlantById(UUID id) {
+        if (id == null) {
+            throw new BadRequestException("Plant id cannot be null");
         }
-        List<Plant> found = plantRepository.findAllById(ids);
-        if (found.size() != ids.size()) {
-            Set<UUID> foundIds = found.stream().map(Plant::getId).collect(Collectors.toSet());
-            Set<UUID> missing = ids.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toSet());
-            throw new ResourceNotFoundException("Plant", "ids", missing.toString());
+        return plantRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", id.toString()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Plant> getPlantsBySymptomId(String symptomId, Pageable pageable) {
+        if (symptomId == null) {
+            throw new BadRequestException("Symptom id cannot be null");
         }
-        return new HashSet<>(found);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PlantResponse> getAllPlants(Pageable pageable) {
-        return plantRepository.findAll(pageable)
-                .map(plantMapper::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public PlantResponse getPlantById(String id) {
-        UUID uuid = UUID.fromString(id);
-        Plant plant = plantRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", id));
-        return plantMapper.toDto(plant);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PlantResponse> getPlantsBySymptomId(String symptomId, Pageable pageable) {
         UUID uuid = UUID.fromString(symptomId);
-        return plantRepository.findBySymptomId(uuid, pageable)
-                .map(plantMapper::toDto);
+        return plantRepository.findBySymptomId(uuid, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<PlantResponse> getPlantsByPropertyId(String propertyId) {
-        UUID uuid = UUID.fromString(propertyId);
-        return plantRepository.findByPropertyId(uuid)
-                .stream()
-                .map(plantMapper::toDto)
-                .toList();
+    public List<Plant> getPlantsByPropertyId(UUID propertyId) {
+        if (propertyId == null) {
+            throw new BadRequestException("Property id cannot be null");
+        }
+        return plantRepository.findByPropertyId(propertyId);
     }
 
     @Transactional
-    public PlantResponse createPlant(PlantRequest request) {
-        if (plantRepository.existsByTitle(request.getTitle())) {
+    public Plant createPlant(String title, String description, Set<String> propertyIds) {
+        if (plantRepository.existsByTitle(title)) {
             throw new ConflictException("A plant with this title already exists");
         }
 
-        Plant plant = plantMapper.toEntity(request);
+        Plant plant = new Plant();
         plant.setId(UUID.randomUUID());
+        plant.setTitle(title);
+        plant.setDescription(description);
 
-        // Associer les propriétés
-        if (request.getPropertyIds() != null && !request.getPropertyIds().isEmpty()) {
-            Set<Property> properties = new HashSet<>();
-            for (String propertyId : request.getPropertyIds()) {
-                UUID uuid = UUID.fromString(propertyId);
+        if (propertyIds != null && !propertyIds.isEmpty()) {
+            for (String propertyId : propertyIds) {
+                UUID uuid = com.medicalsplants.util.UuidUtils.parse("propertyId", propertyId);
                 Property property = propertyRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId));
-                properties.add(property);
+                plant.getProperties().add(property);
             }
-            plant.setProperties(properties);
         }
 
-        Plant saved = plantRepository.save(plant);
-        return plantMapper.toDto(saved);
+        return plantRepository.save(plant);
     }
 
     @Transactional
-    public PlantResponse updatePlant(String id, PlantRequest request) {
-        UUID uuid = UUID.fromString(id);
-        Plant plant = plantRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", id));
+    public Plant updatePlant(String id, String title, String description) {
+        Plant plant = getPlantById(com.medicalsplants.util.UuidUtils.parse("plantId", id));
 
-        if (!plant.getTitle().equals(request.getTitle()) && plantRepository.existsByTitle(request.getTitle())) {
+        if (!plant.getTitle().equals(title) && plantRepository.existsByTitle(title)) {
             throw new ConflictException("A plant with this title already exists");
         }
 
-        plant.setTitle(request.getTitle());
-        plant.setDescription(request.getDescription());
-        plant.setHistory(request.getHistory());
-        plant.setImageUrl(request.getImageUrl());
+        plant.setTitle(title);
+        plant.setDescription(description);
 
-        // Mettre à jour les propriétés si fournis
-        if (request.getPropertyIds() != null) {
-            Set<Property> properties = new HashSet<>();
-            for (String propertyId : request.getPropertyIds()) {
-                UUID propUuid = UUID.fromString(propertyId);
-                Property property = propertyRepository.findById(propUuid)
-                        .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId));
-                properties.add(property);
-            }
-            plant.setProperties(properties);
-        }
-
-        Plant saved = plantRepository.save(plant);
-        return plantMapper.toDto(saved);
+        return plantRepository.save(plant);
     }
 
     @Transactional
     public void deletePlant(String id) {
-        UUID uuid = UUID.fromString(id);
-        if (!plantRepository.existsById(uuid)) {
-            throw new ResourceNotFoundException("Plant", "id", id);
+        Plant plant = getPlantById(com.medicalsplants.util.UuidUtils.parse("plantId", id));
+        if (plant == null) {
+            throw new BadRequestException("Plant cannot be null");
         }
-        plantRepository.deleteById(uuid);
+        plantRepository.delete(plant);
     }
 
     @Transactional
-    public PlantResponse addPropertyToPlant(String plantId, String propertyId) {
-        UUID plantUuid = UUID.fromString(plantId);
-        UUID propUuid = UUID.fromString(propertyId);
-
-        Plant plant = plantRepository.findById(plantUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
-        Property property = propertyRepository.findById(propUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId));
+    public Plant addPropertyToPlant(UUID plantId, UUID propertyId) {
+        Plant plant = getPlantById(plantId);
+        if (propertyId == null) {
+            throw new BadRequestException("Property id cannot be null");
+        }
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Property", "id", propertyId.toString()));
 
         plant.getProperties().add(property);
-        Plant saved = plantRepository.save(plant);
-        return plantMapper.toDto(saved);
+        return plantRepository.save(plant);
     }
 
     @Transactional
-    public PlantResponse removePropertyFromPlant(String plantId, String propertyId) {
-        UUID plantUuid = UUID.fromString(plantId);
-        UUID propUuid = UUID.fromString(propertyId);
-
-        Plant plant = plantRepository.findById(plantUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Plant", "id", plantId));
-
-        plant.getProperties().removeIf(p -> p.getId().equals(propUuid));
-        Plant saved = plantRepository.save(plant);
-        return plantMapper.toDto(saved);
+    public Plant removePropertyFromPlant(UUID plantId, UUID propertyId) {
+        Plant plant = getPlantById(plantId);
+        if (propertyId == null) {
+            throw new BadRequestException("Property id cannot be null");
+        }
+        plant.getProperties().removeIf(p -> p.getId().equals(propertyId));
+        return plantRepository.save(plant);
     }
 }
