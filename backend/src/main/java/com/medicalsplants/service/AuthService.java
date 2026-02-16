@@ -261,12 +261,13 @@ public class AuthService {
         return MessageResponse.of("Password reset successfully. Please login with your new password.");
     }
 
-    private void saveRefreshToken(UUID userId, String token) {
+    private void saveRefreshToken(UUID userId, String token, String deviceInfo) {
         // Enregistre le refresh token pour l'utilisateur
         User user = userRepository.findById(java.util.Objects.requireNonNull(userId, "userId cannot be null")).orElseThrow();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(token);
+        refreshToken.setDeviceInfo(deviceInfo);
         refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS)); // exemple durée
         // L'id sera généré automatiquement par Hibernate
         refreshTokenRepository.save(refreshToken);
