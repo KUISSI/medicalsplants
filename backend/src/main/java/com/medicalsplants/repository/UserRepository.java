@@ -1,30 +1,31 @@
 package com.medicalsplants.repository;
 
-import com.medicalsplants.model.entity.User;
-import com.medicalsplants.model.enums.UserStatus;
+import java.time.Instant;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
-import java.util.Optional;
+import com.medicalsplants.model.entity.User;
+import com.medicalsplants.model.enums.UserStatus;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, java.util.UUID> {
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndDeletedAtIsNull(String email);
 
-    Optional<User> findByPseudo(String pseudo);
+    Optional<User> findByPseudoAndDeletedAtIsNull(String pseudo);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndDeletedAtIsNull(String email);
 
-    boolean existsByPseudo(String pseudo);
+    boolean existsByPseudoAndDeletedAtIsNull(String pseudo);
 
-    Optional<User> findByEmailVerificationToken(String token);
+    Optional<User> findByEmailVerificationTokenAndDeletedAtIsNull(String token);
 
-    Optional<User> findByPasswordResetToken(String token);
+    Optional<User> findByPasswordResetTokenAndDeletedAtIsNull(String token);
 
     @Modifying
     @Query("UPDATE User u SET u.lastLoginAt = :lastLoginAt WHERE u.id = :userId")
