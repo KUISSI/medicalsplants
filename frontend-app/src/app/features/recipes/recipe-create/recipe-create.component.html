@@ -1,0 +1,155 @@
+<div class="recipe-create-container">
+  <div class="recipe-create-header">
+    <a routerLink="/recipes" class="btn-back">← Retour</a>
+    <h1>🍵 Créer une recette</h1>
+  </div>
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="recipe-form">
+    <!-- Titre -->
+    <div class="form-group">
+      <label for="title">Titre *</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        placeholder="Nom de votre recette"
+      />
+      @if (
+        recipeForm.get("title")?.invalid && recipeForm.get("title")?.touched
+      ) {
+        <span class="error">Le titre est requis (3-100 caractères)</span>
+      }
+    </div>
+
+    <!-- Type -->
+    <div class="form-group">
+      <label>Type de recette *</label>
+      <div class="type-options">
+        @for (typeKey of RecipeTypeKeys; track typeKey) {
+          <label
+            class="type-option"
+            [class.selected]="recipeForm.get('type')?.value === typeKey"
+          >
+            <input type="radio" formControlName="type" [value]="typeKey" />
+            <span class="type-option__icon">{{
+              getRecipeTypeIcon(typeKey)
+            }}</span>
+            <span class="type-option__label">{{ RecipeTypes[typeKey] }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="3"
+        placeholder="Décrivez votre recette..."
+      ></textarea>
+    </div>
+
+    <!-- Infos pratiques -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="preparationTime">Temps de préparation (min)</label>
+        <input
+          type="number"
+          id="preparationTime"
+          formControlName="preparationTime"
+          min="1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="difficulty">Difficulté</label>
+        <select id="difficulty" formControlName="difficulty">
+          <option value="EASY">Facile</option>
+          <option value="MEDIUM">Moyen</option>
+          <option value="HARD">Difficile</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="servings">Portions</label>
+        <input type="number" id="servings" formControlName="servings" min="1" />
+      </div>
+    </div>
+
+    <!-- Plantes -->
+    <div class="form-group">
+      <label>Plantes utilisées * (sélectionnez au moins une)</label>
+      <div class="plants-selection">
+        @for (plant of plants; track plant.id) {
+          <button
+            type="button"
+            class="plant-chip"
+            [class.selected]="isPlantSelected(plant.id)"
+            (click)="togglePlant(plant.id)"
+          >
+            🌿 {{ plant.title }}
+          </button>
+        }
+      </div>
+      @if (selectedPlantIds.length === 0) {
+        <span class="error">Sélectionnez au moins une plante</span>
+      }
+    </div>
+
+    <!-- Ingrédients -->
+    <div class="form-group">
+      <label for="ingredients">Ingrédients</label>
+      <textarea
+        id="ingredients"
+        formControlName="ingredients"
+        rows="4"
+        placeholder="Liste des ingrédients (un par ligne ou séparés par des virgules)"
+      ></textarea>
+    </div>
+
+    <!-- Instructions -->
+    <div class="form-group">
+      <label for="instructions">Instructions de préparation</label>
+      <textarea
+        id="instructions"
+        formControlName="instructions"
+        rows="6"
+        placeholder="Décrivez les étapes de préparation..."
+      ></textarea>
+    </div>
+
+    <!-- Premium -->
+    <div class="form-group checkbox-group">
+      <label>
+        <input type="checkbox" formControlName="premium" />
+        Recette Premium 👑
+      </label>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-actions">
+      <button type="button" routerLink="/recipes" class="btn-cancel">
+        Annuler
+      </button>
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="
+          recipeForm.invalid || selectedPlantIds.length === 0 || isSubmitting
+        "
+      >
+        @if (isSubmitting) {
+          Création en cours...
+        } @else {
+          Créer la recette
+        }
+      </button>
+    </div>
+  </form>
+</div>

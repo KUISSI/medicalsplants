@@ -1,31 +1,34 @@
 package com.medicalsplants.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name = "ms_property")
+@Table(name = "mp_property")
 public class Property extends BaseEntity {
 
     @Id
-    @Column(columnDefinition = "uuid")
-    private java.util.UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "property_family", nullable = false, length = 100)
-    private String propertyFamily;
+    @Column(nullable = false, length = 100)
+    private String family;
 
-    @Column(name = "property_detail", nullable = false, columnDefinition = "TEXT")
-    private String propertyDetail;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
 
     // Relations Many-to-Many avec Symptom
     @ManyToMany
     @JoinTable(
-            name = "ms_property_symptom",
+            name = "mp_property_symptom",
             joinColumns = @JoinColumn(name = "property_id"),
             inverseJoinColumns = @JoinColumn(name = "symptom_id")
     )
@@ -33,25 +36,26 @@ public class Property extends BaseEntity {
 
     // Relations Many-to-Many avec Plant (inverse)
     @ManyToMany(mappedBy = "properties")
+    @JsonIgnore
     private Set<Plant> plants = new HashSet<>();
 
+    // Constructors
     public Property() {
     }
 
-    public Property(java.util.UUID id, String title, String propertyFamily, String propertyDetail, Set<Symptom> symptoms, Set<Plant> plants) {
+    public Property(UUID id, String title, String family, String description) {
         this.id = id;
         this.title = title;
-        this.propertyFamily = propertyFamily;
-        this.propertyDetail = propertyDetail;
-        this.symptoms = symptoms;
-        this.plants = plants;
+        this.family = family;
+        this.description = description;
     }
 
-    public java.util.UUID getId() {
+    // Getters and Setters
+    public UUID getId() {
         return id;
     }
 
-    public void setId(java.util.UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -63,20 +67,20 @@ public class Property extends BaseEntity {
         this.title = title;
     }
 
-    public String getPropertyFamily() {
-        return propertyFamily;
+    public String getFamily() {
+        return family;
     }
 
-    public void setPropertyFamily(String propertyFamily) {
-        this.propertyFamily = propertyFamily;
+    public void setFamily(String family) {
+        this.family = family;
     }
 
-    public String getPropertyDetail() {
-        return propertyDetail;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPropertyDetail(String propertyDetail) {
-        this.propertyDetail = propertyDetail;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<Symptom> getSymptoms() {
@@ -95,7 +99,7 @@ public class Property extends BaseEntity {
         this.plants = plants;
     }
 
-    // Méthodes utilitaires
+    // Utility methods
     public void addSymptom(Symptom symptom) {
         this.symptoms.add(symptom);
         symptom.getProperties().add(this);

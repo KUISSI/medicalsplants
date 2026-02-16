@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router';
   standalone:  true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="card" [class.card--clickable]="link" [class.card--premium]="isPremium">
-      @if (isPremium) {
+    <div class="card" [class.card--clickable]="link" [class.card--premium]="premium">
+      @if (premium) {
         <div class="card__badge">Premium</div>
       }
       
@@ -50,5 +50,5 @@ export class CardComponent {
   @Input() icon = '';
   @Input() image = '';
   @Input() link = '';
-  @Input() isPremium = false;
+  @Input() premium = false;
 }

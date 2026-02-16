@@ -26,11 +26,30 @@ export class SymptomService {
     return this.http.get<string[]>(`${this.apiUrl}/families`);
   }
 
+  /**
+   * Récupère les symptômes groupés par famille, avec filtres optionnels.
+   * @param searchTerm Filtre de recherche (optionnel)
+   * @param selectedFamily Famille sélectionnée (optionnel)
+   */
+  getGroupedByFamily(
+    searchTerm?: string,
+    selectedFamily?: string
+  ): Observable<{ [family: string]: Symptom[] }> {
+    let params = new HttpParams();
+    if (searchTerm) params = params.set('searchTerm', searchTerm);
+    if (selectedFamily) params = params.set('selectedFamily', selectedFamily);
+
+    return this.http.get<{ [family: string]: Symptom[] }>(
+      `${this.apiUrl}/grouped`,
+      { params }
+    );
+  }
+
   create(request: CreateSymptomRequest): Observable<Symptom> {
     const params = new HttpParams()
       .set('title', request.title)
-      .set('symptomFamily', request. symptomFamily)
-      .set('symptomDetail', request. symptomDetail || '');
+      .set('family', request.family)
+      .set('description', request.description || '');
 
     return this.http.post<Symptom>(this.apiUrl, null, { params });
   }
@@ -38,13 +57,13 @@ export class SymptomService {
   update(id: string, request: UpdateSymptomRequest): Observable<Symptom> {
     const params = new HttpParams()
       .set('title', request.title)
-      .set('symptomFamily', request.symptomFamily)
-      .set('symptomDetail', request.symptomDetail || '');
+      .set('family', request.family)
+      .set('description', request.description || '');
 
     return this.http.put<Symptom>(`${this.apiUrl}/${id}`, null, { params });
   }
 
-  delete(id:  string): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

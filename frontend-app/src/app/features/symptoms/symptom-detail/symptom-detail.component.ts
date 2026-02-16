@@ -6,17 +6,17 @@ import { CardComponent } from '../../../shared/components/card/card.component';
 import { SymptomService } from '../../../core/services/symptom.service';
 import { PlantService } from '../../../core/services/plant.service';
 import { Symptom } from '../../../core/models/symptom.model';
-import { Plant, PlantPage, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
+import { Plant, PlantPage } from '../../../core/models/plant.model';
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
-  selector:  'app-symptom-detail',
+    selector:  'app-symptom-detail',
   standalone: true,
   imports: [CommonModule, RouterModule, LoaderComponent],
   templateUrl: './symptom-detail.component.html',
   styleUrls: ['./symptom-detail.component.scss']
 })
-export class SymptomDetailComponent implements OnInit {
+export class descriptionComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private symptomService = inject(SymptomService);
   private plantService = inject(PlantService);
@@ -50,8 +50,8 @@ export class SymptomDetailComponent implements OnInit {
             this.error = null;
             if (symptom) { // Check if symptom is not null before proceeding
               this.loadPlants();
-              if (symptom.symptomFamily) {
-                this.loadRelatedSymptoms(symptom.symptomFamily);
+              if (symptom.family) {
+                this.loadRelatedSymptoms(symptom.family);
               }
             } else {
               this.error = 'Symptôme non trouvé. (ID: ' + id + ')';
@@ -76,26 +76,22 @@ export class SymptomDetailComponent implements OnInit {
   }
 
   loadPlants(): void {
-    if (!this.symptom) {
-      return;
+  if (!this.symptom) return;
+  this.isLoadingPlants = true;
+  const symptomId = this.symptom.id;
+  this.plantService.getBySymptomId(symptomId, this.currentPage, this.pageSize).subscribe({
+    next: (plantPage) => {
+      this.plants = plantPage.content;
+      this.totalPages = plantPage.totalPages;
+      this.isLoadingPlants = false;
+    },
+    error: (err) => {
+      this.plants = [];
+      this.isLoadingPlants = false;
+      // Optionally, set an error message for plants
     }
-
-    this.isLoadingPlants = true;
-    
-    // Ensure this.symptom.id is accessed only if this.symptom is not null
-    const symptomId = this.symptom.id;
-    this.plantService.getBySymptomId(symptomId, this.currentPage, this.pageSize).subscribe({
-      next: (plantPage) => {
-        this.plants = plantPage.content;
-        this.totalPages = plantPage.totalPages;
-        this.isLoadingPlants = false;
-      },
-      error: (err) => {
-        this.isLoadingPlants = false;
-        // Optionally, set an error message for plants
-      }
-    });
-  }
+  });
+}
 
   loadRelatedSymptoms(family: string): void {
     if (!family) {
@@ -146,17 +142,5 @@ export class SymptomDetailComponent implements OnInit {
   goBack(): void {
     this.navigationService.back();
   }
-
-  administrationModes = ADMINISTRATION_MODE_LABELS;
-
-  getAdministrationIcon(mode: AdministrationMode | undefined): string {
-    const icons: Record<AdministrationMode, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE':  '🧴',
-      'TOPICAL_ROUTE': '🩹',
-      'OTHER': '🌿'
-    };
-    return mode ? icons[mode] : '🌿';
-  }
+ 
 }

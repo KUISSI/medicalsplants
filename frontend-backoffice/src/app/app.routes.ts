@@ -99,17 +99,17 @@ export const routes: Routes = [
         title: 'Modifier plante - Admin'
       },
 
-      // Receipts
+      // recipes
       {
-        path: 'receipts',
-        loadComponent: () => import('./features/receipts/receipt-list/receipt-list.component')
-          .then(m => m.ReceiptListComponent),
+        path: 'recipes',
+        loadComponent: () => import('./features/recipes/recipe-list/recipe-list.component')
+          .then(m => m.recipeListComponent),
         title: 'Recettes - Admin'
       },
       {
-        path: 'receipts/moderation',
-        loadComponent: () => import('./features/receipts/receipt-moderation/receipt-moderation.component')
-          .then(m => m.ReceiptModerationComponent),
+        path: 'recipes/moderation',
+        loadComponent: () => import('./features/recipes/recipe-moderation/recipe-moderation.component)
+          .then(m => m.recipeModerationComponent),
         title: 'Modération - Admin'
       }
     ]

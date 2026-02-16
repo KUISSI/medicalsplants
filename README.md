@@ -1,9 +1,9 @@
 # 🌿 Medicals Plants
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/KUISSI/medicalsplants)
-[![License:  MIT](https://img.shields.io/badge/License-MIT-yellow. svg)](https://opensource.org/licenses/MIT)
-[![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/)
-[![Angular](https://img.shields.io/badge/Angular-17-red)](https://angular.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-21-blue)](https://openjdk.org/)
+[![Angular](https://img.shields.io/badge/Angular-19-red)](https://angular.io/)
 
 ## 📋 Description
 
@@ -20,9 +20,32 @@
 
 ## 🏗️ Architecture
 
-┌─────────────────┐ ┌─────────────────┐ │ Frontend App │ │ Frontend Admin │ │ (Angular 17) │ │ (Angular 17) │ │ Bootstrap 5 │ │ Bootstrap 5 │ └────────┬────────┘ └────────┬────────┘ │ │ └───────────┬───────────┘ │ ┌──────▼──────┐ │ Nginx │ │ Reverse │ │ Proxy │ └──────┬──────┘ │ ┌──────▼──────┐ │ Spring Boot │ │ REST API │ │ Java 21 │ └──────┬──────┘ │ ┌──────▼──────┐ │ PostgreSQL │ │ Database │ └─────────────┘
 
-Code
+┌─────────────────┐ ┌─────────────────┐
+│ Frontend App │ │Frontend Backoff │
+│ (Angular 19) │ │ (Angular 19) │
+│ Bootstrap 5 │ │ Bootstrap 5 │
+└────────┬────────┘ └────────┬────────┘
+│ │
+└───────────┬───────────┘
+│
+┌──────▼──────┐
+│ Nginx │
+│ Reverse │
+│ Proxy │
+└──────┬──────┘
+│
+┌──────▼──────┐
+│ Spring Boot │
+│ REST API │
+│ Java 21 │
+└──────┬──────┘
+│
+┌──────▼──────┐
+│ PostgreSQL │
+│ Database │
+└─────────────┘
+
 
 ## 🛠️ Technologies utilisées
 
@@ -38,10 +61,9 @@ Code
 
 ### Frontend
 
-- **Angular 17** - Framework frontend
+- **Angular 19** - Framework frontend
 - **TypeScript** - Langage typé
 - **Bootstrap 5** - Framework CSS
-- **ng-bootstrap** - Composants Angular
 - **RxJS** - Programmation réactive
 
 ### DevOps
@@ -53,18 +75,27 @@ Code
 
 ## 📁 Structure du projet
 
-medicalsplants/ ├── backend/ # API Spring Boot │ ├── src/main/java/ # Code source Java │ └── src/test/ # Tests unitaires ├── frontend-app/ # Application Angular (utilisateurs) ├── frontend-admin/ # Application Angular (admin) ├── database/ # Scripts SQL ├── docker/ # Configuration Docker ├── docs/ # Documentation └── e2e/ # Tests end-to-end
 
-Code
+medicalsplants/
+├── backend/ # API Spring Boot
+│ ├── src/main/java/ # Code source Java
+│ └── src/test/ # Tests unitaires
+├── frontend-app/ # Application Angular (utilisateurs)
+├── frontend-backoffice/ # Application Angular (admin)
+├── database/ # Scripts SQL
+├── docs/ # Documentation
+└── scripts/ # Scripts utilitaires
+
 
 ## 🚀 Installation
 
 ### Prérequis
 
-- Java 21+
+- Java 21 (JDK)
 - Node.js 20+
 - Docker & Docker Compose
 - Maven 3.9+
+- PostgreSQL 16 (ou via Docker)
 
 ### Démarrage rapide
 
@@ -74,90 +105,77 @@ git clone https://github.com/KUISSI/medicalsplants.git
 cd medicalsplants
 
 # Copier la configuration
-cp . env.example .env
+cp .env.example .env
 
+💻 Commandes principales
+Backend (API Spring Boot)
+# Compiler le backend
+cd backend && mvn package -DskipTests
 
-# Démarrer les services en développement (PostgreSQL, MailHog, etc.)
+# Démarrer le backend
+cd backend && mvn spring-boot:run
+
+# Lancer les tests
+cd backend && mvn test
+
+Frontend App (utilisateurs)
+# Installer les dépendances
+cd frontend-app && npm install
+
+# Démarrer en développement
+cd frontend-app && npm start
+
+Frontend Backoffice (admin)
+# Installer les dépendances
+cd frontend-backoffice && npm install
+
+# Démarrer en développement
+cd frontend-backoffice && npm start
+
+# Installer les dépendances
+cd frontend-backoffice && npm install
+
+Docker (environnement complet)
+# Démarrer en mode développement
 docker-compose -f docker-compose.dev.yml up -d
 
-# Démarrer les services en production (base de données, backend, etc.)
+# Démarrer en mode production
 docker-compose -f docker-compose.prod.yml up -d
 
+# Arrêter les services
+docker-compose down
 
-
-
-# Lancer le backend Spring Boot en développement (avec secret JWT automatique)
-#
-# Sous Linux/Mac :
-cd backend
-./start-backend.sh
-
-# Sous Windows :
-cd backend
-REM Copiez le modèle si besoin :
-copy start-backend.example.bat start-backend.bat
-REM Modifiez start-backend.bat pour y mettre votre secret local
-start-backend.bat
-#
-# ⚠️ Ne versionnez jamais backend/start-backend.bat (il est ignoré par git).
-# Utilisez le modèle start-backend.example.bat pour partager la structure du script sans secret.
-# En production, configurez JWT_SECRET via un .env ou la configuration de votre hébergeur/CI/CD.
-
-# Lancer le frontend (dans un autre terminal)
-cd frontend-app && npm install && npm start
-URLs de développement
+🌐 URLs de développement
 Service	URL
 Frontend App	http://localhost:4200
+Frontend Backoffice	http://localhost:4201
 Backend API	http://localhost:8080
 Swagger UI	http://localhost:8080/swagger-ui.html
-Adminer	http://localhost:8081
 MailHog	http://localhost:8025
-📚 Documentation
-Documentation API
-[Guide d'installation](docs/installation. md)
-Architecture technique
-Guide de contribution
+
 🧪 Tests
-bash
 # Tests backend
-cd backend && ./mvn test
+cd backend && mvn test
 
 # Tests frontend
 cd frontend-app && npm test
 
-# Tests E2E
-cd e2e/cypress && npm run cy:run
+🔧 Configuration des environnements
+# Activer l'environnement de développement (Windows)
+.\switch-env.ps1 dev
+
+# Activer l'environnement de production (Windows)
+.\switch-env.ps1 prod
+
+# Linux/Mac
+./switch-env.sh dev
+./switch-env.sh prod
+
 👤 Auteur
-KUISSI - Projet de fin d'études
+KUISSI - Projet de certification
 
 📄 License
 Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
 
 ⚠️ Avertissement médical : Les informations fournies dans cette application sont à titre informatif uniquement et ne remplacent pas l'avis d'un professionnel de santé.
 
-# Utilisation des scripts d'environnement et de lancement backend
-
-1. Pour choisir l'environnement (dev ou prod) :
-   - Ouvre un terminal à la racine du projet.
-   - Lance la commande suivante :
-     
-     switch-env.bat dev   (pour activer le développement)
-     switch-env.bat prod  (pour activer la production)
-
-   Cela copie le bon fichier (.env.dev ou .env.prod) dans .env, qui sera utilisé par le backend.
-
-2. Pour lancer le backend :
-   - Place-toi dans le dossier backend (ou utilise le script start-backend.ps1 qui le fait automatiquement).
-   - Lance le script :
-     
-     backend\start-backend.ps1
-   
-   ou, manuellement :
-     
-     cd backend
-     mvn spring-boot:run
-
-Le backend utilisera alors la configuration de l'environnement actif (défini par le .env courant).
-
-Astuce :
-- Tu peux changer d'environnement à tout moment en relançant switch-env.bat, puis en redémarrant le backend.

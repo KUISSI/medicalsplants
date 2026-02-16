@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
-import { ReceiptService } from '../../../core/services/receipt.service';
+import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Plant, AdministrationMode, ADMINISTRATION_MODE_LABELS } from '../../../core/models/plant.model';
-import { Receipt, ReceiptPage, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
+import { Plant} from '../../../core/models/plant.model';
+import { Recipe, RecipePage, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
+
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
@@ -21,22 +22,21 @@ export class PlantDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router); // Inject Router
   private plantService = inject(PlantService);
-  private receiptService = inject(ReceiptService);
+  private recipeService = inject(RecipeService);
   authService = inject(AuthService);
   private navigationService = inject(NavigationService);
 
   plant: Plant | null = null;
-  receipts: RecipeCardData[] = [];
+  recipes: RecipeCardData[] = [];
   
   isLoading = true;
-  isLoadingReceipts = true;
+  isLoadingRecipes = true;
   error: string | null = null;
   currentQueryParams: { [key: string]: any } = {}; // Property to store query params
 
   activeTab: 'properties' | 'recipes' = 'properties';
 
-  administrationModeLabels = ADMINISTRATION_MODE_LABELS;
-  receiptTypeLabels = RECEIPT_TYPE_LABELS;
+  recipeTypeLabels = RECIPE_TYPE_LABELS;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -79,7 +79,7 @@ export class PlantDetailComponent implements OnInit {
       next: (plant: Plant) => {
         this.plant = plant;
         this.isLoading = false;
-        this.loadReceipts(id);
+        this.loadRecipes(id);
       },
       error:  () => {
         this.isLoading = false;
@@ -88,53 +88,42 @@ export class PlantDetailComponent implements OnInit {
     });
   }
 
-  loadReceipts(plantId: string): void {
-    this.isLoadingReceipts = true;
+  loadRecipes(plantId: string): void {
+    this.isLoadingRecipes = true;
 
-    this.receiptService.getByPlantId(plantId, 0, 6).subscribe({
-      next: (response: ReceiptPage) => {
-        this.receipts = response.content.map(receipt => {
+    this.recipeService.getByPlantId(plantId, 0, 6).subscribe({
+      next: (response: RecipePage) => {
+        this.recipes = response.content.map(recipe => {
           const difficulties = ['Facile', 'Moyen', 'Difficile'];
-          const rating = (receipt.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
-          const time = ((receipt.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
-          const difficulty = difficulties[receipt.id.charCodeAt(0) % difficulties.length];
+          const rating = (recipe.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
+          const time = ((recipe.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
+          const difficulty = difficulties[recipe.id.charCodeAt(0) % difficulties.length];
 
           return {
-            id: receipt.id,
-            title: receipt.title,
-            imageUrl: receipt.imageUrl,
-            category: this.receiptTypeLabels[receipt.type] || 'Recette',
-            isPremium: receipt.isPremium,
+            id: recipe.id,
+            title: recipe.title,
+            category: this.recipeTypeLabels[recipe.type] || 'Recette',
+            premium: recipe.premium,
             rating,
             time,
             difficulty,
           };
         });
-        this.isLoadingReceipts = false;
+        this.isLoadingRecipes = false;
       },
       error:  () => {
-        this.isLoadingReceipts = false;
+        this.isLoadingRecipes = false;
       }
     });
   }
 
-  getAdministrationIcon(mode: AdministrationMode | undefined): string {
-    const icons:  Record<AdministrationMode, string> = {
-      'ORAL_ROUTE': '☕',
-      'NASAL_ROUTE':  '👃',
-      'EPIDERMAL_ROUTE': '🧴',
-      'TOPICAL_ROUTE': '🩹',
-      'OTHER': '🌿'
-    };
-    return mode ? icons[mode] : '🌿';
-  }
-
-  getReceiptTypeIcon(type: string): string {
+  getRecipeTypeIcon(type: string): string {
     const icons: Record<string, string> = {
       'HOT_DRINK': '☕',
       'COLD_DRINK': '🧊',
       'DISH': '🍽️',
-      'LOTION': '🧴'
+      'LOTION': '🧴',
+      'OTHER': '📦'
     };
     return icons[type] || '📖';
   }

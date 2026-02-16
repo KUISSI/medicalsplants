@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   stats = {
     symptoms: 0,
     plants: 50,
-    receipts: 100,
+    recipes: 100,
     users: 500
   };
 
@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit {
         this.stats.symptoms = symptoms. length;
         
         // Extraire les familles uniques
-        this.symptomFamilies = [... new Set(symptoms. map(s => s.symptomFamily))];
+        this.symptomFamilies = [... new Set(symptoms. map(s => s.family))];
         this.isLoading = false;
       },
       error: () => {
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
     const lowerTerm = term.toLowerCase();
     this.filteredSymptoms = this. symptoms.filter(symptom =>
       symptom. title.toLowerCase().includes(lowerTerm) ||
-      symptom.symptomFamily. toLowerCase().includes(lowerTerm)
+      symptom.family. toLowerCase().includes(lowerTerm)
     ).slice(0, 8);
   }
 

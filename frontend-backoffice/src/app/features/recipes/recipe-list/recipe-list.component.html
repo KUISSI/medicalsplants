@@ -1,0 +1,130 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">📖 Recettes</h1>
+      <p class="page__subtitle">Gérez toutes les recettes de la plateforme</p>
+    </div>
+    <a routerLink="/recipes/moderation" class="btn btn--warning"> ⏳ Modération </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="page__filters">
+    <select class="filter-select" [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange()">
+      <option value="">Tous les statuts</option>
+      @for (status of statusKeys; track status) {
+        <option [value]="status">{{ recipeStatusLabels[status] }}</option>
+      }
+    </select>
+  </div>
+
+  @if (isLoading) {
+    <app-loader message="Chargement des recettes... "></app-loader>
+  } @else if (recipes.length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">📖</span>
+      <h3 class="empty-state__title">Aucune recette trouvée</h3>
+      <p class="empty-state__message">
+        @if (selectedStatus) {
+          Aucune recette avec le statut "{{ recipeStatusLabels[selectedStatus] }}"
+        } @else {
+          Aucune recette disponible
+        }
+      </p>
+    </div>
+  } @else {
+    <div class="page__info">
+      <span>{{ totalElements }} recette(s)</span>
+    </div>
+
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Recette</th>
+            <th>Type</th>
+            <th>Auteur</th>
+            <th>Statut</th>
+            <th>Premium</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (recipe of recipes; track recipe.id) {
+            <tr>
+              <td>
+                <div class="recipe-cell">
+                  <span class="recipe-cell__icon">{{ getrecipeTypeIcon(recipe.type) }}</span>
+                  <strong>{{ recipe.title }}</strong>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge--orange">
+                  {{ recipeTypeLabels[recipe.type] }}
+                </span>
+              </td>
+              <td>
+                @if (recipe.author) {
+                  {{ recipe.author.pseudo }}
+                } @else {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [style.background-color]="recipeStatusColors[recipe.status]"
+                >
+                  {{ recipeStatusLabels[recipe.status] }}
+                </span>
+              </td>
+              <td>
+                @if (recipe.premium) {
+                  <span class="premium-badge">⭐ Oui</span>
+                } @else {
+                  <span class="text-muted">Non</span>
+                }
+              </td>
+              <td>{{ formatDate(recipe.createdAt) }}</td>
+              <td>
+                <div class="actions">
+                  <a href="#" class="action-btn" title="Voir"> 👁️ </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">
+          ««
+        </button>
+        <button
+          class="pagination__btn"
+          [disabled]="currentPage === 0"
+          (click)="loadPage(currentPage - 1)"
+        >
+          ‹
+        </button>
+        <span class="pagination__info">Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+        <button
+          class="pagination__btn"
+          [disabled]="currentPage === totalPages - 1"
+          (click)="loadPage(currentPage + 1)"
+        >
+          ›
+        </button>
+        <button
+          class="pagination__btn"
+          [disabled]="currentPage === totalPages - 1"
+          (click)="loadPage(totalPages - 1)"
+        >
+          »»
+        </button>
+      </div>
+    }
+  }
+</div>

@@ -1,5 +1,18 @@
 package com.medicalsplants.service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.exception.ConflictException;
 import com.medicalsplants.exception.ForbiddenException;
@@ -18,18 +31,6 @@ import com.medicalsplants.repository.RefreshTokenRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.security.JwtTokenProvider;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -73,25 +74,34 @@ public class AuthService {
         }
 
         User user = new User(
-                java.util.UUID.randomUUID(),
+                UUID.randomUUID(),
+                request.getEmail().toLowerCase().trim(),
+                request.getPseudo().trim(),
                 request.getFirstname(),
                 request.getLastname(),
-                request.getPseudo().trim(),
-                null, // phone non fourni par RegisterRequest
-                request.getEmail().toLowerCase().trim(),
+                null,
+                null,
                 passwordEncoder.encode(request.getPassword()),
-                null, // avatar
                 Role.USER,
-                UserStatus.ACTIVE,
-                true,
+                UserStatus.PENDING, // Statut PENDING pour forcer la vérif email
                 false
         );
         String emailVerificationToken = UUID.randomUUID().toString();
         user.setEmailVerificationToken(emailVerificationToken);
 
-        userRepository.save(user);
-        mailService.sendEmailVerification(user.getEmail(), emailVerificationToken);
-        return MessageResponse.of("Registration successful.  Please check your email to verify your account.");
+        // PATCH: Save and flush, puis log existence
+        user = userRepository.saveAndFlush(user);
+        System.out.println("User saved with ID: " + user.getId());
+        boolean exists = userRepository.existsById(user.getId());
+        System.out.println("User exists in DB: " + exists);
+
+        // Reload from DB
+        user = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("User not found after save"));
+
+        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+
+        return MessageResponse.of("Registration successful. Please check your email to verify your account.");
     }
 
     @Transactional
@@ -251,12 +261,13 @@ public class AuthService {
         return MessageResponse.of("Password reset successfully. Please login with your new password.");
     }
 
-    private void saveRefreshToken(UUID userId, String token) {
+    private void saveRefreshToken(UUID userId, String token, String deviceInfo) {
         // Enregistre le refresh token pour l'utilisateur
         User user = userRepository.findById(java.util.Objects.requireNonNull(userId, "userId cannot be null")).orElseThrow();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(token);
+        refreshToken.setDeviceInfo(deviceInfo);
         refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS)); // exemple durée
         // L'id sera généré automatiquement par Hibernate
         refreshTokenRepository.save(refreshToken);

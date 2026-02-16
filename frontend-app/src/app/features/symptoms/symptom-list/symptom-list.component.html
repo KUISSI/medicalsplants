@@ -2,11 +2,10 @@
   <!-- Header -->
   <div class="page-header">
     <div class="page-header__content">
-      <h1 class="page-header__title">
-        Symptômes
-      </h1>
+      <h1 class="page-header__title">Symptômes</h1>
       <p class="page-header__subtitle">
-        Sélectionnez un symptôme pour découvrir les plantes adaptées à votre besoin
+        Sélectionnez un symptôme pour découvrir les plantes adaptées à votre
+        besoin
       </p>
     </div>
   </div>
@@ -33,9 +32,9 @@
               (ngModelChange)="onFamilyChange($event)"
             >
               <option value="">Toutes les familles</option>
-              @for (family of families; track family) {
-              <option [value]="family">{{ family }}</option>
-              }
+              <option *ngFor="let family of families" [value]="family">
+                {{ family }}
+              </option>
             </select>
           </div>
 
@@ -60,11 +59,13 @@
           </div>
 
           <!-- Clear Filters -->
-          @if (searchTerm || selectedFamily) {
-          <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+          <button
+            *ngIf="searchTerm || selectedFamily"
+            class="filter-btn filter-btn--clear"
+            (click)="clearFilters()"
+          >
             ✕ Effacer les filtres
           </button>
-          }
         </div>
       </div>
     </div>
@@ -72,82 +73,134 @@
 
   <!-- Content -->
   <div class="page-content">
-    @if (isLoading) {
-    <app-loader message="Chargement des symptômes... "></app-loader>
-    } @else if (filteredSymptoms.length === 0) {
-    <div class="empty-state">
-      <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
-      <p class="empty-state__message">
-        @if (searchTerm || selectedFamily) { Essayez de modifier vos critères de recherche } @else {
-        Aucun symptôme n'est disponible pour le moment }
-      </p>
-      @if (searchTerm || selectedFamily) {
-      <button class="empty-state__btn" (click)="clearFilters()">Effacer les filtres</button>
-      }
-    </div>
-    } @else {
-    <!-- Results Count -->
-    <div class="results-info">
-      <span class="results-info__count"> {{ filteredSymptoms.length }} symptôme(s) trouvé(s) </span>
-    </div>
+    <ng-container *ngIf="isLoading; else loadedContent">
+      <app-loader message="Chargement des symptômes... "></app-loader>
+    </ng-container>
 
-    <!-- Grid View -->
-    @if (viewMode === 'grid') { @for (family of (groupedSymptoms | keyvalue); track family.key) {
-    <div class="symptom-family">
-      <h2 class="symptom-family__title">
-        <span class="symptom-family__icon">{{ getSymptomIcon(family.key) }}</span>
-        {{ family.key }}
-        <span class="symptom-family__count">({{ family.value.length }})</span>
-      </h2>
-
-      <div class="symptom-grid">
-        @for (symptom of family.value; track symptom.id) {
-        <a [routerLink]="['/symptoms', symptom.id]" [queryParams]="currentQueryParams" class="symptom-card">
-          <div 
-            class="symptom-card__icon" 
-            [style.background-color]="getFamilyColor(family.key)"
-            [style.box-shadow]="'0 4px 15px ' + getFamilyColor(family.key) + '66'"
+    <ng-template #loadedContent>
+      <ng-container *ngIf="families.length === 0">
+        <div class="empty-state">
+          <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+          <p class="empty-state__message">
+            <ng-container *ngIf="searchTerm || selectedFamily; else noSymptom">
+              Essayez de modifier vos critères de recherche
+            </ng-container>
+            <ng-template #noSymptom>
+              Aucun symptôme n'est disponible pour le moment
+            </ng-template>
+          </p>
+          <button
+            *ngIf="searchTerm || selectedFamily"
+            class="empty-state__btn"
+            (click)="clearFilters()"
           >
-            {{ getSymptomIcon(family.key) }}
-          </div>
-          <div class="symptom-card__content">
-            <h3 class="symptom-card__title">{{ symptom.title }}</h3>
-            @if (symptom.description) {
-            <p class="symptom-card__description">{{ symptom.description | slice:0:100 }}...</p>
-            }
-          </div>
-          <span class="symptom-card__arrow">→</span>
-        </a>
-        }
-      </div>
-    </div>
-    } } @else {
-    <!-- List View -->
-    <div class="symptom-table">
-      <div class="symptom-table__header">
-        <span class="symptom-table__col symptom-table__col--name">Symptôme</span>
-        <span class="symptom-table__col symptom-table__col--family">Famille</span>
-        <span class="symptom-table__col symptom-table__col--action">Action</span>
-      </div>
-
-      @for (symptom of filteredSymptoms; track symptom.id) {
-      <a [routerLink]="['/symptoms', symptom.id]" [queryParams]="currentQueryParams" class="symptom-table__row">
-        <span class="symptom-table__col symptom-table__col--name">
-          <span class="symptom-table__icon">{{ getSymptomIcon(symptom.symptomFamily) }}</span>
-          {{ symptom.title }}
-        </span>
-        <span class="symptom-table__col symptom-table__col--family">
-          <span
-            class="symptom-table__badge"
-            [style.background-color]="getFamilyColor(symptom.symptomFamily)"
-          >
-            {{ symptom.symptomFamily }}
+            Effacer les filtres
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="families.length > 0">
+        <!-- Results Count -->
+        <div class="results-info">
+          <span class="results-info__count">
+            {{ totalSymptoms }} symptôme(s) trouvé(s)
           </span>
-        </span>
-        <span class="symptom-table__col symptom-table__col--action"> Voir les plantes → </span>
-      </a>
-      }
-    </div>
-    } }
+        </div>
+
+        <!-- Grid View -->
+        <ng-container *ngIf="viewMode === 'grid'; else listView">
+          <div *ngFor="let family of families" class="symptom-family">
+            <h2 class="symptom-family__title">
+              <span class="symptom-family__icon">{{
+                getSymptomIcon(family)
+              }}</span>
+              {{ family }}
+              <span class="symptom-family__count">
+                ({{ groupedSymptoms[family].length }})
+              </span>
+            </h2>
+            <div class="symptom-grid">
+              <a
+                *ngFor="
+                  let symptom of groupedSymptoms[family];
+                  trackBy: trackBySymptomId
+                "
+                [routerLink]="['/symptoms', symptom.id]"
+                [queryParams]="currentQueryParams"
+                class="symptom-card"
+              >
+                <div
+                  class="symptom-card__icon"
+                  [style.background-color]="getFamilyColor(family)"
+                  [style.box-shadow]="
+                    '0 4px 15px ' + getFamilyColor(family) + '66'
+                  "
+                >
+                  {{ getSymptomIcon(family) }}
+                </div>
+                <div class="symptom-card__content">
+                  <h3 class="symptom-card__title">{{ symptom.title }}</h3>
+                  <p
+                    *ngIf="symptom.description"
+                    class="symptom-card__description"
+                  >
+                    {{ symptom.description | slice: 0 : 100 }}...
+                  </p>
+                </div>
+                <span class="symptom-card__arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- List View -->
+        <ng-template #listView>
+          <div class="symptom-table">
+            <div class="symptom-table__header">
+              <span class="symptom-table__col symptom-table__col--name"
+                >Symptôme</span
+              >
+              <span class="symptom-table__col symptom-table__col--family"
+                >Famille</span
+              >
+              <span class="symptom-table__col symptom-table__col--action"
+                >Action</span
+              >
+            </div>
+            <ng-container *ngFor="let family of families">
+              <ng-container
+                *ngFor="
+                  let symptom of groupedSymptoms[family];
+                  trackBy: trackBySymptomId
+                "
+              >
+                <a
+                  [routerLink]="['/symptoms', symptom.id]"
+                  [queryParams]="currentQueryParams"
+                  class="symptom-table__row"
+                >
+                  <span class="symptom-table__col symptom-table__col--name">
+                    <span class="symptom-table__icon">{{
+                      getSymptomIcon(family)
+                    }}</span>
+                    {{ symptom.title }}
+                  </span>
+                  <span class="symptom-table__col symptom-table__col--family">
+                    <span
+                      class="symptom-table__badge"
+                      [style.background-color]="getFamilyColor(family)"
+                    >
+                      {{ family }}
+                    </span>
+                  </span>
+                  <span class="symptom-table__col symptom-table__col--action">
+                    Voir les plantes →
+                  </span>
+                </a>
+              </ng-container>
+            </ng-container>
+          </div>
+        </ng-template>
+      </ng-container>
+    </ng-template>
   </div>
 </div>

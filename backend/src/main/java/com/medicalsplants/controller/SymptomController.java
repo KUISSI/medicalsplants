@@ -1,14 +1,17 @@
 package com.medicalsplants.controller;
 
-import com.medicalsplants.model.entity.Symptom;
+import com.medicalsplants.model.dto.request.SymptomRequest;
+import com.medicalsplants.model.dto.response.SymptomResponse;
 import com.medicalsplants.service.SymptomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.medicalsplants.model.dto.response.PlantResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -27,19 +30,19 @@ public class SymptomController {
 
     @Operation(summary = "Get all symptoms")
     @GetMapping
-    public ResponseEntity<List<Symptom>> getAllSymptoms() {
+    public ResponseEntity<List<SymptomResponse>> getAllSymptoms() {
         return ResponseEntity.ok(symptomService.getAllSymptoms());
     }
 
     @Operation(summary = "Get symptom by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Symptom> getSymptomById(@PathVariable UUID id) {
-        return ResponseEntity.ok(symptomService.getSymptomById(id.toString()));
+    public ResponseEntity<SymptomResponse> getSymptomById(@PathVariable UUID id) {
+        return ResponseEntity.ok(symptomService.getSymptomById(id));
     }
 
     @Operation(summary = "Get symptoms by family")
     @GetMapping("/family/{family}")
-    public ResponseEntity<List<Symptom>> getSymptomsByFamily(@PathVariable String family) {
+    public ResponseEntity<List<SymptomResponse>> getSymptomsByFamily(@PathVariable String family) {
         return ResponseEntity.ok(symptomService.getSymptomsByFamily(family));
     }
 
@@ -51,41 +54,40 @@ public class SymptomController {
 
     @Operation(summary = "Get symptoms grouped by family")
     @GetMapping("/grouped")
-    public ResponseEntity<Map<String, List<Symptom>>> getSymptomsGroupedByFamily() {
+    public ResponseEntity<Map<String, List<SymptomResponse>>> getSymptomsGroupedByFamily() {
         return ResponseEntity.ok(symptomService.getSymptomsGroupedByFamily());
     }
 
-    @Operation(summary = "Create a new symptom (Admin only)")
+    @Operation(summary = "Create a new symptom")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PostMapping
-    public ResponseEntity<Symptom> createSymptom(
-            @RequestParam String title,
-            @RequestParam String symptomFamily,
-            @RequestParam(required = false) String symptomDetail) {
-        Symptom symptom = symptomService.createSymptom(title, symptomFamily, symptomDetail);
-        return ResponseEntity.status(HttpStatus.CREATED).body(symptom);
+    public ResponseEntity<SymptomResponse> createSymptom(@Valid @RequestBody SymptomRequest request) {
+        SymptomResponse created = symptomService.createSymptom(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @Operation(summary = "Update a symptom (Admin only)")
+    @Operation(summary = "Update a symptom")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<Symptom> updateSymptom(
+    public ResponseEntity<SymptomResponse> updateSymptom(
             @PathVariable UUID id,
-            @RequestParam String title,
-            @RequestParam String symptomFamily,
-            @RequestParam(required = false) String symptomDetail) {
-        Symptom symptom = symptomService.updateSymptom(id.toString(), title, symptomFamily, symptomDetail);
-        return ResponseEntity.ok(symptom);
+            @Valid @RequestBody SymptomRequest request) {
+        return ResponseEntity.ok(symptomService.updateSymptom(id, request));
     }
 
-    @Operation(summary = "Delete a symptom (Admin only)")
+    @Operation(summary = "Delete a symptom")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSymptom(@PathVariable UUID id) {
-        symptomService.deleteSymptom(id.toString());
+        symptomService.deleteSymptom(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/plants")
+    public List<PlantResponse> getPlantsBySymptom(@PathVariable UUID id) {
+        return symptomService.getPlantsBySymptomId(id);
     }
 }

@@ -64,33 +64,27 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/api/v1/auth/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/actuator/health",
-                        "/actuator/info",
-                        "/error"
-                ).permitAll()
-                .requestMatchers(HttpMethod.GET,
-                        "/api/v1/symptoms/**",
-                        "/api/v1/properties/**"
-                ).permitAll()
+                // Auth endpoints publics (login, register, refresh, forgot-password, verify-email)
+                .requestMatchers(HttpMethod.POST, Routes.AUTH_POST_PUBLIC).permitAll()
+                .requestMatchers(HttpMethod.GET, Routes.AUTH_VERIFY_EMAIL).permitAll()
+                // Documentation et monitoring publics
+                .requestMatchers(Routes.DOCS_ACTUATOR).permitAll()
+                // En développement, tous les accès /api/v1/** sont publics pour faciliter les tests
+                .requestMatchers("/api/v1/**").permitAll()
+                // Admin
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-				.anyRequest().authenticated())
-				.userDetailsService(userDetailsService)
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // Tout le reste nécessite authentification
+                .anyRequest().authenticated())
+                .userDetailsService(userDetailsService)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return http.build();
-        }
+        return http.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
-
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

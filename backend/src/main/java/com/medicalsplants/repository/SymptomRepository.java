@@ -7,19 +7,20 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface SymptomRepository extends JpaRepository<Symptom, java.util.UUID> {
+public interface SymptomRepository extends JpaRepository<Symptom, UUID> {
 
     Optional<Symptom> findByTitle(String title);
 
     boolean existsByTitle(String title);
 
-    List<Symptom> findBySymptomFamily(String symptomFamily);
+    List<Symptom> findByFamily(String family);
 
-    @Query("SELECT s FROM Symptom s ORDER BY s.symptomFamily ASC, s.title ASC")
+    @Query("SELECT s FROM Symptom s ORDER BY s.family ASC, s.title ASC")
     List<Symptom> findAllOrderByFamily();
 
-    @Query("SELECT DISTINCT s.symptomFamily FROM Symptom s ORDER BY s.symptomFamily ASC")
+    @Query("SELECT DISTINCT s.family FROM Symptom s ORDER BY s.family ASC")
     List<String> findAllFamilies();
 }

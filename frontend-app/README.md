@@ -57,3 +57,22 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## Exemple d’ingrédients attendus
+
+```json
+"ingredients": [
+  { "name": "Menthe", "quantity": "10", "unit": "feuille" },
+  { "name": "Eau", "quantity": "500", "unit": "ml" }
+]
+```
+
+## Exemple d’instructions attendus
+
+```json
+"instructions": [
+  { "step": 1, "description": "Laver soigneusement les feuilles de menthe." },
+  { "step": 2, "description": "Faire bouillir l'eau et ajouter la menthe." }
+]
+```

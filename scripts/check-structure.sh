@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script de v√©rification de la structure du projet
 
-echo "Ì¥ç V√©rification de la structure du projet..."
+echo "ÔøΩÔøΩÔøΩ V√©rification de la structure du projet..."
 echo ""
 
 # Couleurs
@@ -53,7 +53,7 @@ echo "=== Entities ==="
 check_file "backend/src/main/java/com/medicalsplants/model/entity/User.java"
 check_file "backend/src/main/java/com/medicalsplants/model/entity/Symptom.java"
 check_file "backend/src/main/java/com/medicalsplants/model/entity/Plant. java"
-check_file "backend/src/main/java/com/medicalsplants/model/entity/Receipt.java"
+check_file "backend/src/main/java/com/medicalsplants/model/entity/recipe.java"
 check_file "backend/src/main/java/com/medicalsplants/model/entity/Review.java"
 
 echo ""

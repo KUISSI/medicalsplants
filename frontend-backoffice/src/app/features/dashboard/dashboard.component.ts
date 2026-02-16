@@ -22,8 +22,8 @@ export class DashboardComponent implements OnInit {
     symptoms:  0,
     properties: 0,
     plants: 0,
-    receipts: 0,
-    pendingReceipts: 0
+    recipes: 0,
+    pendingrecipes: 0
   };
 
   recentActivities = [
@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     { icon: '🌿', label: 'Nouvelle plante', link: '/plants/new', color: '#4CAF50' },
     { icon:  '🩺', label: 'Nouveau symptôme', link: '/symptoms/new', color: '#2196F3' },
     { icon:  '✨', label: 'Nouvelle propriété', link: '/properties/new', color: '#9C27B0' },
-    { icon: '⏳', label: 'Modération', link: '/receipts/moderation', color: '#FF9800' }
+    { icon: '⏳', label: 'Modération', link: '/recipes/moderation', color: '#FF9800' }
   ];
 
   ngOnInit(): void {
@@ -53,10 +53,11 @@ export class DashboardComponent implements OnInit {
         symptoms:  24,
         properties:  18,
         plants:  45,
-        receipts: 89,
-        pendingReceipts: 5
+        recipes: 89,
+        pendingrecipes: 5
       };
       this.isLoading = false;
     }, 500);
   }
+  today: string = new Date().toLocaleDateString();
 }

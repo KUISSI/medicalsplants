@@ -1,127 +1,132 @@
 package com.medicalsplants.service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
+import com.medicalsplants.exception.ConflictException;
+import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.model.dto.request.PropertyRequest;
+import com.medicalsplants.model.dto.response.PropertyResponse;
+import com.medicalsplants.model.entity.Property;
+import com.medicalsplants.model.entity.Symptom;
+import com.medicalsplants.model.mapper.PropertyMapper;
+import com.medicalsplants.repository.PropertyRepository;
+import com.medicalsplants.repository.SymptomRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.medicalsplants.exception.ConflictException;
-import com.medicalsplants.exception.ResourceNotFoundException;
-import com.medicalsplants.exception.BadRequestException;
-import com.medicalsplants.model.entity.Property;
-import com.medicalsplants.model.entity.Symptom;
-import com.medicalsplants.repository.PropertyRepository;
-import com.medicalsplants.repository.SymptomRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final SymptomRepository symptomRepository;
+    private final PropertyMapper propertyMapper;
 
-    public PropertyService(PropertyRepository propertyRepository, SymptomRepository symptomRepository) {
+    public PropertyService(PropertyRepository propertyRepository,
+            SymptomRepository symptomRepository,
+            PropertyMapper propertyMapper) {
         this.propertyRepository = propertyRepository;
         this.symptomRepository = symptomRepository;
+        this.propertyMapper = propertyMapper;
     }
 
     @Transactional(readOnly = true)
-    public List<Property> getAllProperties() {
-        return propertyRepository.findAllOrderByFamily();
+    public List<PropertyResponse> getAllProperties() {
+        return propertyRepository.findAllOrderByFamily()
+                .stream()
+                .map(propertyMapper::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public Property getPropertyById(String id) {
+    public PropertyResponse getPropertyById(String id) {
         UUID uuid = UUID.fromString(id);
-        if (uuid == null) {
-            throw new BadRequestException("Property id cannot be null");
-        }
-        return propertyRepository.findById(uuid)
+        Property property = propertyRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id));
+        return propertyMapper.toDto(property);
     }
 
     @Transactional(readOnly = true)
-    public List<Property> getPropertiesBySymptomId(String symptomId) {
+    public List<PropertyResponse> getPropertiesBySymptomId(String symptomId) {
         UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
-            throw new BadRequestException("Symptom id cannot be null");
-        }
-        return propertyRepository.findBySymptomId(uuid);
+        return propertyRepository.findBySymptomId(uuid)
+                .stream()
+                .map(propertyMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PropertyResponse> getPropertiesByFamily(String family) {
+        return propertyRepository.findByFamily(family)
+                .stream()
+                .map(propertyMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllFamilies() {
+        return propertyRepository.findAllFamilies();
     }
 
     @Transactional
-    public Property createProperty(String title, String propertyFamily, String propertyDetail, Set<String> symptomIds) {
-        if (propertyRepository.existsByTitle(title)) {
+    public PropertyResponse createProperty(PropertyRequest request) {
+        if (propertyRepository.existsByTitle(request.getTitle())) {
             throw new ConflictException("A property with this title already exists");
         }
 
-        Property property = new Property();
-        property.setId(java.util.UUID.randomUUID());
-        property.setTitle(title);
-        property.setPropertyFamily(propertyFamily);
-        property.setPropertyDetail(propertyDetail);
+        Property property = propertyMapper.toEntity(request);
+        property.setId(UUID.randomUUID());
 
-        if (symptomIds != null && !symptomIds.isEmpty()) {
-            for (String symptomId : symptomIds) {
+        // Associer les symptômes
+        if (request.getSymptomIds() != null && !request.getSymptomIds().isEmpty()) {
+            Set<Symptom> symptoms = new HashSet<>();
+            for (String symptomId : request.getSymptomIds()) {
                 UUID uuid = UUID.fromString(symptomId);
-                if (uuid == null) {
-                    throw new BadRequestException("Symptom id cannot be null");
-                }
                 Symptom symptom = symptomRepository.findById(uuid)
                         .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
-                property.getSymptoms().add(symptom);
+                symptoms.add(symptom);
             }
+            property.setSymptoms(symptoms);
         }
 
-        return propertyRepository.save(property);
+        Property saved = propertyRepository.save(property);
+        return propertyMapper.toDto(saved);
     }
 
     @Transactional
-    public Property updateProperty(String id, String title, String propertyFamily, String propertyDetail) {
-        Property property = getPropertyById(id);
+    public PropertyResponse updateProperty(String id, PropertyRequest request) {
+        UUID uuid = UUID.fromString(id);
+        Property property = propertyRepository.findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Property", "id", id));
 
-        if (!property.getTitle().equals(title) && propertyRepository.existsByTitle(title)) {
-            throw new ConflictException("A property with this title already exists");
+        property.setTitle(request.getTitle());
+        property.setFamily(request.getFamily());
+        property.setDescription(request.getDescription());
+
+        // Mettre à jour les symptômes si fournis
+        if (request.getSymptomIds() != null) {
+            Set<Symptom> symptoms = new HashSet<>();
+            for (String symptomId : request.getSymptomIds()) {
+                UUID symptomUuid = UUID.fromString(symptomId);
+                Symptom symptom = symptomRepository.findById(symptomUuid)
+                        .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
+                symptoms.add(symptom);
+            }
+            property.setSymptoms(symptoms);
         }
 
-        property.setTitle(title);
-        property.setPropertyFamily(propertyFamily);
-        property.setPropertyDetail(propertyDetail);
-
-        return propertyRepository.save(property);
+        Property saved = propertyRepository.save(property);
+        return propertyMapper.toDto(saved);
     }
 
     @Transactional
     public void deleteProperty(String id) {
-        Property property = getPropertyById(id);
-        if (property == null) {
-            throw new BadRequestException("Property cannot be null");
+        UUID uuid = UUID.fromString(id);
+        if (!propertyRepository.existsById(uuid)) {
+            throw new ResourceNotFoundException("Property", "id", id);
         }
-        propertyRepository.delete(property);
-    }
-
-    @Transactional
-    public Property addSymptomToProperty(String propertyId, String symptomId) {
-        Property property = getPropertyById(propertyId);
-        UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
-            throw new BadRequestException("Symptom id cannot be null");
-        }
-        Symptom symptom = symptomRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
-        property.getSymptoms().add(symptom);
-        return propertyRepository.save(property);
-    }
-
-    @Transactional
-    public Property removeSymptomFromProperty(String propertyId, String symptomId) {
-        Property property = getPropertyById(propertyId);
-        UUID uuid = UUID.fromString(symptomId);
-        if (uuid == null) {
-            throw new BadRequestException("Symptom id cannot be null");
-        }
-        property.getSymptoms().removeIf(s -> s.getId().equals(uuid));
-        return propertyRepository.save(property);
+        propertyRepository.deleteById(uuid);
     }
 }

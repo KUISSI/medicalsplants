@@ -1,14 +1,26 @@
-<a class="recipe-card" [routerLink]="['/receipts', recipe.id]" [queryParams]="queryParams">
+<a
+  class="recipe-card"
+  [routerLink]="['/recipes', recipe.id]"
+  [queryParams]="queryParams"
+>
   <div class="recipe-card__image">
-    <img [src]="recipe.imageUrl" [alt]="recipe.title" (error)="onImageError($event)" />
+    <img
+      [src]="recipe.imageUrl"
+      [alt]="recipe.title"
+      (error)="onImageError($event)"
+    />
   </div>
   <div class="recipe-card__content">
     <h3 class="recipe-card__title">{{ recipe.title }}</h3>
     <p class="recipe-card__category">{{ recipe.category }}</p>
     @if (recipe.rating) {
       <div class="recipe-card__rating">
-        @for (star of [1,2,3,4,5]; track $index) {
-          <span class="recipe-card__stars" [class.filled]="$index < recipe.rating">★</span>
+        @for (star of [1, 2, 3, 4, 5]; track $index) {
+          <span
+            class="recipe-card__stars"
+            [class.filled]="$index < recipe.rating"
+            >★</span
+          >
         }
       </div>
     }
@@ -22,16 +34,22 @@
         }
         @if (recipe.difficulty) {
           <span class="recipe-card__difficulty">
-            <i class="icon icon-difficulty" [ngClass]="{
-              'text-easy': recipe.difficulty === 'Facile',
-              'text-medium': recipe.difficulty === 'Moyen',
-              'text-hard': recipe.difficulty === 'Difficile'
-            }"></i>
-            <span [ngClass]="{
-              'text-easy': recipe.difficulty === 'Facile',
-              'text-medium': recipe.difficulty === 'Moyen',
-              'text-hard': recipe.difficulty === 'Difficile'
-            }">{{ recipe.difficulty }}</span>
+            <i
+              class="icon icon-difficulty"
+              [ngClass]="{
+                'text-easy': recipe.difficulty === 'Facile',
+                'text-medium': recipe.difficulty === 'Moyen',
+                'text-hard': recipe.difficulty === 'Difficile',
+              }"
+            ></i>
+            <span
+              [ngClass]="{
+                'text-easy': recipe.difficulty === 'Facile',
+                'text-medium': recipe.difficulty === 'Moyen',
+                'text-hard': recipe.difficulty === 'Difficile',
+              }"
+              >{{ recipe.difficulty }}</span
+            >
           </span>
         }
       </div>

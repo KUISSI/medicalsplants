@@ -44,7 +44,7 @@ export const routes: Routes = [
   {
     path: 'symptoms/:id',
     loadComponent: () => import('./features/symptoms/symptom-detail/symptom-detail.component')
-      .then(m => m.SymptomDetailComponent),
+      .then(m => m.descriptionComponent),
     title: 'Détail du symptôme - Medicals Plants'
   },
 
@@ -62,24 +62,24 @@ export const routes: Routes = [
     title: 'Détail de la plante - Medicals Plants'
   },
 
-  // Receipts
+  // Recipes
   {
-    path:  'receipts',
-    loadComponent:  () => import('./features/receipts/receipt-list/receipt-list.component')
-      .then(m => m.ReceiptListComponent),
+    path:  'recipes',
+    loadComponent:  () => import('./features/recipes/recipe-list/recipe-list.component')
+      .then(m => m.RecipeListComponent),
     title: 'Recettes - Medicals Plants'
   },
   {
-    path: 'receipts/create',
-    loadComponent: () => import('./features/receipts/receipt-create/receipt-create.component')
-      .then(m => m.ReceiptCreateComponent),
+    path: 'recipes/create',
+    loadComponent: () => import('./features/recipes/recipe-create/recipe-create.component')
+      .then(m => m.RecipeCreateComponent),
     canActivate: [authGuard],
     title: 'Créer une recette - Medicals Plants'
   },
   {
-    path: 'receipts/:id',
-    loadComponent: () => import('./features/receipts/receipt-detail/receipt-detail.component')
-      .then(m => m.ReceiptDetailComponent),
+    path: 'recipes/:id',
+    loadComponent: () => import('./features/recipes/recipe-detail/recipe-detail.component')
+      .then(m => m.RecipeDetailComponent),
     title: 'Détail de la recette - Medicals Plants'
   },
 

@@ -1,0 +1,83 @@
+<div class="recipe-list-container">
+  <div class="recipe-list-header">
+    <h1>🍵 Recettes</h1>
+    <p class="subtitle">Découvrez nos recettes à base de plantes médicinales</p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        placeholder="Rechercher une recette..."
+        class="search-input"
+      />
+    </div>
+
+    <div class="type-filters">
+      <button
+        class="filter-btn"
+        [class.active]="selectedType === ''"
+        (click)="onTypeChange('')"
+      >
+        Toutes
+      </button>
+      @for (type of RecipeTypeKeys; track type) {
+        <button
+          class="filter-btn"
+          [class.active]="selectedType === type"
+          (click)="onTypeChange(type)"
+        >
+          {{ getRecipeTypeIcon(type) }} {{ RecipeTypes[type] }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  @if (isLoading) {
+    <div class="loading">
+      <p>Chargement des recettes...</p>
+    </div>
+  } @else if (error) {
+    <div class="error">
+      <p>{{ error }}</p>
+      <button (click)="loadRecipes()">Réessayer</button>
+    </div>
+  } @else if (filteredRecipes.length === 0) {
+    <div class="empty">
+      <p>Aucune recette trouvée</p>
+    </div>
+  } @else {
+    <div class="results-info">
+      {{ filteredRecipes.length }} recette(s) sur {{ totalElements }}
+    </div>
+
+    <div class="recipes-grid">
+      @for (recipe of filteredRecipes; track recipe.id) {
+        <app-recipe-card [recipe]="recipe"></app-recipe-card>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button
+          [disabled]="currentPage === 0"
+          (click)="onPageChange(currentPage - 1)"
+        >
+          Précédent
+        </button>
+        <span>Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+        <button
+          [disabled]="currentPage >= totalPages - 1"
+          (click)="onPageChange(currentPage + 1)"
+        >
+          Suivant
+        </button>
+      </div>
+    }
+  }
+</div>

@@ -7,7 +7,7 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './header. component.html',
+  templateUrl: './header.component.html',
   styleUrls:  ['./header.component.scss']
 })
 export class HeaderComponent {
@@ -20,8 +20,8 @@ export class HeaderComponent {
     { path: '/symptoms', label: 'Symptômes', icon: '🩺', exact: false },
     { path: '/properties', label: 'Propriétés', icon: '✨', exact: false },
     { path:  '/plants', label: 'Plantes', icon: '🌿', exact: false },
-    { path:  '/receipts', label: 'Recettes', icon: '📖', exact: false },
-    { path:  '/receipts/moderation', label: 'Modération', icon: '⏳', exact: false }
+    { path:  '/recipes', label: 'Recettes', icon: '📖', exact: false },
+    { path:  '/recipes/moderation', label: 'Modération', icon: '⏳', exact: false }
   ];
 
   toggleMenu(): void {

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LoaderComponent } from '../../../shared/components/loader/loader. component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SymptomService } from '../../../core/services/symptom.service';
 import { Symptom } from '../../../core/models/symptom.model';
@@ -18,24 +18,22 @@ import { ToastrService } from 'ngx-toastr';
     LoaderComponent,
     ConfirmDialogComponent
   ],
-  templateUrl: './symptom-list.component. html',
-  styleUrls: ['./symptom-list. component.scss']
+  templateUrl: './symptom-list.component.html',
+  styleUrls: ['./symptom-list.component.scss']
 })
 export class SymptomListComponent implements OnInit {
   private symptomService = inject(SymptomService);
   private toastr = inject(ToastrService);
 
-  symptoms: Symptom[] = [];
-  filteredSymptoms:  Symptom[] = [];
+  groupedSymptoms: { [family: string]: Symptom[] } = {};
   families: string[] = [];
-  
   isLoading = true;
   searchTerm = '';
   selectedFamily = '';
 
   // Delete confirmation
   showDeleteDialog = false;
-  symptomToDelete:  Symptom | null = null;
+  symptomToDelete: Symptom | null = null;
 
   ngOnInit(): void {
     this.loadSymptoms();
@@ -43,11 +41,10 @@ export class SymptomListComponent implements OnInit {
 
   loadSymptoms(): void {
     this.isLoading = true;
-    this.symptomService. getAll().subscribe({
-      next: (symptoms) => {
-        this.symptoms = symptoms;
-        this. filteredSymptoms = symptoms;
-        this.families = [... new Set(symptoms. map(s => s.symptomFamily))].sort();
+    this.symptomService.getGroupedByFamily(this.searchTerm, this.selectedFamily).subscribe({
+      next: (data) => {
+        this.groupedSymptoms = data;
+        this.families = Object.keys(data).sort();
         this.isLoading = false;
       },
       error: () => {
@@ -56,28 +53,20 @@ export class SymptomListComponent implements OnInit {
     });
   }
 
-  applyFilters(): void {
-    let result = this.symptoms;
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.loadSymptoms();
+  }
 
-    if (this. searchTerm. trim()) {
-      const term = this.searchTerm.toLowerCase();
-      result = result. filter(s =>
-        s.title.toLowerCase().includes(term) ||
-        s.symptomFamily.toLowerCase().includes(term)
-      );
-    }
-
-    if (this.selectedFamily) {
-      result = result.filter(s => s.symptomFamily === this.selectedFamily);
-    }
-
-    this.filteredSymptoms = result;
+  onFamilyChange(family: string): void {
+    this.selectedFamily = family;
+    this.loadSymptoms();
   }
 
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedFamily = '';
-    this.filteredSymptoms = this.symptoms;
+    this.loadSymptoms();
   }
 
   confirmDelete(symptom: Symptom): void {
@@ -88,12 +77,18 @@ export class SymptomListComponent implements OnInit {
   onDeleteConfirm(): void {
     if (this.symptomToDelete) {
       this.symptomService.delete(this.symptomToDelete.id).subscribe({
-        next:  () => {
-          this.symptoms = this.symptoms. filter(s => s.id !== this. symptomToDelete?. id);
-          this.applyFilters();
+        next: () => {
+          const family = this.symptomToDelete?.family;
+          if (family && this.groupedSymptoms[family]) {
+            this.groupedSymptoms[family] = this.groupedSymptoms[family].filter(s => s.id !== this.symptomToDelete?.id);
+            if (this.groupedSymptoms[family].length === 0) {
+              this.families = this.families.filter(f => f !== family);
+              delete this.groupedSymptoms[family];
+            }
+          }
           this.toastr.success('Symptôme supprimé', 'Succès');
           this.showDeleteDialog = false;
-          this. symptomToDelete = null;
+          this.symptomToDelete = null;
         }
       });
     }
@@ -104,7 +99,7 @@ export class SymptomListComponent implements OnInit {
     this.symptomToDelete = null;
   }
 
-  formatDate(dateString:  string): string {
+  formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('fr-FR');
   }
 }

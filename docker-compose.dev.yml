@@ -14,14 +14,14 @@ services:
     container_name: medicalsplants-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment: 
       POSTGRES_DB: medicalsplants_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+      # Migrations gérées par Flyway dans le backend, pas besoin de volume ici
     healthcheck: 
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -73,6 +73,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=db
+      - DB_PORT=5432
     ports:
       - "8080:8080"
     depends_on:
@@ -81,6 +83,38 @@ services:
       - medicalsplants-network
     env_file:
       - .env
+
+  # ========================================
+  # Frontend - Public App (Angular)
+  # ========================================
+  frontend-app:
+    build:
+      context: ./frontend-app
+      dockerfile: Dockerfile
+    container_name: medicalsplants-frontend-app
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - medicalsplants-network
+
+  # ========================================
+  # Frontend - Backoffice (Angular)
+  # ========================================
+  frontend-backoffice:
+    build:
+      context: ./frontend-backoffice
+      dockerfile: Dockerfile
+    container_name: medicalsplants-frontend-backoffice
+    restart: unless-stopped
+    ports:
+      - "4201:4201"
+    depends_on:
+      - backend
+    networks:
+      - medicalsplants-network
 
 volumes:
   postgres_data:

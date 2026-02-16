@@ -1,0 +1,7 @@
+target
+.git
+.gitignore
+.mvn
+.idea
+.DS_Store
+settings.xml

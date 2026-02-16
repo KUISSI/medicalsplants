@@ -1,0 +1,142 @@
+<div class="recipe-detail-container">
+  @if (isLoading) {
+    <div class="loading">
+      <p>Chargement de la recette...</p>
+    </div>
+  } @else if (error) {
+    <div class="error">
+      <p>{{ error }}</p>
+      <a routerLink="/recipes" class="btn-back">Retour aux recettes</a>
+    </div>
+  } @else if (recipe) {
+    <div class="recipe-content">
+      <!-- Header -->
+      <div class="recipe-header section-spacing">
+        <a routerLink="/recipes" class="btn-back">← Retour</a>
+        <div class="recipe-title-section">
+          <h1 class="recipe-title">{{ recipe.title }}</h1>
+          <p class="recipe-type">
+            {{ getRecipeTypeIcon(recipe.type) }}
+            {{ RecipeTypeLabels[recipe.type] }}
+          </p>
+          @if (recipe.premium) {
+            <span class="premium-badge">👑 Premium</span>
+          }
+        </div>
+      </div>
+
+      <!-- Infos rapides -->
+      <div class="recipe-meta section-spacing">
+        @if (recipe.preparationTime) {
+          <span class="meta-item">⏱️ {{ recipe.preparationTime }} min</span>
+        }
+        @if (recipe.difficulty) {
+          <span class="meta-item"
+            >📊 {{ getDifficultyLabel(recipe.difficulty) }}</span
+          >
+        }
+        @if (recipe.servings) {
+          <span class="meta-item">👥 {{ recipe.servings }} portions</span>
+        }
+        @if (recipe.averageRating) {
+          <span class="meta-item"
+            >⭐ {{ recipe.averageRating | number: "1.1-1" }}/5</span
+          >
+        }
+      </div>
+
+      <!-- Description -->
+      @if (recipe.description) {
+        <div class="recipe-description section-spacing">
+          <h2>Description</h2>
+          <p>{{ recipe.description }}</p>
+        </div>
+      }
+
+      <!-- Plantes utilisées -->
+      @if (recipe.plants && recipe.plants.length > 0) {
+        <div class="recipe-plants section-spacing">
+          <h2>🌿 Plantes utilisées</h2>
+          <div class="plants-list">
+            @for (plant of recipe.plants; track plant.id) {
+              <a [routerLink]="['/plants', plant.id]" class="plant-chip">
+                {{ plant.title }}
+              </a>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Ingrédients -->
+      @if (ingredientsList.length > 0) {
+        <div class="recipe-ingredients section-spacing">
+          <h2>📝 Ingrédients</h2>
+          <ul class="spaced-list">
+            @for (ingredient of ingredientsList; track ingredient) {
+              <li>{{ ingredient }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Instructions -->
+      @if (recipe.instructions) {
+        <div class="recipe-instructions section-spacing">
+          <h2>👨‍🍳 Préparation</h2>
+          <ul class="spaced-list">
+            @for (step of preparationSteps; track $index) {
+              <li>
+                <strong>Étape {{ $index + 1 }} :</strong> {{ step.trim() }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Auteur -->
+      @if (recipe.author) {
+        <div class="recipe-author section-spacing">
+          <p>
+            Recette proposée par
+            <strong>{{
+              recipe.author.pseudo || recipe.author.firstname
+            }}</strong>
+          </p>
+        </div>
+      }
+
+      <!-- Avis -->
+      <div class="recipe-reviews section-spacing">
+        <h2>💬 Avis ({{ recipe.reviewCount || 0 }})</h2>
+
+        @if (!authService.isAuthenticated()) {
+          <p>
+            <a
+              routerLink="/login"
+              [queryParams]="{ returnUrl: '/recipes/' + recipe.id }"
+            >
+              Connectez-vous
+            </a>
+            pour laisser un avis
+          </p>
+        }
+
+        @if (recipe.reviews && recipe.reviews.length > 0) {
+          <div class="reviews-list">
+            @for (review of recipe.reviews; track review.id) {
+              <div class="review-item">
+                <div class="review-header">
+                  <strong>{{ review.author?.pseudo || "Anonyme" }}</strong>
+                  <span class="review-rating">⭐ {{ review.rating }}/5</span>
+                </div>
+                <p class="review-content">{{ review.content }}</p>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-reviews">Aucun avis pour le moment</p>
+        }
+      </div>
+    </div>
+  }
+</div>

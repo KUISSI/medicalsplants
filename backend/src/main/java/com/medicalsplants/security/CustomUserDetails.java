@@ -55,7 +55,7 @@ public class CustomUserDetails implements UserDetails {
                 user.getLastname(),
                 user.getRole(),
                 user.getStatus(),
-                user.getIsActive(),
+                user.isActive(),
                 user.getIsEmailVerified()
         );
     }
@@ -154,7 +154,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return status != UserStatus.BLOCKED;
+        return status != UserStatus.SUSPENDED;
     }
 
     @Override
@@ -171,7 +171,7 @@ public class CustomUserDetails implements UserDetails {
         return role == Role.ADMIN;
     }
 
-    public boolean isPremium() {
+    public boolean premium() {
         return role == Role.PREMIUM || role == Role.ADMIN;
     }
 
