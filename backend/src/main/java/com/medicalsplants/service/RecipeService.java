@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.time.Instant;
 
 @Service
 public class RecipeService {
@@ -244,10 +245,14 @@ public class RecipeService {
 
         boolean isOwner = recipe.getAuthor() != null
                 && recipe.getAuthor().getId().equals(currentUser.getId());
-        if (!isOwner && !currentUser.isAdmin()) {
+        boolean isAdmin = currentUser.isAdmin();
+
+        if (isAdmin) {
+            recipeRepository.delete(recipe); // Suppression physique
+        } else if (isOwner) {
+            recipe.setDeletedAt(Instant.now()); // Soft delete
+            recipeRepository.save(recipe);
+        } else {
             throw new ForbiddenException("You can only delete your own recipes");
         }
-
-        recipeRepository.delete(recipe);
     }
-}
