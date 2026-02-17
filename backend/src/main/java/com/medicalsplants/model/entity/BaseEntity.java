@@ -12,8 +12,18 @@ import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-
 public abstract class BaseEntity {
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     public Instant getCreatedAt() {
         return createdAt;
@@ -38,16 +48,4 @@ public abstract class BaseEntity {
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Column(name = "deleted_at")
-    private Instant deletedAt;
-
 }

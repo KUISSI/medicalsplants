@@ -1,8 +1,18 @@
-
-
 package com.medicalsplants.controller;
 
 import java.util.UUID;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.medicalsplants.model.dto.request.LoginRequest;
 import com.medicalsplants.model.dto.request.RefreshTokenRequest;
@@ -14,19 +24,15 @@ import com.medicalsplants.model.mapper.UserMapper;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 import com.medicalsplants.service.AuthService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication and authorization endpoints")
-
 public class AuthController {
 
     private final AuthService authService;
@@ -49,15 +55,37 @@ public class AuthController {
     @Operation(summary = "Login")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        AuthResponse response = authService.login(request);
-        return ResponseEntity.ok(response);
+        AuthService.AuthResult result = authService.login(request);
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/v1/auth/refresh")
+                .maxAge(30 * 24 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(result.getResponse());
     }
 
     @Operation(summary = "Refresh token")
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        AuthResponse response = authService.refreshToken(request);
-        return ResponseEntity.ok(response);
+        AuthService.AuthResult result = authService.refreshToken(request);
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/v1/auth/refresh")
+                .maxAge(30 * 24 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(result.getResponse());
     }
 
     @Operation(summary = "Logout")
@@ -65,7 +93,19 @@ public class AuthController {
     public ResponseEntity<MessageResponse> logout(@RequestBody(required = false) RefreshTokenRequest request) {
         String refreshToken = request != null ? request.getRefreshToken() : null;
         MessageResponse response = authService.logout(refreshToken);
-        return ResponseEntity.ok(response);
+
+        // Supprime le cookie côté client
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/v1/auth/refresh")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .body(response);
     }
 
     @Operation(summary = "Logout from all devices")
@@ -73,7 +113,18 @@ public class AuthController {
     @PostMapping("/logout-all")
     public ResponseEntity<MessageResponse> logoutAll(@AuthenticationPrincipal CustomUserDetails currentUser) {
         MessageResponse response = authService.logoutAll(currentUser.getId());
-        return ResponseEntity.ok(response);
+
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/v1/auth/refresh")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .body(response);
     }
 
     @Operation(summary = "Get current user")
@@ -82,13 +133,12 @@ public class AuthController {
     @SuppressWarnings("null")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser == null || currentUser.getId() == null) {
-            // Pas authentifié ou id absent : retourne 401 Unauthorized
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         UUID userId = currentUser.getId();
         return userRepository.findById(userId)
-            .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
-            .orElse(ResponseEntity.notFound().build());
+                .map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Verify email")
@@ -101,7 +151,6 @@ public class AuthController {
     @Operation(summary = "Forgot password")
     @PostMapping("/forgot-password")
     public ResponseEntity<MessageResponse> forgotPassword(@RequestParam String email) {
-        // Validation stricte du format email
         if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             return ResponseEntity.badRequest().body(MessageResponse.of("Invalid email format"));
         }

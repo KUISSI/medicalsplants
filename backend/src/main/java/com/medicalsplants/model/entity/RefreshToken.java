@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name = "mp_refresh_token")
 public class RefreshToken extends BaseEntity {
@@ -30,9 +31,6 @@ public class RefreshToken extends BaseEntity {
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
 
-    @Column(name = "device_info", length = 255)
-    private String deviceInfo;
-
     @Column(name = "is_revoked", nullable = false)
     private Boolean isRevoked = false;
 
@@ -48,7 +46,6 @@ public class RefreshToken extends BaseEntity {
         this.token = token;
         this.expiresAt = expiresAt;
         this.user = user;
-        this.deviceInfo = deviceInfo;
         this.isRevoked = false;
     }
 
@@ -75,14 +72,6 @@ public class RefreshToken extends BaseEntity {
 
     public void setExpiresAt(Instant expiresAt) {
         this.expiresAt = expiresAt;
-    }
-
-    public String getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
     }
 
     public Boolean getIsRevoked() {

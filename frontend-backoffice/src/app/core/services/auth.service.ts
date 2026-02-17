@@ -18,7 +18,7 @@ export class AuthService {
   private currentUserSignal = signal<User | null>(null);
   private isLoadingSignal = signal<boolean>(false);
 
-  readonly currentUser = this.currentUserSignal. asReadonly();
+  readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isLoading = this.isLoadingSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
   readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'ADMIN');
@@ -33,8 +33,8 @@ export class AuthService {
   }
 
   private loadUserFromStorage(): void {
-    const user = this.storage. get<User>(environment.userKey);
-    const token = this.storage. get<string>(environment.tokenKey);
+    const user = this.storage.get<User>(environment.userKey);
+    const token = this.storage.get<string>(environment.tokenKey);
 
     if (user && token && user.role === 'ADMIN') {
       this.currentUserSignal.set(user);
@@ -49,11 +49,11 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
       tap(response => {
-        this.isLoadingSignal. set(false);
+        this.isLoadingSignal.set(false);
 
         // Vérifier que c'est un admin
         if (response.data.user.role !== 'ADMIN') {
-          this. toastr.error('Accès réservé aux administrateurs', 'Accès refusé');
+          this.toastr.error('Accès réservé aux administrateurs', 'Accès refusé');
           throw new Error('Not an admin');
         }
 
@@ -61,31 +61,28 @@ export class AuthService {
         this.toastr.success('Bienvenue dans l\'administration', 'Connexion réussie');
       }),
       catchError(error => {
-        this. isLoadingSignal.set(false);
+        this.isLoadingSignal.set(false);
         return throwError(() => error);
       })
     );
   }
 
   logout(): void {
-    const refreshToken = this.storage.get<string>(environment.refreshTokenKey);
-
-    this.http.post<MessageResponse>(`${this.apiUrl}/logout`, { refreshToken })
+    this.http.post<MessageResponse>(`${this.apiUrl}/logout`, {})
       .subscribe({ complete: () => {} });
 
     this.handleLogout();
   }
 
   getAccessToken(): string | null {
-    return this.storage.get<string>(environment. tokenKey);
+    return this.storage.get<string>(environment.tokenKey);
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
-    const { accessToken, refreshToken, user } = response. data;
+    const { accessToken, user } = response.data;
 
     this.storage.set(environment.tokenKey, accessToken);
-    this.storage.set(environment.refreshTokenKey, refreshToken);
-    this.storage.set(environment. userKey, user);
+    this.storage.set(environment.userKey, user);
 
     this.currentUserSignal.set(user);
   }
@@ -98,8 +95,7 @@ export class AuthService {
   }
 
   private clearStorage(): void {
-    this. storage.remove(environment.tokenKey);
-    this.storage.remove(environment.refreshTokenKey);
+    this.storage.remove(environment.tokenKey);
     this.storage.remove(environment.userKey);
   }
 }

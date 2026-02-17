@@ -59,6 +59,26 @@ public class AuthService {
         this.userMapper = userMapper;
     }
 
+    // Classe utilitaire pour retourner la réponse et le refresh token
+    public static class AuthResult {
+
+        private final AuthResponse response;
+        private final String refreshToken;
+
+        public AuthResult(AuthResponse response, String refreshToken) {
+            this.response = response;
+            this.refreshToken = refreshToken;
+        }
+
+        public AuthResponse getResponse() {
+            return response;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+    }
+
     @Transactional
     public MessageResponse register(RegisterRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -83,29 +103,20 @@ public class AuthService {
                 null,
                 passwordEncoder.encode(request.getPassword()),
                 Role.USER,
-                UserStatus.PENDING, // Statut PENDING pour forcer la vérif email
+                UserStatus.PENDING,
                 false
         );
         String emailVerificationToken = UUID.randomUUID().toString();
         user.setEmailVerificationToken(emailVerificationToken);
 
-        // PATCH: Save and flush, puis log existence
         user = userRepository.saveAndFlush(user);
-        System.out.println("User saved with ID: " + user.getId());
-        boolean exists = userRepository.existsById(user.getId());
-        System.out.println("User exists in DB: " + exists);
-
-        // Reload from DB
-        user = userRepository.findById(user.getId())
-                .orElseThrow(() -> new IllegalStateException("User not found after save"));
-
         mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
 
         return MessageResponse.of("Registration successful. Please check your email to verify your account.");
     }
 
     @Transactional
-    public AuthResponse login(LoginRequest request) {
+    public AuthResult login(LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -129,11 +140,10 @@ public class AuthService {
 
             User user = userRepository.findById(java.util.Objects.requireNonNull(userDetails.getId(), "User id cannot be null")).orElseThrow();
 
-            return new AuthResponse(
+            AuthResponse response = new AuthResponse(
                     true,
                     new AuthResponse.AuthData(
                             accessToken,
-                            refreshToken,
                             "Bearer",
                             jwtTokenProvider.getExpirationInSeconds(),
                             userMapper.toDto(user)
@@ -141,6 +151,8 @@ public class AuthService {
                     "Login successful",
                     Instant.now().toString()
             );
+
+            return new AuthResult(response, refreshToken);
 
         } catch (BadCredentialsException e) {
             throw new UnauthorizedException("Invalid email or password");
@@ -150,7 +162,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse refreshToken(RefreshTokenRequest request) {
+    public AuthResult refreshToken(RefreshTokenRequest request) {
         String token = request.getRefreshToken();
 
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
@@ -178,7 +190,6 @@ public class AuthService {
 
         AuthResponse.AuthData data = new AuthResponse.AuthData();
         data.setAccessToken(newAccessToken);
-        data.setRefreshToken(newRefreshToken);
         data.setTokenType("Bearer");
         data.setExpiresIn(jwtTokenProvider.getExpirationInSeconds());
         data.setUser(userMapper.toDto(user));
@@ -187,7 +198,8 @@ public class AuthService {
         response.setSuccess(true);
         response.setData(data);
         response.setTimestamp(Instant.now().toString());
-        return response;
+
+        return new AuthResult(response, newRefreshToken);
     }
 
     @Transactional
@@ -261,19 +273,15 @@ public class AuthService {
         return MessageResponse.of("Password reset successfully. Please login with your new password.");
     }
 
-    private void saveRefreshToken(UUID userId, String token, String deviceInfo) {
-        // Enregistre le refresh token pour l'utilisateur
+    private void saveRefreshToken(UUID userId, String token) {
         User user = userRepository.findById(java.util.Objects.requireNonNull(userId, "userId cannot be null")).orElseThrow();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(token);
-        refreshToken.setDeviceInfo(deviceInfo);
-        refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS)); // exemple durée
-        // L'id sera généré automatiquement par Hibernate
+        refreshToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS));
         refreshTokenRepository.save(refreshToken);
     }
 
-    // Pour compatibilité API (si besoin d'accepter un String)
     public MessageResponse logoutAll(String userId) {
         return logoutAll(UUID.fromString(userId));
     }
