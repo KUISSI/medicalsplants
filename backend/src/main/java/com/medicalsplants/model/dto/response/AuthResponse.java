@@ -52,17 +52,12 @@ public class AuthResponse {
     public static class AuthData {
 
         private String accessToken;
-        private String refreshToken;
         private String tokenType = "Bearer";
         private long expiresIn;
         private UserResponse user;
 
-        public AuthData() {
-        }
-
-        public AuthData(String accessToken, String refreshToken, String tokenType, long expiresIn, UserResponse user) {
+        public AuthData(String accessToken, String tokenType, long expiresIn, UserResponse user) {
             this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
             this.tokenType = tokenType != null ? tokenType : "Bearer";
             this.expiresIn = expiresIn;
             this.user = user;
@@ -74,14 +69,6 @@ public class AuthResponse {
 
         public void setAccessToken(String accessToken) {
             this.accessToken = accessToken;
-        }
-
-        public String getRefreshToken() {
-            return refreshToken;
-        }
-
-        public void setRefreshToken(String refreshToken) {
-            this.refreshToken = refreshToken;
         }
 
         public String getTokenType() {

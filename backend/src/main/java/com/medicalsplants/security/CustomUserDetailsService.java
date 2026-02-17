@@ -1,13 +1,15 @@
 package com.medicalsplants.security;
 
-import com.medicalsplants.model.entity.User;
-import com.medicalsplants.repository.UserRepository;
+import java.util.UUID;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.medicalsplants.model.entity.User;
+import com.medicalsplants.repository.UserRepository;
 
 @Service
 
@@ -22,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return CustomUserDetails.fromUser(user);

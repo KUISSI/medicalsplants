@@ -32,7 +32,6 @@ export interface AuthResponse {
   success: boolean;
   data:  {
     accessToken: string;
-    refreshToken: string;
     tokenType: string;
     expiresIn: number;
     user: User;

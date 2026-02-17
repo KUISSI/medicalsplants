@@ -123,10 +123,12 @@ public class Review extends BaseEntity {
         this.recipe = recipe;
     }
 
+    @Override
     public Instant getDeletedAt() {
         return deletedAt;
     }
 
+    @Override
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }

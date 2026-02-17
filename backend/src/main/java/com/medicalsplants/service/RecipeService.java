@@ -256,3 +256,4 @@ public class RecipeService {
             throw new ForbiddenException("You can only delete your own recipes");
         }
     }
+}

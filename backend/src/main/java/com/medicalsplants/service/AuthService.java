@@ -85,11 +85,11 @@ public class AuthService {
             throw new BadRequestException("Passwords do not match");
         }
 
-        if (userRepository.existsByEmail(request.getEmail().toLowerCase().trim())) {
+        if (userRepository.existsByEmailAndDeletedAtIsNull(request.getEmail().toLowerCase().trim())) {
             throw new ConflictException("An account with this email already exists");
         }
 
-        if (userRepository.existsByPseudo(request.getPseudo().trim())) {
+        if (userRepository.existsByPseudoAndDeletedAtIsNull(request.getPseudo().trim())) {
             throw new ConflictException("This pseudo is already taken");
         }
 
@@ -188,16 +188,19 @@ public class AuthService {
 
         saveRefreshToken(user.getId(), newRefreshToken);
 
-        AuthResponse.AuthData data = new AuthResponse.AuthData();
-        data.setAccessToken(newAccessToken);
-        data.setTokenType("Bearer");
-        data.setExpiresIn(jwtTokenProvider.getExpirationInSeconds());
-        data.setUser(userMapper.toDto(user));
+        AuthResponse.AuthData data = new AuthResponse.AuthData(
+                newAccessToken,
+                "Bearer",
+                jwtTokenProvider.getExpirationInSeconds(),
+                userMapper.toDto(user)
+        );
 
-        AuthResponse response = new AuthResponse();
-        response.setSuccess(true);
-        response.setData(data);
-        response.setTimestamp(Instant.now().toString());
+        AuthResponse response = new AuthResponse(
+                true,
+                data,
+                "Token refreshed successfully",
+                Instant.now().toString()
+        );
 
         return new AuthResult(response, newRefreshToken);
     }
@@ -222,7 +225,7 @@ public class AuthService {
 
     @Transactional
     public MessageResponse verifyEmail(String token) {
-        User user = userRepository.findByEmailVerificationToken(token)
+        User user = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token)
                 .orElseThrow(() -> new BadRequestException("Invalid or expired verification token"));
 
         if (user.getIsEmailVerified()) {
@@ -238,7 +241,7 @@ public class AuthService {
 
     @Transactional
     public MessageResponse forgotPassword(String email) {
-        userRepository.findByEmail(email.toLowerCase().trim())
+        userRepository.findByEmailAndDeletedAtIsNull(email.toLowerCase().trim())
                 .ifPresent(user -> {
                     String resetToken = UUID.randomUUID().toString();
                     user.setPasswordResetToken(resetToken);
@@ -251,7 +254,7 @@ public class AuthService {
 
     @Transactional
     public MessageResponse resetPassword(String token, String newPassword) {
-        User user = userRepository.findByPasswordResetToken(token)
+        User user = userRepository.findByPasswordResetTokenAndDeletedAtIsNull(token)
                 .orElseThrow(() -> new BadRequestException("Invalid or expired reset token"));
 
         if (user.getPasswordResetExpiresAt() == null
