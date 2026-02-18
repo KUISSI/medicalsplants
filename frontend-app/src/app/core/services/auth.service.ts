@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, of, tap, catchError, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../../environments/environment';
@@ -68,6 +68,41 @@ export class AuthService {
     );
   }
 
+  // Frontend-only register pour tests locaux (sans refreshToken)
+  registerFrontend(request: RegisterRequest): Observable<MessageResponse> {
+    this.isLoadingSignal.set(true);
+
+    const fakeUser = {
+      id: Math.random().toString(36).substring(2, 9),
+      email: request.email,
+      pseudo: request.pseudo || request.email.split('@')[0],
+      firstname: request.firstname || '',
+      lastname: request.lastname || '',
+      role: 'USER',
+      isEmailVerified: true,
+      createdAt: new Date().toISOString()
+    } as any;
+
+    const fakeResponse = {
+      success: true,
+      data: {
+        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: fakeUser
+      },
+      timestamp: new Date().toISOString()
+    } as any;
+
+    return of({ success: true, message: 'Inscription locale réussie', timestamp: new Date().toISOString() }).pipe(
+      tap(() => {
+        this.isLoadingSignal.set(false);
+        this.handleAuthSuccess(fakeResponse as any);
+        this.toastr.success('Inscription réussie', 'Bienvenue !');
+      })
+    );
+  }
+
   login(request: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSignal.set(true);
 
@@ -80,6 +115,41 @@ export class AuthService {
       catchError(error => {
         this.isLoadingSignal.set(false);
         return throwError(() => error);
+      })
+    );
+  }
+
+  // Frontend-only login pour tests locaux (sans refreshToken)
+  loginFrontend(request: LoginRequest): Observable<AuthResponse> {
+    this.isLoadingSignal.set(true);
+
+    const fakeUser = {
+      id: Math.random().toString(36).substring(2, 9),
+      email: request.email,
+      pseudo: request.email.split('@')[0],
+      firstname: '',
+      lastname: '',
+      role: 'USER',
+      isEmailVerified: true,
+      createdAt: new Date().toISOString()
+    } as any;
+
+    const fakeResponse = {
+      success: true,
+      data: {
+        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: fakeUser
+      },
+      timestamp: new Date().toISOString()
+    } as any;
+
+    return of(fakeResponse).pipe(
+      tap(() => {
+        this.isLoadingSignal.set(false);
+        this.handleAuthSuccess(fakeResponse as any);
+        this.toastr.success('Connexion réussie', 'Bienvenue ! ');
       })
     );
   }

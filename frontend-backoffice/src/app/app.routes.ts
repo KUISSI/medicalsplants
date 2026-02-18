@@ -20,7 +20,7 @@ export const routes: Routes = [
       // Dashboard
       {
         path: '',
-        loadComponent:  () => import('./features/dashboard/dashboard. component')
+        loadComponent:  () => import('./features/dashboard/dashboard.component')
           .then(m => m.DashboardComponent),
         title: 'Dashboard - Admin'
       },
@@ -54,7 +54,7 @@ export const routes: Routes = [
       },
       {
         path: 'symptoms/: id/edit',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form. component')
+        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
           .then(m => m.SymptomFormComponent),
         title: 'Modifier symptôme - Admin'
       },
@@ -103,13 +103,13 @@ export const routes: Routes = [
       {
         path: 'recipes',
         loadComponent: () => import('./features/recipes/recipe-list/recipe-list.component')
-          .then(m => m.recipeListComponent),
+          .then(m => m.RecipeListComponent),
         title: 'Recettes - Admin'
       },
       {
         path: 'recipes/moderation',
-        loadComponent: () => import('./features/recipes/recipe-moderation/recipe-moderation.component)
-          .then(m => m.recipeModerationComponent),
+        loadComponent: () => import('./features/recipes/recipe-moderation/recipe-moderation.component')
+          .then(m => m.RecipeModerationComponent),
         title: 'Modération - Admin'
       }
     ]

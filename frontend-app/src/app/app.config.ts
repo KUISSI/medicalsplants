@@ -7,11 +7,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { csrfInterceptor } from './core/interceptors/csrf.interceptor'; // Ajout de l'import
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, csrfInterceptor])), // Ajout de l'interceptor CSRF
     provideAnimations(),
     importProvidersFrom(
       ToastrModule.forRoot({

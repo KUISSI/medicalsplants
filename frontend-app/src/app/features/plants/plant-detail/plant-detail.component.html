@@ -27,27 +27,11 @@
             }
           </div>
 
-          <div class="detail-header__info">
-            <div class="detail-header__badges">
-              @if (plant.administrationMode) {
-                <span class="detail-header__badge detail-header__badge--mode">
-                  {{ getAdministrationIcon(plant.administrationMode) }}
-                  {{ administrationModeLabels[plant.administrationMode] }}
-                </span>
-              }
-              @if (plant.consumedPart) {
-                <span class="detail-header__badge">
-                  🍃 {{ plant.consumedPart }}
-                </span>
-              }
-            </div>
+          <h1 class="detail-header__title">{{ plant.title }}</h1>
 
-            <h1 class="detail-header__title">{{ plant.title }}</h1>
-
-            @if (plant.description) {
-              <p class="detail-header__description">{{ plant.description }}</p>
-            }
-          </div>
+          @if (plant.description) {
+            <p class="detail-header__description">{{ plant.description }}</p>
+          }
         </div>
       </div>
     </div>
