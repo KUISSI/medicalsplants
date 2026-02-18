@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
 import java.util.List;
 
 @RestController
@@ -62,7 +61,7 @@ public class RecipeController {
     @Operation(summary = "Get recipes by plant ID")
     @GetMapping("/plant/{plantId}")
     public ResponseEntity<Page<RecipeResponse>> getRecipesByPlantId(
-            @PathVariable String plantId,
+            @PathVariable UUID plantId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
         boolean canSeePremium = currentUser != null && currentUser.premium();
@@ -75,7 +74,7 @@ public class RecipeController {
     public ResponseEntity<Page<RecipeResponse>> getMyRecipes(
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(recipeService.getRecipesByAuthor(currentUser.getId().toString(), pageable));
+        return ResponseEntity.ok(recipeService.getRecipesByAuthor(currentUser.getId(), pageable));
     }
 
     @Operation(summary = "Get pending recipes (Admin/Moderator only)")
@@ -92,7 +91,7 @@ public class RecipeController {
     public ResponseEntity<RecipeResponse> createRecipe(
             @Valid @RequestBody RecipeRequest request,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
-        RecipeResponse created = recipeService.createRecipe(request, currentUser.getId().toString());
+        RecipeResponse created = recipeService.createRecipe(request, currentUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -100,7 +99,7 @@ public class RecipeController {
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ResponseEntity<RecipeResponse> updateRecipe(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @Valid @RequestBody RecipeRequest request,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         return ResponseEntity.ok(recipeService.updateRecipe(id, request, currentUser));
@@ -110,7 +109,7 @@ public class RecipeController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{id}/submit")
     public ResponseEntity<RecipeResponse> submitForReview(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         return ResponseEntity.ok(recipeService.submitForReview(id, currentUser));
     }
@@ -119,7 +118,7 @@ public class RecipeController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PostMapping("/{id}/approve")
-    public ResponseEntity<RecipeResponse> approveRecipe(@PathVariable String id) {
+    public ResponseEntity<RecipeResponse> approveRecipe(@PathVariable UUID id) {
         return ResponseEntity.ok(recipeService.approveRecipe(id));
     }
 
@@ -127,7 +126,7 @@ public class RecipeController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{id}/archive")
     public ResponseEntity<RecipeResponse> archiveRecipe(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         return ResponseEntity.ok(recipeService.archiveRecipe(id, currentUser));
     }
@@ -136,7 +135,7 @@ public class RecipeController {
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         recipeService.deleteRecipe(id, currentUser);
         return ResponseEntity.noContent().build();

@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,10 +29,10 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
-    @Operation(summary = "Get all properties")
+    @Operation(summary = "Get all properties (paginated)")
     @GetMapping
-    public ResponseEntity<List<PropertyResponse>> getAllProperties() {
-        return ResponseEntity.ok(propertyService.getAllProperties());
+    public ResponseEntity<Page<PropertyResponse>> getAllProperties(@PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(propertyService.getAllProperties(pageable));
     }
 
     @Operation(summary = "Get property by ID")

@@ -1,5 +1,15 @@
 package com.medicalsplants.service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.medicalsplants.exception.BadRequestException;
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
@@ -14,15 +24,6 @@ import com.medicalsplants.model.mapper.RecipeMapper;
 import com.medicalsplants.repository.RecipeRepository;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.time.Instant;
 
 @Service
 public class RecipeService {
@@ -45,25 +46,30 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
+    public Recipe getRecipeEntityById(UUID id) {
+        if (id == null) {
+            throw new BadRequestException("Recipe id cannot be null");
+        }
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id.toString()));
+    }
+
+    @Transactional(readOnly = true)
     public Page<RecipeResponse> getPublishedRecipes(boolean canSeePremium, Pageable pageable) {
         return recipeRepository.findPublished(canSeePremium, pageable)
                 .map(recipeMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public Page<RecipeResponse> getRecipesByPlantId(String plantId, boolean canSeePremium, Pageable pageable) {
-        UUID uuid = UUID.fromString(plantId);
-        return recipeRepository.findPublishedByPlantId(uuid, canSeePremium, pageable)
+    public Page<RecipeResponse> getRecipesByPlantId(UUID plantId, boolean canSeePremium, Pageable pageable) {
+        return recipeRepository.findPublishedByPlantId(plantId, canSeePremium, pageable)
                 .map(recipeMapper::toDto);
     }
 
     @Transactional(readOnly = true)
-    public RecipeResponse getRecipeById(String id, CustomUserDetails currentUser) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public RecipeResponse getRecipeById(UUID id, CustomUserDetails currentUser) {
+        Recipe recipe = getRecipeEntityById(id);
 
-        // Check access
         if (recipe.getStatus() != RecipeStatus.PUBLISHED) {
             if (currentUser == null) {
                 throw new ForbiddenException("This recipe is not published");
@@ -91,9 +97,8 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RecipeResponse> getRecipesByAuthor(String authorId, Pageable pageable) {
-        UUID uuid = UUID.fromString(authorId);
-        return recipeRepository.findByAuthorId(uuid, pageable)
+    public Page<RecipeResponse> getRecipesByAuthor(UUID authorId, Pageable pageable) {
+        return recipeRepository.findByAuthorId(authorId, pageable)
                 .map(recipeMapper::toDto);
     }
 
@@ -104,10 +109,9 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeResponse createRecipe(RecipeRequest request, String authorId) {
-        UUID authorUuid = UUID.fromString(authorId);
-        User author = userRepository.findById(authorUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
+    public RecipeResponse createRecipe(RecipeRequest request, UUID authorId) {
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId.toString()));
 
         Recipe recipe = new Recipe();
         recipe.setId(UUID.randomUUID());
@@ -123,9 +127,10 @@ public class RecipeService {
         recipe.setStatus(RecipeStatus.DRAFT);
         recipe.setAuthor(author);
 
-        // Association des plantes (DRY, via PlantService)
-        if (request.getPlantIds() != null && !request.getPlantIds().isEmpty()) {
-            Set<Plant> plants = plantService.resolvePlants(request.getPlantIds());
+        // Association des plantes (UUID direct)
+        Set<UUID> plantIds = request.getPlantIds();
+        if (plantIds != null && !plantIds.isEmpty()) {
+            Set<Plant> plants = plantService.resolvePlants(plantIds);
             recipe.setPlants(plants);
         }
 
@@ -134,12 +139,9 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeResponse updateRecipe(String id, RecipeRequest request, CustomUserDetails currentUser) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public RecipeResponse updateRecipe(UUID id, RecipeRequest request, CustomUserDetails currentUser) {
+        Recipe recipe = getRecipeEntityById(id);
 
-        // Check ownership
         boolean isOwner = recipe.getAuthor() != null
                 && recipe.getAuthor().getId().equals(currentUser.getId());
         if (!isOwner && !currentUser.isAdmin()) {
@@ -174,9 +176,10 @@ public class RecipeService {
             recipe.setPremium(request.getPremium());
         }
 
-        // Mise à jour des plantes (DRY, via PlantService)
-        if (request.getPlantIds() != null) {
-            Set<Plant> plants = plantService.resolvePlants(request.getPlantIds());
+        // Mise à jour des plantes (UUID direct)
+        Set<UUID> plantIds = request.getPlantIds();
+        if (plantIds != null && !plantIds.isEmpty()) {
+            Set<Plant> plants = plantService.resolvePlants(plantIds);
             recipe.setPlants(plants);
         }
 
@@ -185,10 +188,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeResponse submitForReview(String id, CustomUserDetails currentUser) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public RecipeResponse submitForReview(UUID id, CustomUserDetails currentUser) {
+        Recipe recipe = getRecipeEntityById(id);
 
         boolean isOwner = recipe.getAuthor() != null
                 && recipe.getAuthor().getId().equals(currentUser.getId());
@@ -206,10 +207,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeResponse approveRecipe(String id) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public RecipeResponse approveRecipe(UUID id) {
+        Recipe recipe = getRecipeEntityById(id);
 
         if (recipe.getStatus() != RecipeStatus.PENDING) {
             throw new BadRequestException("Only pending recipes can be approved");
@@ -221,10 +220,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeResponse archiveRecipe(String id, CustomUserDetails currentUser) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public RecipeResponse archiveRecipe(UUID id, CustomUserDetails currentUser) {
+        Recipe recipe = getRecipeEntityById(id);
 
         boolean isOwner = recipe.getAuthor() != null
                 && recipe.getAuthor().getId().equals(currentUser.getId());
@@ -238,10 +235,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public void deleteRecipe(String id, CustomUserDetails currentUser) {
-        UUID uuid = UUID.fromString(id);
-        Recipe recipe = recipeRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", id));
+    public void deleteRecipe(UUID id, CustomUserDetails currentUser) {
+        Recipe recipe = getRecipeEntityById(id);
 
         boolean isOwner = recipe.getAuthor() != null
                 && recipe.getAuthor().getId().equals(currentUser.getId());

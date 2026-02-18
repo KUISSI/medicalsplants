@@ -37,21 +37,21 @@ public class PlantController {
 
     @Operation(summary = "Get plant by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PlantResponse> getPlantById(@PathVariable String id) {
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
         return ResponseEntity.ok(plantService.getPlantById(id));
     }
 
     @Operation(summary = "Get plants by symptom ID")
     @GetMapping("/symptom/{symptomId}")
     public ResponseEntity<Page<PlantResponse>> getPlantsBySymptomId(
-            @PathVariable String symptomId,
+            @PathVariable UUID symptomId,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(plantService.getPlantsBySymptomId(symptomId, pageable));
     }
 
     @Operation(summary = "Get plants by property ID")
     @GetMapping("/property/{propertyId}")
-    public ResponseEntity<List<PlantResponse>> getPlantsByPropertyId(@PathVariable String propertyId) {
+    public ResponseEntity<List<PlantResponse>> getPlantsByPropertyId(@PathVariable UUID propertyId) {
         return ResponseEntity.ok(plantService.getPlantsByPropertyId(propertyId));
     }
 
@@ -69,7 +69,7 @@ public class PlantController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PlantResponse> updatePlant(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @Valid @RequestBody PlantRequest request) {
         return ResponseEntity.ok(plantService.updatePlant(id, request));
     }
@@ -78,7 +78,7 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlant(@PathVariable String id) {
+    public ResponseEntity<Void> deletePlant(@PathVariable UUID id) {
         plantService.deletePlant(id);
         return ResponseEntity.noContent().build();
     }
@@ -87,19 +87,19 @@ public class PlantController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<PlantResponse> getPlantById(@PathVariable UUID id) {
-        return ResponseEntity.ok(plantService.getPlantById(id));
+    public ResponseEntity<PlantResponse> addPropertyToPlant(
+            @PathVariable UUID id,
+            @PathVariable UUID propertyId) {
+        return ResponseEntity.ok(plantService.addPropertyToPlant(id, propertyId));
     }
 
     @Operation(summary = "Remove property from plant")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/properties/{propertyId}")
-    public ResponseEntity<PlantResponse> addPropertyToPlant(
-            @PathVariable String id,
-            @PathVariable String propertyId) {
-        UUID plantUuid = UUID.fromString(id);
-        UUID propertyUuid = UUID.fromString(propertyId);
-        return ResponseEntity.ok(plantService.addPropertyToPlant(plantUuid, propertyUuid));
+    public ResponseEntity<PlantResponse> removePropertyFromPlant(
+            @PathVariable UUID id,
+            @PathVariable UUID propertyId) {
+        return ResponseEntity.ok(plantService.removePropertyFromPlant(id, propertyId));
     }
 }

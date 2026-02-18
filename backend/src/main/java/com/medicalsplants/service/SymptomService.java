@@ -1,24 +1,25 @@
 package com.medicalsplants.service;
 
-import com.medicalsplants.exception.ConflictException;
-import com.medicalsplants.exception.ResourceNotFoundException;
-import com.medicalsplants.model.dto.request.SymptomRequest;
-import com.medicalsplants.model.dto.response.SymptomResponse;
-import com.medicalsplants.model.entity.Symptom;
-import com.medicalsplants.model.mapper.SymptomMapper;
-import com.medicalsplants.repository.SymptomRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.medicalsplants.model.entity.Property;
-import com.medicalsplants.model.entity.Plant;
-import com.medicalsplants.model.dto.response.PlantResponse;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.Set;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.medicalsplants.exception.ConflictException;
+import com.medicalsplants.exception.ResourceNotFoundException;
+import com.medicalsplants.model.dto.request.SymptomRequest;
+import com.medicalsplants.model.dto.response.PlantResponse;
+import com.medicalsplants.model.dto.response.SymptomResponse;
+import com.medicalsplants.model.entity.Plant;
+import com.medicalsplants.model.entity.Property;
+import com.medicalsplants.model.entity.Symptom;
+import com.medicalsplants.model.mapper.SymptomMapper;
+import com.medicalsplants.repository.SymptomRepository;
 
 @Service
 public class SymptomService {
@@ -40,10 +41,9 @@ public class SymptomService {
     }
 
     @Transactional(readOnly = true)
-    public SymptomResponse getSymptomById(String id) {
-        UUID uuid = UUID.fromString(id);
-        Symptom symptom = symptomRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id));
+    public SymptomResponse getSymptomById(UUID id) {
+        Symptom symptom = symptomRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id.toString()));
         return symptomMapper.toDto(symptom);
     }
 
@@ -69,10 +69,9 @@ public class SymptomService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlantResponse> getPlantsBySymptomId(String symptomId) {
-        UUID uuid = UUID.fromString(symptomId);
-        Symptom symptom = symptomRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId));
+    public List<PlantResponse> getPlantsBySymptomId(UUID symptomId) {
+        Symptom symptom = symptomRepository.findById(symptomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", symptomId.toString()));
 
         // Récupérer toutes les propriétés liées à ce symptôme
         Set<Property> properties = symptom.getProperties();
@@ -109,10 +108,9 @@ public class SymptomService {
     }
 
     @Transactional
-    public SymptomResponse updateSymptom(String id, SymptomRequest request) {
-        UUID uuid = UUID.fromString(id);
-        Symptom symptom = symptomRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id));
+    public SymptomResponse updateSymptom(UUID id, SymptomRequest request) {
+        Symptom symptom = symptomRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Symptom", "id", id.toString()));
 
         symptom.setTitle(request.getTitle());
         symptom.setFamily(request.getFamily());
@@ -123,11 +121,10 @@ public class SymptomService {
     }
 
     @Transactional
-    public void deleteSymptom(String id) {
-        UUID uuid = UUID.fromString(id);
-        if (!symptomRepository.existsById(uuid)) {
-            throw new ResourceNotFoundException("Symptom", "id", id);
+    public void deleteSymptom(UUID id) {
+        if (!symptomRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Symptom", "id", id.toString());
         }
-        symptomRepository.deleteById(uuid);
+        symptomRepository.deleteById(id);
     }
 }

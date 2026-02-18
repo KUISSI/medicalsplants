@@ -1,9 +1,10 @@
 package com.medicalsplants.model.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.util.Set;
 import java.util.UUID;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class PropertyRequest {
 
@@ -54,5 +55,15 @@ public class PropertyRequest {
 
     public void setSymptomIds(Set<UUID> symptomIds) {
         this.symptomIds = symptomIds;
+    }
+
+    private Set<UUID> plantIds;
+
+    public Set<UUID> getPlantIds() {
+        return plantIds;
+    }
+
+    public void setPlantIds(Set<UUID> plantIds) {
+        this.plantIds = plantIds;
     }
 }
