@@ -104,7 +104,7 @@ export class RecipeCreateComponent implements OnInit {
       servings: formValue.servings || undefined,
       ingredients: formValue.ingredients || undefined,
       instructions: formValue.instructions || undefined,
-      premium: formValue.premium || false,
+      isPremium: formValue.premium || false,
       plantIds: this.selectedPlantIds
     };
 
