@@ -127,4 +127,20 @@ public class SymptomService {
         }
         symptomRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public List<SymptomResponse> searchSymptoms(String searchTerm) {
+        return symptomRepository.search(searchTerm)
+                .stream()
+                .map(symptomMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SymptomResponse> searchSymptoms(String family, String searchTerm) {
+        return symptomRepository.searchByFamilyAndTerm(family, searchTerm)
+                .stream()
+                .map(symptomMapper::toDto)
+                .toList();
+    }
 }

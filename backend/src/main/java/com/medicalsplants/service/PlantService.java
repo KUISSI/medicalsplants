@@ -160,9 +160,15 @@ public class PlantService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PlantResponse> getAllPlants(Pageable pageable) {
-        return plantRepository.findAll(pageable)
-                .map(plantMapper::toDto);
+    public Page<PlantResponse> getAllPlants(Pageable pageable, String search) {
+        if (search != null && !search.isBlank()) {
+            // Utilisation de la méthode courte
+            return plantRepository.search(search, pageable)
+                    .map(plantMapper::toDto);
+        } else {
+            return plantRepository.findAll(pageable)
+                    .map(plantMapper::toDto);
+        }
     }
 
     @Transactional(readOnly = true)

@@ -14,11 +14,11 @@ export class PlantService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(page: number = 0, size: number = 20): Observable<PlantPage> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
+  getAll(page?: number, size?: number, searchTerm?: string): Observable<PlantPage> {
+    let params: any = {};
+    if (page !== undefined) params.page = page;
+    if (size !== undefined) params.size = size;
+    if (searchTerm && searchTerm.trim()) params.search = searchTerm.trim();
     return this.http.get<PlantPage>(this.apiUrl, { params });
   }
 
@@ -39,7 +39,6 @@ export class PlantService {
   }
 
   getPlantsForSymptom(symptomId: string): Observable<Plant[]> {
-  return this.http.get<Plant[]>(`${environment.apiUrl}/symptoms/${symptomId}/plants`);
+    return this.http.get<Plant[]>(`${environment.apiUrl}/symptoms/${symptomId}/plants`);
+  }
 }
-}
-

@@ -53,33 +53,30 @@ export class PlantListComponent implements OnInit {
   }
 
   loadPlants(): void {
-    this.isLoading = true;
-    this.errorMessage = null;
+  this.isLoading = true;
+  this.errorMessage = null;
 
-    this.plantService.getAll(this.currentPage, this.pageSize).subscribe({
-      next: (response: PlantPage) => {
-        this.plants = response.content;
-        this.applyFilters();
-        this.totalPages = response.totalPages;
-        this.totalElements = response.totalElements;
-        this.isLoading = false;
-        // Ne pas mettre d'erreur ici si la liste est vide
-      },
-      error: () => {
-        this.isLoading = false;
-        this.plants = [];
-        this.filteredPlants = [];
-        this.errorMessage = "Erreur lors de la récupération des plantes. Vérifiez votre connexion réseau ou le serveur backend.";
-      }
-    });
-  }
-
+  this.plantService.getAll(this.currentPage, this.pageSize, this.searchTerm).subscribe({
+    next: (response: PlantPage) => {
+      this.plants = response.content;
+      this.filteredPlants = response.content;
+      this.totalPages = response.totalPages;
+      this.totalElements = response.totalElements;
+      this.isLoading = false;
+    },
+    error: () => {
+      this.isLoading = false;
+      this.plants = [];
+      this.filteredPlants = [];
+      this.errorMessage = "Erreur lors de la récupération des plantes. Vérifiez votre connexion réseau ou le serveur backend.";
+    }
+  });
+}
   onSearch(term: string): void {
-    this.searchTerm = term;
-    this.currentPage = 0;
-    this.applyFilters();
-    this.updateUrlQueryParams();
-  }
+  this.searchTerm = term;
+  this.currentPage = 0;
+  this.loadPlants();
+}
 
   applyFilters(): void {
     let result = this.plants;
