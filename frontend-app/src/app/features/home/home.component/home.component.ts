@@ -1,11 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
-import { CardComponent } from '../../shared/components/card/card.component';
-import { LoaderComponent } from '../../shared/components/loader/loader.component';
-import { SymptomService } from '../../core/services/symptom.service';
-import { Symptom } from '../../core/models/symptom.model';
+import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
+import { CardComponent } from '../../../shared/components/card/card.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { SymptomService } from '../../../core/services/symptom.service';
+import { Symptom } from '../../../core/models/symptom.model';
 
 @Component({
   selector: 'app-home',

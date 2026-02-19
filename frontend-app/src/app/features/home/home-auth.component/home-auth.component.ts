@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
-import { AuthService } from '../../core/services/auth.service';
-import { RecipeCardComponent, RecipeCardData } from '../../shared/components/recipe-card/recipe-card.component';
+import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
+import { AuthService } from '../../../core/services/auth.service';
+import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
+import { RandomPlantTipComponent } from '../random-plant-tip.component/random-plant-tip.component';
 
 @Component({
   selector: 'app-home-auth',
   standalone: true,
-  imports: [CommonModule, RouterModule, SearchBarComponent, RecipeCardComponent],
+  imports: [CommonModule, RouterModule, SearchBarComponent, RecipeCardComponent, RandomPlantTipComponent],
   templateUrl: './home-auth.component.html',
   styleUrls: ['./home-auth.component.scss']
 })
@@ -75,8 +76,6 @@ export class HomeAuthComponent {
     }
   ];
 
-  // Tip for "Le savez-vous" section
-  tip = 'Saviez-vous que la menthe poivrée peut soulager les maux de tête en quelques minutes ? Essayez une infusion chaude !';
 
   get visibleRecipes(): RecipeCardData[] {
     return this.showMoreRecipes ? this.popularRecipes : this.popularRecipes.slice(0, 3);

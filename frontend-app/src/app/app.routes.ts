@@ -6,7 +6,7 @@ export const routes: Routes = [
   // Home
   {
     path: '',
-    loadComponent: () => import('./features/home/home.component')
+    loadComponent: () => import('./features/home/home.component/home.component')
       .then(m => m.HomeComponent),
     title: 'Accueil - Medicals Plants'
   },
@@ -95,7 +95,7 @@ export const routes: Routes = [
   // Authenticated Home (nouvelle page d'accueil pour utilisateurs connectés)
   {
     path: 'home',
-    loadComponent: () => import('./features/home/home-auth.component')
+    loadComponent: () => import('./features/home/home-auth.component/home-auth.component')
       .then(m => m.HomeAuthComponent),
     canActivate: [authGuard],
     title: 'Accueil - Medicals Plants'

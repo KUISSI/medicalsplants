@@ -97,8 +97,7 @@ export class PlantListComponent implements OnInit {
       const lowerTerm = this.searchTerm.toLowerCase();
       result = result.filter(plant =>
         plant.title.toLowerCase().includes(lowerTerm) ||
-        plant. description?. toLowerCase().includes(lowerTerm) ||
-        plant. consumedPart?. toLowerCase().includes(lowerTerm)
+        plant. description?. toLowerCase().includes(lowerTerm)
       );
     }
 

@@ -7,7 +7,7 @@ export interface Plant {
   symptomFamilies?: string[];
   imageUrl?: string;
   properties?: Property[];
-  consumedPart?: string;
+  history?: string;
   createdAt: string;
   updatedAt?: string;
 }
