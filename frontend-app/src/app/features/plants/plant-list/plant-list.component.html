@@ -27,9 +27,13 @@
     </div>
   </div>
 
-  <!-- Content -->
   <div class="page-content">
-    @if (isLoading) {
+    @if (errorMessage) {
+      <div class="error-state">
+        <h3 class="error-state__title">Erreur</h3>
+        <p class="error-state__message">{{ errorMessage }}</p>
+      </div>
+    } @else if (isLoading) {
       <app-loader message="Chargement des plantes..."></app-loader>
     } @else if (filteredPlants.length === 0) {
       <div class="empty-state">
@@ -48,14 +52,12 @@
         }
       </div>
     } @else {
-      <!-- Results Info -->
       <div class="results-info">
         <span class="results-info__count">
           {{ filteredPlants.length }} plante(s) sur {{ totalElements }}
         </span>
       </div>
 
-      <!-- Plants Grid -->
       <div class="plants-grid">
         @for (plant of filteredPlants; track plant.id) {
           <a
@@ -83,7 +85,6 @@
         }
       </div>
 
-      <!-- Pagination -->
       @if (totalPages > 1) {
         <div class="pagination">
           <button

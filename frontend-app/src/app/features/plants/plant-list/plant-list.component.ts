@@ -25,22 +25,13 @@ export class PlantListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // Mock plants data
-  mockPlants: Plant[] = [
-    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Menthe poivrée', description: 'Plante digestive et rafraîchissante', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440001', title: 'Camomille', description: 'Plante relaxante pour le sommeil', consumedPart: 'Fleurs', createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440002', title: 'Gingembre', description: 'Racine anti-inflammatoire et tonifiante', consumedPart: 'Rhizome', createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440003', title: 'Lavande', description: 'Plante apaisante et anti-stress', consumedPart: 'Fleurs', createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440004', title: 'Eucalyptus', description: 'Plante respiratoire puissante', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant,
-    { id: '550e8400-e29b-41d4-a716-446655440005', title: 'Thé vert', description: 'Antioxydant et énergisant', consumedPart: 'Feuilles', createdAt: new Date().toISOString() } as Plant
-  ];
-
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];
   
   isLoading = true;
   searchTerm = '';
   isScrolled = false;
+  errorMessage: string | null = null; // Ajouté
 
   // Pagination
   currentPage = 0;
@@ -52,6 +43,7 @@ export class PlantListComponent implements OnInit {
   onWindowScroll() {
     this.isScrolled = window.scrollY > 50;
   }
+
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['searchTerm'] || '';
@@ -62,60 +54,57 @@ export class PlantListComponent implements OnInit {
 
   loadPlants(): void {
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.plantService.getAll(this.currentPage, this.pageSize).subscribe({
-      next: (response:  PlantPage) => {
-        this.plants = response.content.length > 0 ? response.content : this.mockPlants;
-        this.applyFilters(); // Apply filters to the loaded data
+      next: (response: PlantPage) => {
+        this.plants = response.content;
+        this.applyFilters();
         this.totalPages = response.totalPages;
-        this. totalElements = response.totalElements;
+        this.totalElements = response.totalElements;
         this.isLoading = false;
+        // Ne pas mettre d'erreur ici si la liste est vide
       },
       error: () => {
-        // En cas d'erreur, utiliser les mock data
-        this.plants = this.mockPlants;
-        this.applyFilters(); // Apply filters to the loaded data
-        this.totalPages = 1;
-        this.totalElements = this.mockPlants.length;
         this.isLoading = false;
+        this.plants = [];
+        this.filteredPlants = [];
+        this.errorMessage = "Erreur lors de la récupération des plantes. Vérifiez votre connexion réseau ou le serveur backend.";
       }
     });
   }
 
   onSearch(term: string): void {
     this.searchTerm = term;
-    this.currentPage = 0; // Reset page on new search
+    this.currentPage = 0;
     this.applyFilters();
     this.updateUrlQueryParams();
   }
 
   applyFilters(): void {
     let result = this.plants;
-
-    // Filtre par recherche
-    if (this.searchTerm. trim()) {
+    if (this.searchTerm.trim()) {
       const lowerTerm = this.searchTerm.toLowerCase();
       result = result.filter(plant =>
         plant.title.toLowerCase().includes(lowerTerm) ||
-        plant. description?. toLowerCase().includes(lowerTerm)
+        plant.description?.toLowerCase().includes(lowerTerm)
       );
     }
-
-    this. filteredPlants = result;
+    this.filteredPlants = result;
   }
 
   clearFilters(): void {
     this.searchTerm = '';
     this.currentPage = 0;
-    this.applyFilters(); // Apply filters to reset the list
-    this.updateUrlQueryParams(); // Update URL to clear params
+    this.applyFilters();
+    this.updateUrlQueryParams();
   }
 
   loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
       this.loadPlants();
-      this.updateUrlQueryParams(); // Update URL on page change
+      this.updateUrlQueryParams();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
@@ -125,7 +114,7 @@ export class PlantListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         searchTerm: this.searchTerm || null,
-        page: this.currentPage > 0 ? this.currentPage : null // Only add page if not 0
+        page: this.currentPage > 0 ? this.currentPage : null
       },
       queryParamsHandling: 'merge'
     });
@@ -142,12 +131,10 @@ export class PlantListComponent implements OnInit {
     return params;
   }
 
-
   getPages(): number[] {
     const pages: number[] = [];
     const start = Math.max(0, this.currentPage - 2);
-    const end = Math.min(this.totalPages - 1, this. currentPage + 2);
-    
+    const end = Math.min(this.totalPages - 1, this.currentPage + 2);
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
