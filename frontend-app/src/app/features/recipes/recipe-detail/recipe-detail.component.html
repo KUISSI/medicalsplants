@@ -119,6 +119,21 @@
             </a>
             pour laisser un avis
           </p>
+        } @else {
+          <!-- Bouton pour afficher le formulaire -->
+          <button
+            class="btn-leave-review"
+            (click)="showReviewForm = !showReviewForm"
+          >
+            {{ showReviewForm ? "Annuler" : "Laisser un avis" }}
+          </button>
+          <!-- Formulaire d'avis inline -->
+          <app-review-form
+            *ngIf="showReviewForm"
+            [recipeId]="recipe.id"
+            (submitted)="onReviewSubmitted($event)"
+            (cancel)="showReviewForm = false"
+          ></app-review-form>
         }
 
         @if (recipe.reviews && recipe.reviews.length > 0) {

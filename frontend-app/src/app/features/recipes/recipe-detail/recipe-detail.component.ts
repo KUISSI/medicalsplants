@@ -5,11 +5,17 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Recipe, RECIPE_TYPE_LABELS, RECIPE_STATUS_LABELS } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { Review } from '../../../core/models/review.model';
+import { ReviewFormComponent } from '../../reviews/review-form/review-form.component';
 
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReviewFormComponent
+  ],
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss']
 })
@@ -23,6 +29,7 @@ export class RecipeDetailComponent implements OnInit {
   RecipeStatusLabels = RECIPE_STATUS_LABELS;
 
   ingredientsList: string[] = [];
+  showReviewForm = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -89,10 +96,17 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   get preparationSteps(): string[] {
-  // Adapte le split selon la structure de tes instructions
-  return this.recipe?.instructions
-    ? this.recipe.instructions.split(/\d+\s*-\s*/).filter(Boolean)
-    : [];
-}
+    // Adapte le split selon la structure de tes instructions
+    return this.recipe?.instructions
+      ? this.recipe.instructions.split(/\d+\s*-\s*/).filter(Boolean)
+      : [];
+  }
 
+  onReviewSubmitted(newReview: Review) {
+    if (this.recipe) {
+      this.recipe.reviews = [newReview, ...(this.recipe.reviews || [])];
+      this.recipe.reviewCount = (this.recipe.reviewCount || 0) + 1;
+      this.showReviewForm = false;
+    }
+  }
 }

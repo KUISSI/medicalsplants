@@ -1,0 +1,86 @@
+.review-form {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2d5a3d;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #1976d2;
+      .required {
+        color: #e53935;
+      }
+    }
+    textarea,
+    select {
+      border: 1px solid #c8e6c9;
+      border-radius: 4px;
+      padding: 0.7rem;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border 0.2s;
+      &:focus {
+        border-color: #4caf50;
+        outline: none;
+      }
+    }
+    textarea {
+      min-height: 80px;
+      max-height: 250px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    button {
+      padding: 0.5rem 1.3rem;
+      border: none;
+      border-radius: 4px;
+      background: #1976d2;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      &:hover {
+        background: #1565c0;
+      }
+      &.secondary {
+        background: #e0e0e0;
+        color: #333;
+        &:hover {
+          background: #bdbdbd;
+        }
+      }
+    }
+  }
+
+  .form-error {
+    color: #e53935;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+}

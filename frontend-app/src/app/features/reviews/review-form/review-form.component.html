@@ -1,0 +1,51 @@
+<div class="review-form">
+  <h2 *ngIf="!isEditMode">Laisser un avis</h2>
+  <h2 *ngIf="isEditMode">Modifier l’avis</h2>
+
+  <form
+    (ngSubmit)="onSubmit()"
+    #formRef="ngForm"
+    *ngIf="!isLoading; else loadingTpl"
+    autocomplete="off"
+  >
+    <div class="form-group">
+      <label for="content">Votre avis <span class="required">*</span></label>
+      <textarea
+        id="content"
+        name="content"
+        [(ngModel)]="form.content"
+        required
+        rows="4"
+        maxlength="1000"
+        placeholder="Partagez votre expérience..."
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="rating">Note</label>
+      <select id="rating" name="rating" [(ngModel)]="form.rating">
+        <option [ngValue]="undefined">Aucune</option>
+        <option *ngFor="let r of [1, 2, 3, 4, 5]" [ngValue]="r">
+          {{ r }} / 5
+        </option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="formRef.invalid || isSubmitting">
+        {{ isEditMode ? "Mettre à jour" : "Envoyer" }}
+      </button>
+      <button type="button" class="secondary" (click)="onCancel()">
+        Annuler
+      </button>
+    </div>
+
+    <div class="form-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+  </form>
+
+  <ng-template #loadingTpl>
+    <app-loader message="Chargement du formulaire..."></app-loader>
+  </ng-template>
+</div>
