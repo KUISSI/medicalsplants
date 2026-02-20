@@ -31,13 +31,16 @@ export class PlantListComponent implements OnInit {
   isLoading = true;
   searchTerm = '';
   isScrolled = false;
-  errorMessage: string | null = null; // Ajouté
+  errorMessage: string | null = null;
 
   // Pagination
   currentPage = 0;
   totalPages = 0;
   totalElements = 0;
   pageSize = 8;
+
+  // Tri dynamique
+  sort = 'title,asc'; // Par défaut, tri alphabétique croissant
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -53,30 +56,37 @@ export class PlantListComponent implements OnInit {
   }
 
   loadPlants(): void {
-  this.isLoading = true;
-  this.errorMessage = null;
+    this.isLoading = true;
+    this.errorMessage = null;
 
-  this.plantService.getAll(this.currentPage, this.pageSize, this.searchTerm).subscribe({
-    next: (response: PlantPage) => {
-      this.plants = response.content;
-      this.filteredPlants = response.content;
-      this.totalPages = response.totalPages;
-      this.totalElements = response.totalElements;
-      this.isLoading = false;
-    },
-    error: () => {
-      this.isLoading = false;
-      this.plants = [];
-      this.filteredPlants = [];
-      this.errorMessage = "Erreur lors de la récupération des plantes. Vérifiez votre connexion réseau ou le serveur backend.";
-    }
-  });
-}
+    this.plantService.getAll(this.currentPage, this.pageSize, this.searchTerm, this.sort).subscribe({
+      next: (response: PlantPage) => {
+        this.plants = response.content;
+        this.filteredPlants = response.content;
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.plants = [];
+        this.filteredPlants = [];
+        this.errorMessage = "Erreur lors de la récupération des plantes. Vérifiez votre connexion réseau ou le serveur backend.";
+      }
+    });
+  }
+
   onSearch(term: string): void {
-  this.searchTerm = term;
-  this.currentPage = 0;
-  this.loadPlants();
-}
+    this.searchTerm = term;
+    this.currentPage = 0;
+    this.loadPlants();
+  }
+
+  onSortChange(sortValue: string): void {
+    this.sort = sortValue;
+    this.currentPage = 0;
+    this.loadPlants();
+  }
 
   applyFilters(): void {
     let result = this.plants;

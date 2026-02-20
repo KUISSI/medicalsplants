@@ -14,11 +14,11 @@ export class RecipeService {
 
   constructor(private http: HttpClient) {}
 
-  getPublished(page: number = 0, size: number = 20): Observable<RecipePage> {
-    const params = new HttpParams()
+  getPublished(page: number = 0, size: number = 20, sort?: string): Observable<RecipePage> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<RecipePage>(this.apiUrl, { params });
   }
 
@@ -26,38 +26,38 @@ export class RecipeService {
     return this.http.get<Recipe>(`${this.apiUrl}/${id}`);
   }
 
-  getByPlantId(plantId: string, page: number = 0, size: number = 20): Observable<RecipePage> {
-    const params = new HttpParams()
+  getByPlantId(plantId: string, page: number = 0, size: number = 20, sort?: string): Observable<RecipePage> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<RecipePage>(`${this.apiUrl}/plant/${plantId}`, { params });
   }
 
-  search(query: string, page: number = 0, size: number = 20): Observable<RecipePage> {
-    const params = new HttpParams()
+  search(query: string, page: number = 0, size: number = 20, sort?: string): Observable<RecipePage> {
+    let params = new HttpParams()
       .set('q', query)
       .set('page', page.toString())
       .set('size', size.toString());
-
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<RecipePage>(`${this.apiUrl}/search`, { params });
   }
 
-  getMyRecipes(page: number = 0, size: number = 20): Observable<RecipePage> {
-    const params = new HttpParams()
+  getMyRecipes(page: number = 0, size: number = 20, sort?: string): Observable<RecipePage> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<RecipePage>(`${this.apiUrl}/my`, { params });
   }
 
   create(request: CreateRecipeRequest): Observable<Recipe> {
-  return this.http.post<Recipe>(this.apiUrl, request);
-}
+    return this.http.post<Recipe>(this.apiUrl, request);
+  }
 
-update(id: string, request: CreateRecipeRequest): Observable<Recipe> {
-  return this.http.put<Recipe>(`${this.apiUrl}/${id}`, request);
-}
+  update(id: string, request: CreateRecipeRequest): Observable<Recipe> {
+    return this.http.put<Recipe>(`${this.apiUrl}/${id}`, request);
+  }
 
   submitForReview(id: string): Observable<Recipe> {
     return this.http.post<Recipe>(`${this.apiUrl}/${id}/submit`, null);

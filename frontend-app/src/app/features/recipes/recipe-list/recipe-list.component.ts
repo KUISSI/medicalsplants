@@ -39,6 +39,8 @@ export class RecipeListComponent implements OnInit {
   totalElements = 0;
   pageSize = 8;
 
+  sort = 'title,asc'; // Tri alphabétique par défaut
+
   RecipeTypes = RECIPE_TYPE_LABELS;
   RecipeTypeKeys = Object.keys(RECIPE_TYPE_LABELS) as RecipeType[];
 
@@ -56,7 +58,7 @@ export class RecipeListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.recipeService.getPublished(this.currentPage, this.pageSize).subscribe({
+    this.recipeService.getPublished(this.currentPage, this.pageSize, this.sort).subscribe({
       next: (response: RecipePage) => {
         this.recipes = response.content;
         this.totalPages = response.totalPages;
@@ -84,6 +86,12 @@ export class RecipeListComponent implements OnInit {
     this.currentPage = 0;
     this.applyFilters();
     this.updateUrlQueryParams();
+  }
+
+  onSortChange(sortValue: string): void {
+    this.sort = sortValue;
+    this.currentPage = 0;
+    this.loadRecipes();
   }
 
   applyFilters(): void {
@@ -119,7 +127,7 @@ export class RecipeListComponent implements OnInit {
     });
   }
 
-  onPageChange(page: number): void {
+  loadPage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
       this.loadRecipes();
@@ -164,7 +172,6 @@ export class RecipeListComponent implements OnInit {
     const pages: number[] = [];
     const start = Math.max(0, this.currentPage - 2);
     const end = Math.min(this.totalPages - 1, this.currentPage + 2);
-    
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }

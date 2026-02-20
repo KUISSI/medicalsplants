@@ -61,21 +61,44 @@
       }
     </div>
 
-    <!-- Pagination -->
     @if (totalPages > 1) {
       <div class="pagination">
         <button
+          class="pagination__btn"
           [disabled]="currentPage === 0"
-          (click)="onPageChange(currentPage - 1)"
+          (click)="loadPage(0)"
         >
-          Précédent
+          ««
         </button>
-        <span>Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
         <button
-          [disabled]="currentPage >= totalPages - 1"
-          (click)="onPageChange(currentPage + 1)"
+          class="pagination__btn"
+          [disabled]="currentPage === 0"
+          (click)="loadPage(currentPage - 1)"
         >
-          Suivant
+          ‹
+        </button>
+        @for (page of getPages(); track page) {
+          <button
+            class="pagination__btn"
+            [class.pagination__btn--active]="page === currentPage"
+            (click)="loadPage(page)"
+          >
+            {{ page + 1 }}
+          </button>
+        }
+        <button
+          class="pagination__btn"
+          [disabled]="currentPage === totalPages - 1"
+          (click)="loadPage(currentPage + 1)"
+        >
+          ›
+        </button>
+        <button
+          class="pagination__btn"
+          [disabled]="currentPage === totalPages - 1"
+          (click)="loadPage(totalPages - 1)"
+        >
+          »»
         </button>
       </div>
     }
