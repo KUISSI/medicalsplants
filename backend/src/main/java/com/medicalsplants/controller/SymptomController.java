@@ -101,4 +101,14 @@ public class SymptomController {
         return symptomService.getPlantsBySymptomId(id);
     }
 
+    @Operation(summary = "Get symptoms by family")
+    @GetMapping("/family/{familyName}")
+    public ResponseEntity<List<SymptomResponse>> getSymptomsByFamily(@PathVariable String familyName) {
+        List<SymptomResponse> symptoms = symptomService.getSymptomsByFamily(familyName);
+        if (symptoms == null || symptoms.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(symptoms);
+    }
+
 }
