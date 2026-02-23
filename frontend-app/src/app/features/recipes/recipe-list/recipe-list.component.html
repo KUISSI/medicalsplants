@@ -1,21 +1,39 @@
-<div class="recipe-list-container">
-  <div class="recipe-list-header">
-    <h1>🍵 Recettes</h1>
-    <p class="subtitle">Découvrez nos recettes à base de plantes médicinales</p>
+<div class="page-header">
+  <div class="page-header__content">
+    <div class="page-header__title">Recettes</div>
+    <div class="page-header__subtitle">
+      Découvrez nos recettes à base de plantes médicinales
+    </div>
   </div>
+</div>
 
+<!-- Barre de recherche centrée, juste sous le header -->
+<div class="search-bar-wrapper">
+  <div class="search-bar">
+    <span class="search-bar__icon">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+        <path
+          d="M21 21l-4.35-4.35"
+          stroke="#888"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2" />
+      </svg>
+    </span>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (input)="onSearch()"
+      placeholder="Rechercher une recette..."
+      class="search-bar__input"
+    />
+  </div>
+</div>
+
+<div class="recipe-list-container">
   <!-- Filtres -->
   <div class="filters-section">
-    <div class="search-box">
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        (input)="onSearch()"
-        placeholder="Rechercher une recette..."
-        class="search-input"
-      />
-    </div>
-
     <div class="filters__container">
       <!-- Type de recette -->
       <div class="filters__group">
