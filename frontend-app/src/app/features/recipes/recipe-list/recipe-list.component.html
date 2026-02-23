@@ -16,23 +16,47 @@
       />
     </div>
 
-    <div class="type-filters">
-      <button
-        class="filter-btn"
-        [class.active]="selectedType === ''"
-        (click)="onTypeChange('')"
-      >
-        Toutes
-      </button>
-      @for (type of RecipeTypeKeys; track type) {
-        <button
-          class="filter-btn"
-          [class.active]="selectedType === type"
-          (click)="onTypeChange(type)"
+    <div class="filters__container">
+      <!-- Type de recette -->
+      <div class="filters__group">
+        <label class="filter-label">Type :</label>
+        <select
+          class="filter-select"
+          [(ngModel)]="selectedType"
+          (change)="onTypeChange(selectedType)"
         >
-          {{ getRecipeTypeIcon(type) }} {{ RecipeTypes[type] }}
-        </button>
-      }
+          <option value="">Toutes</option>
+          <option *ngFor="let type of RecipeTypeKeys" [value]="type">
+            {{ getRecipeTypeIcon(type) }} {{ RecipeTypes[type] }}
+          </option>
+        </select>
+      </div>
+      <!-- Temps de préparation -->
+      <div class="filters__group">
+        <label class="filter-label">Temps :</label>
+        <select
+          class="filter-select"
+          [(ngModel)]="selectedPrepTime"
+          (change)="onPrepTimeChange(selectedPrepTime)"
+        >
+          <option *ngFor="let t of prepTimes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <!-- Difficulté -->
+      <div class="filters__group">
+        <label class="filter-label">Difficulté :</label>
+        <select
+          class="filter-select"
+          [(ngModel)]="selectedDifficulty"
+          (change)="onDifficultyChange(selectedDifficulty)"
+        >
+          <option *ngFor="let d of difficulties" [value]="d">{{ d }}</option>
+        </select>
+      </div>
+      <!-- Bouton reset -->
+      <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+        Réinitialiser
+      </button>
     </div>
   </div>
 

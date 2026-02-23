@@ -37,7 +37,8 @@
 }
 
 // Filters
-.filters {
+.filters,
+.filters-section {
   background: #ffffff;
   padding: 10px 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -50,38 +51,23 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
   }
 
   &__group {
     display: flex;
     gap: 10px;
     align-items: center;
-    width: 100%;
+    margin-bottom: 5px;
 
     @media (max-width: 1024px) {
       flex-direction: column;
       align-items: stretch;
     }
   }
-
-  &__main {
-    flex: 1;
-    min-width: 250px;
-  }
-
-  &__display-options {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: #f8f9fa;
-    padding: 5px;
-    border-radius: 8px;
-  }
 }
-
 
 .filter-group {
   display: flex;
@@ -139,6 +125,13 @@
       background: #f44336;
       color: #ffffff;
     }
+  }
+
+  &.active {
+    background: #eafaf1;
+    color: #388e3c;
+    border-color: #4CAF50;
+    font-weight: 600;
   }
 }
 
