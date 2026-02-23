@@ -34,6 +34,9 @@ export class SymptomListComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   isScrolled = false;
 
+  // Pour gérer l'expansion des familles
+  expandedFamilies: Set<string> = new Set();
+
   // Expose les fonctions utilitaires pour le template
   getSymptomIcon = getSymptomIcon;
   getFamilyColor = getFamilyColor;
@@ -58,6 +61,8 @@ export class SymptomListComponent implements OnInit {
         this.groupedSymptoms = data;
         this.families = Object.keys(data).sort();
         this.isLoading = false;
+        // Masquer toutes les familles par défaut
+        this.expandedFamilies.clear();
       },
       error: (err) => {
         console.error('Error fetching grouped symptoms:', err);
@@ -115,5 +120,18 @@ export class SymptomListComponent implements OnInit {
 
   trackBySymptomId(index: number, symptom: Symptom) {
     return symptom.id;
+  }
+
+  // Ajout pour expansion/masquage des familles
+  toggleFamily(family: string): void {
+    if (this.expandedFamilies.has(family)) {
+      this.expandedFamilies.delete(family);
+    } else {
+      this.expandedFamilies.add(family);
+    }
+  }
+
+  isFamilyExpanded(family: string): boolean {
+    return this.expandedFamilies.has(family);
   }
 }

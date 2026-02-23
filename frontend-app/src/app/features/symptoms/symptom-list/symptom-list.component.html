@@ -109,7 +109,11 @@
         <!-- Grid View -->
         <ng-container *ngIf="viewMode === 'grid'; else listView">
           <div *ngFor="let family of families" class="symptom-family">
-            <h2 class="symptom-family__title">
+            <h2
+              class="symptom-family__title"
+              (click)="toggleFamily(family)"
+              style="cursor: pointer"
+            >
               <span class="symptom-family__icon">{{
                 getSymptomIcon(family)
               }}</span>
@@ -117,8 +121,11 @@
               <span class="symptom-family__count">
                 ({{ groupedSymptoms[family].length }})
               </span>
+              <span class="symptom-family__toggle">
+                {{ isFamilyExpanded(family) ? "▲" : "▼" }}
+              </span>
             </h2>
-            <div class="symptom-grid">
+            <div class="symptom-grid" *ngIf="isFamilyExpanded(family)">
               <a
                 *ngFor="
                   let symptom of groupedSymptoms[family];
@@ -152,7 +159,7 @@
           </div>
         </ng-container>
 
-        <!-- List View -->
+        <!-- List View (inchangé, à adapter si besoin) -->
         <ng-template #listView>
           <div class="symptom-table">
             <div class="symptom-table__header">
