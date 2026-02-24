@@ -25,7 +25,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     List<Recipe> findByStatusAndDeletedAtIsNull(RecipeStatus status);
 
     @Query("SELECT r FROM Recipe r WHERE r.status = 'PENDING' AND r.deletedAt IS NULL ORDER BY r.createdAt ASC")
-    List<Recipe> findPendingRecipes();
+    List<Recipe> findpendingRecipes();
 
     @Query("SELECT r FROM Recipe r WHERE r.author.id = :authorId AND r.deletedAt IS NULL")
     Page<Recipe> findByAuthorId(@Param("authorId") UUID authorId, Pageable pageable);
