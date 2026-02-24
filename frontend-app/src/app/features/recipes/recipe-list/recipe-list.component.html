@@ -99,7 +99,18 @@
 
     <div class="recipes-grid">
       @for (recipe of filteredRecipes; track recipe.id) {
-        <app-recipe-card [recipe]="recipe"></app-recipe-card>
+        <div class="recipe-card-wrapper">
+          <app-recipe-card [recipe]="recipe"></app-recipe-card>
+          <app-favorite-button
+            [isFavorite]="
+              favoriteService.isRecipeFavorite(recipe.id.toString())
+            "
+            (toggle)="
+              favoriteService.toggleRecipeFavorite(recipe.id.toString())
+            "
+          >
+          </app-favorite-button>
+        </div>
       }
     </div>
 

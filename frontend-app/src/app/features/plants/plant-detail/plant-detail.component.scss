@@ -30,8 +30,8 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
-    border: none; /* Add for button */
-    cursor: pointer; /* Add for button */
+    border: none;
+    cursor: pointer;
 
     &:hover {
       background: #45a049;
@@ -57,9 +57,9 @@
     font-size: 0.95rem;
     margin-bottom: 15px;
     transition: color 0.3s;
-    border: none; /* Add for button */
-    background: none; /* Add for button */
-    cursor: pointer; /* Add for button */
+    border: none;
+    background: none;
+    cursor: pointer;
 
     &:hover {
       color:  #ffffff;
@@ -70,10 +70,19 @@
     display: flex;
     gap: 40px;
     align-items: flex-start;
+    position: relative; // Ajouté pour positionner le bouton favori
 
     @media (max-width: 768px) {
       flex-direction: column;
       gap: 25px;
+    }
+
+    // Bouton favori positionné en haut à droite de l'en-tête
+    app-favorite-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
     }
   }
 
@@ -264,8 +273,6 @@
     grid-template-columns: 1fr;
   }
 }
-
-
 
 // Empty State
 .empty-state {

@@ -6,6 +6,8 @@ import { SearchBarComponent } from '../../../shared/components/search-bar/search
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { Plant, PlantPage } from '../../../core/models/plant.model';
+import { FavoriteService } from '../../../core/services/favorite.service';
+import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
 
 @Component({
   selector: 'app-plant-list',
@@ -15,7 +17,8 @@ import { Plant, PlantPage } from '../../../core/models/plant.model';
     RouterModule,
     FormsModule,
     SearchBarComponent,
-    LoaderComponent
+    LoaderComponent,
+    FavoriteButtonComponent
   ],
   templateUrl: './plant-list.component.html',
   styleUrl: './plant-list.component.scss'
@@ -24,6 +27,7 @@ export class PlantListComponent implements OnInit {
   private plantService = inject(PlantService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  favoriteService = inject(FavoriteService);
 
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];

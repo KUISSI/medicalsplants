@@ -29,6 +29,12 @@
 
           <h1 class="detail-header__title">{{ plant.title }}</h1>
 
+          <!-- Bouton favori réutilisable -->
+          <app-favorite-button
+            [isFavorite]="favoriteService.isPlantFavorite(plant.id)"
+            (toggle)="favoriteService.togglePlantFavorite(plant.id)"
+          ></app-favorite-button>
+
           @if (plant.description) {
             <p class="detail-header__description">{{ plant.description }}</p>
           }

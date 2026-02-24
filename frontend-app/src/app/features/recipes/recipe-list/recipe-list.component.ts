@@ -4,8 +4,10 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { FavoriteService } from '../../../core/services/favorite.service';
 import { Recipe, RecipePage, RecipeType, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
+import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
 
 @Component({
   selector: 'app-recipe-list',
@@ -14,7 +16,8 @@ import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/
     CommonModule,
     RouterModule,
     FormsModule,
-    RecipeCardComponent
+    RecipeCardComponent,
+    FavoriteButtonComponent
   ],
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.scss']
@@ -22,6 +25,7 @@ import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/
 export class RecipeListComponent implements OnInit {
   private recipeService = inject(RecipeService);
   authService = inject(AuthService);
+  favoriteService = inject(FavoriteService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -166,6 +170,7 @@ export class RecipeListComponent implements OnInit {
         rating,
         time,
         difficulty,
+        // Ajoute d'autres champs si besoin
       };
     });
   }

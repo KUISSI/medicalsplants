@@ -7,6 +7,8 @@ import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Review } from '../../../core/models/review.model';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form.component';
+import { FavoriteService } from '../../../core/services/favorite.service';
+import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -14,7 +16,8 @@ import { ReviewFormComponent } from '../../reviews/review-form/review-form.compo
   imports: [
     CommonModule,
     RouterModule,
-    ReviewFormComponent
+    ReviewFormComponent,
+    FavoriteButtonComponent // <-- AJOUT ICI
   ],
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss']
@@ -34,7 +37,8 @@ export class RecipeDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private recipeService: RecipeService,
-    public authService: AuthService
+    public authService: AuthService,
+    public favoriteService: FavoriteService // <-- Ajout
   ) {}
 
   ngOnInit(): void {
@@ -108,5 +112,14 @@ export class RecipeDetailComponent implements OnInit {
       this.recipe.reviewCount = (this.recipe.reviewCount || 0) + 1;
       this.showReviewForm = false;
     }
+  }
+
+  // Méthodes pour le bouton favori (DRY)
+  isRecipeFavorite(recipeId: string | number): boolean {
+    return this.favoriteService.isRecipeFavorite(recipeId.toString());
+  }
+
+  toggleRecipeFavorite(recipeId: string | number): void {
+    this.favoriteService.toggleRecipeFavorite(recipeId.toString());
   }
 }

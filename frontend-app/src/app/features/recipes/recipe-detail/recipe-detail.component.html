@@ -11,7 +11,7 @@
   } @else if (recipe) {
     <div class="recipe-content">
       <!-- Header -->
-      <div class="recipe-header section-spacing">
+      <div class="recipe-header section-spacing" style="position: relative">
         <a routerLink="/recipes" class="btn-back">← Retour</a>
         <div class="recipe-title-section">
           <h1 class="recipe-title">{{ recipe.title }}</h1>
@@ -23,6 +23,12 @@
             <span class="premium-badge">👑 Premium</span>
           }
         </div>
+        <!-- Bouton favori en haut à droite -->
+        <app-favorite-button
+          [isFavorite]="isRecipeFavorite(recipe.id)"
+          (toggleFavorite)="toggleRecipeFavorite(recipe.id)"
+          style="position: absolute; top: 16px; right: 16px; z-index: 2"
+        ></app-favorite-button>
       </div>
 
       <!-- Infos rapides -->

@@ -365,3 +365,15 @@
     width: 100%;
   }
 }
+
+.recipe-card-wrapper {
+  position: relative;
+}
+
+app-favorite-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 6px rgba(44, 62, 80, 0.10));
+}
