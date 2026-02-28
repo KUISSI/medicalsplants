@@ -19,9 +19,10 @@ export class RegisterComponent {
   registerForm: FormGroup;
   showPassword = false;
   showConfirmPassword = false;
+  emailSent = false; // Pour afficher le message de confirmation
 
   constructor() {
-    this.registerForm = this.fb. group({
+    this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       pseudo: ['', [
         Validators.required,
@@ -36,16 +37,16 @@ export class RegisterComponent {
         Validators.minLength(8),
         Validators.maxLength(100)
       ]],
-      confirmPassword: ['', [Validators. required]],
+      confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, [Validators.requiredTrue]]
     }, {
-      validators:  this.passwordMatchValidator
+      validators: this.passwordMatchValidator
     });
   }
 
   get email() { return this.registerForm.get('email'); }
   get pseudo() { return this.registerForm.get('pseudo'); }
-  get firstname() { return this.registerForm. get('firstname'); }
+  get firstname() { return this.registerForm.get('firstname'); }
   get lastname() { return this.registerForm.get('lastname'); }
   get password() { return this.registerForm.get('password'); }
   get confirmPassword() { return this.registerForm.get('confirmPassword'); }
@@ -55,9 +56,9 @@ export class RegisterComponent {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
 
-    if (password && confirmPassword && password. value !== confirmPassword. value) {
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch:  true };
+      return { passwordMismatch: true };
     }
     return null;
   }
@@ -67,21 +68,22 @@ export class RegisterComponent {
   }
 
   toggleConfirmPassword(): void {
-    this. showConfirmPassword = !this.showConfirmPassword;
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   onSubmit(): void {
-    if (this. registerForm.invalid) {
-      this. registerForm.markAllAsTouched();
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
       return;
     }
 
-    const { acceptTerms, ...formData } = this. registerForm.value;
+    const { acceptTerms, ...formData } = this.registerForm.value;
 
-    // Use frontend-only register to create a local user and log them in
-    this.authService.registerFrontend(formData).subscribe({
+    // Appel à la vraie API d'inscription (avec validation email)
+    this.authService.register(formData).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        this.emailSent = true; // Affiche un message "Vérifiez votre email"
+        // Optionnel : this.router.navigate(['/']); // Redirige si besoin
       }
     });
   }

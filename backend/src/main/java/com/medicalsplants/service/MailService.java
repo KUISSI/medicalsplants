@@ -20,12 +20,23 @@ public class MailService {
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
 
+    @Value("${app.frontend.url:http://localhost:4200}")
+    private String frontendUrl;
+
+    /**
+     * Envoie un email de vérification d'adresse email à l'utilisateur.
+     *
+     * @param to L'adresse email du destinataire
+     * @param token Le token de validation à inclure dans le lien
+     */
     public void sendEmailVerification(String to, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Vérification de votre adresse email");
+        // Utilise le frontend pour la redirection utilisateur après clic
+        String verificationLink = frontendUrl + "/verify-email?token=" + token;
         message.setText("Bonjour,\n\nVeuillez cliquer sur le lien suivant pour vérifier votre adresse email : "
-                + "http://localhost:8080/api/v1/auth/verify-email?token=" + token + "\n\nMerci.");
+                + verificationLink + "\n\nMerci.");
 
         try {
             mailSender.send(message);

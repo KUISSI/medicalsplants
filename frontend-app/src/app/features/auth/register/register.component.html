@@ -9,8 +9,23 @@
       </p>
     </div>
 
-    <!-- Form -->
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <!-- Message de confirmation après inscription -->
+    <div *ngIf="emailSent" class="register-confirm">
+      <span class="register-confirm__icon">📧</span>
+      <h2 class="register-confirm__title">Vérification de votre email</h2>
+      <p class="register-confirm__text">
+        Un email de confirmation vous a été envoyé.<br />
+        Veuillez cliquer sur le lien reçu pour activer votre compte.
+      </p>
+    </div>
+
+    <!-- Formulaire d'inscription (affiché seulement si emailSent est faux) -->
+    <form
+      *ngIf="!emailSent"
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="auth-form"
+    >
       <div class="form-row">
         <!-- Firstname -->
         <div class="form-group">
@@ -58,11 +73,15 @@
           />
         </div>
         @if (pseudo?.invalid && pseudo?.touched) {
-        <span class="form-error">
-          @if (pseudo?.errors?. ['required']) { Le pseudo est requis } @else if (pseudo?.
-          errors?.['minlength']) { Minimum 3 caractères } @else if (pseudo?.errors?. ['pattern']) {
-          Lettres, chiffres et underscores uniquement }
-        </span>
+          <span class="form-error">
+            @if (pseudo?.errors?.["required"]) {
+              Le pseudo est requis
+            } @else if (pseudo?.errors?.["minlength"]) {
+              Minimum 3 caractères
+            } @else if (pseudo?.errors?.["pattern"]) {
+              Lettres, chiffres et underscores uniquement
+            }
+          </span>
         }
       </div>
 
@@ -80,11 +99,14 @@
             placeholder="votre@email.com"
           />
         </div>
-        @if (email?.invalid && email?. touched) {
-        <span class="form-error">
-          @if (email?. errors?.['required']) { L'email est requis } @else if
-          (email?.errors?.['email']) { Format d'email invalide }
-        </span>
+        @if (email?.invalid && email?.touched) {
+          <span class="form-error">
+            @if (email?.errors?.["required"]) {
+              L'email est requis
+            } @else if (email?.errors?.["email"]) {
+              Format d'email invalide
+            }
+          </span>
         }
       </div>
 
@@ -102,15 +124,22 @@
               [class.form-input--error]="password?.invalid && password?.touched"
               placeholder="••••••••"
             />
-            <button type="button" class="form-input-toggle" (click)="togglePassword()">
-              {{ showPassword ? '🙈' : '👁️' }}
+            <button
+              type="button"
+              class="form-input-toggle"
+              (click)="togglePassword()"
+            >
+              {{ showPassword ? "🙈" : "👁️" }}
             </button>
           </div>
           @if (password?.invalid && password?.touched) {
-          <span class="form-error">
-            @if (password?.errors?.['required']) { Le mot de passe est requis } @else if
-            (password?.errors?.['minlength']) { Minimum 8 caractères }
-          </span>
+            <span class="form-error">
+              @if (password?.errors?.["required"]) {
+                Le mot de passe est requis
+              } @else if (password?.errors?.["minlength"]) {
+                Minimum 8 caractères
+              }
+            </span>
           }
         </div>
 
@@ -124,19 +153,27 @@
               id="confirmPassword"
               formControlName="confirmPassword"
               class="form-input"
-              [class.form-input--error]="confirmPassword?.invalid && confirmPassword?.touched"
+              [class.form-input--error]="
+                confirmPassword?.invalid && confirmPassword?.touched
+              "
               placeholder="••••••••"
             />
-            <button type="button" class="form-input-toggle" (click)="toggleConfirmPassword()">
-              {{ showConfirmPassword ? '🙈' : '👁️' }}
+            <button
+              type="button"
+              class="form-input-toggle"
+              (click)="toggleConfirmPassword()"
+            >
+              {{ showConfirmPassword ? "🙈" : "👁️" }}
             </button>
           </div>
-          @if (confirmPassword?. invalid && confirmPassword?. touched) {
-          <span class="form-error">
-            @if (confirmPassword?.errors?.['required']) { Confirmation requise } @else if
-            (confirmPassword?.errors?.['passwordMismatch']) { Les mots de passe ne correspondent pas
-            }
-          </span>
+          @if (confirmPassword?.invalid && confirmPassword?.touched) {
+            <span class="form-error">
+              @if (confirmPassword?.errors?.["required"]) {
+                Confirmation requise
+              } @else if (confirmPassword?.errors?.["passwordMismatch"]) {
+                Les mots de passe ne correspondent pas
+              }
+            </span>
           }
         </div>
       </div>
@@ -151,8 +188,8 @@
             <a href="#">politique de confidentialité</a>
           </span>
         </label>
-        @if (acceptTerms?.invalid && acceptTerms?. touched) {
-        <span class="form-error"> Vous devez accepter les conditions </span>
+        @if (acceptTerms?.invalid && acceptTerms?.touched) {
+          <span class="form-error"> Vous devez accepter les conditions </span>
         }
       </div>
 
@@ -163,16 +200,21 @@
         [disabled]="registerForm.invalid || authService.isLoading()"
       >
         @if (authService.isLoading()) {
-        <span class="auth-btn__loader"></span>
-        Inscription en cours... } @else { Créer mon compte }
+          <span class="auth-btn__loader"></span>
+          Inscription en cours...
+        } @else {
+          Créer mon compte
+        }
       </button>
     </form>
 
     <!-- Footer -->
-    <div class="auth-card__footer">
+    <div class="auth-card__footer" *ngIf="!emailSent">
       <p>
         Déjà un compte ?
-        <a routerLink="/login" class="auth-link auth-link--primary"> Connectez-vous </a>
+        <a routerLink="/login" class="auth-link auth-link--primary">
+          Connectez-vous
+        </a>
       </p>
     </div>
   </div>
