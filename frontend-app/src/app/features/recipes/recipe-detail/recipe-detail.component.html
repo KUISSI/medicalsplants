@@ -1,163 +1,177 @@
-<div class="recipe-detail-container">
-  @if (isLoading) {
-    <div class="loading">
-      <p>Chargement de la recette...</p>
-    </div>
-  } @else if (error) {
-    <div class="error">
-      <p>{{ error }}</p>
-      <a routerLink="/recipes" class="btn-back">Retour aux recettes</a>
-    </div>
-  } @else if (recipe) {
-    <div class="recipe-content">
-      <!-- Header -->
-      <div class="recipe-header section-spacing" style="position: relative">
-        <a routerLink="/recipes" class="btn-back">← Retour</a>
-        <div class="recipe-title-section">
-          <h1 class="recipe-title">{{ recipe.title }}</h1>
-          <p class="recipe-type">
-            {{ getRecipeTypeIcon(recipe.type) }}
-            {{ RecipeTypeLabels[recipe.type] }}
-          </p>
-          @if (recipe.premium) {
-            <span class="premium-badge">👑 Premium</span>
-          }
-        </div>
-        <!-- Bouton favori en haut à droite -->
-        <app-favorite-button
-          [isFavorite]="isRecipeFavorite(recipe.id)"
-          (toggleFavorite)="toggleRecipeFavorite(recipe.id)"
-          style="position: absolute; top: 16px; right: 16px; z-index: 2"
-        ></app-favorite-button>
-      </div>
+<div class="recipe-detail-page">
+  <!-- Loader -->
+  <app-loader
+    *ngIf="isLoading"
+    [fullscreen]="true"
+    message="Chargement de la recette..."
+  ></app-loader>
 
+  <!-- Error State -->
+  <div *ngIf="error" class="error-state">
+    <span class="error-state__icon">🧴</span>
+    <h2 class="error-state__title">{{ error }}</h2>
+    <button (click)="goBack()" class="error-state__btn">← Retour</button>
+  </div>
+
+  <!-- Recipe Detail -->
+  <ng-container *ngIf="recipe">
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="detail-header__container">
+        <div class="detail-header__main">
+          <div class="detail-header__image">
+            <img
+              *ngIf="recipe.imageUrl"
+              [src]="recipe.imageUrl"
+              [alt]="recipe.title"
+            />
+            <div
+              *ngIf="!recipe.imageUrl"
+              class="detail-header__placeholder"
+            ></div>
+          </div>
+          <div class="detail-header__info">
+            <h1 class="detail-header__title">{{ recipe.title }}</h1>
+            <div class="detail-header__badges">
+              <span class="detail-header__badge"
+                >{{ getRecipeTypeIcon(recipe.type) }}
+                {{ RecipeTypeLabels[recipe.type] }}</span
+              >
+              <span
+                class="detail-header__badge detail-header__badge--mode"
+                *ngIf="recipe.premium"
+                >👑 Premium</span
+              >
+            </div>
+            <p class="detail-header__description" *ngIf="recipe.description">
+              {{ recipe.description }}
+            </p>
+          </div>
+          <app-favorite-button
+            [isFavorite]="isRecipeFavorite(recipe.id)"
+            (toggleFavorite)="toggleRecipeFavorite(recipe.id)"
+          >
+          </app-favorite-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="detail-content">
       <!-- Infos rapides -->
       <div class="recipe-meta section-spacing">
-        @if (recipe.preparationTime) {
-          <span class="meta-item">⏱️ {{ recipe.preparationTime }} min</span>
-        }
-        @if (recipe.difficulty) {
-          <span class="meta-item"
-            >📊 {{ getDifficultyLabel(recipe.difficulty) }}</span
-          >
-        }
-        @if (recipe.servings) {
-          <span class="meta-item">👥 {{ recipe.servings }} portions</span>
-        }
-        @if (recipe.averageRating) {
-          <span class="meta-item"
-            >⭐ {{ recipe.averageRating | number: "1.1-1" }}/5</span
-          >
-        }
+        <span class="meta-item" *ngIf="recipe.preparationTime"
+          >⏱️ {{ recipe.preparationTime }} min</span
+        >
+        <span class="meta-item" *ngIf="recipe.difficulty"
+          >📊 {{ getDifficultyLabel(recipe.difficulty) }}</span
+        >
+        <span class="meta-item" *ngIf="recipe.servings"
+          >👥 {{ recipe.servings }} portions</span
+        >
+        <span class="meta-item" *ngIf="recipe.averageRating"
+          >⭐ {{ recipe.averageRating | number: "1.1-1" }}/5</span
+        >
       </div>
 
-      <!-- Description -->
-      @if (recipe.description) {
-        <div class="recipe-description section-spacing">
-          <h2>Description</h2>
-          <p>{{ recipe.description }}</p>
-        </div>
-      }
-
       <!-- Plantes utilisées -->
-      @if (recipe.plants && recipe.plants.length > 0) {
-        <div class="recipe-plants section-spacing">
-          <h2>🌿 Plantes utilisées</h2>
-          <div class="plants-list">
-            @for (plant of recipe.plants; track plant.id) {
-              <a [routerLink]="['/plants', plant.id]" class="plant-chip">
-                {{ plant.title }}
-              </a>
-            }
-          </div>
+      <div class="plants-section" *ngIf="recipe.plants?.length">
+        <h2 class="section-title">🌿 Plantes utilisées</h2>
+        <div class="plants-grid">
+          <a
+            *ngFor="let plant of recipe.plants"
+            [routerLink]="['/plants', plant.id]"
+            class="plant-item"
+          >
+            <span class="plant-item__icon">🌿</span>
+            <div class="plant-item__info">
+              <span class="plant-item__title">{{ plant.title }}</span>
+            </div>
+            <span class="plant-item__arrow">→</span>
+          </a>
         </div>
-      }
+      </div>
 
       <!-- Ingrédients -->
-      @if (ingredientsList.length > 0) {
-        <div class="recipe-ingredients section-spacing">
-          <h2>📝 Ingrédients</h2>
-          <ul class="spaced-list">
-            @for (ingredient of ingredientsList; track ingredient) {
-              <li>{{ ingredient }}</li>
-            }
-          </ul>
-        </div>
-      }
+      <div class="ingredients-section" *ngIf="ingredientsList.length">
+        <h2 class="section-title">📝 Ingrédients</h2>
+        <ul class="ingredients-list">
+          <li *ngFor="let ingredient of ingredientsList">{{ ingredient }}</li>
+        </ul>
+      </div>
 
-      <!-- Instructions -->
-      @if (recipe.instructions) {
-        <div class="recipe-instructions section-spacing">
-          <h2>👨‍🍳 Préparation</h2>
-          <ul class="spaced-list">
-            @for (step of preparationSteps; track $index) {
-              <li>
-                <strong>Étape {{ $index + 1 }} :</strong> {{ step.trim() }}
-              </li>
-            }
-          </ul>
-        </div>
-      }
+      <!-- Préparation -->
+      <div class="preparation-section" *ngIf="preparationSteps.length">
+        <h2 class="section-title">👨‍🍳 Préparation</h2>
+        <ul class="steps-list">
+          <li
+            *ngFor="let step of preparationSteps; let i = index"
+            class="step-item"
+          >
+            <strong>Étape {{ i + 1 }} :</strong> {{ step.trim() }}
+          </li>
+        </ul>
+      </div>
 
       <!-- Auteur -->
-      @if (recipe.author) {
-        <div class="recipe-author section-spacing">
-          <p>
-            Recette proposée par
-            <strong>{{
-              recipe.author.pseudo || recipe.author.firstname
-            }}</strong>
-          </p>
-        </div>
-      }
+      <div class="author-section" *ngIf="recipe.author">
+        <p>
+          Recette proposée par
+          <strong>{{ recipe.author.pseudo || recipe.author.firstname }}</strong>
+        </p>
+      </div>
 
       <!-- Avis -->
-      <div class="recipe-reviews section-spacing">
-        <h2>💬 Avis ({{ recipe.reviewCount || 0 }})</h2>
-
-        @if (!authService.isAuthenticated()) {
+      <div class="reviews-section">
+        <h2 class="section-title">💬 Avis ({{ recipe.reviewCount || 0 }})</h2>
+        <div *ngIf="!authService.isAuthenticated()" class="login-prompt">
           <p>
             <a
               routerLink="/login"
               [queryParams]="{ returnUrl: '/recipes/' + recipe.id }"
+              >Connectez-vous</a
             >
-              Connectez-vous
-            </a>
             pour laisser un avis
           </p>
-        } @else {
-          <!-- Bouton pour afficher le formulaire -->
+        </div>
+        <div *ngIf="authService.isAuthenticated()">
           <button
             class="btn-leave-review"
             (click)="showReviewForm = !showReviewForm"
           >
             {{ showReviewForm ? "Annuler" : "Laisser un avis" }}
           </button>
-          <!-- Formulaire d'avis inline -->
           <app-review-form
             *ngIf="showReviewForm"
             [recipeId]="recipe.id"
             (submitted)="onReviewSubmitted($event)"
             (cancel)="showReviewForm = false"
-          ></app-review-form>
-        }
-
-        @if (recipe.reviews && recipe.reviews.length > 0) {
-          <div class="reviews-list">
-            @for (review of recipe.reviews; track review.id) {
-              <div class="review-item">
-                <div class="review-header">
-                  <strong>{{ review.author?.pseudo || "Anonyme" }}</strong>
-                  <span class="review-rating">⭐ {{ review.rating }}/5</span>
-                </div>
-                <p class="review-content">{{ review.content }}</p>
-              </div>
-            }
+          >
+          </app-review-form>
+        </div>
+        <div
+          *ngIf="recipe.reviews?.length; else noReviews"
+          class="reviews-list"
+        >
+          <div *ngFor="let review of recipe.reviews" class="review-card">
+            <div class="review-card__header">
+              <span class="review-card__author">{{
+                review.author?.pseudo || "Anonyme"
+              }}</span>
+              <span class="review-card__date">{{
+                review.createdAt | date: "short"
+              }}</span>
+              <span class="review-card__rating">⭐ {{ review.rating }}/5</span>
+            </div>
+            <p class="review-card__content">{{ review.content }}</p>
           </div>
-        } @else {
-          <p class="no-reviews">Aucun avis pour le moment</p>
-        }
+        </div>
+        <ng-template #noReviews>
+          <div class="empty-reviews">
+            <p>Aucun avis pour le moment</p>
+          </div>
+        </ng-template>
       </div>
     </div>
-  }
+  </ng-container>
 </div>
