@@ -27,7 +27,6 @@ public interface UserRepository extends JpaRepository<User, java.util.UUID> {
 
     Optional<User> findByPasswordResetTokenAndDeletedAtIsNull(String token);
 
-    
     @Modifying
     @Query("UPDATE User u SET u.lastLoginAt = :lastLoginAt WHERE u.id = :userId")
     void updateLastLoginAt(@Param("userId") java.util.UUID userId, @Param("lastLoginAt") Instant lastLoginAt);
@@ -35,4 +34,16 @@ public interface UserRepository extends JpaRepository<User, java.util.UUID> {
     @Modifying
     @Query("UPDATE User u SET u.status = :status WHERE u.id = :userId")
     void updateStatus(@Param("userId") java.util.UUID userId, @Param("status") UserStatus status);
+
+    // Ajout possible pour la validation d'email
+    @Modifying
+    @Query("UPDATE User u SET u.isEmailVerified = :isEmailVerified, u.emailVerificationToken = :verificationToken WHERE u.id = :userId")
+    void updateEmailVerification(@Param("userId") java.util.UUID userId,
+            @Param("isEmailVerified") Boolean isEmailVerified,
+            @Param("verificationToken") String verificationToken);
+
+    // Ajout possible pour la suppression logique
+    @Modifying
+    @Query("UPDATE User u SET u.deletedAt = :deletedAt WHERE u.id = :userId")
+    void softDelete(@Param("userId") java.util.UUID userId, @Param("deletedAt") Instant deletedAt);
 }

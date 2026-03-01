@@ -17,8 +17,7 @@ import com.medicalsplants.security.CustomUserDetails;
 public class UserService {
 
     private final UserRepository userRepository;
-    // Ajoute ici ton repository de tokens si tu en utilises un
-    // private final VerificationTokenRepository tokenRepository;
+    // private final VerificationTokenRepository tokenRepository; // Si tu utilises un repo de tokens
 
     public UserService(UserRepository userRepository /*, VerificationTokenRepository tokenRepository */) {
         this.userRepository = userRepository;
@@ -37,30 +36,18 @@ public class UserService {
     // Validation de l'email à partir du token
     @Transactional
     public boolean verifyUserEmail(String token) {
-        // Exemple avec une table de tokens
-        // Optional<VerificationToken> verificationToken = tokenRepository.findByToken(token);
-        // if (verificationToken.isPresent() && !verificationToken.get().isExpired()) {
-        //     User user = verificationToken.get().getUser();
-        //     user.setEmailVerified(true);
-        //     userRepository.save(user);
-        //     tokenRepository.delete(verificationToken.get());
-        //     return true;
-        // }
-        // return false;
-
-        // Exemple avec un champ token dans User (à adapter)
-        Optional<User> userOpt = userRepository.findByVerificationToken(token);
+        Optional<User> userOpt = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             user.setEmailVerified(true);
-            user.setVerificationToken(null); // Invalide le token
+            user.setEmailVerificationToken(null); // Corrigé : le champ s'appelle emailVerificationToken
             userRepository.save(user);
             return true;
         }
         return false;
     }
 
-    // ... autres méthodes existantes
+    // Suppression d'un utilisateur (soft ou hard delete selon le rôle)
     @Transactional
     public void deleteUser(UUID userId, CustomUserDetails currentUser) {
         User user = userRepository.findById(userId)

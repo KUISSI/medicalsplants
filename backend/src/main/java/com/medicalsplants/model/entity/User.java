@@ -1,11 +1,19 @@
 package com.medicalsplants.model.entity;
 
-import com.medicalsplants.model.enums.Role;
-import com.medicalsplants.model.enums.UserStatus;
-import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.UUID;
+
+import com.medicalsplants.model.enums.Role;
+import com.medicalsplants.model.enums.UserStatus;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "mp_user")
@@ -167,6 +175,11 @@ public class User extends BaseEntity {
 
     public void setIsEmailVerified(Boolean isEmailVerified) {
         this.isEmailVerified = isEmailVerified;
+    }
+
+    // Ajout pour compatibilité avec le service
+    public void setEmailVerified(boolean emailVerified) {
+        this.isEmailVerified = emailVerified;
     }
 
     public String getEmailVerificationToken() {
