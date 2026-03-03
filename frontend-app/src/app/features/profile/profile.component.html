@@ -15,8 +15,8 @@
         <div class="profile-header__top">
           <div class="profile-header__identity">
             <h1 class="profile-header__name">{{ user?.pseudo }}</h1>
-            <span [ngClass]="getRoleBadge(user.role)?.class" class="badge">
-              {{ getRoleBadge(user.role)?.label }}
+            <span [ngClass]="getRoleBadge(user.role).class" class="badge">
+              {{ getRoleBadge(user.role).label }}
             </span>
           </div>
           <button class="profile-header__edit-btn">Modifier le profil</button>
