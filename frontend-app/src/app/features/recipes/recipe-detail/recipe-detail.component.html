@@ -15,26 +15,26 @@
 
   <!-- Recipe Detail -->
   <ng-container *ngIf="recipe">
-    <!-- Header -->
+    <!-- Header standardisé -->
     <div class="detail-header">
       <div class="detail-header__container">
-        <div class="detail-header__main">
-          <div class="detail-header__image">
+        <button (click)="goBack()" class="detail-header__back">← Retour</button>
+        <div class="detail-header__content">
+          <span class="detail-header__icon">
             <img
               *ngIf="recipe.imageUrl"
               [src]="recipe.imageUrl"
               [alt]="recipe.title"
+              class="detail-header__img"
             />
-            <div
-              *ngIf="!recipe.imageUrl"
-              class="detail-header__placeholder"
-            ></div>
-          </div>
+            <ng-container *ngIf="!recipe.imageUrl">
+              {{ getRecipeTypeIcon(recipe.type) || "🧴" }}
+            </ng-container>
+          </span>
           <div class="detail-header__info">
-            <h1 class="detail-header__title">{{ recipe.title }}</h1>
-            <div class="detail-header__badges">
+            <div class="detail-header__title-line">
+              <h1 class="detail-header__title">{{ recipe.title }}</h1>
               <span class="detail-header__badge">
-                {{ getRecipeTypeIcon(recipe.type) }}
                 {{ RecipeTypeLabels[recipe.type] }}
               </span>
               <span

@@ -47,6 +47,25 @@
   background-color: #ffffff;
 }
 
+// Centrage du contenu principal
+.detail-content {
+  max-width: 900px;
+  margin: 30px auto 0;
+  padding: 0 20px 50px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+
+  // Réaligne à gauche les sections de contenu pour la lisibilité
+  .plants-section,
+  .ingredients-section,
+  .preparation-section,
+  .author-section,
+  .reviews-section {
+    text-align: left;
+  }
+}
+
 .recipe-content {
   max-width: 1100px;
   margin: 0 auto;
@@ -273,6 +292,15 @@
   }
 }
 
+.ingredients-section {
+  margin-top: 50px;
+
+  // Si c'est la première section, retire la marge
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
 .ingredients-list {
   list-style: none;
   padding: 0;
@@ -433,7 +461,7 @@
   .empty-reviews {
     text-align: center;
     padding: 40px 20px;
-    p { color: #666; }
+    color: #666;
   }
   .reviews-list {
     display: flex;
@@ -466,6 +494,27 @@
     &__date { font-size: 0.8rem; color: #999; }
     &__delete { background: none; border: none; cursor: pointer; opacity: 0.5; &:hover { opacity: 1; }}
     &__content { margin: 0; }
+  }
+}
+
+// Bouton principal moderne
+.btn-leave-review, .main-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #4CAF50 0%, #2d5a3d 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+  transition: background 0.2s, transform 0.2s;
+  margin: 18px 0;
+
+  &:hover {
+    background: linear-gradient(135deg, #388e3c 0%, #1a472a 100%);
+    transform: translateY(-2px) scale(1.03);
   }
 }
 
@@ -566,15 +615,119 @@
   margin-bottom: 0.8em;
 }
 
-// Positionnement du bouton favori sur la page détail recette
+// Header standardisé (recette/plante)
 .detail-header {
+  background: linear-gradient(135deg, #2d5a3d 0%, #4CAF50 100%);
+  padding: 20px 20px 40px;
+  color: #ffffff;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+  margin-bottom: 32px;
   position: relative;
-}
 
-app-favorite-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-  filter: drop-shadow(0 2px 6px rgba(44, 62, 80, 0.10));
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__back {
+    display: inline-block;
+    color: #a8d5a2;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    transition: color 0.3s;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    position: relative;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    // Bouton favori positionné en haut à droite de l'en-tête
+    app-favorite-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      filter: drop-shadow(0 2px 6px rgba(44, 62, 80, 0.10));
+    }
+  }
+
+  &__icon {
+    font-size: 4rem;
+    min-width: 64px;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    margin-right: 10px;
+
+    .detail-header__img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__badge {
+    font-size: 1.1rem;
+    color: #d4edda;
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 4px 14px;
+    font-weight: 500;
+    margin-left: 8px;
+
+    &--mode {
+      background: #ffe082;
+      color: #a67c00;
+    }
+  }
+
+  &__description {
+    font-size: 1.1rem;
+    color: #d4edda;
+    margin: 0;
+    line-height: 1.7;
+    max-width: 700px;
+  }
 }

@@ -10,7 +10,6 @@ import { Recipe, RecipePage, RECIPE_TYPE_LABELS } from '../../../core/models/rec
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
 import { FavoriteService } from '../../../core/services/favorite.service';
 import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
-
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
@@ -148,6 +147,17 @@ export class PlantDetailComponent implements OnInit {
       'Cutané': '🧴'
     };
     return icons[family] || '✨';
+  }
+
+  /** Icône principale pour le header de la plante */
+  getPlantIcon(family?: string): string {
+    const icons: Record<string, string> = {
+      'Légumineuse': '🌱',
+      'Aromatique': '🌿',
+      'Médicinale': '💊',
+      // Ajoute d'autres familles si besoin
+    };
+    return (family && icons[family]) || '🌿';
   }
 
   goBack(): void {
