@@ -20,99 +20,103 @@
         (ngModelChange)="applyFilters()"
       />
       @if (searchTerm) {
-      <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()">✕</button>
+        <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()">✕</button>
       }
     </div>
 
-    <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()">
+    <select class="filter-select" [(ngModel)]="family" (ngModelChange)="applyFilters()">
       <option value="">Toutes les familles</option>
       @for (family of families; track family) {
-      <option [value]="family">{{ family }}</option>
+        <option [value]="family">{{ family }}</option>
       }
     </select>
 
-    @if (searchTerm || selectedFamily) {
-    <button class="btn btn--secondary" (click)="clearFilters()">✕ Effacer</button>
+    @if (searchTerm || family) {
+      <button class="btn btn--secondary" (click)="clearFilters()">✕ Effacer</button>
     }
   </div>
 
   <!-- Content -->
   @if (isLoading) {
-  <app-loader message="Chargement des propriétés..."></app-loader>
-  } @else if (filteredProperties. length === 0) {
-  <div class="empty-state">
-    <span class="empty-state__icon">✨</span>
-    <h3 class="empty-state__title">Aucune propriété trouvée</h3>
-    <p class="empty-state__message">
-      @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche } @else { Commencez
-      par créer une propriété }
-    </p>
-    @if (! searchTerm && ! selectedFamily) {
-    <a routerLink="/properties/new" class="btn btn--primary"> ➕ Créer une propriété </a>
-    }
-  </div>
-  } @else {
-  <div class="page__info">
-    <span>{{ filteredProperties.length }} propriété(s)</span>
-  </div>
-
-  <div class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Titre</th>
-          <th>Famille</th>
-          <th>Symptômes liés</th>
-          <th>Créé le</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (property of filteredProperties; track property. id) {
-        <tr>
-          <td>
-            <strong>{{ property.title }}</strong>
-          </td>
-          <td>
-            <span class="badge badge--purple">{{ property.propertyFamily }}</span>
-          </td>
-          <td>
-            @if (property.symptoms && property.symptoms.length > 0) {
-            <div class="tags">
-              @for (symptom of property.symptoms. slice(0, 3); track symptom. id) {
-              <span class="tag">{{ symptom.title }}</span>
-              } @if (property.symptoms.length > 3) {
-              <span class="tag tag--more">+{{ property.symptoms.length - 3 }}</span>
-              }
-            </div>
-            } @else {
-            <span class="text-muted">Aucun</span>
-            }
-          </td>
-          <td>{{ formatDate(property.createdAt) }}</td>
-          <td>
-            <div class="actions">
-              <a
-                [routerLink]="['/properties', property.id, 'edit']"
-                class="action-btn"
-                title="Modifier"
-              >
-                ✏️
-              </a>
-              <button
-                class="action-btn action-btn--danger"
-                (click)="confirmDelete(property)"
-                title="Supprimer"
-              >
-                🗑️
-              </button>
-            </div>
-          </td>
-        </tr>
+    <app-loader message="Chargement des propriétés..."></app-loader>
+  } @else if (filteredProperties.length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">✨</span>
+      <h3 class="empty-state__title">Aucune propriété trouvée</h3>
+      <p class="empty-state__message">
+        @if (searchTerm || family) {
+          Modifiez vos critères de recherche
+        } @else {
+          Commencez par créer une propriété
         }
-      </tbody>
-    </table>
-  </div>
+      </p>
+      @if (!searchTerm && !family) {
+        <a routerLink="/properties/new" class="btn btn--primary"> ➕ Créer une propriété </a>
+      }
+    </div>
+  } @else {
+    <div class="page__info">
+      <span>{{ filteredProperties.length }} propriété(s)</span>
+    </div>
+
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Famille</th>
+            <th>Symptômes liés</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (property of filteredProperties; track property.id) {
+            <tr>
+              <td>
+                <strong>{{ property.title }}</strong>
+              </td>
+              <td>
+                <span class="badge badge--purple">{{ property.propertyFamily }}</span>
+              </td>
+              <td>
+                @if (property.symptoms && property.symptoms.length > 0) {
+                  <div class="tags">
+                    @for (symptom of property.symptoms.slice(0, 3); track symptom.id) {
+                      <span class="tag">{{ symptom.title }}</span>
+                    }
+                    @if (property.symptoms.length > 3) {
+                      <span class="tag tag--more">+{{ property.symptoms.length - 3 }}</span>
+                    }
+                  </div>
+                } @else {
+                  <span class="text-muted">Aucun</span>
+                }
+              </td>
+              <td>{{ formatDate(property.createdAt) }}</td>
+              <td>
+                <div class="actions">
+                  <a
+                    [routerLink]="['/properties', property.id, 'edit']"
+                    class="action-btn"
+                    title="Modifier"
+                  >
+                    ✏️
+                  </a>
+                  <button
+                    class="action-btn action-btn--danger"
+                    (click)="confirmDelete(property)"
+                    title="Supprimer"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>
 

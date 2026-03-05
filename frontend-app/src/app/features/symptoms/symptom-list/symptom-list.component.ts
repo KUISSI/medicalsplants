@@ -30,7 +30,7 @@ export class SymptomListComponent implements OnInit {
   families: string[] = [];
   isLoading = true;
   searchTerm = '';
-  selectedFamily = '';
+  family = '';
   viewMode: 'grid' | 'list' = 'grid';
   isScrolled = false;
 
@@ -49,14 +49,14 @@ export class SymptomListComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['searchTerm'] || '';
-      this.selectedFamily = params['selectedFamily'] || '';
+      this.family = params['family'] || '';
       this.loadGroupedSymptoms();
     });
   }
 
   loadGroupedSymptoms(): void {
     this.isLoading = true;
-    this.symptomService.getGroupedByFamily(this.searchTerm, this.selectedFamily).subscribe({
+    this.symptomService.getGroupedByFamily(this.searchTerm, this.family).subscribe({
       next: (data) => {
         this.groupedSymptoms = data;
         this.families = Object.keys(data).sort();
@@ -78,14 +78,14 @@ export class SymptomListComponent implements OnInit {
   }
 
   onFamilyChange(family: string): void {
-    this.selectedFamily = family;
+    this.family = family;
     this.updateUrlQueryParams();
     this.loadGroupedSymptoms();
   }
 
   clearFilters(): void {
     this.searchTerm = '';
-    this.selectedFamily = '';
+    this.family = '';
     this.updateUrlQueryParams();
     this.loadGroupedSymptoms();
   }
@@ -95,7 +95,7 @@ export class SymptomListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         searchTerm: this.searchTerm || null,
-        selectedFamily: this.selectedFamily || null
+        family: this.family || null
       },
       queryParamsHandling: 'merge'
     });
@@ -104,7 +104,7 @@ export class SymptomListComponent implements OnInit {
   get currentQueryParams() {
     const params: any = {};
     if (this.searchTerm) params['searchTerm'] = this.searchTerm;
-    if (this.selectedFamily) params['selectedFamily'] = this.selectedFamily;
+    if (this.family) params['family'] = this.family;
     return params;
   }
 

@@ -29,7 +29,7 @@ export class SymptomListComponent implements OnInit {
   families: string[] = [];
   isLoading = true;
   searchTerm = '';
-  selectedFamily = '';
+  family = '';
 
   // Delete confirmation
   showDeleteDialog = false;
@@ -41,7 +41,7 @@ export class SymptomListComponent implements OnInit {
 
   loadSymptoms(): void {
     this.isLoading = true;
-    this.symptomService.getGroupedByFamily(this.searchTerm, this.selectedFamily).subscribe({
+    this.symptomService.getGroupedByFamily(this.searchTerm, this.family).subscribe({
       next: (data) => {
         this.groupedSymptoms = data;
         this.families = Object.keys(data).sort();
@@ -59,13 +59,13 @@ export class SymptomListComponent implements OnInit {
   }
 
   onFamilyChange(family: string): void {
-    this.selectedFamily = family;
+    this.family = family;
     this.loadSymptoms();
   }
 
   clearFilters(): void {
     this.searchTerm = '';
-    this.selectedFamily = '';
+    this.family = '';
     this.loadSymptoms();
   }
 

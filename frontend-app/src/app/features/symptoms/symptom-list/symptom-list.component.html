@@ -28,7 +28,7 @@
             <select
               id="family"
               class="filter-select"
-              [ngModel]="selectedFamily"
+              [ngModel]="family"
               (ngModelChange)="onFamilyChange($event)"
             >
               <option value="">Toutes les familles</option>
@@ -60,7 +60,7 @@
 
           <!-- Clear Filters -->
           <button
-            *ngIf="searchTerm || selectedFamily"
+            *ngIf="searchTerm || family"
             class="filter-btn filter-btn--clear"
             (click)="clearFilters()"
           >
@@ -82,7 +82,7 @@
         <div class="empty-state">
           <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
           <p class="empty-state__message">
-            <ng-container *ngIf="searchTerm || selectedFamily; else noSymptom">
+            <ng-container *ngIf="searchTerm || family; else noSymptom">
               Essayez de modifier vos critères de recherche
             </ng-container>
             <ng-template #noSymptom>
@@ -90,7 +90,7 @@
             </ng-template>
           </p>
           <button
-            *ngIf="searchTerm || selectedFamily"
+            *ngIf="searchTerm || family"
             class="empty-state__btn"
             (click)="clearFilters()"
           >
