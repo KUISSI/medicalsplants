@@ -1,9 +1,5 @@
 package com.medicalsplants.config;
 
-import com.medicalsplants.security.JwtAccessDeniedHandler;
-import com.medicalsplants.security.JwtAuthenticationEntryPoint;
-import com.medicalsplants.security.JwtAuthenticationFilter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +16,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.medicalsplants.security.JwtAccessDeniedHandler;
+import com.medicalsplants.security.JwtAuthenticationEntryPoint;
+import com.medicalsplants.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -49,29 +49,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf
+                .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource))
-            .exceptionHandling(exception -> exception
+                .ignoringRequestMatchers(
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/forgot-password",
+                        "/api/v1/auth/verify-email",
+                        "/api/v1/auth/resend-verification"
+                )
+                )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler))
-            .sessionManagement(session -> session
+                .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // Auth endpoints publics (login, register, refresh, forgot-password, verify-email)
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, Routes.AUTH_POST_PUBLIC).permitAll()
                 .requestMatchers(HttpMethod.GET, Routes.AUTH_VERIFY_EMAIL).permitAll()
-                // Documentation et monitoring publics
                 .requestMatchers(Routes.DOCS_ACTUATOR).permitAll()
-                // En développement, tous les accès /api/v1/** sont publics pour faciliter les tests
-                .requestMatchers("/api/v1/**").permitAll()
-                // Admin
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                // Tout le reste nécessite authentification
                 .anyRequest().authenticated())
-            .userDetailsService(userDetailsService)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .userDetailsService(userDetailsService)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

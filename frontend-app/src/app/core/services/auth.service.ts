@@ -68,91 +68,25 @@ export class AuthService {
     );
   }
 
-  // Frontend-only register pour tests locaux (sans refreshToken)
-  registerFrontend(request: RegisterRequest): Observable<MessageResponse> {
-    this.isLoadingSignal.set(true);
-
-    const fakeUser = {
-      id: Math.random().toString(36).substring(2, 9),
-      email: request.email,
-      pseudo: request.pseudo || request.email.split('@')[0],
-      firstname: request.firstname || '',
-      lastname: request.lastname || '',
-      role: 'USER',
-      isEmailVerified: true,
-      createdAt: new Date().toISOString()
-    } as any;
-
-    const fakeResponse = {
-      success: true,
-      data: {
-        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
-        tokenType: 'Bearer',
-        expiresIn: 3600,
-        user: fakeUser
-      },
-      timestamp: new Date().toISOString()
-    } as any;
-
-    return of({ success: true, message: 'Inscription locale réussie', timestamp: new Date().toISOString() }).pipe(
-      tap(() => {
-        this.isLoadingSignal.set(false);
-        this.handleAuthSuccess(fakeResponse as any);
-        this.toastr.success('Inscription réussie', 'Bienvenue !');
-      })
-    );
-  }
+  
 
   login(request: LoginRequest): Observable<AuthResponse> {
-    this.isLoadingSignal.set(true);
+  this.isLoadingSignal.set(true);
 
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request, { withCredentials: true }).pipe(
-      tap(response => {
-        this.isLoadingSignal.set(false);
-        this.handleAuthSuccess(response);
-        this.toastr.success('Connexion réussie', 'Bienvenue ! ');
-      }),
-      catchError(error => {
-        this.isLoadingSignal.set(false);
-        return throwError(() => error);
-      })
-    );
-  }
+  return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request, { withCredentials: true }).pipe(
+    tap(response => {
+      this.isLoadingSignal.set(false);
+      this.handleAuthSuccess(response);
+      this.toastr.success('Connexion réussie', 'Bienvenue ! ');
+    }),
+    catchError(error => {
+      this.isLoadingSignal.set(false);
+      return throwError(() => error);
+    })
+  );
+}
 
-  // Frontend-only login pour tests locaux (sans refreshToken)
-  loginFrontend(request: LoginRequest): Observable<AuthResponse> {
-    this.isLoadingSignal.set(true);
-
-    const fakeUser = {
-      id: Math.random().toString(36).substring(2, 9),
-      email: request.email,
-      pseudo: request.email.split('@')[0],
-      firstname: '',
-      lastname: '',
-      role: 'USER',
-      isEmailVerified: true,
-      createdAt: new Date().toISOString()
-    } as any;
-
-    const fakeResponse = {
-      success: true,
-      data: {
-        accessToken: 'local-access-' + Math.random().toString(36).slice(2),
-        tokenType: 'Bearer',
-        expiresIn: 3600,
-        user: fakeUser
-      },
-      timestamp: new Date().toISOString()
-    } as any;
-
-    return of(fakeResponse).pipe(
-      tap(() => {
-        this.isLoadingSignal.set(false);
-        this.handleAuthSuccess(fakeResponse as any);
-        this.toastr.success('Connexion réussie', 'Bienvenue ! ');
-      })
-    );
-  }
+  
 
   logout(): void {
     // Logout local immédiat pour une meilleure réactivité
@@ -203,13 +137,11 @@ export class AuthService {
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
-    const { accessToken, user } = response.data;
-
-    this.storage.set(environment.tokenKey, accessToken);
-    this.storage.set(environment.userKey, user);
-
-    this.currentUserSignal.set(user);
-  }
+  const { accessToken, user } = response.data;
+  this.storage.set(environment.tokenKey, accessToken);
+  this.storage.set(environment.userKey, user);
+  this.currentUserSignal.set(user);
+}
 
   private handleLogout(): void {
     this.storage.remove(environment.tokenKey);

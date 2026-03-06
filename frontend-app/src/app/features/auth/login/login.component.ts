@@ -49,11 +49,10 @@ export class LoginComponent {
       return;
     }
 
-    // Use frontend-only login to allow local login without backend
-    this.authService.loginFrontend(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigateByUrl(this.returnUrl);
-      }
-    });
-  }
+    this.authService.login(this.loginForm.value).subscribe({
+    next: () => {
+      this.router.navigateByUrl(this.returnUrl);
+    }
+  });
+}
 }
