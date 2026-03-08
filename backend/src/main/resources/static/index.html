@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicals Plants API</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1a472a 0%,
+          #2d5a3d 50%,
+          #3d6b4f 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+      }
+
+      .container {
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 90%;
+      }
+
+      . logo {
+        font-size: 80px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: #90ee90;
+      }
+
+      .version {
+        font-size: 1rem;
+        color: #a8d5a2;
+        margin-bottom: 30px;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        color: #e0e0e0;
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid #4caf50;
+        color: #90ee90;
+      }
+
+      . btn-outline:hover {
+        background: #4caf50;
+        color: white;
+      }
+
+      .status {
+        margin-top: 30px;
+        padding: 15px;
+        background: rgba(76, 175, 80, 0.2);
+        border-radius: 10px;
+        border: 1px solid #4caf50;
+      }
+
+      . status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background: #4caf50;
+        border-radius: 50%;
+        margin-right: 10px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .endpoints {
+        margin-top: 30px;
+        text-align: left;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .endpoints h3 {
+        color: #90ee90;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+      }
+
+      .endpoint {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      . endpoint:last-child {
+        border-bottom: none;
+      }
+
+      . method {
+        background: #4caf50;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        min-width: 50px;
+        text-align: center;
+        margin-right: 15px;
+      }
+
+      .method. post {
+        background: #2196f3;
+      }
+
+      .endpoint-path {
+        color: #e0e0e0;
+        font-family: monospace;
+        font-size: 0.9rem;
+      }
+
+      footer {
+        margin-top: 30px;
+        font-size: 0.9rem;
+        color: #a0a0a0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">🌿</div>
+      <h1>Medicals Plants API</h1>
+      <p class="version">Version 1.0.0</p>
+      <p>
+        API REST pour la gestion des plantes médicinales, leurs propriétés
+        thérapeutiques et les recettes associées.
+      </p>
+
+      <div class="links">
+        <a href="/swagger-ui.html" class="btn">📚 Documentation Swagger</a>
+        <a href="/v3/api-docs" class="btn btn-outline">📄 OpenAPI JSON</a>
+        <a href="/actuator/health" class="btn btn-outline">💚 Health Check</a>
+      </div>
+
+      <div class="status">
+        <span class="status-indicator"></span>
+        <strong>API Status: </strong> En ligne et opérationnelle
+      </div>
+
+      <div class="endpoints">
+        <h3>🔗 Endpoints principaux</h3>
+        <div class="endpoint">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/v1/auth/login</span>
+        </div>
+        <div class="endpoint">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/v1/auth/register</span>
+        </div>
+        <div class="endpoint">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/api/v1/symptoms</span>
+        </div>
+        <div class="endpoint">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/api/v1/plants</span>
+        </div>
+        <div class="endpoint">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/api/v1/receipts</span>
+        </div>
+      </div>
+
+      <footer>
+        &copy; 2024 Medicals Plants - Projet de certification | KUISSI
+      </footer>
+    </div>
+  </body>
+</html>

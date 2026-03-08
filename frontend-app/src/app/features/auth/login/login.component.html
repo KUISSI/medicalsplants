@@ -1,0 +1,92 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <!-- Header -->
+    <div class="auth-card__header">
+      <span class="auth-card__icon">🌿</span>
+      <h1 class="auth-card__title">Connexion</h1>
+      <p class="auth-card__subtitle">Bienvenue ! Connectez-vous pour accéder à votre compte.</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <div class="form-input-wrapper">
+          <span class="form-input-icon">📧</span>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-input"
+            [class.
+            form-input--error]="email?. invalid && email?.touched"
+            placeholder="votre@email.com"
+            autocomplete="email"
+          />
+        </div>
+        @if (email?.invalid && email?.touched) {
+        <span class="form-error">
+          @if (email?. errors?.['required']) { L'email est requis } @else if
+          (email?.errors?.['email']) { Format d'email invalide }
+        </span>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <div class="form-input-wrapper">
+          <span class="form-input-icon">🔒</span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="form-input"
+            [class.form-input--error]="password?.invalid && password?.touched"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="form-input-toggle"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Masquer' : 'Afficher'"
+          >
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (password?. invalid && password?.touched) {
+        <span class="form-error">
+          @if (password?.errors?.['required']) { Le mot de passe est requis } @else if
+          (password?.errors?.['minlength']) { Minimum 8 caractères requis }
+        </span>
+        }
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="auth-form__forgot">
+        <a routerLink="/forgot-password" class="auth-link"> Mot de passe oublié ? </a>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="auth-btn"
+        [disabled]="loginForm.invalid || authService.isLoading()"
+      >
+        @if (authService.isLoading()) {
+        <span class="auth-btn__loader"></span>
+        Connexion en cours... } @else { Se connecter }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="auth-card__footer">
+      <p>
+        Pas encore de compte ?
+        <a routerLink="/register" class="auth-link auth-link--primary"> Inscrivez-vous </a>
+      </p>
+    </div>
+  </div>
+</div>

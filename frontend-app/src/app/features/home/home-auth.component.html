@@ -1,0 +1,73 @@
+<section class="home-auth">
+  <div class="hero">
+    <div class="hero__inner">
+      <div class="hero__greeting">Bonjour {{ authService.currentUser()?.pseudo || 'Marie' }}</div>
+
+      <div class="hero__search">
+        <app-search-bar placeholder="Rechercher des symptômes, plantes..." [showButton]="false" (search)="onSearch($event)"></app-search-bar>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <section class="quick-access">
+        <h2>Accès rapide</h2>
+        <div class="cards">
+          <a class="card" routerLink="/symptoms">
+            <div class="card__icon">
+              <img src="assets/sympicon.svg" alt="Symptômes" />
+            </div>
+            <h3>Symptômes</h3>
+            <p>Recherchez par symptôme et trouvez des solutions adaptées.</p>
+          </a>
+          <a class="card" routerLink="/plants">
+            <div class="card__icon">
+              <img src="assets/planticon.svg" alt="Plantes" />
+            </div>
+            <h3>Plantes</h3>
+            <p>Explorez notre catalogue de plantes médicinales.</p>
+          </a>
+          <a class="card" routerLink="/receipts">
+            <div class="card__icon">
+              <img src="assets/foodicon.svg" alt="Recettes" />
+            </div>
+            <h3>Recettes</h3>
+            <p>Découvrez des recettes naturelles et faciles à suivre.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Le savez-vous section -->
+      <section class="knowledge-section">
+        <div class="knowledge-bubble">
+          <div class="bubble-icon">💡</div>
+          <div class="bubble-content">
+            <h3>Le savez-vous ?</h3>
+            <p>{{ tip }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recettes populaires section -->
+      <section class="popular-recipes">
+        <div class="popular-recipes__header">
+          <h2>Recettes populaires</h2>
+          <button class="popular-recipes__btn popular-recipes__btn--desktop" (click)="toggleMoreRecipes()" *ngIf="popularRecipes.length > 3">
+            {{ showMoreRecipes ? 'Voir moins' : 'Voir plus' }}
+          </button>
+        </div>
+
+        <div class="popular-recipes__grid">
+          @for(recipe of visibleRecipes; track recipe.id) {
+            <app-recipe-card [recipe]="recipe"></app-recipe-card>
+          }
+        </div>
+
+        <button class="popular-recipes__btn popular-recipes__btn--mobile" (click)="toggleMoreRecipes()" *ngIf="popularRecipes.length > 3">
+          {{ showMoreRecipes ? 'Voir moins' : 'Voir plus' }}
+        </button>
+      </section>
+    </div>
+  </div>
+</section>

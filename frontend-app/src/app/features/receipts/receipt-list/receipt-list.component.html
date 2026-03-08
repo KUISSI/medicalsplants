@@ -1,0 +1,143 @@
+<div class="receipt-list-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <h1 class="page-header__title">
+        Recettes naturelles
+      </h1>
+      <p class="page-header__subtitle">
+        Découvrez nos recettes à base de plantes médicinales pour votre bien-être
+      </p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filters__container">
+      <div class="filters__group">
+        <div class="filters__main">
+          <app-search-bar
+            class="search-bar--receipt"
+            placeholder="Rechercher une recette..."
+            (search)="onSearch($event)"
+          ></app-search-bar>
+        </div>
+        <div class="filters__display-options">
+          <!-- Type Filter -->
+          <div class="filter-group">
+            <label for="type" class="filter-label">Type :</label>
+            <select
+              id="type"
+              class="filter-select"
+              [ngModel]="selectedType"
+              (ngModelChange)="onTypeChange($event)"
+            >
+              <option value="">Tous les types</option>
+              @for (type of receiptTypeKeys; track type) {
+                <option [value]="type">
+                  {{ getReceiptTypeIcon(type) }} {{ receiptTypes[type] }}
+                </option>
+              }
+            </select>
+          </div>
+
+          @if (searchTerm || selectedType) {
+            <button class="filter-btn filter-btn--clear" (click)="clearFilters()">
+              ✕ Effacer les filtres
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="page-content">
+    @if (isLoading) {
+      <app-loader message="Chargement des recettes..."></app-loader>
+    } @else if (filteredReceipts. length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">📖</span>
+        <h3 class="empty-state__title">Aucune recette trouvée</h3>
+        <p class="empty-state__message">
+          @if (searchTerm || selectedType) {
+            Essayez de modifier vos critères de recherche
+          } @else {
+            Aucune recette n'est disponible pour le moment
+          }
+        </p>
+        <div class="empty-state__actions">
+          @if (searchTerm || selectedType) {
+            <button class="empty-state__btn" (click)="clearFilters()">
+              Effacer les filtres
+            </button>
+          }
+          @if (authService. isAuthenticated()) {
+            <a routerLink="/receipts/create" class="empty-state__btn empty-state__btn--primary">
+              Créer une recette
+            </a>
+          }
+        </div>
+      </div>
+    } @else {
+      <!-- Results Info -->
+      <div class="results-info">
+        <span class="results-info__count">
+          {{ filteredReceipts.length }} recette(s) sur {{ totalElements }}
+        </span>
+      </div>
+
+      <!-- Receipts Grid -->
+      <div class="receipts-grid">
+        @for (receipt of filteredReceipts; track receipt.id) {
+          <app-recipe-card [recipe]="receipt" [queryParams]="currentQueryParams"></app-recipe-card>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(0)"
+          >
+            ««
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(currentPage - 1)"
+          >
+            ‹
+          </button>
+
+          @for (page of getPages(); track page) {
+            <button
+              class="pagination__btn"
+              [class.pagination__btn--active]="page === currentPage"
+              (click)="loadPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+          }
+
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(currentPage + 1)"
+          >
+            ›
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(totalPages - 1)"
+          >
+            »»
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

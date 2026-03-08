@@ -48,3 +48,4 @@ database/backup/*.dump
 database/backup/*.gz
 database/backup/*.sql
 !database/backup/.gitkeep
+backend/src/main/java/com/medicalsplants/security/JwtAccessDeniedHandler.

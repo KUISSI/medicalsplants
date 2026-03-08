@@ -1,0 +1,108 @@
+<div class="page">
+  <div class="page__header">
+    <a routerLink="/plants" class="page__back">← Retour aux plantes</a>
+    <h1 class="page__title">
+      {{ isEditMode ? '✏️ Modifier la plante' : '➕ Nouvelle plante' }}
+    </h1>
+  </div>
+
+  @if (isLoadingData) {
+  <app-loader message="Chargement... "></app-loader>
+  } @else {
+  <div class="form-container">
+    <form [formGroup]="plantForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <div class="form-grid">
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Nom de la plante *</label>
+          <input
+            type="text"
+            formControlName="title"
+            class="form-input"
+            [class.form-input--error]="title?.invalid && title?.touched"
+            placeholder="Ex: Camomille"
+          />
+          @if (title?. invalid && title?.touched) {
+          <span class="form-error">Le nom est requis</span>
+          }
+        </div>
+
+        <!-- Administration Mode -->
+        <div class="form-group">
+          <label class="form-label">Mode d'administration *</label>
+          <select
+            formControlName="administrationMode"
+            class="form-select"
+            [class.form-input--error]="administrationMode?.invalid && administrationMode?.touched"
+          >
+            <option value="">Sélectionnez un mode</option>
+            @for (mode of administrationModeKeys; track mode) {
+            <option [value]="mode">{{ administrationModes[mode] }}</option>
+            }
+          </select>
+          @if (administrationMode?.invalid && administrationMode?.touched) {
+          <span class="form-error">Le mode est requis</span>
+          }
+        </div>
+
+        <!-- Consumed Part -->
+        <div class="form-group">
+          <label class="form-label">Partie consommée</label>
+          <input
+            type="text"
+            formControlName="consumedPart"
+            class="form-input"
+            placeholder="Ex: Fleurs, Feuilles, Racine..."
+          />
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group form-group--full">
+        <label class="form-label">Description</label>
+        <textarea
+          formControlName="description"
+          class="form-textarea"
+          rows="4"
+          placeholder="Décrivez cette plante et ses bienfaits..."
+        ></textarea>
+      </div>
+
+      <!-- Properties -->
+      @if (!isEditMode && properties. length > 0) {
+      <div class="form-group form-group--full">
+        <label class="form-label">Propriétés thérapeutiques</label>
+        <div class="checkbox-list">
+          @for (property of properties; track property. id) {
+          <label
+            class="checkbox-item"
+            [class.checkbox-item--selected]="isPropertySelected(property.id)"
+          >
+            <input
+              type="checkbox"
+              [checked]="isPropertySelected(property.id)"
+              (change)="toggleProperty(property.id)"
+            />
+            <span class="checkbox-item__label">
+              {{ property.title }}
+              <small>({{ property.propertyFamily }})</small>
+            </span>
+          </label>
+          }
+        </div>
+        <span class="form-hint">{{ selectedPropertyIds.length }} propriété(s) sélectionnée(s)</span>
+      </div>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/plants" class="btn btn--secondary">Annuler</a>
+        <button type="submit" class="btn btn--primary" [disabled]="isSaving">
+          @if (isSaving) { Enregistrement... } @else {
+          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  }
+</div>

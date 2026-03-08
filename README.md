@@ -7,7 +7,7 @@
 
 ## 📋 Description
 
-**Medicals Plants** est une application web permettant de découvrir les plantes médicinales et leurs propriétés thérapeutiques.  Les utilisateurs peuvent rechercher des symptômes, trouver les plantes adaptées, consulter des recettes et partager leurs avis.
+**Medicals Plants** est une application web permettant de découvrir les plantes médicinales et leurs propriétés thérapeutiques. Les utilisateurs peuvent rechercher des symptômes, trouver les plantes adaptées, consulter des recettes et partager leurs avis.
 
 ### 🎯 Fonctionnalités principales
 
@@ -27,6 +27,7 @@ Code
 ## 🛠️ Technologies utilisées
 
 ### Backend
+
 - **Java 21** - Langage de programmation
 - **Spring Boot 3.2** - Framework backend
 - **Spring Security** - Authentification & autorisation
@@ -36,6 +37,7 @@ Code
 - **Maven** - Gestion des dépendances
 
 ### Frontend
+
 - **Angular 17** - Framework frontend
 - **TypeScript** - Langage typé
 - **Bootstrap 5** - Framework CSS
@@ -43,6 +45,7 @@ Code
 - **RxJS** - Programmation réactive
 
 ### DevOps
+
 - **Docker** - Conteneurisation
 - **Docker Compose** - Orchestration
 - **GitHub Actions** - CI/CD
@@ -74,10 +77,10 @@ cd medicalsplants
 cp . env.example .env
 
 # Démarrer les services (PostgreSQL, MailHog)
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Lancer le backend
-cd backend && ./mvnw spring-boot:run
+cd backend && ./mvn spring-boot:run
 
 # Lancer le frontend (dans un autre terminal)
 cd frontend-app && npm install && npm start
@@ -110,3 +113,4 @@ KUISSI - Projet de fin d'études
 Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
 
 ⚠️ Avertissement médical : Les informations fournies dans cette application sont à titre informatif uniquement et ne remplacent pas l'avis d'un professionnel de santé.
+```

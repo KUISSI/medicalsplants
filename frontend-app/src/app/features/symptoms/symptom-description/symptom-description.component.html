@@ -1,0 +1,30 @@
+<div class="description-container">
+  <app-loader *ngIf="isLoading"></app-loader>
+
+  <div *ngIf="!isLoading && symptom" class="symptom-card">
+    <div class="card-header">
+      <h1 class="symptom-title">{{ symptom.title }}</h1>
+      <span class="symptom-family" [style.backgroundColor]="getFamilyColor(symptom.symptomFamily)">
+        {{ getSymptomIcon(symptom.symptomFamily) }} {{ symptom.symptomFamily }}
+      </span>
+    </div>
+    
+    <div class="card-body">
+      <p class="symptom-description">{{ symptom.description }}</p>
+    </div>
+
+    <div class="card-footer">
+      <a routerLink="/symptoms" class="back-link">
+        <i class="fas fa-arrow-left"></i> Retour à la liste des symptômes
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !symptom" class="not-found">
+    <h2>Symptôme non trouvé</h2>
+    <p>Le symptôme que vous cherchez n'existe pas ou n'a pas pu être chargé.</p>
+    <a routerLink="/symptoms" class="back-link">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+  </div>
+</div>

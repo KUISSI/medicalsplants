@@ -1,0 +1,168 @@
+<div class="page">
+
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">Symptômes</h1>
+      <p class="page__subtitle">{{ symptoms.length }} symptôme(s) référencé(s)</p>
+    </div>
+    <div class="page__header-actions">
+      <div class="search-box">
+        <i class="bi bi-search search-box__icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-box__input"
+          placeholder="Rechercher..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          aria-label="Rechercher un symptôme"
+        />
+        @if (searchTerm) {
+          <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()" aria-label="Effacer">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+
+      <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()" aria-label="Filtrer par famille">
+        <option value="">Toutes les familles</option>
+        @for (family of families; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nouveau symptôme
+      </button>
+    </div>
+  </div>
+
+  @if (symptoms.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-activity empty-state__icon" aria-hidden="true"></i>
+      <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+      <p class="empty-state__message">
+        @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche. }
+        @else { Commencez par créer un symptôme. }
+      </p>
+      @if (!searchTerm && !selectedFamily) {
+        <button class="btn btn--primary" (click)="openNew()">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          Créer un symptôme
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Famille</th>
+            <th>Description</th>
+            <th>Créé le</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (symptom of symptoms; track symptom.id) {
+            <tr (click)="openEdit(symptom)" style="cursor: pointer;">
+              <td><strong class="item-name">{{ symptom.title }}</strong></td>
+              <td><span class="badge badge--info">{{ symptom.symptomFamily }}</span></td>
+              <td><span class="desc-cell">{{ symptom.symptomDetail || '—' }}</span></td>
+              <td class="date-cell">{{ formatDate(symptom.createdAt) }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openEdit(symptom)" title="Modifier" aria-label="Modifier {{ symptom.title }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="action-btn action-btn--danger" (click)="$event.stopPropagation(); confirmDelete(symptom)" title="Supprimer" aria-label="Supprimer {{ symptom.title }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Slide-over form -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="slideOverTitle"
+  [subtitle]="isEditMode ? 'Modifier les informations du symptôme' : 'Référencer un nouveau symptôme'"
+  (closed)="closeSlideOver()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="field">
+      <label class="field__label">Nom du symptôme *</label>
+      <input
+        type="text"
+        formControlName="title"
+        class="field__input"
+        [class.field__input--error]="f['title'].invalid && f['title'].touched"
+        placeholder="ex: Anxiété chronique"
+        autocomplete="off"
+      />
+      @if (f['title'].invalid && f['title'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Nom requis (2–100 caractères)
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Famille de symptômes *</label>
+      <select
+        formControlName="symptomFamily"
+        class="field__input"
+        [class.field__input--error]="f['symptomFamily'].invalid && f['symptomFamily'].touched"
+      >
+        <option value="">Sélectionner une famille...</option>
+        @for (family of predefinedFamilies; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+      @if (f['symptomFamily'].invalid && f['symptomFamily'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Famille requise
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Description</label>
+      <textarea
+        formControlName="symptomDetail"
+        class="field__input field__input--textarea"
+        placeholder="Description détaillée du symptôme..."
+        rows="4"
+      ></textarea>
+    </div>
+
+    <div class="so-actions">
+      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
+      <button type="submit" class="btn btn--primary">
+        <i class="bi bi-check2" aria-hidden="true"></i>
+        {{ isEditMode ? 'Enregistrer' : 'Créer le symptôme' }}
+      </button>
+    </div>
+  </form>
+</app-slide-over>
+
+<!-- Delete dialog -->
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer le symptôme"
+  [message]="'Supprimer définitivement \'' + deletingSymptom?.title + '\' ?'"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

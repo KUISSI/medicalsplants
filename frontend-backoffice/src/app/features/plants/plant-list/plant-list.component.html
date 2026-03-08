@@ -1,0 +1,176 @@
+<div class="page">
+
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">Plantes médicinales</h1>
+      <p class="page__subtitle">{{ plants.length }} plante(s) au catalogue</p>
+    </div>
+    <div class="page__header-actions">
+      <div class="search-box">
+        <i class="bi bi-search search-box__icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-box__input"
+          placeholder="Rechercher..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applySearch()"
+          aria-label="Rechercher une plante"
+        />
+        @if (searchTerm) {
+          <button class="search-box__clear" (click)="searchTerm = ''; applySearch()" aria-label="Effacer">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nouvelle plante
+      </button>
+    </div>
+  </div>
+
+  @if (plants.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-flower1 empty-state__icon" aria-hidden="true"></i>
+      <h3 class="empty-state__title">Aucune plante trouvée</h3>
+      <p class="empty-state__message">
+        @if (searchTerm) { Modifiez votre recherche ou } @else { Commencez par }
+        ajouter une plante au catalogue.
+      </p>
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Ajouter une plante
+      </button>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Plante</th>
+            <th>Administration</th>
+            <th>Partie consommée</th>
+            <th>Ajoutée le</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (plant of plants; track plant.id) {
+            <tr (click)="openEdit(plant)" style="cursor: pointer;">
+              <td>
+                <div class="plant-cell">
+                  <div class="plant-cell__avatar" aria-hidden="true">
+                    <i class="bi bi-flower1"></i>
+                  </div>
+                  <div>
+                    <strong class="item-name">{{ plant.title }}</strong>
+                    @if (plant.description) {
+                      <span class="desc-cell">{{ plant.description }}</span>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="mode-badge">
+                  <i class="bi {{ getAdministrationIcon(plant.administrationMode) }}" aria-hidden="true"></i>
+                  {{ administrationModeLabels[plant.administrationMode] }}
+                </span>
+              </td>
+              <td>{{ plant.consumedPart || '—' }}</td>
+              <td class="date-cell">{{ formatDate(plant.createdAt) }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openEdit(plant)" title="Modifier" aria-label="Modifier {{ plant.title }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="action-btn action-btn--danger" (click)="$event.stopPropagation(); confirmDelete(plant)" title="Supprimer" aria-label="Supprimer {{ plant.title }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Slide-over form -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="slideOverTitle"
+  [subtitle]="isEditMode ? 'Modifier les informations de la plante' : 'Ajouter une nouvelle plante au catalogue'"
+  (closed)="closeSlideOver()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="field">
+      <label class="field__label">Nom de la plante *</label>
+      <input
+        type="text"
+        formControlName="title"
+        class="field__input"
+        [class.field__input--error]="f['title'].invalid && f['title'].touched"
+        placeholder="ex: Camomille romaine"
+        autocomplete="off"
+      />
+      @if (f['title'].invalid && f['title'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Nom requis (2–100 caractères)
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Description</label>
+      <textarea
+        formControlName="description"
+        class="field__input field__input--textarea"
+        placeholder="Description des propriétés et usages..."
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label">Mode d'administration *</label>
+        <select formControlName="administrationMode" class="field__input">
+          @for (mode of administrationModes; track mode) {
+            <option [value]="mode">{{ administrationModeLabels[mode] }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label">Partie consommée</label>
+        <input
+          type="text"
+          formControlName="consumedPart"
+          class="field__input"
+          placeholder="ex: Fleur, Feuille, Racine"
+        />
+      </div>
+    </div>
+
+    <div class="so-actions">
+      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
+      <button type="submit" class="btn btn--primary">
+        <i class="bi bi-check2" aria-hidden="true"></i>
+        {{ isEditMode ? 'Enregistrer' : 'Créer la plante' }}
+      </button>
+    </div>
+  </form>
+</app-slide-over>
+
+<!-- Delete dialog -->
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer la plante"
+  [message]="'Supprimer définitivement \'' + deletingPlant?.title + '\' ?'"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

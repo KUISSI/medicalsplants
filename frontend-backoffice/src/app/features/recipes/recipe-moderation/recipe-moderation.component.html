@@ -1,0 +1,106 @@
+<div class="page">
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">Modération des recettes</h1>
+      <p class="page__subtitle">Approuvez ou rejetez les recettes soumises</p>
+    </div>
+  </div>
+
+  @if (pendingrecipes.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-check-circle empty-state__icon" aria-hidden="true"></i>
+      <h3 class="empty-state__title">Aucune recette en attente</h3>
+      <p class="empty-state__message">Toutes les recettes ont été modérées.</p>
+      <a routerLink="/recipes" class="btn btn--primary">Voir toutes les recettes</a>
+    </div>
+  } @else {
+    <div class="page__info">
+      <span>{{ pendingrecipes.length }} recette(s) en attente de modération</span>
+    </div>
+
+    <div class="moderation-grid">
+      @for (recipe of pendingrecipes; track recipe.id) {
+        <div class="moderation-card">
+          <div class="moderation-card__header">
+            <span class="moderation-card__type">
+              <i class="bi {{ getrecipeTypeIcon(recipe.type) }}" aria-hidden="true"></i>
+              {{ recipeTypeLabels[recipe.type] }}
+            </span>
+            @if (recipe.premium) {
+              <span class="moderation-card__premium">
+                <i class="bi bi-star-fill" aria-hidden="true"></i> Premium
+              </span>
+            }
+          </div>
+
+          <h3 class="moderation-card__title">{{ recipe.title }}</h3>
+
+          @if (recipe.description) {
+            <p class="moderation-card__description">{{ recipe.description }}</p>
+          }
+
+          <div class="moderation-card__meta">
+            @if (recipe.author) {
+              <div class="moderation-card__author">
+                <span class="moderation-card__author-avatar">
+                  {{ recipe.author.pseudo.charAt(0).toUpperCase() }}
+                </span>
+                <div>
+                  <span class="moderation-card__author-name">{{ recipe.author.pseudo }}</span>
+                  <span class="moderation-card__date">{{ formatDate(recipe.createdAt) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (recipe.plants && recipe.plants.length > 0) {
+            <div class="moderation-card__plants">
+              <span class="moderation-card__plants-label">Plantes utilisées :</span>
+              <div class="moderation-card__plants-list">
+                @for (plant of recipe.plants; track plant.id) {
+                  <span class="plant-tag">
+                    <i class="bi bi-flower1" aria-hidden="true"></i>
+                    {{ plant.title }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="moderation-card__actions">
+            <button class="moderation-btn moderation-btn--reject" (click)="openRejectDialog(recipe)">
+              <i class="bi bi-x-circle" aria-hidden="true"></i>
+              Rejeter
+            </button>
+            <button class="moderation-btn moderation-btn--approve" (click)="openApproveDialog(recipe)">
+              <i class="bi bi-check-circle" aria-hidden="true"></i>
+              Approuver
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Approve Dialog -->
+<app-confirm-dialog
+  [isOpen]="showApproveDialog"
+  title="Approuver la recette"
+  [message]="'Publier la recette \'' + selectedrecipe?.title + '\' ?'"
+  type="default"
+  confirmText="Approuver"
+  (confirm)="onApproveConfirm()"
+  (cancel)="closeDialogs()"
+></app-confirm-dialog>
+
+<!-- Reject Dialog -->
+<app-confirm-dialog
+  [isOpen]="showRejectDialog"
+  title="Rejeter la recette"
+  [message]="'Rejeter définitivement la recette \'' + selectedrecipe?.title + '\' ?'"
+  type="danger"
+  confirmText="Rejeter"
+  (confirm)="onRejectConfirm()"
+  (cancel)="closeDialogs()"
+></app-confirm-dialog>

@@ -1,0 +1,179 @@
+<div class="recipe-detail-page">
+  @if (isLoading) {
+    <app-loader [fullscreen]="true" message="Chargement de la recette..."></app-loader>
+  } @else if (error) {
+    <div class="error-state">
+      @if (error.includes('Premium')) {
+        <span class="error-state__icon">⭐</span>
+        <h2 class="error-state__title">Contenu Premium</h2>
+        <p class="error-state__message">{{ error }}</p>
+        <div class="error-state__actions">
+          <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
+        </div>
+      } @else {
+        <span class="error-state__icon">📖</span>
+        <h2 class="error-state__title">{{ error }}</h2>
+        <button (click)="goBack()" class="error-state__btn"> ← Retour </button>
+      }
+    </div>
+  } @else if (receipt) {
+    <div class="recipe-content">
+      <!-- Mobile-specific back link, shown only on small screens -->
+      <div class="mobile-back-link-wrapper">
+        <button (click)="goBack()" class="back-link mobile-only"> ← Retour </button>
+      </div>
+
+      <!-- Main content grid -->
+      <div class="main-grid">
+        <!-- Left Column -->
+        <div class="left-column">
+          <button (click)="goBack()" class="back-link desktop-only"> ← Retour </button>
+          <h1 class="recipe-title">{{ receipt.title }}</h1>
+          <p class="recipe-type">{{ receiptTypeLabels[receipt.type] }}</p>
+          
+          <div class="ingredients-section">
+            <h2 class="section-title">Ingrédients</h2>
+            <div class="recipe-meta">
+              <span class="meta-item time">
+                <i class="icon icon-time"></i> {{ time }} min
+              </span>
+              <span class="meta-item" [ngClass]="'difficulty--' + difficulty">
+                <i class="icon icon-difficulty"></i> {{ difficulty }}
+              </span>
+            </div>
+
+            <ul class="ingredients-list">
+              @for(ingredient of mainIngredients; track ingredient) {
+                <li>{{ ingredient }}</li>
+              }
+            </ul>
+
+            @if (optionalIngredients.length > 0) {
+              <h3 class="subsection-title">Optionnel</h3>
+              <ul class="ingredients-list optional">
+                @for(ingredient of optionalIngredients; track ingredient) {
+                  <li>{{ ingredient }}</li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+          <div class="recipe-image">
+            @if(receipt.imageUrl) {
+              <img [src]="receipt.imageUrl" [alt]="receipt.title">
+            } @else {
+              <div class="image-placeholder">
+                <span>🌿</span>
+              </div>
+            }
+          </div>
+          <div class="actions-and-rating">
+            <button class="favorite-btn">Ajouter aux favoris</button>
+            <div class="rating" (mouseleave)="hoveredRating = 0">
+              <span class="stars">
+                @for(star of [1,2,3,4,5]; track $index) {
+                  <span 
+                    [class.filled]="$index < (hoveredRating || rating)"
+                    (mouseenter)="hoveredRating = $index + 1"
+                    (click)="setRating($index + 1)">★</span>
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <hr class="divider">
+
+      <!-- Plants Section -->
+      @if (receipt.plants && receipt.plants.length > 0) {
+        <div class="plants-section" #plantsSection>
+          <h2 class="section-title">Plantes dans cette recette</h2>
+          <div class="plants-grid">
+            @for (plant of receipt.plants; track plant.id) {
+              <a [routerLink]="['/plants', plant.id]" class="plant-item">
+                <div class="plant-item__icon">🌿</div>
+                <div class="plant-item__info">
+                  <h3 class="plant-item__title">{{ plant.title }}</h3>
+                </div>
+                <span class="plant-item__arrow">→</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+      
+      <!-- Preparation Section -->
+      @if (preparationSteps.length > 0) {
+        <div class="preparation-section">
+          <h2 class="section-title">Préparation</h2>
+          <ol class="steps-list">
+            @for (step of preparationSteps; track $index) {
+              <li class="step-item">{{ step }}</li>
+            }
+          </ol>
+        </div>
+      }
+
+      <!-- Divider -->
+      <hr class="divider">
+
+      <!-- Reviews Section -->
+      <div class="reviews-section" #reviewsSection>
+        <h2 class="section-title">Avis et commentaires ({{ reviews.length }})</h2>
+        
+        @if (authService.isAuthenticated()) {
+          <div class="add-review">
+            <div class="add-review__avatar">
+              {{ authService.currentUser()?.pseudo?.charAt(0)?.toUpperCase() }}
+            </div>
+            <div class="add-review__form">
+              <textarea class="add-review__input" placeholder="Partagez votre avis..." [(ngModel)]="newReviewContent" rows="3"></textarea>
+              <button class="add-review__btn" [disabled]="!newReviewContent.trim() || isSubmittingReview" (click)="submitReview()">
+                @if (isSubmittingReview) { Publication... } @else { Publier }
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="login-prompt">
+            <p><a routerLink="/login" [queryParams]="{ returnUrl: '/receipts/' + receipt.id }">Connectez-vous</a> pour laisser un avis</p>
+          </div>
+        }
+
+        @if (isLoadingReviews) {
+          <app-loader message="Chargement des avis..."></app-loader>
+        } @else if (reviews.length === 0) {
+          <div class="empty-reviews">
+            <p>Aucun avis pour le moment. Soyez le premier à donner votre avis !</p>
+          </div>
+        } @else {
+          <div class="reviews-list">
+            @for (review of reviews; track review.id) {
+              <div class="review-card">
+                <div class="review-card__header">
+                  <div class="review-card__avatar">{{ review.sender.pseudo.charAt(0).toUpperCase() }}</div>
+                  <div class="review-card__info">
+                    <span class="review-card__author">{{ review.sender.pseudo }}</span>
+                    <span class="review-card__date">{{ formatDate(review.createdAt) }}</span>
+                  </div>
+                  @if (canDeleteReview(review)) {
+                    <button class="review-card__delete" (click)="deleteReview(review.id)" title="Supprimer">🗑️</button>
+                  }
+                </div>
+                <p class="review-card__content">{{ review.content }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="scroll-buttons">
+      <button class="scroll-button scroll-up" (click)="scrollToTop()">⬆</button>
+      <button class="scroll-button scroll-down" (click)="scrollToBottom()">⬇</button>
+    </div>
+  }
+</div>

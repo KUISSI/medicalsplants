@@ -1,0 +1,146 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-search-bar',
+  standalone: true,
+  imports:  [CommonModule, FormsModule],
+  template: `
+    <div class="search-bar">
+      <div class="search-bar__input-wrapper">
+        <div class="search-bar__icon">
+          <img src="assets/search.svg" alt="Rechercher" />
+        </div>
+        <input
+          type="text"
+          class="search-bar__input"
+          [placeholder]="placeholder"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+          (keyup.enter)="onSearchSubmit()"
+        />
+        @if (searchTerm) {
+          <button class="search-bar__clear" (click)="clearSearch()">✕</button>
+        }
+      </div>
+      @if (showButton) {
+        <button class="search-bar__button" (click)="onSearchSubmit()">
+          Rechercher
+        </button>
+      }
+    </div>
+  `,
+  styles: [`
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .search-bar__input-wrapper {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar__icon {
+      position: absolute;
+      left: 15px;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-bar__input {
+      width: 100%;
+      padding: 15px 45px;
+      border: 1px solid #d0d0d0;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      outline: none;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .search-bar__input:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.15);
+    }
+
+    .search-bar__input::placeholder {
+      color: #999;
+    }
+
+    .search-bar__clear {
+      position: absolute;
+      right: 15px;
+      background: #e0e0e0;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar__clear:hover {
+      background: #ccc;
+    }
+
+    .search-bar__button {
+      padding: 15px 30px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .search-bar__button:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+  `]
+})
+export class SearchBarComponent {
+  @Input() placeholder = 'Rechercher...';
+  @Input() showButton = false;
+  @Input() debounceTime = 300;
+
+  @Output() search = new EventEmitter<string>();
+  @Output() searchSubmit = new EventEmitter<string>();
+
+  searchTerm = '';
+  private debounceTimer: any;
+
+  onSearch(): void {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.search.emit(this.searchTerm);
+    }, this.debounceTime);
+  }
+
+  onSearchSubmit(): void {
+    this.searchSubmit.emit(this. searchTerm);
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.search.emit('');
+  }
+}

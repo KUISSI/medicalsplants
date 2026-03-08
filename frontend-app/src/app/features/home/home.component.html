@@ -1,0 +1,63 @@
+<div class="home">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">
+        Quand la nature prend soin de vous
+      </h1>
+      <p class="hero__subtitle">
+        Identifiez vos symptômes et découvrez des plantes et recettes naturelles pour soulager les maux du quotidien.
+      </p>
+
+      <!-- search removed per design request -->
+
+      <div class="hero__cta">
+        <a routerLink="/symptoms" class="hero__btn hero__btn--primary"> Explorer les symptômes </a>
+        <a routerLink="/plants" class="hero__btn hero__btn--secondary"> Voir les plantes </a>
+      </div>
+    </div>
+
+
+  </section>
+
+  <!-- Disclaimer Section -->
+  <section class="disclaimer">
+    <div class="disclaimer__container">
+      <p class="disclaimer__text">"{{ disclaimerText }}"</p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section__container">
+      <h2 class="section__title">Comment ça marche ?</h2>
+      <p class="section__subtitle">
+        Une approche simple et naturelle pour prendre soin de votre santé
+      </p>
+
+      <div class="features__grid">
+        @for (feature of features; track feature. title) {
+        <div class="feature-card">
+          <span class="feature-card__icon">{{ feature.icon }}</span>
+          <h3 class="feature-card__title">{{ feature.title }}</h3>
+          <p class="feature-card__description">{{ feature.description }}</p>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Symptoms section removed per request -->
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta__container">
+      <h2 class="cta__title">Prêt à découvrir les bienfaits des plantes ?</h2>
+      <p class="cta__subtitle">Inscrivez-vous gratuitement et accédez à toutes nos ressources</p>
+      <div class="cta__buttons">
+        <a routerLink="/register" class="cta__btn cta__btn--primary"> Créer un compte gratuit </a>
+        <a routerLink="/receipts" class="cta__btn cta__btn--secondary"> Parcourir les recettes </a>
+      </div>
+    </div>
+  </section>
+</div>

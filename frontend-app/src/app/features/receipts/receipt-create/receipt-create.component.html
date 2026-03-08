@@ -1,0 +1,168 @@
+<div class="receipt-create-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <a routerLink="/receipts" class="page-header__back"> ← Retour aux recettes </a>
+      <h1 class="page-header__title">
+        <span class="page-header__icon">✨</span>
+        Créer une recette
+      </h1>
+      <p class="page-header__subtitle">
+        Partagez votre recette à base de plantes médicinales avec la communauté
+      </p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="form-container">
+    <form [formGroup]="receiptForm" (ngSubmit)="onSubmit()" class="receipt-form">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title" class="form-label">Titre de la recette *</label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          class="form-input"
+          [class.form-input--error]="title?.invalid && title?.touched"
+          placeholder="Ex: Tisane relaxante du soir"
+        />
+        @if (title?.invalid && title?.touched) {
+        <span class="form-error">
+          @if (title?. errors?.['required']) { Le titre est requis } @else if
+          (title?.errors?.['minlength']) { Minimum 5 caractères } @else if
+          (title?.errors?.['maxlength']) { Maximum 200 caractères }
+        </span>
+        }
+      </div>
+
+      <!-- Type -->
+      <div class="form-group">
+        <label class="form-label">Type de recette *</label>
+        <div class="type-selector">
+          @for (typeKey of receiptTypeKeys; track typeKey) {
+          <label class="type-option" [class.type-option--selected]="type?.value === typeKey">
+            <input
+              type="radio"
+              formControlName="type"
+              [value]="typeKey"
+              class="type-option__input"
+            />
+            <span class="type-option__icon">{{ getReceiptTypeIcon(typeKey) }}</span>
+            <span class="type-option__label">{{ receiptTypes[typeKey] }}</span>
+          </label>
+          }
+        </div>
+        @if (type?. invalid && type?.touched) {
+        <span class="form-error">Veuillez sélectionner un type</span>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description" class="form-label">Description et instructions</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-textarea"
+          rows="8"
+          placeholder="Décrivez votre recette :  ingrédients, proportions, étapes de préparation, conseils d'utilisation..."
+        ></textarea>
+        <span class="form-hint"> {{ description?.value?.length || 0 }} / 5000 caractères </span>
+      </div>
+
+      <!-- Ingredients -->
+      <div class="form-group">
+        <label class="form-label">Ingrédients</label>
+        <div formArrayName="ingredients">
+          @for (ingredient of ingredients.controls; track $index) {
+          <div class="ingredient-input">
+            <input [formControlName]="$index" class="form-input" placeholder="Ex: 1 cuillère à café de miel">
+            <button type="button" class="form-btn--remove" (click)="removeIngredient($index)">✕</button>
+          </div>
+          }
+        </div>
+        <button type="button" class="form-btn--add" (click)="addIngredient()">+ Ajouter un ingrédient</button>
+      </div>
+
+      <!-- Plants Selection -->
+      <div class="form-group">
+        <label class="form-label">Plantes utilisées *</label>
+
+        @if (selectedPlantIds.length > 0) {
+        <div class="selected-plants">
+          @for (plant of getSelectedPlants(); track plant. id) {
+          <div class="selected-plant">
+            <span class="selected-plant__icon">🌿</span>
+            <span class="selected-plant__name">{{ plant.title }}</span>
+            <button
+              type="button"
+              class="selected-plant__remove"
+              (click)="removeSelectedPlant(plant.id)"
+            >
+              ✕
+            </button>
+          </div>
+          }
+        </div>
+        } @if (isLoadingPlants) {
+        <app-loader message="Chargement des plantes... "></app-loader>
+        } @else {
+        <div class="plants-selector">
+          @for (plant of plants; track plant.id) {
+          <label class="plant-option" [class.plant-option--selected]="isPlantSelected(plant.id)">
+            <input
+              type="checkbox"
+              [checked]="isPlantSelected(plant.id)"
+              (change)="togglePlant(plant.id)"
+              class="plant-option__input"
+            />
+            <span class="plant-option__icon">🌿</span>
+            <span class="plant-option__name">{{ plant.title }}</span>
+            @if (plant.consumedPart) {
+            <span class="plant-option__part">{{ plant.consumedPart }}</span>
+            }
+          </label>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Premium Option (only for admin/premium) -->
+      @if (authService. isAdmin()) {
+      <div class="form-group form-group--checkbox">
+        <label class="form-checkbox">
+          <input type="checkbox" formControlName="isPremium" />
+          <span class="form-checkbox__mark"></span>
+          <span class="form-checkbox__text">
+            ⭐ Recette Premium (visible uniquement par les membres Premium)
+          </span>
+        </label>
+      </div>
+      }
+
+      <!-- Info Box -->
+      <div class="info-box">
+        <span class="info-box__icon">ℹ️</span>
+        <div class="info-box__content">
+          <strong>Note :</strong> Votre recette sera enregistrée comme brouillon. Vous pourrez la
+          soumettre pour publication une fois terminée.
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="form-actions">
+        <a routerLink="/receipts" class="form-btn form-btn--cancel"> Annuler </a>
+        <button
+          type="submit"
+          class="form-btn form-btn--submit"
+          [disabled]="receiptForm.invalid || selectedPlantIds.length === 0 || isSubmitting"
+        >
+          @if (isSubmitting) {
+          <span class="form-btn__loader"></span>
+          Création en cours... } @else { Créer la recette }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

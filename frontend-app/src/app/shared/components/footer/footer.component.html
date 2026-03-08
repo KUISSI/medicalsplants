@@ -1,0 +1,54 @@
+<footer class="footer">
+  <div class="footer__container">
+    <!-- Logo & Description -->
+    <div class="footer__section">
+      <div class="footer__logo">
+        <span class="footer__logo-icon">🌿</span>
+        <span class="footer__logo-text">Medicals Plants</span>
+      </div>
+      <p class="footer__description">
+        Votre guide des plantes médicinales et de leurs bienfaits pour la santé naturelle.
+      </p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="footer__section">
+      <h4 class="footer__title">Navigation</h4>
+      <nav class="footer__nav">
+        <a [routerLink]="isAuthenticated() ? '/home' : '/'" class="footer__link">Accueil</a>
+        <a routerLink="/symptoms" class="footer__link">Symptômes</a>
+        <a routerLink="/plants" class="footer__link">Plantes</a>
+        <a routerLink="/receipts" class="footer__link">Recettes</a>
+      </nav>
+    </div>
+
+    <!-- Compte -->
+    <div class="footer__section">
+      <h4 class="footer__title">Mon compte</h4>
+      <nav class="footer__nav">
+        @if (!isAuthenticated()) {
+          <a routerLink="/login" class="footer__link">Connexion</a>
+          <a routerLink="/register" class="footer__link">Inscription</a>
+        } @else {
+          <a routerLink="/profile" class="footer__link">Mon profil</a>
+          <button (click)="logout()" class="footer__link footer__link--button">Déconnexion</button>
+        }
+      </nav>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer__section">
+      <h4 class="footer__title">Contact</h4>
+      <div class="footer__contact">
+        <p>📧 contact&#64;medicalsplants.com</p>
+        <p>📍 France</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer__bottom">
+    <p>&copy; {{ currentYear }} Medicals Plants. Tous droits réservés.</p>
+    <p class="footer__author">Projet de certification - KUISSI</p>
+  </div>
+</footer>
