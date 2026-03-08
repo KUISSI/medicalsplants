@@ -1,13 +1,15 @@
 <div class="page">
   <div class="page__header">
-    <div class="page__header-content">
-      <h1 class="page__title">📖 Recettes</h1>
-      <p class="page__subtitle">Gérez toutes les recettes de la plateforme</p>
+    <div>
+      <h1 class="page__title">Recettes</h1>
+      <p class="page__subtitle">Catalogue de toutes les recettes de la plateforme</p>
     </div>
-    <a routerLink="/receipts/moderation" class="btn btn--warning"> ⏳ Modération </a>
+    <a routerLink="/receipts/moderation" class="btn btn--ghost">
+      <i class="bi bi-shield-check" aria-hidden="true"></i>
+      Modération
+    </a>
   </div>
 
-  <!-- Filters -->
   <div class="page__filters">
     <select class="filter-select" [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange()">
       <option value="">Tous les statuts</option>
@@ -18,21 +20,18 @@
   </div>
 
   @if (isLoading) {
-  <app-loader message="Chargement des recettes... "></app-loader>
+  <app-loader message="Chargement des recettes..."></app-loader>
   } @else if (receipts.length === 0) {
   <div class="empty-state">
-    <span class="empty-state__icon">📖</span>
+    <i class="bi bi-book empty-state__icon"></i>
     <h3 class="empty-state__title">Aucune recette trouvée</h3>
     <p class="empty-state__message">
-      @if (selectedStatus) { Aucune recette avec le statut "{{
-        receiptStatusLabels[selectedStatus]
-      }}" } @else { Aucune recette disponible }
+      @if (selectedStatus) { Aucune recette avec le statut "{{ receiptStatusLabels[selectedStatus] }}" }
+      @else { Aucune recette disponible }
     </p>
   </div>
   } @else {
-  <div class="page__info">
-    <span>{{ totalElements }} recette(s)</span>
-  </div>
+  <p class="page__info">{{ totalElements }} recette(s)</p>
 
   <div class="table-container">
     <table class="table">
@@ -44,82 +43,46 @@
           <th>Statut</th>
           <th>Premium</th>
           <th>Créé le</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        @for (receipt of receipts; track receipt. id) {
+        @for (receipt of receipts; track receipt.id) {
         <tr>
           <td>
             <div class="receipt-cell">
-              <span class="receipt-cell__icon">{{ getReceiptTypeIcon(receipt.type) }}</span>
-              <strong>{{ receipt.title }}</strong>
+              <div class="receipt-cell__icon">
+                <i class="bi {{ getReceiptTypeIcon(receipt.type) }}" aria-hidden="true"></i>
+              </div>
+              <strong class="receipt-cell__name">{{ receipt.title }}</strong>
             </div>
           </td>
           <td>
-            <span class="badge badge--orange">
-              {{ receiptTypeLabels[receipt.type] }}
-            </span>
+            <span class="type-chip">{{ receiptTypeLabels[receipt.type] }}</span>
+          </td>
+          <td class="author-cell">
+            @if (receipt.author) { {{ receipt.author.pseudo }} }
+            @else { <span style="color: var(--color-text-faint)">—</span> }
           </td>
           <td>
-            @if (receipt.author) {
-            {{ receipt.author.pseudo }}
-            } @else {
-            <span class="text-muted">-</span>
-            }
-          </td>
-          <td>
-            <span
-              class="status-badge"
-              [style.background-color]="receiptStatusColors[receipt.status]"
-            >
+            <span class="status-chip" [style.background-color]="receiptStatusColors[receipt.status] + '22'" [style.color]="receiptStatusColors[receipt.status]">
               {{ receiptStatusLabels[receipt.status] }}
             </span>
           </td>
           <td>
             @if (receipt.isPremium) {
-            <span class="premium-badge">⭐ Oui</span>
+            <span class="premium-chip">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              Premium
+            </span>
             } @else {
-            <span class="text-muted">Non</span>
+            <span style="color: var(--color-text-faint); font-size: 0.85rem">Non</span>
             }
           </td>
-          <td>{{ formatDate(receipt.createdAt) }}</td>
-          <td>
-            <div class="actions">
-              <a href="#" class="action-btn" title="Voir"> 👁️ </a>
-            </div>
-          </td>
+          <td class="date-cell">{{ formatDate(receipt.createdAt) }}</td>
         </tr>
         }
       </tbody>
     </table>
   </div>
-
-  @if (totalPages > 1) {
-  <div class="pagination">
-    <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">««</button>
-    <button
-      class="pagination__btn"
-      [disabled]="currentPage === 0"
-      (click)="loadPage(currentPage - 1)"
-    >
-      ‹
-    </button>
-    <span class="pagination__info">Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
-    <button
-      class="pagination__btn"
-      [disabled]="currentPage === totalPages - 1"
-      (click)="loadPage(currentPage + 1)"
-    >
-      ›
-    </button>
-    <button
-      class="pagination__btn"
-      [disabled]="currentPage === totalPages - 1"
-      (click)="loadPage(totalPages - 1)"
-    >
-      »»
-    </button>
-  </div>
-  } }
+  }
 </div>

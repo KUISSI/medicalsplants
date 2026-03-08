@@ -1,33 +1,32 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { Receipt, ReceiptPage, ReceiptStatus, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS, RECEIPT_STATUS_COLORS } from '../../../core/models/receipt.model';
-import { ToastrService } from 'ngx-toastr';
+import { Receipt, ReceiptStatus, RECEIPT_TYPE_LABELS, RECEIPT_STATUS_LABELS, RECEIPT_STATUS_COLORS } from '../../../core/models/receipt.model';
+
+const MOCK_RECEIPTS: Receipt[] = [
+  { id: '1', title: 'Tisane relaxante',   type: 'HOT_DRINK',  status: 'PUBLISHED', isPremium: false, description: 'Infusion camomille et lavande pour une nuit paisible', author: { pseudo: 'Alice' } as any,  plants: [{ id:'1', title: 'Camomille' } as any], createdAt: '2024-02-01T00:00:00' },
+  { id: '2', title: 'Smoothie détox',     type: 'COLD_DRINK', status: 'PUBLISHED', isPremium: true,  description: 'Boisson fraîche tonifiante au gingembre',              author: { pseudo: 'Bob' } as any,    plants: [{ id:'5', title: 'Gingembre' } as any], createdAt: '2024-02-10T00:00:00' },
+  { id: '3', title: 'Baume apaisant',     type: 'LOTION',     status: 'PENDING',   isPremium: false, description: 'Lotion hydratante à l\'aloe vera',                    author: { pseudo: 'Carol' } as any,  plants: [{ id:'4', title: 'Aloe vera' } as any], createdAt: '2024-03-01T00:00:00' },
+  { id: '4', title: 'Soupe médicinale',   type: 'DISH',       status: 'PUBLISHED', isPremium: true,  description: 'Soupe aux herbes médicinales',                        author: { pseudo: 'David' } as any,  plants: [{ id:'3', title: 'Menthe poivrée' } as any], createdAt: '2024-03-05T00:00:00' },
+  { id: '5', title: 'Infusion immunité',  type: 'HOT_DRINK',  status: 'REJECTED',  isPremium: false, description: 'Thé à l\'échinacée pour renforcer les défenses',      author: { pseudo: 'Emma' } as any,   plants: [{ id:'6', title: 'Échinacée' } as any],  createdAt: '2024-03-10T00:00:00' }
+];
 
 @Component({
   selector: 'app-receipt-list',
   standalone: true,
-  imports:  [CommonModule, RouterModule, FormsModule, LoaderComponent],
-  templateUrl:  './receipt-list.component.html',
-  styleUrls:  ['./receipt-list.component.scss']
+  imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
+  templateUrl: './receipt-list.component.html',
+  styleUrls: ['./receipt-list.component.scss']
 })
 export class ReceiptListComponent implements OnInit {
-  private http = inject(HttpClient);
-  private toastr = inject(ToastrService);
-  private apiUrl = `${environment.apiUrl}/admin/receipts`;
-
-  receipts: Receipt[] = [];
-  isLoading = true;
+  allReceipts: Receipt[] = MOCK_RECEIPTS;
+  receipts: Receipt[] = MOCK_RECEIPTS;
+  isLoading = false;
   selectedStatus: ReceiptStatus | '' = '';
 
-  currentPage = 0;
-  totalPages = 0;
   totalElements = 0;
-  pageSize = 20;
 
   receiptTypeLabels = RECEIPT_TYPE_LABELS;
   receiptStatusLabels = RECEIPT_STATUS_LABELS;
@@ -35,53 +34,32 @@ export class ReceiptListComponent implements OnInit {
   statusKeys = Object.keys(RECEIPT_STATUS_LABELS) as ReceiptStatus[];
 
   ngOnInit(): void {
-    this.loadReceipts();
+    setTimeout(() => {
+      this.allReceipts = MOCK_RECEIPTS;
+      this.applyFilter();
+      this.isLoading = false;
+    }, 300);
   }
 
-  loadReceipts(): void {
-    this.isLoading = true;
-
-    let params = new HttpParams()
-      .set('page', this.currentPage.toString())
-      .set('size', this.pageSize.toString());
-
-    if (this.selectedStatus) {
-      params = params.set('status', this.selectedStatus);
-    }
-
-    this.http.get<ReceiptPage>(this.apiUrl, { params }).subscribe({
-      next: (response) => {
-        this.receipts = response.content;
-        this.totalPages = response.totalPages;
-        this. totalElements = response. totalElements;
-        this.isLoading = false;
-      },
-      error:  () => {
-        this.isLoading = false;
-      }
-    });
+  applyFilter(): void {
+    this.receipts = this.selectedStatus
+      ? this.allReceipts.filter(r => r.status === this.selectedStatus)
+      : this.allReceipts;
+    this.totalElements = this.receipts.length;
   }
 
   onStatusChange(): void {
-    this.currentPage = 0;
-    this.loadReceipts();
-  }
-
-  loadPage(page: number): void {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this. loadReceipts();
-    }
+    this.applyFilter();
   }
 
   getReceiptTypeIcon(type: string): string {
-    const icons:  Record<string, string> = {
-      'HOT_DRINK': '☕',
-      'COLD_DRINK': '🧊',
-      'DISH': '🍽️',
-      'LOTION': '🧴'
+    const icons: Record<string, string> = {
+      'HOT_DRINK':  'bi-cup-hot',
+      'COLD_DRINK': 'bi-cup-straw',
+      'DISH':       'bi-egg-fried',
+      'LOTION':     'bi-droplet-half'
     };
-    return icons[type] || '📖';
+    return icons[type] || 'bi-book';
   }
 
   formatDate(dateString: string): string {

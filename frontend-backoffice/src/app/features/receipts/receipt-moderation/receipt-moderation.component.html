@@ -1,37 +1,45 @@
 <div class="page">
   <div class="page__header">
-    <div class="page__header-content">
-      <a routerLink="/receipts" class="page__back">← Retour aux recettes</a>
-      <h1 class="page__title">⏳ Modération des recettes</h1>
-      <p class="page__subtitle">Approuvez ou rejetez les recettes soumises</p>
+    <div>
+      <a routerLink="/receipts" class="page__back">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+        Retour aux recettes
+      </a>
+      <h1 class="page__title">Modération des recettes</h1>
+      <p class="page__subtitle">Approuvez ou rejetez les recettes soumises par les utilisateurs</p>
     </div>
   </div>
 
   @if (isLoading) {
   <app-loader message="Chargement des recettes en attente..."></app-loader>
-  } @else if (pendingReceipts. length === 0) {
-  <div class="empty-state empty-state--success">
-    <span class="empty-state__icon">✅</span>
-    <h3 class="empty-state__title">Aucune recette en attente</h3>
-    <p class="empty-state__message">Toutes les recettes ont été modérées. Bravo !</p>
-    <a routerLink="/receipts" class="btn btn--primary"> Voir toutes les recettes </a>
+  } @else if (pendingReceipts.length === 0) {
+  <div class="empty-state">
+    <i class="bi bi-check-circle empty-state__icon" style="color: var(--color-accent)"></i>
+    <h3 class="empty-state__title">File d'attente vide</h3>
+    <p class="empty-state__message">Toutes les recettes ont été modérées.</p>
+    <a routerLink="/receipts" class="btn btn--primary" style="margin-top:16px;">
+      Voir toutes les recettes
+    </a>
   </div>
   } @else {
-  <div class="page__info">
-    <span class="pending-count"
-      >{{ pendingReceipts.length }} recette(s) en attente de modération</span
-    >
-  </div>
+  <p class="page__info pending-count">
+    <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+    {{ pendingReceipts.length }} recette(s) en attente de modération
+  </p>
 
   <div class="moderation-grid">
     @for (receipt of pendingReceipts; track receipt.id) {
     <div class="moderation-card">
       <div class="moderation-card__header">
-        <span class="moderation-card__type">
-          {{ getReceiptTypeIcon(receipt.type) }} {{ receiptTypeLabels[receipt.type] }}
+        <span class="type-badge">
+          <i class="bi {{ getReceiptTypeIcon(receipt.type) }}" aria-hidden="true"></i>
+          {{ receiptTypeLabels[receipt.type] }}
         </span>
         @if (receipt.isPremium) {
-        <span class="moderation-card__premium">⭐ Premium</span>
+        <span class="premium-badge">
+          <i class="bi bi-star-fill" aria-hidden="true"></i>
+          Premium
+        </span>
         }
       </div>
 
@@ -41,37 +49,38 @@
       <p class="moderation-card__description">{{ receipt.description }}</p>
       }
 
-      <div class="moderation-card__meta">
-        @if (receipt.author) {
-        <div class="moderation-card__author">
-          <span class="moderation-card__author-avatar">
-            {{ receipt.author.pseudo.charAt(0).toUpperCase() }}
-          </span>
-          <div>
-            <span class="moderation-card__author-name">{{ receipt.author.pseudo }}</span>
-            <span class="moderation-card__date">{{ formatDate(receipt.createdAt) }}</span>
-          </div>
+      @if (receipt.author) {
+      <div class="moderation-card__author">
+        <div class="author-avatar">{{ receipt.author.pseudo.charAt(0).toUpperCase() }}</div>
+        <div>
+          <span class="author-name">{{ receipt.author.pseudo }}</span>
+          <span class="author-date">{{ formatDate(receipt.createdAt) }}</span>
         </div>
-        }
       </div>
+      }
 
       @if (receipt.plants && receipt.plants.length > 0) {
       <div class="moderation-card__plants">
-        <span class="moderation-card__plants-label">Plantes utilisées :</span>
-        <div class="moderation-card__plants-list">
-          @for (plant of receipt. plants; track plant. id) {
-          <span class="plant-tag">🌿 {{ plant.title }}</span>
+        <span class="plants-label">Plantes :</span>
+        <div class="plants-list">
+          @for (plant of receipt.plants; track plant.id) {
+          <span class="plant-tag">
+            <i class="bi bi-flower1" aria-hidden="true"></i>
+            {{ plant.title }}
+          </span>
           }
         </div>
       </div>
       }
 
       <div class="moderation-card__actions">
-        <button class="moderation-btn moderation-btn--reject" (click)="openRejectDialog(receipt)">
-          ❌ Rejeter
+        <button class="mod-btn mod-btn--reject" (click)="openRejectDialog(receipt)">
+          <i class="bi bi-x-circle" aria-hidden="true"></i>
+          Rejeter
         </button>
-        <button class="moderation-btn moderation-btn--approve" (click)="openApproveDialog(receipt)">
-          ✅ Approuver
+        <button class="mod-btn mod-btn--approve" (click)="openApproveDialog(receipt)">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          Approuver
         </button>
       </div>
     </div>
@@ -80,26 +89,20 @@
   }
 </div>
 
-<!-- Approve Dialog -->
 <app-confirm-dialog
   [isOpen]="showApproveDialog"
   title="Approuver la recette"
-  [message]="
-    'Êtes-vous sûr de vouloir approuver et publier la recette \'' + selectedReceipt?.title + '\' ?'
-  "
-  icon="✅"
+  [message]="'Publier la recette \'' + selectedReceipt?.title + '\' ?'"
   type="default"
   confirmText="Approuver"
   (confirm)="onApproveConfirm()"
   (cancel)="closeDialogs()"
 ></app-confirm-dialog>
 
-<!-- Reject Dialog -->
 <app-confirm-dialog
   [isOpen]="showRejectDialog"
   title="Rejeter la recette"
-  [message]="'Êtes-vous sûr de vouloir rejeter la recette \'' + selectedReceipt?.title + '\' ?'"
-  icon="❌"
+  [message]="'Rejeter la recette \'' + selectedReceipt?.title + '\' ?'"
   type="danger"
   confirmText="Rejeter"
   (confirm)="onRejectConfirm()"

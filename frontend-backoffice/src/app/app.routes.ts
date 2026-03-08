@@ -12,17 +12,21 @@ export const routes: Routes = [
     title: 'Connexion - Admin'
   },
 
-  // Routes protégées (Admin uniquement)
+  // Routes protégées (Admin uniquement) — wrapped dans le layout
   {
-    path:  '',
+    path: '',
+    loadComponent: () => import('./shared/components/admin-layout/admin-layout.component')
+      .then(m => m.AdminLayoutComponent),
     canActivate: [adminGuard],
     children: [
       // Dashboard
       {
         path: '',
-        loadComponent:  () => import('./features/dashboard/dashboard.component')
+        pathMatch: 'full',
+        loadComponent: () => import('./features/dashboard/dashboard.component')
           .then(m => m.DashboardComponent),
-        title: 'Dashboard - Admin'
+        title: 'Dashboard - Admin',
+        runGuardsAndResolvers: 'always'
       },
 
       // Users
@@ -32,12 +36,6 @@ export const routes: Routes = [
           .then(m => m.UserListComponent),
         title: 'Utilisateurs - Admin'
       },
-      {
-        path: 'users/: id',
-        loadComponent: () => import('./features/users/user-edit/user-edit.component')
-          .then(m => m.UserEditComponent),
-        title: 'Modifier utilisateur - Admin'
-      },
 
       // Symptoms
       {
@@ -46,70 +44,34 @@ export const routes: Routes = [
           .then(m => m.SymptomListComponent),
         title: 'Symptômes - Admin'
       },
-      {
-        path: 'symptoms/new',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
-          .then(m => m.SymptomFormComponent),
-        title: 'Nouveau symptôme - Admin'
-      },
-      {
-        path: 'symptoms/: id/edit',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
-          .then(m => m.SymptomFormComponent),
-        title: 'Modifier symptôme - Admin'
-      },
 
       // Properties
       {
         path: 'properties',
-        loadComponent:  () => import('./features/properties/property-list/property-list.component')
+        loadComponent: () => import('./features/properties/property-list/property-list.component')
           .then(m => m.PropertyListComponent),
         title: 'Propriétés - Admin'
-      },
-      {
-        path: 'properties/new',
-        loadComponent:  () => import('./features/properties/property-form/property-form.component')
-          .then(m => m.PropertyFormComponent),
-        title: 'Nouvelle propriété - Admin'
-      },
-      {
-        path:  'properties/:id/edit',
-        loadComponent: () => import('./features/properties/property-form/property-form.component')
-          .then(m => m.PropertyFormComponent),
-        title: 'Modifier propriété - Admin'
       },
 
       // Plants
       {
         path: 'plants',
-        loadComponent:  () => import('./features/plants/plant-list/plant-list.component')
+        loadComponent: () => import('./features/plants/plant-list/plant-list.component')
           .then(m => m.PlantListComponent),
         title: 'Plantes - Admin'
       },
-      {
-        path: 'plants/new',
-        loadComponent:  () => import('./features/plants/plant-form/plant-form.component')
-          .then(m => m.PlantFormComponent),
-        title: 'Nouvelle plante - Admin'
-      },
-      {
-        path:  'plants/:id/edit',
-        loadComponent: () => import('./features/plants/plant-form/plant-form.component')
-          .then(m => m.PlantFormComponent),
-        title: 'Modifier plante - Admin'
-      },
 
-      // Receipts
+      // Recipes
       {
-        path: 'receipts',
-        loadComponent: () => import('./features/receipts/receipt-list/receipt-list.component')
-          .then(m => m.ReceiptListComponent),
+        path: 'recipes',
+        loadComponent: () => import('./features/recipes/recipe-list/recipe-list.component')
+          .then(m => m.RecipeListComponent),
         title: 'Recettes - Admin'
       },
       {
-        path: 'receipts/moderation',
-        loadComponent: () => import('./features/receipts/receipt-moderation/receipt-moderation.component')
-          .then(m => m.ReceiptModerationComponent),
+        path: 'recipes/moderation',
+        loadComponent: () => import('./features/recipes/recipe-moderation/recipe-moderation.component')
+          .then(m => m.RecipeModerationComponent),
         title: 'Modération - Admin'
       }
     ]
