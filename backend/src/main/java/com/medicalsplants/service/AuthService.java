@@ -111,7 +111,7 @@ public class AuthService {
         user.setEmailVerificationToken(emailVerificationToken);
 
         user = userRepository.saveAndFlush(user);
-        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+        mailService.sendEmailVerification(user.getEmail(), emailVerificationToken);
 
         return MessageResponse.of("Registration successful. Please check your email to verify your account.");
     }
@@ -266,6 +266,9 @@ public class AuthService {
 
     @Transactional
     public MessageResponse verifyEmail(String token) {
+        log.info(">>> verifyEmail called with token: '{}'", token);
+        log.info(">>> token length: {}", token != null ? token.length() : "NULL");
+
         User user = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token)
                 .orElseThrow(() -> new BadRequestException("Invalid or expired verification token"));
 

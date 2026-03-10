@@ -23,7 +23,7 @@ public class MailService {
     @Value("${app.frontend.url:http://localhost:4200}")
     private String frontendUrl;
 
-    @Value("${app.mail.from:noreply@medicalsplants.com}")
+    @Value("${APP_MAIL_FROM:noreply@medicalsplants.com}")
     private String mailFrom;
 
     /**
