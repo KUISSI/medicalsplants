@@ -11,27 +11,30 @@
       <button (click)="goBack()" class="error-state__btn">← Retour</button>
     </div>
   } @else if (plant) {
-    <!-- Header -->
+    <!-- Header standardisé -->
     <div class="detail-header">
       <div class="detail-header__container">
         <button (click)="goBack()" class="detail-header__back">← Retour</button>
-
-        <div class="detail-header__main">
-          <div class="detail-header__image">
-            @if (plant.imageUrl) {
-              <img [src]="plant.imageUrl" [alt]="plant.title" />
-            } @else {
-              <div class="detail-header__placeholder">
-                <span>🌿</span>
-              </div>
-            }
+        <div class="detail-header__content">
+          <span class="detail-header__icon">
+            {{ getPlantIcon(plant.title) || "🌿" }}
+          </span>
+          <div class="detail-header__info">
+            <div class="detail-header__title-line">
+              <h1 class="detail-header__title">{{ plant.title }}</h1>
+              <span class="detail-header__family" *ngIf="plant.title">
+                {{ plant.title }}
+              </span>
+            </div>
+            <p class="detail-header__description" *ngIf="plant.description">
+              {{ plant.description }}
+            </p>
           </div>
-
-          <h1 class="detail-header__title">{{ plant.title }}</h1>
-
-          @if (plant.description) {
-            <p class="detail-header__description">{{ plant.description }}</p>
-          }
+          <!-- Bouton favori réutilisable -->
+          <app-favorite-button
+            [isFavorite]="favoriteService.isPlantFavorite(plant.id)"
+            (toggle)="favoriteService.togglePlantFavorite(plant.id)"
+          ></app-favorite-button>
         </div>
       </div>
     </div>

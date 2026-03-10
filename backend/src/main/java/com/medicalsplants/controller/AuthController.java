@@ -57,6 +57,16 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthService.AuthResult result = authService.login(request);
 
+        // Cookie JWT d'accès
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", result.getResponse().getData().getAccessToken())
+                .httpOnly(true)
+                .secure(true) // true en prod (HTTPS)
+                .path("/")
+                .maxAge(2 * 60 * 60) // 2h
+                .sameSite("Strict")
+                .build();
+
+        // Cookie refreshToken
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
@@ -66,6 +76,7 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(result.getResponse());
     }
@@ -75,6 +86,16 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         AuthService.AuthResult result = authService.refreshToken(request);
 
+        // Cookie JWT d'accès
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", result.getResponse().getData().getAccessToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(2 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        // Cookie refreshToken
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
@@ -84,6 +105,7 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(result.getResponse());
     }
@@ -94,8 +116,16 @@ public class AuthController {
         String refreshToken = request != null ? request.getRefreshToken() : null;
         MessageResponse response = authService.logout(refreshToken);
 
-        // Supprime le cookie côté client
-        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+        // Supprime les cookies côté client
+        ResponseCookie deleteJwtCookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie deleteRefreshCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(true)
                 .path("/api/v1/auth/refresh")
@@ -104,7 +134,8 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteJwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteRefreshCookie.toString())
                 .body(response);
     }
 
@@ -114,7 +145,15 @@ public class AuthController {
     public ResponseEntity<MessageResponse> logoutAll(@AuthenticationPrincipal CustomUserDetails currentUser) {
         MessageResponse response = authService.logoutAll(currentUser.getId());
 
-        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+        ResponseCookie deleteJwtCookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie deleteRefreshCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(true)
                 .path("/api/v1/auth/refresh")
@@ -123,7 +162,8 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteJwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteRefreshCookie.toString())
                 .body(response);
     }
 
@@ -148,6 +188,13 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Resend email verification")
+    @PostMapping("/resend-verification")
+    public ResponseEntity<MessageResponse> resendVerification(@RequestParam String email) {
+        MessageResponse response = authService.resendEmailVerification(email);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Forgot password")
     @PostMapping("/forgot-password")
     public ResponseEntity<MessageResponse> forgotPassword(@RequestParam String email) {
@@ -165,4 +212,5 @@ public class AuthController {
         MessageResponse response = authService.resetPassword(token, newPassword);
         return ResponseEntity.ok(response);
     }
+
 }

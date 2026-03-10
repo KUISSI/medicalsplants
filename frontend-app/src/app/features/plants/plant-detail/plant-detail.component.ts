@@ -5,26 +5,34 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { PlantService } from '../../../core/services/plant.service';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Plant} from '../../../core/models/plant.model';
+import { Plant } from '../../../core/models/plant.model';
 import { Recipe, RecipePage, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeCardComponent, RecipeCardData } from '../../../shared/components/recipe-card/recipe-card.component';
-
+import { FavoriteService } from '../../../core/services/favorite.service';
+import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
 import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({
   selector: 'app-plant-detail',
   standalone: true,
-  imports:  [CommonModule, RouterModule, LoaderComponent, RecipeCardComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LoaderComponent,
+    RecipeCardComponent,
+    FavoriteButtonComponent
+  ],
   templateUrl: './plant-detail.component.html',
   styleUrls: ['./plant-detail.component.scss']
 })
 export class PlantDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router); // Inject Router
+  private router = inject(Router);
   private plantService = inject(PlantService);
   private recipeService = inject(RecipeService);
   authService = inject(AuthService);
   private navigationService = inject(NavigationService);
+  favoriteService = inject(FavoriteService);
 
   plant: Plant | null = null;
   recipes: RecipeCardData[] = [];
@@ -32,7 +40,7 @@ export class PlantDetailComponent implements OnInit {
   isLoading = true;
   isLoadingRecipes = true;
   error: string | null = null;
-  currentQueryParams: { [key: string]: any } = {}; // Property to store query params
+  currentQueryParams: { [key: string]: any } = {};
 
   activeTab: 'properties' | 'recipes' = 'properties';
 
@@ -55,13 +63,11 @@ export class PlantDetailComponent implements OnInit {
   switchTab(tab: 'properties' | 'recipes'): void {
     this.activeTab = tab;
     if (tab === 'recipes') {
-      // Use a timeout to ensure the view is rendered before scrolling
       setTimeout(() => {
         const element = document.getElementById('recipesContent');
         if (element) {
           const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.scrollY - 110; // 110px for header height + extra padding
-
+          const offsetPosition = elementPosition + window.scrollY - 110;
           window.scrollTo({
             top: offsetPosition,
             behavior: 'smooth'
@@ -81,7 +87,7 @@ export class PlantDetailComponent implements OnInit {
         this.isLoading = false;
         this.loadRecipes(id);
       },
-      error:  () => {
+      error: () => {
         this.isLoading = false;
         this.error = 'Plante non trouvée';
       }
@@ -95,8 +101,8 @@ export class PlantDetailComponent implements OnInit {
       next: (response: RecipePage) => {
         this.recipes = response.content.map(recipe => {
           const difficulties = ['Facile', 'Moyen', 'Difficile'];
-          const rating = (recipe.id.charCodeAt(0) % 3) + 3; // 3, 4, or 5
-          const time = ((recipe.id.charCodeAt(0) % 5) + 1) * 10; // 10, 20, 30, 40, 50
+          const rating = (recipe.id.charCodeAt(0) % 3) + 3;
+          const time = ((recipe.id.charCodeAt(0) % 5) + 1) * 10;
           const difficulty = difficulties[recipe.id.charCodeAt(0) % difficulties.length];
 
           return {
@@ -111,7 +117,7 @@ export class PlantDetailComponent implements OnInit {
         });
         this.isLoadingRecipes = false;
       },
-      error:  () => {
+      error: () => {
         this.isLoadingRecipes = false;
       }
     });
@@ -129,7 +135,7 @@ export class PlantDetailComponent implements OnInit {
   }
 
   getPropertyIcon(family: string): string {
-    const icons:  Record<string, string> = {
+    const icons: Record<string, string> = {
       'Analgésique': '💊',
       'Anti-inflammatoire': '🔥',
       'Calmant': '😌',
@@ -141,6 +147,17 @@ export class PlantDetailComponent implements OnInit {
       'Cutané': '🧴'
     };
     return icons[family] || '✨';
+  }
+
+  /** Icône principale pour le header de la plante */
+  getPlantIcon(family?: string): string {
+    const icons: Record<string, string> = {
+      'Légumineuse': '🌱',
+      'Aromatique': '🌿',
+      'Médicinale': '💊',
+      // Ajoute d'autres familles si besoin
+    };
+    return (family && icons[family]) || '🌿';
   }
 
   goBack(): void {

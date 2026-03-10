@@ -12,13 +12,13 @@
     font-size: 5rem;
     display: block;
     margin-bottom: 20px;
-    opacity:  0.5;
+    opacity: 0.5;
   }
 
   &__title {
     font-size: 1.5rem;
     color: #333;
-    margin:  0 0 30px 0;
+    margin: 0 0 30px 0;
   }
 
   &__btn {
@@ -30,8 +30,8 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
-    border: none; /* Add for button */
-    cursor: pointer; /* Add for button */
+    border: none;
+    cursor: pointer;
 
     &:hover {
       background: #45a049;
@@ -51,99 +51,81 @@
   }
 
   &__back {
-    display:  inline-block;
+    display: inline-block;
     color: #a8d5a2;
     text-decoration: none;
     font-size: 0.95rem;
     margin-bottom: 15px;
     transition: color 0.3s;
-    border: none; /* Add for button */
-    background: none; /* Add for button */
-    cursor: pointer; /* Add for button */
+    border: none;
+    background: none;
+    cursor: pointer;
 
     &:hover {
-      color:  #ffffff;
+      color: #ffffff;
     }
   }
 
-  &__main {
+  &__content {
     display: flex;
-    gap: 40px;
     align-items: flex-start;
+    gap: 30px;
+    position: relative;
 
     @media (max-width: 768px) {
       flex-direction: column;
-      gap: 25px;
+      gap: 20px;
+    }
+
+    // Bouton favori positionné en haut à droite de l'en-tête
+    app-favorite-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
     }
   }
 
-  &__image {
-    width: 220px;
-    height: 220px;
-    min-width: 220px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-
-    img {
-      width:  100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    @media (max-width: 768px) {
-      width:  100%;
-      min-width: auto;
-      height: 250px;
-    }
-  }
-
-  &__placeholder {
-    width: 100%;
-    height: 100%;
+  &__icon {
+    font-size: 4rem;
+    min-width: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 6rem;
-    opacity: 0.5;
+    opacity: 0.85;
+    margin-right: 10px;
   }
 
   &__info {
-    flex:  1;
+    flex: 1;
+    min-width: 0;
   }
 
-  &__badges {
+  &__title-line {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  &__badge {
-    display: inline-flex;
     align-items: center;
-    gap:  6px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px 15px;
-    border-radius: 25px;
-    font-size: 0.9rem;
-
-    &--mode {
-      background:  #ffffff;
-      color:  #2d5a3d;
-      font-weight: 600;
-    }
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   &__title {
     font-size: 2.2rem;
-    margin:  0 0 15px 0;
+    margin: 0 0 10px 0;
     font-weight: 700;
 
     @media (max-width: 768px) {
       font-size: 2rem;
     }
+  }
+
+  &__family {
+    font-size: 1.1rem;
+    color: #d4edda;
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 4px 14px;
+    font-weight: 500;
+    margin-left: 8px;
   }
 
   &__description {
@@ -159,7 +141,7 @@
 .detail-content {
   max-width: 1200px;
   margin: 30px auto 0;
-  padding:  0 20px 50px;
+  padding: 0 20px 50px;
   position: relative;
   z-index: 1;
 }
@@ -265,8 +247,6 @@
   }
 }
 
-
-
 // Empty State
 .empty-state {
   text-align: center;
@@ -285,18 +265,18 @@
   &__message {
     color: #666;
     font-size: 1rem;
-    margin:  0 0 20px 0;
+    margin: 0 0 20px 0;
   }
 
   &__btn {
-    display:  inline-block;
+    display: inline-block;
     padding: 10px 20px;
     background: #4CAF50;
     color: #ffffff;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 500;
-    transition:  all 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
       background: #45a049;

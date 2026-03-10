@@ -22,20 +22,12 @@
       <button *ngIf="searchTerm" class="search-box__clear" (click)="clearFilters()">✕</button>
     </div>
 
-    <select
-      class="filter-select"
-      [(ngModel)]="selectedFamily"
-      (ngModelChange)="onFamilyChange($event)"
-    >
+    <select class="filter-select" [(ngModel)]="family" (ngModelChange)="onFamilyChange($event)">
       <option value="">Toutes les familles</option>
       <option *ngFor="let family of families" [value]="family">{{ family }}</option>
     </select>
 
-    <button
-      *ngIf="searchTerm || selectedFamily"
-      class="btn btn--secondary"
-      (click)="clearFilters()"
-    >
+    <button *ngIf="searchTerm || family" class="btn btn--secondary" (click)="clearFilters()">
       ✕ Effacer
     </button>
   </div>
@@ -51,16 +43,12 @@
         <span class="empty-state__icon">🩺</span>
         <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
         <p class="empty-state__message">
-          <ng-container *ngIf="searchTerm || selectedFamily; else createMsg">
+          <ng-container *ngIf="searchTerm || family; else createMsg">
             Modifiez vos critères de recherche
           </ng-container>
           <ng-template #createMsg> Commencez par créer un symptôme </ng-template>
         </p>
-        <a
-          *ngIf="!searchTerm && !selectedFamily"
-          routerLink="/symptoms/new"
-          class="btn btn--primary"
-        >
+        <a *ngIf="!searchTerm && !family" routerLink="/symptoms/new" class="btn btn--primary">
           ➕ Créer un symptôme
         </a>
       </div>

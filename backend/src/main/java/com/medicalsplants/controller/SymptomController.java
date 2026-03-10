@@ -16,6 +16,7 @@ import com.medicalsplants.model.dto.response.PlantResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/symptoms")
@@ -40,22 +41,31 @@ public class SymptomController {
         return ResponseEntity.ok(symptomService.getSymptomById(id));
     }
 
-    @Operation(summary = "Get symptoms by family")
-    @GetMapping("/family/{family}")
-    public ResponseEntity<List<SymptomResponse>> getSymptomsByFamily(@PathVariable String family) {
-        return ResponseEntity.ok(symptomService.getSymptomsByFamily(family));
-    }
-
     @Operation(summary = "Get all symptom families")
     @GetMapping("/families")
     public ResponseEntity<List<String>> getAllFamilies() {
         return ResponseEntity.ok(symptomService.getAllFamilies());
     }
 
-    @Operation(summary = "Get symptoms grouped by family")
+    @Operation(summary = "Get symptoms grouped by family with optional filtering")
     @GetMapping("/grouped")
-    public ResponseEntity<Map<String, List<SymptomResponse>>> getSymptomsGroupedByFamily() {
-        return ResponseEntity.ok(symptomService.getSymptomsGroupedByFamily());
+    public ResponseEntity<Map<String, List<SymptomResponse>>> getSymptomsGroupedByFamily(
+            @RequestParam(required = false) String family,
+            @RequestParam(required = false) String searchTerm
+    ) {
+        List<SymptomResponse> filtered;
+        if (family != null && searchTerm != null) {
+            filtered = symptomService.searchSymptoms(family, searchTerm);
+        } else if (searchTerm != null) {
+            filtered = symptomService.searchSymptoms(searchTerm);
+        } else if (family != null) {
+            filtered = symptomService.getSymptomsByFamily(family);
+        } else {
+            filtered = symptomService.getAllSymptoms();
+        }
+        Map<String, List<SymptomResponse>> grouped = filtered.stream()
+                .collect(Collectors.groupingBy(SymptomResponse::getFamily));
+        return ResponseEntity.ok(grouped);
     }
 
     @Operation(summary = "Create a new symptom")
@@ -90,4 +100,15 @@ public class SymptomController {
     public List<PlantResponse> getPlantsBySymptom(@PathVariable UUID id) {
         return symptomService.getPlantsBySymptomId(id);
     }
+
+    @Operation(summary = "Get symptoms by family")
+    @GetMapping("/family/{familyName}")
+    public ResponseEntity<List<SymptomResponse>> getSymptomsByFamily(@PathVariable String familyName) {
+        List<SymptomResponse> symptoms = symptomService.getSymptomsByFamily(familyName);
+        if (symptoms == null || symptoms.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(symptoms);
+    }
+
 }

@@ -29,10 +29,13 @@ public class PlantController {
         this.plantService = plantService;
     }
 
-    @Operation(summary = "Get all plants (paginated)")
+    @Operation(summary = "Get all plants (paginated, with optional search)")
     @GetMapping
-    public ResponseEntity<Page<PlantResponse>> getAllPlants(@PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(plantService.getAllPlants(pageable));
+    public ResponseEntity<Page<PlantResponse>> getAllPlants(
+            @PageableDefault(size = 20) Pageable pageable,
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(plantService.getAllPlants(pageable, search));
     }
 
     @Operation(summary = "Get plant by ID")

@@ -127,17 +127,35 @@ export class descriptionComponent implements OnInit {
   }
 
   getSymptomIcon(family: string): string {
-    const icons: Record<string, string> = {
-      'Neurologique': '🧠',
-      'Sommeil': '😴',
-      'Psychologique': '🧘',
-      'Respiratoire': '🫁',
-      'Digestif': '🍽️',
-      'General':  '💪',
-      'Cutané': '🧴'
-    };
-    return icons[family] || '🌿';
-  }
+  if (!family) return '🌿';
+  const icons: Record<string, string> = {
+    'Allergique': '🤧',
+    'Biliaire': '🫚',
+    'Cardiaque': '❤️',
+    'Circulatoire': '🩸',
+    'Cutané': '🧴',
+    'Digestif': '🍽️',
+    'Douleur': '🤕',
+    'Energétique': '🔋',
+    'Hormonal': '🧬',
+    'Hépatique': '🧫',
+    'Infectieux': '🦠',
+    'Musculosquelettique': '🦵',
+    'Métabolique': '⚖️',
+    'Neurologique': '🧠',
+    'ORL (Nez-Gorge-Oreilles)': '👃',
+    'Ophtalmologique': '👁️',
+    'Osseuse': '🦴',
+    'Respiratoire': '🫁',
+    'Rénal': '🩻',
+    'Sommeil': '😴',
+    'Urinaire': '🚽',
+    'Psychologique': '🧘',
+    'General': '💪'
+  };
+  // Pour debug : console.log('family:', family, 'icon:', icons[family]);
+  return icons[family] || '🌿';
+}
 
   goBack(): void {
     this.navigationService.back();

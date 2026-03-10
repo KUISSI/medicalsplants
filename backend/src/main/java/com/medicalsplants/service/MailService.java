@@ -20,22 +20,38 @@ public class MailService {
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
 
+    @Value("${app.frontend.url:http://localhost:4200}")
+    private String frontendUrl;
+
+    @Value("${APP_MAIL_FROM:noreply@medicalsplants.com}")
+    private String mailFrom;
+
+    /**
+     * Envoie un email de vérification d'adresse email à l'utilisateur.
+     *
+     * @param to L'adresse email du destinataire
+     * @param token Le token de validation à inclure dans le lien
+     */
     public void sendEmailVerification(String to, String token) {
+        log.info("Tentative d'envoi d'email de vérification à {}", to);
+        System.out.println(">>> [MailService] Appel sendEmailVerification pour " + to); // Ajouté
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
+        message.setFrom(mailFrom);
         message.setSubject("Vérification de votre adresse email");
+        String verificationLink = frontendUrl + "/verify-email?token=" + token;
         message.setText("Bonjour,\n\nVeuillez cliquer sur le lien suivant pour vérifier votre adresse email : "
-                + "http://localhost:8080/api/v1/auth/verify-email?token=" + token + "\n\nMerci.");
+                + verificationLink + "\n\nMerci.");
 
         try {
             mailSender.send(message);
             log.info("Email de vérification envoyé à {}", to);
+            System.out.println(">>> [MailService] Email envoyé à " + to);
         } catch (MailException e) {
-            if ("dev".equals(activeProfile)) {
-                log.warn("Envoi d'email désactivé en dev. Token de vérification pour {} : {}", to, token);
-            } else {
-                throw e;
-            }
+            log.error("Erreur lors de l'envoi de l'email de vérification à {} : {}", to, e.getMessage(), e);
+            System.out.println(">>> [MailService] Erreur d'envoi à " + to + " : " + e.getMessage());
+            throw e;
         }
     }
 }

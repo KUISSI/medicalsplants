@@ -1,0 +1,34 @@
+<div class="review-detail" *ngIf="review">
+  <h2>Détail de l’avis</h2>
+  <div class="review-header">
+    <span class="review-author">
+      Auteur : {{ review.author?.pseudo || "Anonyme" }}
+    </span>
+    <span class="review-date">
+      Créé le : {{ review.createdAt | date: "short" }}
+    </span>
+    <span class="review-rating" *ngIf="review.rating !== undefined">
+      Note : {{ review.rating }}/5
+    </span>
+  </div>
+  <div class="review-content">
+    <p>{{ review.content }}</p>
+  </div>
+  <div class="review-actions">
+    <button *ngIf="canEdit" (click)="onEdit()">Modifier</button>
+    <button *ngIf="canDelete" (click)="onDelete()">Supprimer</button>
+  </div>
+  <div class="review-replies" *ngIf="review.replies?.length">
+    <h3>Réponses</h3>
+    <ul>
+      <li *ngFor="let reply of review.replies">
+        <strong>{{ reply.author?.pseudo || "Anonyme" }} :</strong>
+        {{ reply.content }}
+        <span class="reply-date">{{ reply.createdAt | date: "short" }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+<div *ngIf="!review">
+  <p>Aucun avis trouvé.</p>
+</div>

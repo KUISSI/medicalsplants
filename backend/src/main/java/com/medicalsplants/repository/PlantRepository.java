@@ -18,8 +18,11 @@ public interface PlantRepository extends JpaRepository<Plant, java.util.UUID> {
 
     boolean existsByTitle(String title);
 
-    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = :symptomId ORDER BY pl.title ASC")
+    @Query("SELECT DISTINCT pl FROM Plant pl JOIN pl.properties p JOIN p.symptoms s WHERE s.id = :symptomId")
     Page<Plant> findBySymptomId(@Param("symptomId") java.util.UUID symptomId, Pageable pageable);
+
+    @Query("SELECT p FROM Plant p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<Plant> search(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT pl FROM Plant pl JOIN pl.properties p WHERE p.id = :propertyId ORDER BY pl.title ASC")
     List<Plant> findByPropertyId(@Param("propertyId") java.util.UUID propertyId);

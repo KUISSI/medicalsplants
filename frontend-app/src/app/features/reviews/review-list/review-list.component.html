@@ -1,0 +1,134 @@
+<div class="review-list-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <h1 class="page-header__title">Avis des utilisateurs</h1>
+      <p class="page-header__subtitle">
+        Consultez les avis laissés sur les recettes et partagez votre
+        expérience.
+      </p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters" [class.scrolled]="isScrolled">
+    <div class="filters__container">
+      <div class="filters__group">
+        <div class="filters__main">
+          <app-search-bar
+            placeholder="Rechercher un avis..."
+            (search)="onSearch($event)"
+          ></app-search-bar>
+        </div>
+        <div class="filters__display-options">
+          <!-- Ajoute ici d'autres filtres si besoin -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    @if (errorMessage) {
+      <div class="error-state">
+        <h3 class="error-state__title">Erreur</h3>
+        <p class="error-state__message">{{ errorMessage }}</p>
+      </div>
+    } @else if (isLoading) {
+      <app-loader message="Chargement des avis..."></app-loader>
+    } @else if (filteredReviews.length === 0) {
+      <div class="empty-state">
+        <h3 class="empty-state__title">Aucun avis trouvé</h3>
+        <p class="empty-state__message">
+          @if (searchTerm) {
+            Essayez de modifier vos critères de recherche
+          } @else {
+            Aucun avis n'est disponible pour le moment
+          }
+        </p>
+        @if (searchTerm) {
+          <button class="empty-state__btn" (click)="clearFilters()">
+            Effacer les filtres
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="results-info">
+        <span class="results-info__count">
+          {{ filteredReviews.length }} avis sur {{ totalElements }}
+        </span>
+      </div>
+
+      <div class="reviews-grid">
+        @for (review of filteredReviews; track review.id) {
+          <a
+            [routerLink]="['/reviews', review.id]"
+            [queryParams]="currentQueryParams"
+            class="review-card"
+          >
+            <div class="review-card__content">
+              <div class="review-card__header">
+                <span class="review-card__author">
+                  {{ review.author?.pseudo || "Anonyme" }}
+                </span>
+                <span class="review-card__date">
+                  {{ review.createdAt | date: "short" }}
+                </span>
+                <span
+                  class="review-card__rating"
+                  *ngIf="review.rating !== undefined"
+                >
+                  ★ {{ review.rating }}/5
+                </span>
+              </div>
+              <div class="review-card__body">
+                <p>{{ review.content }}</p>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(0)"
+          >
+            ««
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === 0"
+            (click)="loadPage(currentPage - 1)"
+          >
+            ‹
+          </button>
+          @for (page of getPages(); track page) {
+            <button
+              class="pagination__btn"
+              [class.pagination__btn--active]="page === currentPage"
+              (click)="loadPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+          }
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(currentPage + 1)"
+          >
+            ›
+          </button>
+          <button
+            class="pagination__btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="loadPage(totalPages - 1)"
+          >
+            »»
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

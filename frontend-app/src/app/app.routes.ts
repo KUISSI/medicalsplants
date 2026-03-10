@@ -19,6 +19,7 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     title: 'Connexion - Medicals Plants'
   },
+  
   {
     path: 'register',
     loadComponent: () => import('./features/auth/register/register.component')
@@ -33,6 +34,12 @@ export const routes: Routes = [
     canActivate:  [guestGuard],
     title:  'Mot de passe oublié - Medicals Plants'
   },
+    {
+    path: 'verify-email',
+    loadComponent: () => import('./features/auth/verify-email/verify-email.component')
+      .then(m => m.VerifyEmailComponent),
+    title: 'Vérification email - Medicals Plants'
+  },
 
   // Symptoms
   {
@@ -45,7 +52,7 @@ export const routes: Routes = [
     path: 'symptoms/:id',
     loadComponent: () => import('./features/symptoms/symptom-detail/symptom-detail.component')
       .then(m => m.descriptionComponent),
-    title: 'Détail du symptôme - Medicals Plants'
+    title: 'Description du symptôme - Medicals Plants'
   },
 
   // Plants

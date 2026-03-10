@@ -39,15 +39,24 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-
-    this.authService. login(this.loginForm.value).subscribe({
-      next:  () => {
-        this.router.navigate(['/']);
-      }
-    });
+  if (this.loginForm.invalid) {
+    this.loginForm.markAllAsTouched();
+    return;
   }
+
+  this.authService.login(this.loginForm.value).subscribe({
+    next: () => {
+      this.router.navigate(['/']);
+    },
+    error: (err) => {
+      let msg = "Erreur inconnue";
+      if (err.error && err.error.message) {
+        msg = err.error.message;
+      } else if (err.error && typeof err.error === 'string') {
+        msg = err.error;
+      }
+      alert(msg);
+    }
+  });
+}
 }

@@ -1,8 +1,8 @@
 ﻿# ============================================================
 # DOCKER COMPOSE - DEVELOPMENT ENVIRONMENT
 # ============================================================
-# Usage: docker-compose -f docker-compose.yml up -d
-
+# Usage: docker-compose -f docker-compose.dev.yml up -d
+	
 version: '3.8'
 
 services:
@@ -21,7 +21,6 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Migrations gérées par Flyway dans le backend, pas besoin de volume ici
     healthcheck: 
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -64,21 +63,28 @@ services:
   # Backend
   # ========================================
   backend:
-    image: medicalsplants-backend:latest
-    container_name: medicalsplants-backend-dev
-    restart: unless-stopped
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: medicalsplants-backend:dev
+    container_name: medicalsplants-backend-dev
+    restart: unless-stopped
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - JWT_SECRET=${JWT_SECRET}
       - DB_HOST=db
       - DB_PORT=5432
+      - DB_NAME=medicalsplants_dev
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
+      # Ajoute ici d'autres variables si besoin
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - medicalsplants-network
     env_file:
@@ -91,10 +97,13 @@ services:
     build:
       context: ./frontend-app
       dockerfile: Dockerfile
+    image: medicalsplants-frontend-app:dev
     container_name: medicalsplants-frontend-app
     restart: unless-stopped
     ports:
       - "4200:4200"
+    environment:
+      - API_URL=http://backend:8080
     depends_on:
       - backend
     networks:
@@ -107,10 +116,13 @@ services:
     build:
       context: ./frontend-backoffice
       dockerfile: Dockerfile
+    image: medicalsplants-frontend-backoffice:dev
     container_name: medicalsplants-frontend-backoffice
     restart: unless-stopped
     ports:
       - "4201:4201"
+    environment:
+      - API_URL=http://backend:8080
     depends_on:
       - backend
     networks:

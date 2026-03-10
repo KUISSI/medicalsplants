@@ -27,9 +27,13 @@
     </div>
   </div>
 
-  <!-- Content -->
   <div class="page-content">
-    @if (isLoading) {
+    @if (errorMessage) {
+      <div class="error-state">
+        <h3 class="error-state__title">Erreur</h3>
+        <p class="error-state__message">{{ errorMessage }}</p>
+      </div>
+    } @else if (isLoading) {
       <app-loader message="Chargement des plantes..."></app-loader>
     } @else if (filteredPlants.length === 0) {
       <div class="empty-state">
@@ -48,42 +52,46 @@
         }
       </div>
     } @else {
-      <!-- Results Info -->
       <div class="results-info">
         <span class="results-info__count">
           {{ filteredPlants.length }} plante(s) sur {{ totalElements }}
         </span>
       </div>
 
-      <!-- Plants Grid -->
       <div class="plants-grid">
         @for (plant of filteredPlants; track plant.id) {
-          <a
-            [routerLink]="['/plants', plant.id]"
-            [queryParams]="currentQueryParams"
-            class="plant-card"
-          >
-            <div class="plant-card__image">
-              @if (plant.imageUrl) {
-                <img [src]="plant.imageUrl" [alt]="plant.title" />
-              } @else {
-                <div class="plant-card__placeholder">
-                  <span>🌿</span>
-                </div>
-              }
-            </div>
-            <div class="plant-card__content">
-              <h3 class="plant-card__title">{{ plant.title }}</h3>
-              @if (plant.description) {
-                <p class="plant-card__description">{{ plant.description }}</p>
-              }
-              <div class="plant-card__meta"></div>
-            </div>
-          </a>
+          <div class="plant-card">
+            <a
+              [routerLink]="['/plants', plant.id]"
+              [queryParams]="currentQueryParams"
+              class="plant-card__link"
+            >
+              <div class="plant-card__image">
+                @if (plant.imageUrl) {
+                  <img [src]="plant.imageUrl" [alt]="plant.title" />
+                } @else {
+                  <div class="plant-card__placeholder">
+                    <span>🌿</span>
+                  </div>
+                }
+              </div>
+              <div class="plant-card__content">
+                <h3 class="plant-card__title">{{ plant.title }}</h3>
+                @if (plant.description) {
+                  <p class="plant-card__description">{{ plant.description }}</p>
+                }
+                <div class="plant-card__meta"></div>
+              </div>
+            </a>
+            <!-- Bouton favori réutilisable -->
+            <app-favorite-button
+              [isFavorite]="favoriteService.isPlantFavorite(plant.id)"
+              (toggle)="favoriteService.togglePlantFavorite(plant.id)"
+            ></app-favorite-button>
+          </div>
         }
       </div>
 
-      <!-- Pagination -->
       @if (totalPages > 1) {
         <div class="pagination">
           <button

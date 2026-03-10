@@ -14,11 +14,12 @@ export class PlantService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(page: number = 0, size: number = 20): Observable<PlantPage> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
+  getAll(page?: number, size?: number, searchTerm?: string, sort?: string): Observable<PlantPage> {
+    let params = new HttpParams();
+    if (page !== undefined) params = params.set('page', page.toString());
+    if (size !== undefined) params = params.set('size', size.toString());
+    if (searchTerm && searchTerm.trim()) params = params.set('search', searchTerm.trim());
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<PlantPage>(this.apiUrl, { params });
   }
 
@@ -26,11 +27,11 @@ export class PlantService {
     return this.http.get<Plant>(`${this.apiUrl}/${id}`);
   }
 
-  getBySymptomId(symptomId: string, page: number = 0, size: number = 20): Observable<PlantPage> {
-    const params = new HttpParams()
+  getBySymptomId(symptomId: string, page: number = 0, size: number = 20, sort?: string): Observable<PlantPage> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
+    if (sort && sort.trim()) params = params.set('sort', sort.trim());
     return this.http.get<PlantPage>(`${this.apiUrl}/symptom/${symptomId}`, { params });
   }
 
@@ -39,7 +40,6 @@ export class PlantService {
   }
 
   getPlantsForSymptom(symptomId: string): Observable<Plant[]> {
-  return this.http.get<Plant[]>(`${environment.apiUrl}/symptoms/${symptomId}/plants`);
+    return this.http.get<Plant[]>(`${environment.apiUrl}/symptoms/${symptomId}/plants`);
+  }
 }
-}
-

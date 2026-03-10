@@ -3,18 +3,18 @@
     <!-- Profile Header (2-column layout) -->
     <div class="profile-header">
       <div class="profile-header__avatar">
-        @if (user.avatar) {
-          <img [src]="user.avatar" [alt]="user.pseudo" />
+        @if (user?.avatar) {
+          <img [src]="user?.avatar" [alt]="user?.pseudo" />
         } @else {
           <span class="profile-header__avatar-text">
-            {{ user.pseudo.charAt(0).toUpperCase() }}
+            {{ user?.pseudo?.charAt(0)?.toUpperCase() }}
           </span>
         }
       </div>
       <div class="profile-header__info">
         <div class="profile-header__top">
           <div class="profile-header__identity">
-            <h1 class="profile-header__name">{{ user.pseudo }}</h1>
+            <h1 class="profile-header__name">{{ user?.pseudo }}</h1>
             <span [ngClass]="getRoleBadge(user.role).class" class="badge">
               {{ getRoleBadge(user.role).label }}
             </span>
@@ -28,7 +28,7 @@
         <div class="profile-header__details">
           <div class="detail-item">
             <span class="detail-item__label">Email</span>
-            <span class="detail-item__value">{{ user.email }}</span>
+            <span class="detail-item__value">{{ user?.email }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-item__label">Profession</span>
@@ -37,7 +37,7 @@
           <div class="detail-item">
             <span class="detail-item__label">Membre depuis</span>
             <span class="detail-item__value">{{
-              formatDate(user.createdAt)
+              formatDate(user?.createdAt ?? "")
             }}</span>
           </div>
         </div>
@@ -89,22 +89,44 @@
         </h2>
         <div class="divider"></div>
         <div class="plants-grid">
-          <p class="placeholder-text">
-            Vous n'avez pas encore de plante favorite.
-          </p>
+          <ng-container *ngIf="favoritePlants.length > 0; else noPlants">
+            <ul class="favorites-list">
+              <li *ngFor="let plant of favoritePlants">
+                <a [routerLink]="['/plants', plant.id]" class="favorite-link">
+                  {{ plant.title }}
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #noPlants>
+            <p class="placeholder-text">
+              Vous n'avez pas encore de plante favorite.
+            </p>
+          </ng-template>
         </div>
       </div>
 
       <!-- Saved Recipes -->
       <div class="section">
         <h2 class="section__title section__title--green">
-          Mes recettes sauvegardées
+          Mes recettes favorites
         </h2>
         <div class="divider"></div>
         <div class="recipes-grid">
-          <p class="placeholder-text">
-            Vous n'avez pas encore de recette sauvegardée.
-          </p>
+          <ng-container *ngIf="favoriteRecipes.length > 0; else noRecipes">
+            <ul class="favorites-list">
+              <li *ngFor="let recipe of favoriteRecipes">
+                <a [routerLink]="['/recipes', recipe.id]" class="favorite-link">
+                  {{ recipe.title }}
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #noRecipes>
+            <p class="placeholder-text">
+              Vous n'avez pas encore de recette favorite.
+            </p>
+          </ng-template>
         </div>
       </div>
 

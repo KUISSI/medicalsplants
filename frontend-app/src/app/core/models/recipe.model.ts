@@ -15,6 +15,7 @@ export interface Recipe {
   servings?: number;
   ingredients?: string;
   instructions?: string;
+  imageUrl?: string
   premium: boolean;
   status: RecipeStatus;
   publishedAt?: string;

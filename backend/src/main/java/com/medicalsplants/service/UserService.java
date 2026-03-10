@@ -1,6 +1,7 @@
 package com.medicalsplants.service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -16,14 +17,37 @@ import com.medicalsplants.security.CustomUserDetails;
 public class UserService {
 
     private final UserRepository userRepository;
-    // ... autres dépendances
+    // private final VerificationTokenRepository tokenRepository; // Si tu utilises un repo de tokens
 
-    public UserService(UserRepository userRepository /*, autres dépendances */) {
+    public UserService(UserRepository userRepository /*, VerificationTokenRepository tokenRepository */) {
         this.userRepository = userRepository;
-        // ... initialisation autres dépendances
+        // this.tokenRepository = tokenRepository;
     }
 
-    // ... autres méthodes
+    // Création d'un nouvel utilisateur non vérifié
+    @Transactional
+    public User createUser(User user) {
+        user.setEmailVerified(false);
+        user.setCreatedAt(Instant.now());
+        // ... autres initialisations
+        return userRepository.save(user);
+    }
+
+    // Validation de l'email à partir du token
+    @Transactional
+    public boolean verifyUserEmail(String token) {
+        Optional<User> userOpt = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setEmailVerified(true);
+            user.setEmailVerificationToken(null); // Corrigé : le champ s'appelle emailVerificationToken
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    // Suppression d'un utilisateur (soft ou hard delete selon le rôle)
     @Transactional
     public void deleteUser(UUID userId, CustomUserDetails currentUser) {
         User user = userRepository.findById(userId)
@@ -41,5 +65,4 @@ public class UserService {
             throw new ForbiddenException("You can only delete your own account");
         }
     }
-
 }

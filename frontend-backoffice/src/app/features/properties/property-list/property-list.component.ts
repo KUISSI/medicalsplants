@@ -31,7 +31,7 @@ export class PropertyListComponent implements OnInit {
   
   isLoading = true;
   searchTerm = '';
-  selectedFamily = '';
+  family = '';
 
   showDeleteDialog = false;
   propertyToDelete: Property | null = null;
@@ -66,8 +66,8 @@ export class PropertyListComponent implements OnInit {
       );
     }
 
-    if (this.selectedFamily) {
-      result = result.filter(p => p.propertyFamily === this.selectedFamily);
+    if (this.family) {
+      result = result.filter(p => p.propertyFamily === this.family);
     }
 
     this.filteredProperties = result;
@@ -75,7 +75,7 @@ export class PropertyListComponent implements OnInit {
 
   clearFilters(): void {
     this. searchTerm = '';
-    this.selectedFamily = '';
+    this.family = '';
     this.filteredProperties = this.properties;
   }
 

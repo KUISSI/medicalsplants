@@ -8,8 +8,11 @@
   </div>
 
   @if (isLoading) {
-    <app-loader message="Chargement des recettes en attente..."></app-loader>
-  } @else if (pendingrecipes.length === 0) {
+    <div class="loader-message">
+      <span class="spinner"></span>
+      Chargement des recettes en attente...
+    </div>
+  } @else if (pendingRecipes.length === 0) {
     <div class="empty-state empty-state--success">
       <span class="empty-state__icon">✅</span>
       <h3 class="empty-state__title">Aucune recette en attente</h3>
@@ -18,17 +21,17 @@
     </div>
   } @else {
     <div class="page__info">
-      <span class="pending-count"
-        >{{ pendingrecipes.length }} recette(s) en attente de modération</span
-      >
+      <span class="pending-count">
+        {{ pendingRecipes.length }} recette(s) en attente de modération
+      </span>
     </div>
 
     <div class="moderation-grid">
-      @for (recipe of pendingrecipes; track recipe.id) {
+      @for (recipe of pendingRecipes; track recipe.id) {
         <div class="moderation-card">
           <div class="moderation-card__header">
             <span class="moderation-card__type">
-              {{ getrecipeTypeIcon(recipe.type) }} {{ recipeTypeLabels[recipe.type] }}
+              {{ getRecipeTypeIcon(recipe.type) }} {{ recipeTypeLabels[recipe.type] }}
             </span>
             @if (recipe.premium) {
               <span class="moderation-card__premium">⭐ Premium</span>
@@ -87,27 +90,31 @@
 </div>
 
 <!-- Approve Dialog -->
-<app-confirm-dialog
-  [isOpen]="showApproveDialog"
-  title="Approuver la recette"
-  [message]="
-    'Êtes-vous sûr de vouloir approuver et publier la recette \'' + selectedrecipe?.title + '\' ?'
-  "
-  icon="✅"
-  type="default"
-  confirmText="Approuver"
-  (confirm)="onApproveConfirm()"
-  (cancel)="closeDialogs()"
-></app-confirm-dialog>
+@if (showApproveDialog) {
+  <div class="modal-backdrop">
+    <div class="modal">
+      <h2>Approuver la recette</h2>
+      <p>
+        Êtes-vous sûr de vouloir approuver et publier la recette « {{ selectedRecipe?.title }} » ?
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn--primary" (click)="onApproveConfirm()">Approuver</button>
+        <button class="btn btn--secondary" (click)="closeDialogs()">Annuler</button>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- Reject Dialog -->
-<app-confirm-dialog
-  [isOpen]="showRejectDialog"
-  title="Rejeter la recette"
-  [message]="'Êtes-vous sûr de vouloir rejeter la recette \'' + selectedrecipe?.title + '\' ?'"
-  icon="❌"
-  type="danger"
-  confirmText="Rejeter"
-  (confirm)="onRejectConfirm()"
-  (cancel)="closeDialogs()"
-></app-confirm-dialog>
+@if (showRejectDialog) {
+  <div class="modal-backdrop">
+    <div class="modal">
+      <h2>Rejeter la recette</h2>
+      <p>Êtes-vous sûr de vouloir rejeter la recette « {{ selectedRecipe?.title }} » ?</p>
+      <div class="modal-actions">
+        <button class="btn btn--danger" (click)="onRejectConfirm()">Rejeter</button>
+        <button class="btn btn--secondary" (click)="closeDialogs()">Annuler</button>
+      </div>
+    </div>
+  </div>
+}

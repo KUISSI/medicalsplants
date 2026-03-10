@@ -1,15 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { Recipe, RECIPE_TYPE_LABELS, RECIPE_STATUS_LABELS } from '../../../core/models/recipe.model';
+import { Recipe, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { Review } from '../../../core/models/review.model';
+import { ReviewFormComponent } from '../../reviews/review-form/review-form.component';
+import { FavoriteService } from '../../../core/services/favorite.service';
+import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReviewFormComponent,
+    FavoriteButtonComponent,
+    LoaderComponent,
+    RouterModule
+  ],
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss']
 })
@@ -20,14 +32,15 @@ export class RecipeDetailComponent implements OnInit {
   error: string | null = null;
 
   RecipeTypeLabels = RECIPE_TYPE_LABELS;
-  RecipeStatusLabels = RECIPE_STATUS_LABELS;
-
   ingredientsList: string[] = [];
+  showReviewForm = false;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private recipeService: RecipeService,
-    public authService: AuthService
+    public authService: AuthService,
+    public favoriteService: FavoriteService
   ) {}
 
   ngOnInit(): void {
@@ -89,10 +102,28 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   get preparationSteps(): string[] {
-  // Adapte le split selon la structure de tes instructions
-  return this.recipe?.instructions
-    ? this.recipe.instructions.split(/\d+\s*-\s*/).filter(Boolean)
-    : [];
-}
+    return this.recipe?.instructions
+      ? this.recipe.instructions.split(/\d+\s*-\s*/).filter(Boolean)
+      : [];
+  }
 
+  onReviewSubmitted(newReview: Review) {
+    if (this.recipe) {
+      this.recipe.reviews = [newReview, ...(this.recipe.reviews || [])];
+      this.recipe.reviewCount = (this.recipe.reviewCount || 0) + 1;
+      this.showReviewForm = false;
+    }
+  }
+
+  isRecipeFavorite(recipeId: string | number): boolean {
+    return this.favoriteService.isRecipeFavorite(recipeId.toString());
+  }
+
+  toggleRecipeFavorite(recipeId: string | number): void {
+    this.favoriteService.toggleRecipeFavorite(recipeId.toString());
+  }
+
+  goBack(): void {
+    this.router.navigate(['/recipes']);
+  }
 }

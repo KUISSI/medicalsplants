@@ -31,15 +31,15 @@ export class SymptomService {
   /**
    * Récupère les symptômes groupés par famille, avec filtres optionnels.
    * @param searchTerm Filtre de recherche (optionnel)
-   * @param selectedFamily Famille sélectionnée (optionnel)
+   * @param family Famille sélectionnée (optionnel)
    */
   getGroupedByFamily(
     searchTerm?: string,
-    selectedFamily?: string
+    family?: string
   ): Observable<{ [family: string]: Symptom[] }> {
     let params = new HttpParams();
     if (searchTerm) params = params.set('searchTerm', searchTerm);
-    if (selectedFamily) params = params.set('selectedFamily', selectedFamily);
+    if (family) params = params.set('family', family);
 
     // Appel du bon endpoint groupé
     return this.http.get<{ [family: string]: Symptom[] }>(

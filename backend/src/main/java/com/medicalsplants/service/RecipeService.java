@@ -89,8 +89,8 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecipeResponse> getPendingRecipes() {
-        return recipeRepository.findPendingRecipes()
+    public List<RecipeResponse> getpendingRecipes() {
+        return recipeRepository.findpendingRecipes()
                 .stream()
                 .map(recipeMapper::toDto)
                 .toList();

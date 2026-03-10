@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -34,6 +36,8 @@ import com.medicalsplants.security.JwtTokenProvider;
 
 @Service
 public class AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -93,26 +97,37 @@ public class AuthService {
             throw new ConflictException("This pseudo is already taken");
         }
 
-        User user = new User(
-                UUID.randomUUID(),
-                request.getEmail().toLowerCase().trim(),
-                request.getPseudo().trim(),
-                request.getFirstname(),
-                request.getLastname(),
-                null,
-                null,
-                passwordEncoder.encode(request.getPassword()),
-                Role.USER,
-                UserStatus.PENDING,
-                false
-        );
+        User user = new User();
+        user.setEmail(request.getEmail().toLowerCase().trim());
+        user.setPseudo(request.getPseudo().trim());
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
+        user.setStatus(UserStatus.PENDING);
+        user.setIsEmailVerified(false);
+
         String emailVerificationToken = UUID.randomUUID().toString();
         user.setEmailVerificationToken(emailVerificationToken);
 
         user = userRepository.saveAndFlush(user);
-        mailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+        mailService.sendEmailVerification(user.getEmail(), emailVerificationToken);
 
         return MessageResponse.of("Registration successful. Please check your email to verify your account.");
+    }
+
+    @Transactional
+    public MessageResponse resendEmailVerification(String email) {
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email.trim().toLowerCase())
+                .orElseThrow(() -> new BadRequestException("Utilisateur non trouvé."));
+        if (Boolean.TRUE.equals(user.getIsEmailVerified())) {
+            throw new BadRequestException("Email déjà vérifié.");
+        }
+        String token = UUID.randomUUID().toString();
+        user.setEmailVerificationToken(token);
+        userRepository.save(user);
+        mailService.sendEmailVerification(user.getEmail(), token);
+        return MessageResponse.of("Email de vérification renvoyé.");
     }
 
     @Transactional
@@ -127,18 +142,32 @@ public class AuthService {
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-            if (!userDetails.isAccountNonLocked()) {
-                throw new ForbiddenException("Your account has been blocked.  Please contact support.");
+            // Récupère l'utilisateur complet
+            User user = userRepository.findById(
+                    java.util.Objects.requireNonNull(userDetails.getId(), "User id cannot be null")
+            ).orElseThrow();
+
+            // 1. Si le compte est PENDING, renvoyer l'email de vérification et bloquer la connexion
+            if (user.getStatus() == UserStatus.PENDING) {
+                String token = UUID.randomUUID().toString();
+                user.setEmailVerificationToken(token);
+                userRepository.save(user);
+                mailService.sendEmailVerification(user.getEmail(), token);
+                throw new ForbiddenException("Votre compte n'est pas encore activé. Un nouvel email de vérification vient de vous être envoyé.");
             }
 
+            // 2. Si le compte est bloqué
+            if (!userDetails.isAccountNonLocked()) {
+                throw new ForbiddenException("Your account has been blocked. Please contact support.");
+            }
+
+            // 3. Connexion normale
             String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
             String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
 
             saveRefreshToken(userDetails.getId(), refreshToken);
 
             userRepository.updateLastLoginAt(userDetails.getId(), Instant.now());
-
-            User user = userRepository.findById(java.util.Objects.requireNonNull(userDetails.getId(), "User id cannot be null")).orElseThrow();
 
             AuthResponse response = new AuthResponse(
                     true,
@@ -157,7 +186,19 @@ public class AuthService {
         } catch (BadCredentialsException e) {
             throw new UnauthorizedException("Invalid email or password");
         } catch (DisabledException e) {
-            throw new ForbiddenException("Your account has been disabled");
+            User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail().toLowerCase().trim())
+                    .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+            if (user.getStatus() == UserStatus.PENDING) {
+                String token = UUID.randomUUID().toString();
+                user.setEmailVerificationToken(token);
+                userRepository.save(user);
+                try {
+                    mailService.sendEmailVerification(user.getEmail(), token);
+                } catch (Exception ex) {
+                    log.error("Erreur envoi email: {}", ex.getMessage());
+                }
+            }
+            throw new ForbiddenException("Votre compte n'est pas encore activé. Un nouvel email de vérification vient de vous être envoyé.");
         }
     }
 
@@ -225,6 +266,9 @@ public class AuthService {
 
     @Transactional
     public MessageResponse verifyEmail(String token) {
+        log.info(">>> verifyEmail called with token: '{}'", token);
+        log.info(">>> token length: {}", token != null ? token.length() : "NULL");
+
         User user = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token)
                 .orElseThrow(() -> new BadRequestException("Invalid or expired verification token"));
 
@@ -234,6 +278,7 @@ public class AuthService {
 
         user.setIsEmailVerified(true);
         user.setEmailVerificationToken(null);
+        user.setStatus(UserStatus.ACTIVE);  // <-- AJOUTEZ CETTE LIGNE
         userRepository.save(user);
 
         return MessageResponse.of("Email verified successfully.  You can now login.");
@@ -288,4 +333,5 @@ public class AuthService {
     public MessageResponse logoutAll(String userId) {
         return logoutAll(UUID.fromString(userId));
     }
+
 }

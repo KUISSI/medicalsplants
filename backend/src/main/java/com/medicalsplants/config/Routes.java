@@ -15,7 +15,9 @@ public final class Routes {
         AUTH_BASE + "/register",
         AUTH_BASE + "/refresh",
         AUTH_BASE + "/forgot-password",
-        AUTH_BASE + "/reset-password"
+        AUTH_BASE + "/reset-password",
+        AUTH_BASE + "/resend-verification"
+
     };
 
     public static final String AUTH_VERIFY_EMAIL = AUTH_BASE + "/verify-email";
