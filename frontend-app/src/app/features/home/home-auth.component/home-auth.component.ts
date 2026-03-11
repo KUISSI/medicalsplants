@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
@@ -27,7 +27,7 @@ export class HomeAuthComponent {
       rating: 5,
       difficulty: 'Facile',
       time: 10,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Infusion'
+      imageUrl: 'https://placehold.co/280x200?text=Infusion'
     },
     {
       id: 2,
@@ -36,7 +36,7 @@ export class HomeAuthComponent {
       rating: 4,
       difficulty: 'Moyen',
       time: 30,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Sirop'
+      imageUrl: 'https://placehold.co/280x200?text=Sirop'
     },
     {
       id: 3,
@@ -45,7 +45,7 @@ export class HomeAuthComponent {
       rating: 5,
       difficulty: 'Moyen',
       time: 45,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Baume'
+      imageUrl: 'https://placehold.co/280x200?text=Baume'
     },
     {
       id: 4,
@@ -54,16 +54,16 @@ export class HomeAuthComponent {
       rating: 4,
       difficulty: 'Facile',
       time: 15,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Digestive'
+      imageUrl: 'https://placehold.co/280x200?text=Digestive'
     },
     {
       id: 5,
-      title: 'Elixir énergisant',
-      category: 'Élixir',
+      title: 'Elixir Ã©nergisant',
+      category: 'Ã‰lixir',
       rating: 5,
       difficulty: 'Difficile',
       time: 60,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Elixir'
+      imageUrl: 'https://placehold.co/280x200?text=Elixir'
     },
     {
       id: 6,
@@ -72,7 +72,7 @@ export class HomeAuthComponent {
       rating: 4,
       difficulty: 'Difficile',
       time: 120,
-      imageUrl: 'https://via.placeholder.com/280x200?text=Teinture'
+      imageUrl: 'https://placehold.co/280x200?text=Teinture'
     }
   ];
 

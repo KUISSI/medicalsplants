@@ -81,7 +81,6 @@ public class ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId.toString()));
 
         Review review = new Review();
-        review.setId(UUID.randomUUID());
         review.setContent(request.getContent());
         review.setRating(request.getRating());
         review.setRecipe(recipe);

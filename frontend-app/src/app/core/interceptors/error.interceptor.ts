@@ -1,4 +1,10 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, catchError, throwError, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -7,8 +13,8 @@ import { AuthService } from '../services/auth.service';
 import { environment } from '../../../environments/environment';
 
 export const errorInterceptor: HttpInterceptorFn = (
-  req:  HttpRequest<unknown>,
-  next: HttpHandlerFn
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
   const toastr = inject(ToastrService);
@@ -20,49 +26,61 @@ export const errorInterceptor: HttpInterceptorFn = (
 
       switch (error.status) {
         case 0:
-          errorMessage = 'Impossible de contacter le serveur.  Vérifiez votre connexion.';
+          errorMessage =
+            'Impossible de contacter le serveur.  Vérifiez votre connexion.';
           toastr.error(errorMessage, 'Erreur de connexion');
           break;
 
         case 400:
-          errorMessage = error.error?.error?. message || 'Requête invalide';
+          errorMessage = error.error?.error?.message || 'Requête invalide';
           toastr.error(errorMessage, 'Erreur de validation');
           break;
 
         case 401:
-          // Tentative de refresh automatique si refreshToken présent
-          const refreshToken = authService['storage'].get<string>(environment.refreshTokenKey);
-          if (refreshToken) {
-            return authService.refreshToken().pipe(
-              switchMap(() => {
-                // On rejoue la requête initiale avec le nouveau token
-                const newToken = authService.getAccessToken();
-                if (newToken) {
-                  const authReq = req.clone({
-                    setHeaders: { Authorization: `Bearer ${newToken}` }
-                  });
-                  return next(authReq);
-                }
-                // Si pas de nouveau token, logout
-                authService.logout();
-                toastr.warning('Session expirée. Veuillez vous reconnecter.', 'Non autorisé');
-                return throwError(() => error);
-              }),
-              catchError(() => {
-                authService.logout();
-                toastr.warning('Session expirée. Veuillez vous reconnecter.', 'Non autorisé');
-                return throwError(() => error);
-              })
+          if (
+            !req.url.includes('/auth/logout') &&
+            !req.url.includes('/auth/refresh') &&
+            !req.url.includes('/auth/login')
+          ) {
+            const refreshToken = authService['storage'].get<string>(
+              environment.refreshTokenKey,
             );
-          } else {
-            errorMessage = 'Session expirée. Veuillez vous reconnecter.';
-            toastr.warning(errorMessage, 'Non autorisé');
-            authService.logout();
+            if (refreshToken) {
+              return authService.refreshToken().pipe(
+                switchMap(() => {
+                  const newToken = authService.getAccessToken();
+                  if (newToken) {
+                    const authReq = req.clone({
+                      setHeaders: { Authorization: `Bearer ${newToken}` },
+                    });
+                    return next(authReq);
+                  }
+                  authService.logout();
+                  toastr.warning(
+                    'Session expirée. Veuillez vous reconnecter.',
+                    'Non autorisé',
+                  );
+                  return throwError(() => error);
+                }),
+                catchError(() => {
+                  authService.logout();
+                  toastr.warning(
+                    'Session expirée. Veuillez vous reconnecter.',
+                    'Non autorisé',
+                  );
+                  return throwError(() => error);
+                }),
+              );
+            } else {
+              errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+              toastr.warning(errorMessage, 'Non autorisé');
+              authService.logout();
+            }
           }
           break;
 
         case 403:
-          errorMessage = error.error?.error?. message || 'Accès refusé';
+          errorMessage = error.error?.error?.message || 'Accès refusé';
           toastr.warning(errorMessage, 'Accès interdit');
           break;
 
@@ -72,7 +90,7 @@ export const errorInterceptor: HttpInterceptorFn = (
           break;
 
         case 409:
-          errorMessage = error.error?.error?. message || 'Conflit de données';
+          errorMessage = error.error?.error?.message || 'Conflit de données';
           toastr.error(errorMessage, 'Conflit');
           break;
 
@@ -82,11 +100,12 @@ export const errorInterceptor: HttpInterceptorFn = (
           break;
 
         default:
-          errorMessage = error.error?.error?. message || 'Une erreur inattendue est survenue';
+          errorMessage =
+            error.error?.error?.message || 'Une erreur inattendue est survenue';
           toastr.error(errorMessage, 'Erreur');
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };

@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, of } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../../environments/environment';
@@ -9,10 +9,9 @@ import { StorageService } from './storage.service';
 import { User, LoginRequest, AuthResponse, MessageResponse } from '../models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private currentUserSignal = signal<User | null>(null);
@@ -27,7 +26,7 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private storage: StorageService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {
     this.loadUserFromStorage();
   }
@@ -48,7 +47,7 @@ export class AuthService {
     this.isLoadingSignal.set(true);
 
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(response => {
+      tap((response) => {
         this.isLoadingSignal.set(false);
 
         // Vérifier que c'est un admin
@@ -58,17 +57,19 @@ export class AuthService {
         }
 
         this.handleAuthSuccess(response);
-        this.toastr.success('Bienvenue dans l\'administration', 'Connexion réussie');
+        this.toastr.success("Bienvenue dans l'administration", 'Connexion réussie');
       }),
-      catchError(error => {
+      catchError((error) => {
         this.isLoadingSignal.set(false);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   logout(): void {
-    this.http.post<MessageResponse>(`${this.apiUrl}/logout`, {})
+    this.http
+      .post<MessageResponse>(`${this.apiUrl}/logout`, {})
+      .pipe(catchError(() => of(null)))
       .subscribe({ complete: () => {} });
 
     this.handleLogout();

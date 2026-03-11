@@ -3,116 +3,152 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
-  // Home
+  // Home publique (landing page non protégée)
   {
     path: '',
-    loadComponent: () => import('./features/home/home.component/home.component')
-      .then(m => m.HomeComponent),
-    title: 'Accueil - Medicals Plants'
+    loadComponent: () =>
+      import('./features/home/home.component/home.component').then(
+        (m) => m.HomeComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Accueil - Medicals Plants',
   },
 
   // Auth (accessible uniquement aux visiteurs non connectés)
   {
-    path:  'login',
-    loadComponent: () => import('./features/auth/login/login.component')
-      .then(m => m.LoginComponent),
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
     canActivate: [guestGuard],
-    title: 'Connexion - Medicals Plants'
+    title: 'Connexion - Medicals Plants',
   },
-  
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register.component')
-      .then(m => m.RegisterComponent),
-    canActivate:  [guestGuard],
-    title:  'Inscription - Medicals Plants'
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
+    canActivate: [guestGuard],
+    title: 'Inscription - Medicals Plants',
   },
   {
-    path:  'forgot-password',
-    loadComponent: () => import('./features/auth/forgot-password/forgot-password.component')
-      .then(m => m.ForgotPasswordComponent),
-    canActivate:  [guestGuard],
-    title:  'Mot de passe oublié - Medicals Plants'
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
+    canActivate: [guestGuard],
+    title: 'Mot de passe oublié - Medicals Plants',
   },
-    {
+  {
     path: 'verify-email',
-    loadComponent: () => import('./features/auth/verify-email/verify-email.component')
-      .then(m => m.VerifyEmailComponent),
-    title: 'Vérification email - Medicals Plants'
+    loadComponent: () =>
+      import('./features/auth/verify-email/verify-email.component').then(
+        (m) => m.VerifyEmailComponent,
+      ),
+    title: 'Vérification email - Medicals Plants',
   },
 
-  // Symptoms
+  // Symptoms (protégés)
   {
     path: 'symptoms',
-    loadComponent: () => import('./features/symptoms/symptom-list/symptom-list.component')
-      .then(m => m.SymptomListComponent),
-    title: 'Symptômes - Medicals Plants'
+    loadComponent: () =>
+      import('./features/symptoms/symptom-list/symptom-list.component').then(
+        (m) => m.SymptomListComponent,
+      ),
+    canActivate: [authGuard], //
+    title: 'Symptômes - Medicals Plants',
   },
   {
     path: 'symptoms/:id',
-    loadComponent: () => import('./features/symptoms/symptom-detail/symptom-detail.component')
-      .then(m => m.descriptionComponent),
-    title: 'Description du symptôme - Medicals Plants'
+    loadComponent: () =>
+      import('./features/symptoms/symptom-detail/symptom-detail.component').then(
+        (m) => m.descriptionComponent,
+      ),
+    canActivate: [authGuard], //
+    title: 'Description du symptôme - Medicals Plants',
   },
 
-  // Plants
+  // Plants (protégés)
   {
     path: 'plants',
-    loadComponent: () => import('./features/plants/plant-list/plant-list.component')
-      .then(m => m.PlantListComponent),
-    title: 'Plantes - Medicals Plants'
+    loadComponent: () =>
+      import('./features/plants/plant-list/plant-list.component').then(
+        (m) => m.PlantListComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Plantes - Medicals Plants',
   },
   {
     path: 'plants/:id',
-    loadComponent: () => import('./features/plants/plant-detail/plant-detail.component')
-      .then(m => m.PlantDetailComponent),
-    title: 'Détail de la plante - Medicals Plants'
+    loadComponent: () =>
+      import('./features/plants/plant-detail/plant-detail.component').then(
+        (m) => m.PlantDetailComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Détail de la plante - Medicals Plants',
   },
 
-  // Recipes
+  // Recipes (protégés)
   {
-    path:  'recipes',
-    loadComponent:  () => import('./features/recipes/recipe-list/recipe-list.component')
-      .then(m => m.RecipeListComponent),
-    title: 'Recettes - Medicals Plants'
+    path: 'recipes',
+    loadComponent: () =>
+      import('./features/recipes/recipe-list/recipe-list.component').then(
+        (m) => m.RecipeListComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Recettes - Medicals Plants',
   },
   {
     path: 'recipes/create',
-    loadComponent: () => import('./features/recipes/recipe-create/recipe-create.component')
-      .then(m => m.RecipeCreateComponent),
+    loadComponent: () =>
+      import('./features/recipes/recipe-create/recipe-create.component').then(
+        (m) => m.RecipeCreateComponent,
+      ),
     canActivate: [authGuard],
-    title: 'Créer une recette - Medicals Plants'
+    title: 'Créer une recette - Medicals Plants',
   },
   {
     path: 'recipes/:id',
-    loadComponent: () => import('./features/recipes/recipe-detail/recipe-detail.component')
-      .then(m => m.RecipeDetailComponent),
-    title: 'Détail de la recette - Medicals Plants'
+    loadComponent: () =>
+      import('./features/recipes/recipe-detail/recipe-detail.component').then(
+        (m) => m.RecipeDetailComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Détail de la recette - Medicals Plants',
   },
 
   // Profile (protégé)
   {
-    path:  'profile',
-    loadComponent: () => import('./features/profile/profile.component')
-      .then(m => m.ProfileComponent),
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/profile/profile.component').then(
+        (m) => m.ProfileComponent,
+      ),
     canActivate: [authGuard],
-    title: 'Mon profil - Medicals Plants'
+    title: 'Mon profil - Medicals Plants',
   },
 
-  // Authenticated Home (nouvelle page d'accueil pour utilisateurs connectés)
+  // Authenticated Home
   {
     path: 'home',
-    loadComponent: () => import('./features/home/home-auth.component/home-auth.component')
-      .then(m => m.HomeAuthComponent),
+    loadComponent: () =>
+      import('./features/home/home-auth.component/home-auth.component').then(
+        (m) => m.HomeAuthComponent,
+      ),
     canActivate: [authGuard],
-    title: 'Accueil - Medicals Plants'
+    title: 'Accueil - Medicals Plants',
   },
 
-  // 404 - Page non trouvée
+  // 404
   {
     path: '**',
-    loadComponent: () => import('./features/not-found/not-found.component')
-      .then(m => m.NotFoundComponent),
-    title: 'Page non trouvée - Medicals Plants'
-  }
+    loadComponent: () =>
+      import('./features/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+    title: 'Page non trouvée - Medicals Plants',
+  },
 ];

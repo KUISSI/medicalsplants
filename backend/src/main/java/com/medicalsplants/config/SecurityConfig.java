@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.medicalsplants.security.JwtAccessDeniedHandler;
@@ -49,16 +48,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers(
-                        "/api/v1/auth/login",
-                        "/api/v1/auth/register",
-                        "/api/v1/auth/forgot-password",
-                        "/api/v1/auth/verify-email",
-                        "/api/v1/auth/resend-verification"
-                )
-                )
+                // Code d'activation du CSRF avec des exceptions pour les endpoints d'authentification et de reviews
+                // .csrf(csrf -> csrf
+                // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                // .ignoringRequestMatchers(
+                //         "/api/v1/auth/login",
+                //         "/api/v1/auth/register",
+                //         "/api/v1/auth/forgot-password",
+                //         "/api/v1/auth/verify-email",
+                //         "/api/v1/auth/resend-verification",
+                //         "/api/v1/reviews"
+                // )
+                // )
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(authenticationEntryPoint)

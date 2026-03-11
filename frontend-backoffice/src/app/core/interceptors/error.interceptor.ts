@@ -1,4 +1,10 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -7,7 +13,7 @@ import { AuthService } from '../services/auth.service';
 
 export const errorInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
-  next: HttpHandlerFn
+  next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
   const toastr = inject(ToastrService);
@@ -24,19 +30,25 @@ export const errorInterceptor: HttpInterceptorFn = (
           break;
 
         case 400:
-          errorMessage = error.error?.error?. message || 'Requête invalide';
-          toastr. error(errorMessage, 'Erreur');
+          errorMessage = error.error?.error?.message || 'Requête invalide';
+          toastr.error(errorMessage, 'Erreur');
           break;
 
         case 401:
-          errorMessage = 'Session expirée';
-          toastr.warning(errorMessage, 'Déconnexion');
-          authService.logout();
+          if (
+            !req.url.includes('/auth/logout') &&
+            !req.url.includes('/auth/refresh') &&
+            !req.url.includes('/auth/login')
+          ) {
+            errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+            toastr.warning(errorMessage, 'Non autorisé');
+            authService.logout();
+          }
           break;
 
         case 403:
           errorMessage = 'Accès non autorisé';
-          toastr. warning(errorMessage, 'Accès refusé');
+          toastr.warning(errorMessage, 'Accès refusé');
           break;
 
         case 404:
@@ -45,7 +57,7 @@ export const errorInterceptor: HttpInterceptorFn = (
           break;
 
         case 409:
-          errorMessage = error.error?.error?. message || 'Conflit de données';
+          errorMessage = error.error?.error?.message || 'Conflit de données';
           toastr.error(errorMessage, 'Conflit');
           break;
 
@@ -59,6 +71,6 @@ export const errorInterceptor: HttpInterceptorFn = (
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };
