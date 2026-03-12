@@ -10,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 public class PostgresContainerIT {
@@ -34,7 +34,7 @@ public class PostgresContainerIT {
             rs.next();
             int cnt = rs.getInt(1);
             // we inserted 1 row
-            assertEquals(1, cnt);
+            assertThat(cnt).isEqualTo(1);
         }
     }
 }

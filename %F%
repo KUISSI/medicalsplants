@@ -1,0 +1,61 @@
+package com.medicalsplants.model.entity; 
+ 
+import static org.assertj.core.api.Assertions.assertThat; 
+ 
+import java.time.Instant; 
+ 
+import org.junit.jupiter.api.DisplayName; 
+import org.junit.jupiter.api.Test; 
+ 
+@DisplayName("RefreshToken - Tests Unitaires") 
+class RefreshTokenTest { 
+ 
+    @Test 
+    @DisplayName("isValid - vrai : token actif et non revoque") 
+    void isValid_shouldReturnTrue_whenNotExpiredAndNotRevoked() { 
+        RefreshToken token = new RefreshToken( 
+            "abc", Instant.now().plusSeconds(3600), null 
+        ); 
+        assertThat(token.isValid()).isTrue(); 
+    } 
+ 
+    @Test 
+    @DisplayName("isValid - faux : token expire") 
+    void isValid_shouldReturnFalse_whenExpired() { 
+        RefreshToken token = new RefreshToken( 
+            "abc", Instant.now().minusSeconds(1), null 
+        ); 
+        assertThat(token.isValid()).isFalse(); 
+    } 
+ 
+    @Test 
+    @DisplayName("isValid - faux : token revoque") 
+    void isValid_shouldReturnFalse_whenRevoked() { 
+        RefreshToken token = new RefreshToken( 
+            "abc", Instant.now().plusSeconds(3600), null 
+        ); 
+        token.revoke(); 
+        assertThat(token.isValid()).isFalse(); 
+    } 
+ 
+    @Test 
+    @DisplayName("isExpired - vrai : token dont la date est passee") 
+    void isExpired_shouldReturnTrue_whenExpiresAtIsInPast() { 
+        RefreshToken token = new RefreshToken( 
+            "abc", Instant.now().minusSeconds(60), null 
+        ); 
+        assertThat(token.isExpired()).isTrue(); 
+    } 
+ 
+    @Test 
+    @DisplayName("revoke - marque le token comme revoque") 
+    void revoke_shouldSetIsRevokedTrue() { 
+        RefreshToken token = new RefreshToken( 
+            "abc", Instant.now().plusSeconds(3600), null 
+        ); 
+        assertThat(token.getIsRevoked()).isFalse(); 
+        token.revoke(); 
+        assertThat(token.getIsRevoked()).isTrue(); 
+    } 
+ 
+}
