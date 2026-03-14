@@ -3,121 +3,129 @@ import { adminGuard } from './core/guards/admin.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
-  // Login (accessible uniquement si non connecté)
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login/login.component')
-      .then(m => m.LoginComponent),
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
     canActivate: [guestGuard],
-    title: 'Connexion - Admin'
+    title: 'Connexion - Admin',
   },
 
-  // Routes protégées (Admin uniquement)
   {
-    path:  '',
+    path: '',
     canActivate: [adminGuard],
     children: [
-      // Dashboard
       {
         path: '',
-        loadComponent:  () => import('./features/dashboard/dashboard.component')
-          .then(m => m.DashboardComponent),
-        title: 'Dashboard - Admin'
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+        title: 'Dashboard - Admin',
       },
-
-      // Users
       {
         path: 'users',
-        loadComponent: () => import('./features/users/user-list/user-list.component')
-          .then(m => m.UserListComponent),
-        title: 'Utilisateurs - Admin'
+        loadComponent: () =>
+          import('./features/users/user-list/user-list.component').then((m) => m.UserListComponent),
+        title: 'Utilisateurs - Admin',
       },
       {
-        path: 'users/: id',
-        loadComponent: () => import('./features/users/user-edit/user-edit.component')
-          .then(m => m.UserEditComponent),
-        title: 'Modifier utilisateur - Admin'
+        path: 'users/:id',
+        loadComponent: () =>
+          import('./features/users/user-edit/user-edit.component').then((m) => m.UserEditComponent),
+        title: 'Modifier utilisateur - Admin',
       },
-
-      // Symptoms
       {
         path: 'symptoms',
-        loadComponent: () => import('./features/symptoms/symptom-list/symptom-list.component')
-          .then(m => m.SymptomListComponent),
-        title: 'Symptômes - Admin'
+        loadComponent: () =>
+          import('./features/symptoms/symptom-list/symptom-list.component').then(
+            (m) => m.SymptomListComponent,
+          ),
+        title: 'Symptômes - Admin',
       },
       {
         path: 'symptoms/new',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
-          .then(m => m. SymptomFormComponent),
-        title: 'Nouveau symptôme - Admin'
+        loadComponent: () =>
+          import('./features/symptoms/symptom-form/symptom-form.component').then(
+            (m) => m.SymptomFormComponent,
+          ),
+        title: 'Nouveau symptôme - Admin',
       },
       {
-        path: 'symptoms/: id/edit',
-        loadComponent: () => import('./features/symptoms/symptom-form/symptom-form.component')
-          .then(m => m.SymptomFormComponent),
-        title: 'Modifier symptôme - Admin'
+        path: 'symptoms/:id/edit',
+        loadComponent: () =>
+          import('./features/symptoms/symptom-form/symptom-form.component').then(
+            (m) => m.SymptomFormComponent,
+          ),
+        title: 'Modifier symptôme - Admin',
       },
-
-      // Properties
       {
         path: 'properties',
-        loadComponent:  () => import('./features/properties/property-list/property-list.component')
-          .then(m => m.PropertyListComponent),
-        title: 'Propriétés - Admin'
+        loadComponent: () =>
+          import('./features/properties/property-list/property-list.component').then(
+            (m) => m.PropertyListComponent,
+          ),
+        title: 'Propriétés - Admin',
       },
       {
         path: 'properties/new',
-        loadComponent:  () => import('./features/properties/property-form/property-form.component')
-          .then(m => m.PropertyFormComponent),
-        title: 'Nouvelle propriété - Admin'
+        loadComponent: () =>
+          import('./features/properties/property-form/property-form.component').then(
+            (m) => m.PropertyFormComponent,
+          ),
+        title: 'Nouvelle propriété - Admin',
       },
       {
-        path:  'properties/:id/edit',
-        loadComponent: () => import('./features/properties/property-form/property-form.component')
-          .then(m => m. PropertyFormComponent),
-        title: 'Modifier propriété - Admin'
+        path: 'properties/:id/edit',
+        loadComponent: () =>
+          import('./features/properties/property-form/property-form.component').then(
+            (m) => m.PropertyFormComponent,
+          ),
+        title: 'Modifier propriété - Admin',
       },
-
-      // Plants
       {
         path: 'plants',
-        loadComponent:  () => import('./features/plants/plant-list/plant-list.component')
-          .then(m => m.PlantListComponent),
-        title: 'Plantes - Admin'
+        loadComponent: () =>
+          import('./features/plants/plant-list/plant-list.component').then(
+            (m) => m.PlantListComponent,
+          ),
+        title: 'Plantes - Admin',
       },
       {
         path: 'plants/new',
-        loadComponent:  () => import('./features/plants/plant-form/plant-form.component')
-          .then(m => m.PlantFormComponent),
-        title: 'Nouvelle plante - Admin'
+        loadComponent: () =>
+          import('./features/plants/plant-form/plant-form.component').then(
+            (m) => m.PlantFormComponent,
+          ),
+        title: 'Nouvelle plante - Admin',
       },
       {
-        path:  'plants/:id/edit',
-        loadComponent: () => import('./features/plants/plant-form/plant-form.component')
-          .then(m => m. PlantFormComponent),
-        title: 'Modifier plante - Admin'
+        path: 'plants/:id/edit',
+        loadComponent: () =>
+          import('./features/plants/plant-form/plant-form.component').then(
+            (m) => m.PlantFormComponent,
+          ),
+        title: 'Modifier plante - Admin',
       },
-
-      // recipes
       {
         path: 'recipes',
-        loadComponent: () => import('./features/recipes/recipe-list/recipe-list.component')
-          .then(m => m.RecipeListComponent),
-        title: 'Recettes - Admin'
+        loadComponent: () =>
+          import('./features/recipes/recipe-list/recipe-list.component').then(
+            (m) => m.RecipeListComponent,
+          ),
+        title: 'Recettes - Admin',
       },
       {
         path: 'recipes/moderation',
-        loadComponent: () => import('./features/recipes/recipe-moderation/recipe-moderation.component')
-          .then(m => m.RecipeModerationComponent),
-        title: 'Modération - Admin'
-      }
-    ]
+        loadComponent: () =>
+          import('./features/recipes/recipe-moderation/recipe-moderation.component').then(
+            (m) => m.RecipeModerationComponent,
+          ),
+        title: 'Modération recettes - Admin',
+      },
+    ],
   },
 
-  // 404
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];

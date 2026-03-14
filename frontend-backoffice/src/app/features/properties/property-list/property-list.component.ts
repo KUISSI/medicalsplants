@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog. component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PropertyService } from '../../../core/services/property.service';
 import { Property } from '../../../core/models/property.model';
 import { ToastrService } from 'ngx-toastr';
@@ -19,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
     ConfirmDialogComponent
   ],
   templateUrl: './property-list.component.html',
-  styleUrls: ['./property-list.component. scss']
+  styleUrls: ['./property-list.component.scss']
 })
 export class PropertyListComponent implements OnInit {
   private propertyService = inject(PropertyService);

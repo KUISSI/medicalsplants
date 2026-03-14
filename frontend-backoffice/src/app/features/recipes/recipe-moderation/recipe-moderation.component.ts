@@ -1,35 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Recipe, RecipeStatus, RECIPE_STATUS_LABELS, RECIPE_STATUS_COLORS } from '../../../core/models/recipe.model';
-// Les imports AppLoaderComponent et AppConfirmDialogComponent sont à retirer si tu utilises la version DRY sans ces composants.
+import { RouterModule } from '@angular/router';
+
+import {
+  Recipe,
+  RecipeType,
+  RECIPE_TYPE_LABELS,
+  RECIPE_STATUS_LABELS,
+} from '../../../core/models/recipe.model';
+import { RecipeService } from '../../../core/services/recipe.service';
 
 @Component({
   selector: 'app-recipe-moderation',
   standalone: true,
-  imports: [
-    CommonModule
-    // Retire AppLoaderComponent et AppConfirmDialogComponent si tu utilises la version DRY sans eux
-  ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './recipe-moderation.component.html',
-  styleUrls: ['./recipe-moderation.component.scss']
+  styleUrls: ['./recipe-moderation.component.scss'],
 })
 export class RecipeModerationComponent implements OnInit {
-  pendingCount: number = 0;
-  recipes: Recipe[] = [];
   pendingRecipes: Recipe[] = [];
-  selectedRecipe: Recipe | null = null;
-  isLoading: boolean = false;
+  isLoading = false;
+  error: string | null = null;
 
-  showRejectDialog = false;
+  recipeTypeLabels: Record<string, string> = RECIPE_TYPE_LABELS;
+  recipeStatusLabels: Record<string, string> = RECIPE_STATUS_LABELS;
+
   showApproveDialog = false;
+  showRejectDialog = false;
+  selectedRecipe: Recipe | null = null;
 
-  // Labels pour les types de recettes
-  recipeTypeLabels: { [key: string]: string } = {
-    smoothie: 'Smoothie',
-    tisane: 'Tisane',
-    potion: 'Potion',
-    // Ajoute d’autres types si besoin
-  };
+  constructor(private recipeService: RecipeService) {}
 
   ngOnInit(): void {
     this.loadPendingRecipes();
@@ -37,22 +37,18 @@ export class RecipeModerationComponent implements OnInit {
 
   loadPendingRecipes(): void {
     this.isLoading = true;
-    // Exemple de logique de filtrage (à adapter selon ton backend)
-    this.pendingRecipes = this.recipes.filter(r => r.status === 'PENDING');
-    this.isLoading = false;
-  }
-
-  approveRecipe(recipe: Recipe): void {
-    // ... logique d’approbation
-  }
-
-  rejectRecipe(recipe: Recipe): void {
-    // ... logique de rejet
-  }
-
-  openRejectDialog(recipe: Recipe): void {
-    this.selectedRecipe = recipe;
-    this.showRejectDialog = true;
+    this.error = null;
+    this.recipeService.getAll(0, 50, 'PENDING').subscribe({
+      next: (page) => {
+        this.pendingRecipes = page.content;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Erreur lors du chargement';
+        this.isLoading = false;
+        console.error(err);
+      },
+    });
   }
 
   openApproveDialog(recipe: Recipe): void {
@@ -60,49 +56,59 @@ export class RecipeModerationComponent implements OnInit {
     this.showApproveDialog = true;
   }
 
+  openRejectDialog(recipe: Recipe): void {
+    this.selectedRecipe = recipe;
+    this.showRejectDialog = true;
+  }
+
   closeDialogs(): void {
-    this.showRejectDialog = false;
     this.showApproveDialog = false;
+    this.showRejectDialog = false;
     this.selectedRecipe = null;
   }
 
   onApproveConfirm(): void {
-    if (this.selectedRecipe) {
-      this.approveRecipe(this.selectedRecipe);
-    }
-    this.closeDialogs();
-  }
-
-  onRejectConfirm(): void {
-    if (this.selectedRecipe) {
-      this.rejectRecipe(this.selectedRecipe);
-    }
-    this.closeDialogs();
-  }
-
-  formatDate(date: string | Date): string {
-    return new Date(date).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    if (!this.selectedRecipe) return;
+    const id = this.selectedRecipe.id;
+    this.recipeService.updateStatus(id, 'PUBLISHED').subscribe({
+      next: () => {
+        this.pendingRecipes = this.pendingRecipes.filter((r) => r.id !== id);
+        this.closeDialogs();
+      },
+      error: (err) => {
+        console.error(err);
+        this.closeDialogs();
+      },
     });
   }
 
-  getStatusLabel(status: RecipeStatus): string {
-    return RECIPE_STATUS_LABELS[status];
+  onRejectConfirm(): void {
+    if (!this.selectedRecipe) return;
+    const id = this.selectedRecipe.id;
+    this.recipeService.updateStatus(id, 'REJECTED').subscribe({
+      next: () => {
+        this.pendingRecipes = this.pendingRecipes.filter((r) => r.id !== id);
+        this.closeDialogs();
+      },
+      error: (err) => {
+        console.error(err);
+        this.closeDialogs();
+      },
+    });
   }
 
-  getStatusColor(status: RecipeStatus): string {
-    return RECIPE_STATUS_COLORS[status];
+  getRecipeTypeIcon(type: RecipeType): string {
+    const icons: Record<RecipeType, string> = {
+      HOT_DRINK: '☕',
+      COLD_DRINK: '🧊',
+      DISH: '🍲',
+      LOTION: '🧴',
+      OTHER: '📦',
+    };
+    return icons[type] || '📦';
   }
 
-  getRecipeTypeIcon(type: string): string {
-    // À adapter selon tes types réels
-    switch (type) {
-      case 'smoothie': return '🥤';
-      case 'tisane': return '🍵';
-      case 'potion': return '🧪';
-      default: return '🍽️';
-    }
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
   }
 }

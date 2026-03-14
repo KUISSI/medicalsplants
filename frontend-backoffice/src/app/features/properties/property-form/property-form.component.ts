@@ -5,16 +5,20 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PropertyService } from '../../../core/services/property.service';
 import { SymptomService } from '../../../core/services/symptom.service';
-import { Property, CreatePropertyRequest, UpdatePropertyRequest } from '../../../core/models/property.model';
-import { Symptom } from '../../../core/models/symptom. model';
+import {
+  Property,
+  CreatePropertyRequest,
+  UpdatePropertyRequest,
+} from '../../../core/models/property.model';
+import { Symptom } from '../../../core/models/symptom.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-property-form',
-  standalone:  true,
+  standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './property-form. component.html',
-  styleUrls:  ['./property-form.component.scss']
+  templateUrl: './property-form.component.html',
+  styleUrls: ['./property-form.component.scss'],
 })
 export class PropertyFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -28,7 +32,7 @@ export class PropertyFormComponent implements OnInit {
   property: Property | null = null;
   symptoms: Symptom[] = [];
   selectedSymptomIds: string[] = [];
-  
+
   isLoadingData = false;
   isSaving = false;
   isEditMode = false;
@@ -42,20 +46,20 @@ export class PropertyFormComponent implements OnInit {
     'Respiratoire',
     'Stimulant',
     'Protecteur',
-    'Cutané'
+    'Cutané',
   ];
 
   constructor() {
-    this.propertyForm = this. fb.group({
+    this.propertyForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      propertyFamily: ['', [Validators. required]],
-      propertyDetail: ['', [Validators. maxLength(1000)]]
+      propertyFamily: ['', [Validators.required]],
+      propertyDetail: ['', [Validators.maxLength(1000)]],
     });
   }
 
   ngOnInit(): void {
     this.loadSymptoms();
-    
+
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.isEditMode = true;
@@ -67,7 +71,7 @@ export class PropertyFormComponent implements OnInit {
     this.symptomService.getAll().subscribe({
       next: (symptoms) => {
         this.symptoms = symptoms;
-      }
+      },
     });
   }
 
@@ -79,27 +83,31 @@ export class PropertyFormComponent implements OnInit {
         this.propertyForm.patchValue({
           title: property.title,
           propertyFamily: property.propertyFamily,
-          propertyDetail: property. propertyDetail || ''
+          propertyDetail: property.propertyDetail || '',
         });
-        this.selectedSymptomIds = property.symptoms?. map(s => s.id) || [];
+        this.selectedSymptomIds = property.symptoms?.map((s) => s.id) || [];
         this.isLoadingData = false;
       },
       error: () => {
         this.isLoadingData = false;
         this.router.navigate(['/properties']);
-      }
+      },
     });
   }
 
-  get title() { return this.propertyForm.get('title'); }
-  get propertyFamily() { return this.propertyForm.get('propertyFamily'); }
+  get title() {
+    return this.propertyForm.get('title');
+  }
+  get propertyFamily() {
+    return this.propertyForm.get('propertyFamily');
+  }
 
   toggleSymptom(symptomId: string): void {
     const index = this.selectedSymptomIds.indexOf(symptomId);
     if (index > -1) {
       this.selectedSymptomIds.splice(index, 1);
     } else {
-      this. selectedSymptomIds.push(symptomId);
+      this.selectedSymptomIds.push(symptomId);
     }
   }
 
@@ -108,7 +116,7 @@ export class PropertyFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.propertyForm. invalid) {
+    if (this.propertyForm.invalid) {
       this.propertyForm.markAllAsTouched();
       return;
     }
@@ -116,21 +124,21 @@ export class PropertyFormComponent implements OnInit {
     this.isSaving = true;
 
     if (this.isEditMode && this.property) {
-      const request: UpdatePropertyRequest = this.propertyForm. value;
-      this.propertyService. update(this.property.id, request).subscribe({
+      const request: UpdatePropertyRequest = this.propertyForm.value;
+      this.propertyService.update(this.property.id, request).subscribe({
         next: () => {
           this.isSaving = false;
           this.toastr.success('Propriété mise à jour', 'Succès');
           this.router.navigate(['/properties']);
         },
-        error:  () => {
+        error: () => {
           this.isSaving = false;
-        }
+        },
       });
     } else {
       const request: CreatePropertyRequest = {
-        ...this. propertyForm.value,
-        symptomIds: this. selectedSymptomIds
+        ...this.propertyForm.value,
+        symptomIds: this.selectedSymptomIds,
       };
       this.propertyService.create(request).subscribe({
         next: () => {
@@ -140,7 +148,7 @@ export class PropertyFormComponent implements OnInit {
         },
         error: () => {
           this.isSaving = false;
-        }
+        },
       });
     }
   }

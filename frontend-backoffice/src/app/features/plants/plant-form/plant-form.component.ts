@@ -12,9 +12,9 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-plant-form',
   standalone: true,
-  imports:  [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
-  templateUrl:  './plant-form.component.html',
-  styleUrls:  ['./plant-form.component.scss']
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
+  templateUrl: './plant-form.component.html',
+  styleUrls: ['./plant-form.component.scss'],
 })
 export class PlantFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -28,14 +28,13 @@ export class PlantFormComponent implements OnInit {
   plant: Plant | null = null;
   properties: Property[] = [];
   selectedPropertyIds: string[] = [];
-  
+
   isLoadingData = false;
   isSaving = false;
   isEditMode = false;
 
-
   constructor() {
-    this.plantForm = this.fb. group({
+    this.plantForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
       description: ['', [Validators.maxLength(2000)]],
     });
@@ -43,8 +42,8 @@ export class PlantFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProperties();
-    
-    const id = this.route.snapshot. params['id'];
+
+    const id = this.route.snapshot.params['id'];
     if (id) {
       this.isEditMode = true;
       this.loadPlant(id);
@@ -55,7 +54,7 @@ export class PlantFormComponent implements OnInit {
     this.propertyService.getAll().subscribe({
       next: (properties) => {
         this.properties = properties;
-      }
+      },
     });
   }
 
@@ -65,68 +64,70 @@ export class PlantFormComponent implements OnInit {
       next: (plant) => {
         this.plant = plant;
         this.plantForm.patchValue({
-          title:  plant.title,
-          description: plant. description || '',
+          title: plant.title,
+          description: plant.description || '',
         });
-        this.selectedPropertyIds = plant.properties?. map(p => p.id) || [];
+        this.selectedPropertyIds = plant.properties?.map((p) => p.id) || [];
         this.isLoadingData = false;
       },
       error: () => {
-        this. isLoadingData = false;
+        this.isLoadingData = false;
         this.router.navigate(['/plants']);
-      }
+      },
     });
   }
 
-  get title() { return this.plantForm.get('title'); }
+  get title() {
+    return this.plantForm.get('title');
+  }
 
-  toggleProperty(propertyId:  string): void {
-    const index = this.selectedPropertyIds. indexOf(propertyId);
+  toggleProperty(propertyId: string): void {
+    const index = this.selectedPropertyIds.indexOf(propertyId);
     if (index > -1) {
-      this. selectedPropertyIds.splice(index, 1);
+      this.selectedPropertyIds.splice(index, 1);
     } else {
-      this. selectedPropertyIds.push(propertyId);
+      this.selectedPropertyIds.push(propertyId);
     }
   }
 
   isPropertySelected(propertyId: string): boolean {
-    return this. selectedPropertyIds.includes(propertyId);
+    return this.selectedPropertyIds.includes(propertyId);
   }
 
   onSubmit(): void {
-    if (this.plantForm. invalid) {
+    if (this.plantForm.invalid) {
       this.plantForm.markAllAsTouched();
       return;
     }
 
-    this. isSaving = true;
+    this.isSaving = true;
 
     if (this.isEditMode && this.plant) {
       const request: UpdatePlantRequest = this.plantForm.value;
-      this.plantService.update(this. plant.id, request).subscribe({
+      this.plantService.update(this.plant.id, request).subscribe({
         next: () => {
           this.isSaving = false;
           this.toastr.success('Plante mise à jour', 'Succès');
-          this.router. navigate(['/plants']);
-        },
-        error: () => {
-          this.isSaving = false;
-        }
-      });
-    } else {
-      const request: CreatePlantRequest = {
-        ... this.plantForm.value,
-        propertyIds: this. selectedPropertyIds
-      };
-      this. plantService.create(request).subscribe({
-        next: () => {
-          this. isSaving = false;
-          this. toastr.success('Plante créée', 'Succès');
           this.router.navigate(['/plants']);
         },
         error: () => {
           this.isSaving = false;
-        }
+        },
+      });
+    } else {
+      const request: CreatePlantRequest = {
+        ...this.plantForm.value,
+        propertyIds: this.selectedPropertyIds,
+      };
+      this.plantService.create(request).subscribe({
+        next: () => {
+          this.isSaving = false;
+          this.toastr.success('Plante créée', 'Succès');
+          this.router.navigate(['/plants']);
+        },
+        error: () => {
+          this.isSaving = false;
+        },
       });
     }
   }
