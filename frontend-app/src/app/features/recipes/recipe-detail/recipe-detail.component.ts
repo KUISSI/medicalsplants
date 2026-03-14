@@ -6,6 +6,8 @@ import { Recipe, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Review } from '../../../core/models/review.model';
+// ✅ AJOUT : import ReviewService
+import { ReviewService } from '../../../core/services/review.service';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form.component';
 import { FavoriteService } from '../../../core/services/favorite.service';
 import { FavoriteButtonComponent } from '../../../shared/components/favorite-button/favorite-button.component';
@@ -20,13 +22,12 @@ import { RouterModule } from '@angular/router';
     ReviewFormComponent,
     FavoriteButtonComponent,
     LoaderComponent,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './recipe-detail.component.html',
-  styleUrls: ['./recipe-detail.component.scss']
+  styleUrls: ['./recipe-detail.component.scss'],
 })
 export class RecipeDetailComponent implements OnInit {
-
   recipe: Recipe | null = null;
   isLoading = true;
   error: string | null = null;
@@ -40,7 +41,9 @@ export class RecipeDetailComponent implements OnInit {
     private router: Router,
     private recipeService: RecipeService,
     public authService: AuthService,
-    public favoriteService: FavoriteService
+    public favoriteService: FavoriteService,
+    // ✅ AJOUT : injection ReviewService
+    private reviewService: ReviewService,
   ) {}
 
   ngOnInit(): void {
@@ -62,31 +65,42 @@ export class RecipeDetailComponent implements OnInit {
         this.recipe = recipe;
         this.parseIngredients();
         this.isLoading = false;
+
+        // ✅ AJOUT : charger les avis séparément car l'API recette renvoie reviews: null
+        this.reviewService.getByRecipeId(id).subscribe({
+          next: (reviews) => {
+            if (this.recipe) this.recipe.reviews = reviews;
+          },
+          error: () => {
+            if (this.recipe) this.recipe.reviews = [];
+          },
+        });
       },
       error: (err) => {
         this.error = 'Erreur lors du chargement de la recette';
         this.isLoading = false;
         console.error(err);
-      }
+      },
     });
   }
 
+  // ... reste du fichier inchangé
   parseIngredients(): void {
     if (this.recipe?.ingredients) {
       this.ingredientsList = this.recipe.ingredients
         .split(/[,\n]/)
-        .map(i => i.trim())
-        .filter(i => i.length > 0);
+        .map((i) => i.trim())
+        .filter((i) => i.length > 0);
     }
   }
 
   getRecipeTypeIcon(type: string): string {
     const icons: Record<string, string> = {
-      'HOT_DRINK': '☕',
-      'COLD_DRINK': '🧊',
-      'DISH': '🍲',
-      'LOTION': '🧴',
-      'OTHER': '📦'
+      HOT_DRINK: '☕',
+      COLD_DRINK: '🧊',
+      DISH: '🍲',
+      LOTION: '🧴',
+      OTHER: '📦',
     };
     return icons[type] || '📦';
   }
@@ -94,9 +108,9 @@ export class RecipeDetailComponent implements OnInit {
   getDifficultyLabel(difficulty: string | undefined): string {
     if (!difficulty) return 'Non spécifié';
     const labels: Record<string, string> = {
-      'EASY': 'Facile',
-      'MEDIUM': 'Moyen',
-      'HARD': 'Difficile'
+      EASY: 'Facile',
+      MEDIUM: 'Moyen',
+      HARD: 'Difficile',
     };
     return labels[difficulty] || difficulty;
   }
