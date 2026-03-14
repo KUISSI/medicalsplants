@@ -1,0 +1,110 @@
+<div class="page">
+
+  <div class="page__header">
+    <div class="page__header-content">
+      <h1 class="page__title">Modération des avis</h1>
+      <p class="page__subtitle">Consultez et supprimez les avis par recette</p>
+    </div>
+  </div>
+
+  @if (isLoadingRecipes) {
+    <div class="loader-message">
+      <span class="spinner"></span>
+      Chargement des recettes...
+    </div>
+  } @else if (recipes.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-chat-square-text empty-state__icon" aria-hidden="true"></i>
+      <h3 class="empty-state__title">Aucune recette publiée</h3>
+      <p class="empty-state__message">Les avis apparaissent sur les recettes publiées.</p>
+    </div>
+  } @else {
+    <div class="accordion">
+      @for (recipe of recipes; track recipe.id) {
+        <div class="accordion__item" [class.accordion__item--open]="expandedRecipeId === recipe.id">
+
+          <button class="accordion__header" (click)="toggleRecipe(recipe)">
+            <div class="accordion__header-left">
+              <i class="bi bi-book accordion__icon" aria-hidden="true"></i>
+              <span class="accordion__title">{{ recipe.title }}</span>
+              @if (expandedRecipeId === recipe.id && reviewsByRecipe[recipe.id]) {
+                <span class="review-count">{{ getReviewCount(recipe.id) }} avis</span>
+              }
+            </div>
+            <i class="bi" [class.bi-chevron-down]="expandedRecipeId !== recipe.id" [class.bi-chevron-up]="expandedRecipeId === recipe.id" aria-hidden="true"></i>
+          </button>
+
+          @if (expandedRecipeId === recipe.id) {
+            <div class="accordion__body">
+
+              @if (loadingReviews[recipe.id]) {
+                <div class="loader-message loader-message--sm">
+                  <span class="spinner spinner--sm"></span>
+                  Chargement des avis...
+                </div>
+              } @else if (!reviewsByRecipe[recipe.id] || reviewsByRecipe[recipe.id].length === 0) {
+                <p class="no-reviews">Aucun avis pour cette recette.</p>
+              } @else {
+                <div class="reviews-list">
+                  @for (review of reviewsByRecipe[recipe.id]; track review.id) {
+                    @if (!review.parentReviewId) {
+                      <div class="review-card">
+                        <div class="review-card__header">
+                          <div class="review-card__author">
+                            <div class="review-card__avatar">{{ review.author.pseudo.charAt(0).toUpperCase() }}</div>
+                            <div>
+                              <span class="review-card__name">{{ review.author.pseudo }}</span>
+                              <span class="review-card__date">{{ formatDate(review.createdAt) }}</span>
+                            </div>
+                          </div>
+                          <div class="review-card__right">
+                            @if (review.rating) {
+                              <span class="review-card__stars">{{ renderStars(review.rating) }}</span>
+                            }
+                            <button class="action-btn action-btn--danger" (click)="confirmDelete(review)" title="Supprimer" aria-label="Supprimer cet avis">
+                              <i class="bi bi-trash" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <p class="review-card__content">{{ review.content }}</p>
+                        @if (review.replies && review.replies.length > 0) {
+                          <div class="review-card__replies">
+                            @for (reply of review.replies; track reply.id) {
+                              <div class="reply">
+                                <div class="reply__header">
+                                  <span class="reply__author">{{ reply.author.pseudo }}</span>
+                                  <span class="reply__date">{{ formatDate(reply.createdAt) }}</span>
+                                  <button class="action-btn action-btn--danger action-btn--xs" (click)="confirmDelete(reply)" title="Supprimer">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                                <p class="reply__content">{{ reply.content }}</p>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              }
+
+            </div>
+          }
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer l'avis"
+  message="Supprimer définitivement cet avis ?"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

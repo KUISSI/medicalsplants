@@ -2,23 +2,22 @@ import { Symptom } from './symptom.model';
 
 export interface Property {
   id: string;
-  title:  string;
-  propertyFamily: string;
-  propertyDetail?: string;
-  symptoms?:  Symptom[];
-  createdAt:  string;
-  updatedAt?: string;
+  title: string;
+  family: string;
+  description: string;
+  symptoms?: Symptom[];
+  createdAt: string;
 }
 
 export interface CreatePropertyRequest {
   title: string;
-  propertyFamily: string;
-  propertyDetail?: string;
+  family: string;
+  description: string;
   symptomIds?: string[];
 }
 
 export interface UpdatePropertyRequest {
   title: string;
-  propertyFamily: string;
-  propertyDetail?: string;
+  family: string;
+  description: string;
 }

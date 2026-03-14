@@ -1,0 +1,68 @@
+@import '../../../shared/styles/admin-page';
+@import '../../../shared/styles/admin-table';
+
+.receipt-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    background: #fff3e0;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e65100;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.92rem;
+  }
+}
+
+.type-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #fff3e0;
+  color: #e65100;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.premium-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.author-cell {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.date-cell {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}

@@ -3,11 +3,11 @@ import { Property } from './property.model';
 export interface Plant {
   id: string;
   title: string;
-  description?: string;
+  description: string;
+  history?: string;
   imageUrl?: string;
   properties?: Property[];
   createdAt: string;
-  updatedAt?: string;
 }
 
 export interface PlantPage {
@@ -20,11 +20,15 @@ export interface PlantPage {
 
 export interface CreatePlantRequest {
   title: string;
-  description?:  string;
+  description: string;
+  history?: string;
+  imageUrl?: string;
   propertyIds?: string[];
 }
 
 export interface UpdatePlantRequest {
-  title:  string;
-  description?: string;
+  title: string;
+  description: string;
+  history?: string;
+  imageUrl?: string;
 }

@@ -1,95 +1,84 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import {
-  Recipe,
-  RecipePage,
-  RecipeType,
-  RecipeStatus,
-  RECIPE_TYPE_LABELS,
-  RECIPE_STATUS_LABELS,
-  RECIPE_STATUS_COLORS,
+  Recipe, RecipeType, RecipeStatus,
+  RECIPE_TYPE_LABELS, RECIPE_STATUS_LABELS, RECIPE_STATUS_COLORS
 } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
-import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './recipe-list.component.html',
-  styleUrls: ['./recipe-list.component.scss'],
+  styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit {
+  private recipeService = inject(RecipeService);
+
+  private allRecipes: Recipe[] = [];
   recipes: Recipe[] = [];
-  isLoading = true;
-  error: string | null = null;
 
   currentPage = 0;
-  pageSize = 20;
   totalElements = 0;
-  totalPages = 0;
+  totalPages = 1;
 
   selectedStatus: RecipeStatus | '' = '';
 
-  recipeStatusLabels: Record<string, string> = RECIPE_STATUS_LABELS;
-  recipeStatusColors: Record<string, string> = RECIPE_STATUS_COLORS;
-  recipeTypeLabels: Record<string, string> = RECIPE_TYPE_LABELS;
-  statusKeys: string[] = Object.keys(RECIPE_STATUS_LABELS);
+  recipeTypeLabels: Record<RecipeType, string> = RECIPE_TYPE_LABELS;
+  recipeStatusLabels: Record<RecipeStatus, string> = RECIPE_STATUS_LABELS;
+  recipeStatusColors: Record<RecipeStatus, string> = RECIPE_STATUS_COLORS;
 
-  constructor(private recipeService: RecipeService) {}
+  statusKeys: RecipeStatus[] = Object.keys(RECIPE_STATUS_LABELS) as RecipeStatus[];
 
   ngOnInit(): void {
-    this.loadRecipes();
+    this.recipeService.getAll(0, 50).subscribe({
+      next: page => {
+        this.allRecipes = page.content;
+        this.totalElements = page.totalElements;
+        this.totalPages = page.totalPages;
+        this.currentPage = page.number;
+        this.applyFilter();
+      },
+      error: err => console.error('Failed to load recipes', err)
+    });
   }
 
-  loadRecipes(): void {
-    this.isLoading = true;
-    this.error = null;
-
-    this.recipeService
-      .getAll(this.currentPage, this.pageSize, this.selectedStatus || undefined)
-      .subscribe({
-        next: (page: RecipePage) => {
-          this.recipes = page.content;
-          this.totalElements = page.totalElements;
-          this.totalPages = page.totalPages;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = 'Erreur lors du chargement des recettes';
-          this.isLoading = false;
-          console.error(err);
-        },
-      });
+  applyFilter(): void {
+    if (this.selectedStatus) {
+      this.recipes = this.allRecipes.filter(r => r.status === this.selectedStatus);
+    } else {
+      this.recipes = [...this.allRecipes];
+    }
+    this.totalElements = this.recipes.length;
+    this.totalPages = 1;
+    this.currentPage = 0;
   }
 
   onStatusChange(): void {
-    this.currentPage = 0;
-    this.loadRecipes();
+    this.applyFilter();
   }
 
   loadPage(page: number): void {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.loadRecipes();
-    }
+    this.currentPage = page;
   }
 
-  getRecipeTypeIcon(type: RecipeType): string {
+  getrecipeTypeIcon(type: RecipeType): string {
     const icons: Record<RecipeType, string> = {
-      HOT_DRINK: '☕',
-      COLD_DRINK: '🧊',
-      DISH: '🍲',
-      LOTION: '🧴',
-      OTHER: '📦',
+      HOT_DRINK:  'bi-cup-hot',
+      COLD_DRINK: 'bi-cup-straw',
+      DISH:       'bi-egg-fried',
+      LOTION:     'bi-droplet',
+      OTHER:      'bi-three-dots'
     };
-    return icons[type] || '📦';
+    return icons[type] ?? 'bi-journal';
   }
 
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('fr-FR');
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 }

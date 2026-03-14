@@ -1,0 +1,88 @@
+<div class="page">
+  <div class="page__header">
+    <div>
+      <h1 class="page__title">Recettes</h1>
+      <p class="page__subtitle">Catalogue de toutes les recettes de la plateforme</p>
+    </div>
+    <a routerLink="/receipts/moderation" class="btn btn--ghost">
+      <i class="bi bi-shield-check" aria-hidden="true"></i>
+      Modération
+    </a>
+  </div>
+
+  <div class="page__filters">
+    <select class="filter-select" [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange()">
+      <option value="">Tous les statuts</option>
+      @for (status of statusKeys; track status) {
+      <option [value]="status">{{ receiptStatusLabels[status] }}</option>
+      }
+    </select>
+  </div>
+
+  @if (isLoading) {
+  <app-loader message="Chargement des recettes..."></app-loader>
+  } @else if (receipts.length === 0) {
+  <div class="empty-state">
+    <i class="bi bi-book empty-state__icon"></i>
+    <h3 class="empty-state__title">Aucune recette trouvée</h3>
+    <p class="empty-state__message">
+      @if (selectedStatus) { Aucune recette avec le statut "{{ receiptStatusLabels[selectedStatus] }}" }
+      @else { Aucune recette disponible }
+    </p>
+  </div>
+  } @else {
+  <p class="page__info">{{ totalElements }} recette(s)</p>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Recette</th>
+          <th>Type</th>
+          <th>Auteur</th>
+          <th>Statut</th>
+          <th>Premium</th>
+          <th>Créé le</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (receipt of receipts; track receipt.id) {
+        <tr>
+          <td>
+            <div class="receipt-cell">
+              <div class="receipt-cell__icon">
+                <i class="bi {{ getReceiptTypeIcon(receipt.type) }}" aria-hidden="true"></i>
+              </div>
+              <strong class="receipt-cell__name">{{ receipt.title }}</strong>
+            </div>
+          </td>
+          <td>
+            <span class="type-chip">{{ receiptTypeLabels[receipt.type] }}</span>
+          </td>
+          <td class="author-cell">
+            @if (receipt.author) { {{ receipt.author.pseudo }} }
+            @else { <span style="color: var(--color-text-faint)">—</span> }
+          </td>
+          <td>
+            <span class="status-chip" [style.background-color]="receiptStatusColors[receipt.status] + '22'" [style.color]="receiptStatusColors[receipt.status]">
+              {{ receiptStatusLabels[receipt.status] }}
+            </span>
+          </td>
+          <td>
+            @if (receipt.isPremium) {
+            <span class="premium-chip">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              Premium
+            </span>
+            } @else {
+            <span style="color: var(--color-text-faint); font-size: 0.85rem">Non</span>
+            }
+          </td>
+          <td class="date-cell">{{ formatDate(receipt.createdAt) }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

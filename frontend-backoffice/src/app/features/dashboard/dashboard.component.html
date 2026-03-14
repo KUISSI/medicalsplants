@@ -1,149 +1,132 @@
 <div class="dashboard">
+
   <!-- Welcome Header -->
-  <div class="dashboard__header">
+  <div class="dashboard__hero">
     <div class="dashboard__welcome">
-      <h1 class="dashboard__title">Bonjour, {{ authService.currentUser()?.pseudo }} 👋</h1>
-      <p class="dashboard__subtitle">
-        Bienvenue dans le panneau d'administration de Medicals Plants
-      </p>
+      <p class="dashboard__date">{{ today | date : 'EEEE d MMMM yyyy' : '' : 'fr' }}</p>
+      <h2 class="dashboard__title">Bienvenue sur le panneau d'administration</h2>
+      <p class="dashboard__subtitle">Gérez les plantes, recettes, utilisateurs et modérez les contenus soumis.</p>
     </div>
-    <div class="dashboard__date">
-      {{ today | date: 'EEEE d MMMM yyyy' : '' : 'fr' }}
+    <div class="dashboard__actions">
+      <a routerLink="/plants" class="btn btn--primary">
+        <i class="bi bi-flower1" aria-hidden="true"></i>
+        Gérer les plantes
+      </a>
+      <a routerLink="/recipes/moderation" class="btn btn--ghost">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        Modération
+      </a>
     </div>
   </div>
 
-  @if (isLoading) {
-    <app-loader message="Chargement des statistiques..."></app-loader>
-  } @else if (error) {
-    <div class="error-message">{{ error }}</div>
-  } @else {
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-      <app-stats-card
-        icon="👥"
-        [value]="stats.users"
-        label="Utilisateurs"
-        color="#667eea"
-        link="/users"
-      ></app-stats-card>
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <app-stats-card
+      icon="bi-people"
+      [value]="stats.users"
+      label="Utilisateurs"
+      color="#1a472a"
+      link="/users"
+    ></app-stats-card>
 
-      <app-stats-card
-        icon="🩺"
-        [value]="stats.symptoms"
-        label="Symptômes"
-        color="#2196F3"
-        link="/symptoms"
-      ></app-stats-card>
+    <app-stats-card
+      icon="bi-flower1"
+      [value]="stats.plants"
+      label="Plantes"
+      color="#4CAF50"
+      link="/plants"
+    ></app-stats-card>
 
-      <app-stats-card
-        icon="✨"
-        [value]="stats.properties"
-        label="Propriétés"
-        color="#9C27B0"
-        link="/properties"
-      ></app-stats-card>
+    <app-stats-card
+      icon="bi-book"
+      [value]="stats.receipts"
+      label="Recettes"
+      color="#FF9800"
+      link="/recipes"
+    ></app-stats-card>
 
-      <app-stats-card
-        icon="🌿"
-        [value]="stats.plants"
-        label="Plantes"
-        color="#4CAF50"
-        link="/plants"
-      ></app-stats-card>
+    <app-stats-card
+      icon="bi-hourglass-split"
+      [value]="stats.pendingReceipts"
+      label="En attente"
+      color="#f44336"
+      link="/recipes/moderation"
+    ></app-stats-card>
+  </div>
 
-      <app-stats-card
-        icon="📖"
-        [value]="stats.recipes"
-        label="Recettes"
-        color="#FF9800"
-        link="/recipes"
-      ></app-stats-card>
+  <!-- Lower grid -->
+  <div class="dashboard__grid">
 
-      <app-stats-card
-        icon="⏳"
-        [value]="stats.pendingRecipes"
-        label="En attente"
-        color="#f44336"
-        link="/recipes/moderation"
-      ></app-stats-card>
-    </div>
-
-    <!-- Quick Actions & Recent Activity -->
-    <div class="dashboard__grid">
-      <!-- Quick Actions -->
-      <div class="dashboard__section">
-        <h2 class="section__title">⚡ Actions rapides</h2>
-        <div class="quick-actions">
-          @for (action of quickActions; track action.label) {
-            <a
-              [routerLink]="action.link"
-              class="quick-action"
-              [style.--action-color]="action.color"
-            >
-              <span class="quick-action__icon">{{ action.icon }}</span>
-              <span class="quick-action__label">{{ action.label }}</span>
-            </a>
-          }
-        </div>
-      </div>
-
-      <!-- Recettes en attente de modération -->
-      <div class="dashboard__section">
-        <h2 class="section__title">📋 Recettes en attente de modération</h2>
-        <div class="activity-list">
-          @if (pendingRecipes.length === 0) {
-            <div class="activity-item">
-              <span class="activity-item__icon">✅</span>
-              <div class="activity-item__content">
-                <p class="activity-item__message">Aucune recette en attente</p>
-              </div>
-            </div>
-          } @else {
-            @for (recipe of pendingRecipes; track recipe.id) {
-              <div class="activity-item">
-                <span class="activity-item__icon">📖</span>
-                <div class="activity-item__content">
-                  <p class="activity-item__message">
-                    {{ recipe.title }}
-                    @if (recipe.author) {
-                      <span> — par {{ recipe.author.pseudo }}</span>
-                    }
-                  </p>
-                  <span class="activity-item__time">
-                    Soumis le {{ formatDate(recipe.createdAt) }}
-                  </span>
-                </div>
-                <a [routerLink]="['/recipes/moderation']" class="activity-item__action">
-                  Modérer →
-                </a>
-              </div>
-            }
-          }
-        </div>
+    <!-- Quick Actions -->
+    <div class="dashboard__section">
+      <h3 class="section__title">
+        <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+        Actions rapides
+      </h3>
+      <div class="quick-actions">
+        @for (action of quickActions; track action.label) {
+        <a [routerLink]="action.link" class="quick-action" [style.--action-color]="action.color">
+          <div class="quick-action__icon-wrap">
+            <i class="bi {{ action.icon }}" aria-hidden="true"></i>
+          </div>
+          <div>
+            <span class="quick-action__label">{{ action.label }}</span>
+            <span class="quick-action__desc">{{ action.description }}</span>
+          </div>
+        </a>
+        }
       </div>
     </div>
 
-    <!-- System Info -->
-    <div class="dashboard__section dashboard__section--full">
-      <h2 class="section__title">🖥️ Informations système</h2>
-      <div class="system-info">
-        <div class="system-info__item">
-          <span class="system-info__label">Version API</span>
-          <span class="system-info__value">1.0.0</span>
+    <!-- Recent Activity -->
+    <div class="dashboard__section">
+      <h3 class="section__title">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        Activité récente
+      </h3>
+      <div class="activity-list">
+        @for (activity of recentActivities; track activity.message) {
+        <div class="activity-item">
+          <div class="activity-item__dot" [style.background]="activity.color"></div>
+          <div class="activity-item__content">
+            <p class="activity-item__message">{{ activity.message }}</p>
+            <span class="activity-item__time">{{ activity.time }}</span>
+          </div>
         </div>
-        <div class="system-info__item">
-          <span class="system-info__label">Statut serveur</span>
-          <span class="system-info__value system-info__value--success">● En ligne</span>
-        </div>
-        <div class="system-info__item">
-          <span class="system-info__label">Base de données</span>
-          <span class="system-info__value system-info__value--success">● Connectée</span>
-        </div>
-        <div class="system-info__item">
-          <span class="system-info__label">Aujourd'hui</span>
-          <span class="system-info__value">{{ today | date: 'dd/MM/yyyy' }}</span>
-        </div>
+        }
       </div>
     </div>
-  }
+
+  </div>
+
+  <!-- System Status -->
+  <div class="dashboard__section dashboard__section--status">
+    <h3 class="section__title">
+      <i class="bi bi-server" aria-hidden="true"></i>
+      État du système
+    </h3>
+    <div class="system-info">
+      <div class="system-info__item">
+        <span class="system-info__label">Version API</span>
+        <span class="system-info__value">1.0.0</span>
+      </div>
+      <div class="system-info__item">
+        <span class="system-info__label">Serveur</span>
+        <span class="system-info__value system-info__value--success">
+          <i class="bi bi-circle-fill" aria-hidden="true"></i> En ligne
+        </span>
+      </div>
+      <div class="system-info__item">
+        <span class="system-info__label">Base de données</span>
+        <span class="system-info__value system-info__value--success">
+          <i class="bi bi-circle-fill" aria-hidden="true"></i> Connectée
+        </span>
+      </div>
+      <div class="system-info__item">
+        <span class="system-info__label">Dernière sauvegarde</span>
+        <span class="system-info__value">Aujourd'hui à 03:00</span>
+      </div>
+    </div>
+  </div>
+
 </div>
