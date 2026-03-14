@@ -1,9 +1,18 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { StatsCardComponent } from '../../shared/components/stats-card/stats-card.component';
 import { LoaderComponent } from '../../shared/components/loader/loader.component';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { SymptomService } from '../../core/services/symptom.service';
+import { PropertyService } from '../../core/services/property.service';
+import { PlantService } from '../../core/services/plant.service';
+import { RecipeService } from '../../core/services/recipe.service';
+import { Recipe } from '../../core/models/recipe.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,8 +23,14 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   authService = inject(AuthService);
+  private userService = inject(UserService);
+  private symptomService = inject(SymptomService);
+  private propertyService = inject(PropertyService);
+  private plantService = inject(PlantService);
+  private recipeService = inject(RecipeService);
 
   isLoading = true;
+  error: string | null = null;
 
   stats = {
     users: 0,
@@ -26,13 +41,7 @@ export class DashboardComponent implements OnInit {
     pendingRecipes: 0,
   };
 
-  recentActivities = [
-    { icon: '👤', message: 'Nouvel utilisateur inscrit :  TestUser', time: 'Il y a 5 minutes' },
-    { icon: '📖', message: 'Nouvelle recette soumise pour modération', time: 'Il y a 15 minutes' },
-    { icon: '💬', message: 'Nouvel avis publié sur "Tisane relaxante"', time: 'Il y a 30 minutes' },
-    { icon: '🌿', message: 'Plante "Camomille" mise à jour', time: 'Il y a 1 heure' },
-    { icon: '✅', message: 'Recette "Infusion digestive" approuvée', time: 'Il y a 2 heures' },
-  ];
+  pendingRecipes: Recipe[] = [];
 
   quickActions = [
     { icon: '🌿', label: 'Nouvelle plante', link: '/plants/new', color: '#4CAF50' },
@@ -41,23 +50,44 @@ export class DashboardComponent implements OnInit {
     { icon: '⏳', label: 'Modération', link: '/recipes/moderation', color: '#FF9800' },
   ];
 
+  today: Date = new Date();
+
   ngOnInit(): void {
     this.loadStats();
   }
 
   loadStats(): void {
-    // Simulation - En production, appeler les vrais services
-    setTimeout(() => {
-      this.stats = {
-        users: 156,
-        symptoms: 24,
-        properties: 18,
-        plants: 45,
-        recipes: 89,
-        pendingRecipes: 5,
-      };
-      this.isLoading = false;
-    }, 500);
+    this.isLoading = true;
+    this.error = null;
+
+    forkJoin({
+      users: this.userService.getAll(0, 1).pipe(map((p) => p.totalElements)),
+      symptoms: this.symptomService.getAll().pipe(map((s) => s.length)),
+      properties: this.propertyService.getAll().pipe(map((p) => p.length)),
+      plants: this.plantService.getAll(0, 1).pipe(map((p) => p.totalElements)),
+      recipes: this.recipeService.getAll(0, 1).pipe(map((p) => p.totalElements)),
+      pending: this.recipeService.getAll(0, 5, 'PENDING'),
+    }).subscribe({
+      next: ({ users, symptoms, properties, plants, recipes, pending }) => {
+        this.stats = {
+          users,
+          symptoms,
+          properties,
+          plants,
+          recipes,
+          pendingRecipes: pending.totalElements,
+        };
+        this.pendingRecipes = pending.content;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = 'Erreur lors du chargement des statistiques';
+        this.isLoading = false;
+      },
+    });
   }
-  today: string = new Date().toLocaleDateString();
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
+  }
 }

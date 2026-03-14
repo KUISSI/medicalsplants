@@ -18,14 +18,11 @@ import com.medicalsplants.service.UserService;
 public class UserController {
 
     private final UserService userService;
-    // ... autres dépendances
 
-    public UserController(UserService userService /*, autres dépendances */) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        // ... initialisation autres dépendances
     }
 
-    // Suppression hard (admin uniquement)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUserAsAdmin(
@@ -35,7 +32,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // Suppression soft (l’utilisateur sur lui-même)
     @DeleteMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteOwnAccount(
@@ -43,5 +39,4 @@ public class UserController {
         userService.deleteUser(currentUser.getId(), currentUser);
         return ResponseEntity.noContent().build();
     }
-
 }
