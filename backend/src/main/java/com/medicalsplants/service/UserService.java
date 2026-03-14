@@ -4,12 +4,17 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.medicalsplants.exception.ForbiddenException;
 import com.medicalsplants.exception.ResourceNotFoundException;
 import com.medicalsplants.model.entity.User;
+import com.medicalsplants.model.enums.Role;
+import com.medicalsplants.model.enums.UserStatus;
 import com.medicalsplants.repository.UserRepository;
 import com.medicalsplants.security.CustomUserDetails;
 
@@ -17,37 +22,31 @@ import com.medicalsplants.security.CustomUserDetails;
 public class UserService {
 
     private final UserRepository userRepository;
-    // private final VerificationTokenRepository tokenRepository; // Si tu utilises un repo de tokens
 
-    public UserService(UserRepository userRepository /*, VerificationTokenRepository tokenRepository */) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        // this.tokenRepository = tokenRepository;
     }
 
-    // Création d'un nouvel utilisateur non vérifié
     @Transactional
     public User createUser(User user) {
         user.setEmailVerified(false);
         user.setCreatedAt(Instant.now());
-        // ... autres initialisations
         return userRepository.save(user);
     }
 
-    // Validation de l'email à partir du token
     @Transactional
     public boolean verifyUserEmail(String token) {
         Optional<User> userOpt = userRepository.findByEmailVerificationTokenAndDeletedAtIsNull(token);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             user.setEmailVerified(true);
-            user.setEmailVerificationToken(null); // Corrigé : le champ s'appelle emailVerificationToken
+            user.setEmailVerificationToken(null);
             userRepository.save(user);
             return true;
         }
         return false;
     }
 
-    // Suppression d'un utilisateur (soft ou hard delete selon le rôle)
     @Transactional
     public void deleteUser(UUID userId, CustomUserDetails currentUser) {
         User user = userRepository.findById(userId)
@@ -57,12 +56,43 @@ public class UserService {
         boolean isAdmin = currentUser.isAdmin();
 
         if (isAdmin) {
-            userRepository.delete(user); // Suppression physique
+            userRepository.delete(user);
         } else if (isSelf) {
-            user.setDeletedAt(Instant.now()); // Soft delete
+            user.setDeletedAt(Instant.now());
             userRepository.save(user);
         } else {
             throw new ForbiddenException("You can only delete your own account");
         }
+    }
+
+    // === METHODES ADMIN ===
+    @Transactional(readOnly = true)
+    public Page<User> getAllUsers(int page, int size, String search) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        if (search != null && !search.isBlank()) {
+            return userRepository.findByEmailContainingIgnoreCaseOrPseudoContainingIgnoreCase(
+                    search, search, pageable);
+        }
+        return userRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+    }
+
+    @Transactional
+    public User updateUserRole(UUID id, Role role) {
+        User user = getUserById(id);
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserStatus(UUID id, UserStatus status) {
+        User user = getUserById(id);
+        user.setStatus(status);
+        return userRepository.save(user);
     }
 }

@@ -14,6 +14,8 @@
 
   @if (isLoading) {
     <app-loader message="Chargement des statistiques..."></app-loader>
+  } @else if (error) {
+    <div class="error-message">{{ error }}</div>
   } @else {
     <!-- Stats Grid -->
     <div class="stats-grid">
@@ -85,18 +87,37 @@
         </div>
       </div>
 
-      <!-- Recent Activity -->
+      <!-- Recettes en attente de modération -->
       <div class="dashboard__section">
-        <h2 class="section__title">📋 Activité récente</h2>
+        <h2 class="section__title">📋 Recettes en attente de modération</h2>
         <div class="activity-list">
-          @for (activity of recentActivities; track activity.message) {
+          @if (pendingRecipes.length === 0) {
             <div class="activity-item">
-              <span class="activity-item__icon">{{ activity.icon }}</span>
+              <span class="activity-item__icon">✅</span>
               <div class="activity-item__content">
-                <p class="activity-item__message">{{ activity.message }}</p>
-                <span class="activity-item__time">{{ activity.time }}</span>
+                <p class="activity-item__message">Aucune recette en attente</p>
               </div>
             </div>
+          } @else {
+            @for (recipe of pendingRecipes; track recipe.id) {
+              <div class="activity-item">
+                <span class="activity-item__icon">📖</span>
+                <div class="activity-item__content">
+                  <p class="activity-item__message">
+                    {{ recipe.title }}
+                    @if (recipe.author) {
+                      <span> — par {{ recipe.author.pseudo }}</span>
+                    }
+                  </p>
+                  <span class="activity-item__time">
+                    Soumis le {{ formatDate(recipe.createdAt) }}
+                  </span>
+                </div>
+                <a [routerLink]="['/recipes/moderation']" class="activity-item__action">
+                  Modérer →
+                </a>
+              </div>
+            }
           }
         </div>
       </div>
@@ -119,8 +140,8 @@
           <span class="system-info__value system-info__value--success">● Connectée</span>
         </div>
         <div class="system-info__item">
-          <span class="system-info__label">Dernière sauvegarde</span>
-          <span class="system-info__value">Aujourd'hui à 03:00</span>
+          <span class="system-info__label">Aujourd'hui</span>
+          <span class="system-info__value">{{ today | date: 'dd/MM/yyyy' }}</span>
         </div>
       </div>
     </div>
