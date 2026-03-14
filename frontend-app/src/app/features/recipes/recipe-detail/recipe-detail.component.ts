@@ -6,7 +6,6 @@ import { Recipe, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
 import { RecipeService } from '../../../core/services/recipe.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Review } from '../../../core/models/review.model';
-// ✅ AJOUT : import ReviewService
 import { ReviewService } from '../../../core/services/review.service';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form.component';
 import { FavoriteService } from '../../../core/services/favorite.service';
@@ -42,7 +41,6 @@ export class RecipeDetailComponent implements OnInit {
     private recipeService: RecipeService,
     public authService: AuthService,
     public favoriteService: FavoriteService,
-    // ✅ AJOUT : injection ReviewService
     private reviewService: ReviewService,
   ) {}
 
@@ -83,7 +81,6 @@ export class RecipeDetailComponent implements OnInit {
     });
   }
 
-  // ... reste du fichier inchangé
   parseIngredients(): void {
     if (this.recipe?.ingredients) {
       this.ingredientsList = this.recipe.ingredients
