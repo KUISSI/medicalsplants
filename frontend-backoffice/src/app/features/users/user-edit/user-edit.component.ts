@@ -18,10 +18,12 @@ export class UserEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private toastr = inject(ToastrService);
 
   user: User | null = null;
   userForm: FormGroup;
-  isLoading = false;
+  isLoading = true;
   isSaving = false;
 
   constructor() {
@@ -36,7 +38,6 @@ export class UserEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadUser(id);
@@ -56,14 +57,16 @@ export class UserEditComponent implements OnInit {
           role: user.role,
           status: user.status,
         });
-      } else {
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
         this.router.navigate(['/users']);
       },
     });
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid || !this.user) {
     if (this.userForm.invalid || !this.user) {
       this.userForm.markAllAsTouched();
       return;
@@ -85,4 +88,3 @@ export class UserEditComponent implements OnInit {
     });
   }
 }
-

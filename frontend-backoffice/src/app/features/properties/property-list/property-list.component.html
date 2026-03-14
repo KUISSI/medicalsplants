@@ -1,8 +1,9 @@
 <div class="page">
+  <!-- Header -->
   <div class="page__header">
     <div class="page__header-content">
-      <h1 class="page__title">Propriétés thérapeutiques</h1>
-      <p class="page__subtitle">{{ properties.length }} propriété(s) référencée(s)</p>
+      <h1 class="page__title">✨ Propriétés</h1>
+      <p class="page__subtitle">Gérez les propriétés thérapeutiques</p>
     </div>
     <a routerLink="/properties/new" class="btn btn--primary"> ➕ Nouvelle propriété </a>
   </div>
@@ -119,106 +120,13 @@
   }
 </div>
 
-<!-- Slide-over form -->
-<app-slide-over
-  [isOpen]="slideOverOpen"
-  [title]="slideOverTitle"
-  [subtitle]="
-    isEditMode
-      ? 'Modifier les informations de la propriété'
-      : 'Créer une nouvelle propriété thérapeutique'
-  "
-  (closed)="closeSlideOver()"
->
-  <form [formGroup]="form" (ngSubmit)="save()">
-    <div class="field">
-      <label class="field__label">Nom de la propriété *</label>
-      <input
-        type="text"
-        formControlName="title"
-        class="field__input"
-        [class.field__input--error]="f['title'].invalid && f['title'].touched"
-        placeholder="ex: Anti-inflammatoire"
-        autocomplete="off"
-      />
-      @if (f['title'].invalid && f['title'].touched) {
-        <span class="field__error">
-          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
-          Nom requis (2–100 caractères)
-        </span>
-      }
-    </div>
-
-    <div class="field">
-      <label class="field__label">Famille thérapeutique *</label>
-      <select
-        formControlName="propertyFamily"
-        class="field__input"
-        [class.field__input--error]="f['propertyFamily'].invalid && f['propertyFamily'].touched"
-      >
-        <option value="">Sélectionner une famille...</option>
-        @for (family of predefinedFamilies; track family) {
-          <option [value]="family">{{ family }}</option>
-        }
-      </select>
-      @if (f['propertyFamily'].invalid && f['propertyFamily'].touched) {
-        <span class="field__error">
-          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
-          Famille requise
-        </span>
-      }
-    </div>
-
-    <div class="field">
-      <label class="field__label">Description</label>
-      <textarea
-        formControlName="propertyDetail"
-        class="field__input field__input--textarea"
-        placeholder="Description des effets thérapeutiques..."
-        rows="3"
-      ></textarea>
-    </div>
-
-    <div class="form-section">
-      <p class="form-section__title">Symptômes traités</p>
-      <div class="check-group" role="group" aria-label="Sélectionner les symptômes">
-        @for (symptom of availableSymptoms; track symptom.id) {
-          <div
-            class="check-item"
-            [class.check-item--selected]="isSymptomSelected(symptom.id)"
-            (click)="toggleSymptom(symptom.id)"
-            role="checkbox"
-            [attr.aria-checked]="isSymptomSelected(symptom.id)"
-            tabindex="0"
-            (keydown.space)="$event.preventDefault(); toggleSymptom(symptom.id)"
-          >
-            <div class="check-item__checkbox">
-              @if (isSymptomSelected(symptom.id)) {
-                <i class="bi bi-check2" aria-hidden="true"></i>
-              }
-            </div>
-            <span class="check-item__label">{{ symptom.title }}</span>
-            <span class="check-item__family">{{ symptom.symptomFamily }}</span>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="so-actions">
-      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
-      <button type="submit" class="btn btn--primary">
-        <i class="bi bi-check2" aria-hidden="true"></i>
-        {{ isEditMode ? 'Enregistrer' : 'Créer la propriété' }}
-      </button>
-    </div>
-  </form>
-</app-slide-over>
-
-<!-- Delete dialog -->
 <app-confirm-dialog
   [isOpen]="showDeleteDialog"
   title="Supprimer la propriété"
-  [message]="'Supprimer définitivement \'' + deletingProperty?.title + '\' ?'"
+  [message]="
+    'Êtes-vous sûr de vouloir supprimer la propriété \'' + propertyToDelete?.title + '\' ?'
+  "
+  icon="🗑️"
   type="danger"
   confirmText="Supprimer"
   (confirm)="onDeleteConfirm()"

@@ -66,9 +66,9 @@ import { CommonModule } from '@angular/common';
       }
 
       &__title {
-        font-size: 1.15rem;
-        color: #1a472a;
-        margin: 0;
+        font-size: 1.3rem;
+        color: #1a1a2e;
+        margin:  0;
         font-weight: 600;
       }
 
@@ -104,12 +104,12 @@ import { CommonModule } from '@angular/common';
         }
 
         &--confirm {
-          background: linear-gradient(135deg, #4CAF50 0%, #2d5a3d 100%);
+          background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: #ffffff;
 
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
           }
         }
 

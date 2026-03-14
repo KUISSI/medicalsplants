@@ -7,20 +7,7 @@ import { PlantService } from '../../../core/services/plant.service';
 import { PropertyService } from '../../../core/services/property.service';
 import { Plant, CreatePlantRequest, UpdatePlantRequest } from '../../../core/models/plant.model';
 import { Property } from '../../../core/models/property.model';
-
-const MOCK_PROPERTIES: Property[] = [
-  { id: '1', title: 'Calmant',           propertyFamily: 'Système nerveux',       propertyDetail: '', symptoms: [], createdAt: '' },
-  { id: '2', title: 'Antiseptique',       propertyFamily: 'Défenses immunitaires', propertyDetail: '', symptoms: [], createdAt: '' },
-  { id: '3', title: 'Anti-inflammatoire', propertyFamily: 'Douleurs',              propertyDetail: '', symptoms: [], createdAt: '' },
-  { id: '4', title: 'Digestif',           propertyFamily: 'Système digestif',      propertyDetail: '', symptoms: [], createdAt: '' },
-  { id: '5', title: 'Cicatrisant',        propertyFamily: 'Dermatologie',          propertyDetail: '', symptoms: [], createdAt: '' }
-];
-
-const MOCK_PLANTS: Plant[] = [
-  { id: '1', title: 'Camomille',     description: 'Plante calmante',          administrationMode: 'ORAL_ROUTE',      consumedPart: 'Fleur',   properties: [MOCK_PROPERTIES[0]], createdAt: '2024-01-15T10:00:00', updatedAt: '2024-01-15T10:00:00' },
-  { id: '2', title: 'Lavande',       description: 'Vertus relaxantes',         administrationMode: 'EPIDERMAL_ROUTE', consumedPart: 'Fleur',   properties: [], createdAt: '2024-02-10T09:00:00', updatedAt: '2024-02-10T09:00:00' },
-  { id: '3', title: 'Menthe poivrée',description: 'Rafraîchissante et digestive', administrationMode: 'ORAL_ROUTE',  consumedPart: 'Feuille', properties: [MOCK_PROPERTIES[3]], createdAt: '2024-03-05T14:00:00', updatedAt: '2024-03-05T14:00:00' }
-];
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-plant-form',
@@ -33,12 +20,14 @@ export class PlantFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private plantService = inject(PlantService);
+  private propertyService = inject(PropertyService);
+  private toastr = inject(ToastrService);
 
   plantForm: FormGroup;
   plant: Plant | null = null;
   properties: Property[] = [];
   selectedPropertyIds: string[] = [];
-
 
   isLoadingData = false;
   isSaving = false;
@@ -94,24 +83,18 @@ export class PlantFormComponent implements OnInit {
 
   toggleProperty(propertyId: string): void {
     const index = this.selectedPropertyIds.indexOf(propertyId);
-  toggleProperty(propertyId: string): void {
-    const index = this.selectedPropertyIds.indexOf(propertyId);
     if (index > -1) {
       this.selectedPropertyIds.splice(index, 1);
-      this.selectedPropertyIds.splice(index, 1);
     } else {
-      this.selectedPropertyIds.push(propertyId);
       this.selectedPropertyIds.push(propertyId);
     }
   }
 
   isPropertySelected(propertyId: string): boolean {
     return this.selectedPropertyIds.includes(propertyId);
-    return this.selectedPropertyIds.includes(propertyId);
   }
 
   onSubmit(): void {
-    if (this.plantForm.invalid) {
     if (this.plantForm.invalid) {
       this.plantForm.markAllAsTouched();
       return;

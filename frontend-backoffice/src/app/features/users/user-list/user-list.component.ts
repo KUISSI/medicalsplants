@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../../core/services/user.service';
 import { User, UserPage } from '../../../core/models/user.model';
@@ -9,111 +11,130 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ConfirmDialogComponent, SlideOverComponent],
+  imports:  [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    LoaderComponent,
+    ConfirmDialogComponent
+  ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
-  styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent {
-  private fb = inject(FormBuilder);
+export class UserListComponent implements OnInit {
+  private userService = inject(UserService);
+  private toastr = inject(ToastrService);
 
-  /* ---- data ---- */
-  private allUsers: User[] = [...MOCK_USERS];
-  users: User[] = [...MOCK_USERS];
+  users: User[] = [];
+  isLoading = true;
   searchTerm = '';
 
-  /* ---- slide-over ---- */
-  slideOverOpen = false;
-  editingUser: User | null = null;
+  // Pagination
+  currentPage = 0;
+  totalPages = 0;
+  totalElements = 0;
+  pageSize = 20;
 
-  form: FormGroup = this.fb.group({
-    pseudo:    ['', [Validators.required, Validators.minLength(3)]],
-    firstname: [''],
-    lastname:  [''],
-    role:      ['USER', Validators.required],
-    status:    ['ACTIVE', Validators.required]
-  });
-
-  /* ---- delete dialog ---- */
+  // Delete confirmation
   showDeleteDialog = false;
-  deletingUser: User | null = null;
+  userToDelete: User | null = null;
 
-  get f() { return this.form.controls; }
+  ngOnInit(): void {
+    this.loadUsers();
+  }
 
-  openEdit(user: User): void {
-    this.editingUser = user;
-    this.form.patchValue({
-      pseudo:    user.pseudo,
-      firstname: user.firstname || '',
-      lastname:  user.lastname  || '',
-      role:      user.role,
-      status:    user.status
+  loadUsers(): void {
+    this.isLoading = true;
+    this.userService.getAll(this.currentPage, this.pageSize, this.searchTerm).subscribe({
+      next: (response:  UserPage) => {
+        this.users = response.content;
+        this. totalPages = response.totalPages;
+        this. totalElements = response. totalElements;
+        this.isLoading = false;
+      },
+      error:  () => {
+        this.isLoading = false;
+      }
     });
-    this.slideOverOpen = true;
   }
 
-  closeSlideOver(): void {
-    this.slideOverOpen = false;
-    this.editingUser = null;
-    this.form.reset();
+  onSearch(): void {
+    this.currentPage = 0;
+    this.loadUsers();
   }
 
-  save(): void {
-    if (this.form.invalid || !this.editingUser) { this.form.markAllAsTouched(); return; }
-    const values = this.form.value;
-    this.allUsers = this.allUsers.map(u =>
-      u.id === this.editingUser!.id ? { ...u, ...values, isActive: values.status === 'ACTIVE' } : u
-    );
-    this.applySearch();
-    this.closeSlideOver();
+  loadPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this. loadUsers();
+    }
   }
 
-  applySearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    this.users = term
-      ? this.allUsers.filter(u => u.email.toLowerCase().includes(term) || u.pseudo.toLowerCase().includes(term))
-      : [...this.allUsers];
+  updateRole(user: User, role: 'USER' | 'PREMIUM' | 'ADMIN'): void {
+    this.userService.updateRole(user. id, role).subscribe({
+      next:  (updatedUser) => {
+        const index = this.users.findIndex(u => u.id === user.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+        this.toastr.success(`Rôle mis à jour :  ${role}`, 'Succès');
+      }
+    });
   }
 
-  onSearch(): void { this.applySearch(); }
+  updateStatus(user: User, status: 'ACTIVE' | 'INACTIVE' | 'BLOCKED'): void {
+    this.userService.updateStatus(user.id, status).subscribe({
+      next: (updatedUser) => {
+        const index = this. users.findIndex(u => u.id === user.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+        this. toastr.success(`Statut mis à jour : ${status}`, 'Succès');
+      }
+    });
+  }
 
   confirmDelete(user: User): void {
-    this.deletingUser = user;
+    this.userToDelete = user;
     this.showDeleteDialog = true;
   }
 
   onDeleteConfirm(): void {
-    if (this.deletingUser) {
-      this.allUsers = this.allUsers.filter(u => u.id !== this.deletingUser!.id);
-      this.applySearch();
+    if (this.userToDelete) {
+      this.userService.delete(this.userToDelete.id).subscribe({
+        next:  () => {
+          this.users = this.users. filter(u => u.id !== this. userToDelete?. id);
+          this.toastr. success('Utilisateur supprimé', 'Succès');
+          this.showDeleteDialog = false;
+          this.userToDelete = null;
+        }
+      });
     }
-    this.showDeleteDialog = false;
-    this.deletingUser = null;
   }
 
   onDeleteCancel(): void {
     this.showDeleteDialog = false;
-    this.deletingUser = null;
+    this.userToDelete = null;
   }
 
   getRoleBadgeClass(role: string): string {
     switch (role) {
-      case 'ADMIN':   return 'badge--admin';
+      case 'ADMIN':  return 'badge--admin';
       case 'PREMIUM': return 'badge--premium';
-      default:        return 'badge--user';
+      default: return 'badge--user';
     }
   }
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'ACTIVE':   return 'badge--success';
+      case 'ACTIVE': return 'badge--success';
       case 'INACTIVE': return 'badge--warning';
-      case 'BLOCKED':  return 'badge--danger';
-      default:         return '';
+      case 'BLOCKED': return 'badge--danger';
+      default:  return '';
     }
   }
 
-  formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+  formatDate(dateString:  string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
   }
 }

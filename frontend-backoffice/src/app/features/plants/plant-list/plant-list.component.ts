@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PlantService } from '../../../core/services/plant.service';
 import { Plant, PlantPage } from '../../../core/models/plant.model';
@@ -10,17 +11,22 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-plant-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, ConfirmDialogComponent, SlideOverComponent],
+  imports:  [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    LoaderComponent,
+    ConfirmDialogComponent
+  ],
   templateUrl: './plant-list.component.html',
   styleUrls: ['./plant-list.component.scss']
-  styleUrls: ['./plant-list.component.scss']
 })
-export class PlantListComponent {
-  private fb = inject(FormBuilder);
+export class PlantListComponent implements OnInit {
+  private plantService = inject(PlantService);
+  private toastr = inject(ToastrService);
 
-  /* ---- data ---- */
-  private allPlants: Plant[] = [...MOCK_PLANTS];
-  plants: Plant[] = [...MOCK_PLANTS];
+  plants: Plant[] = [];
+  isLoading = true;
   searchTerm = '';
 
   currentPage = 0;
@@ -58,22 +64,30 @@ export class PlantListComponent {
   }
 
   confirmDelete(plant: Plant): void {
-    this.deletingPlant = plant;
+    this.plantToDelete = plant;
     this.showDeleteDialog = true;
   }
 
   onDeleteConfirm(): void {
-    if (this.deletingPlant) {
-      this.allPlants = this.allPlants.filter(p => p.id !== this.deletingPlant!.id);
-      this.applySearch();
+    if (this.plantToDelete) {
+      this.plantService. delete(this.plantToDelete.id).subscribe({
+        next: () => {
+          this.plants = this.plants. filter(p => p.id !== this. plantToDelete?.id);
+          this.toastr.success('Plante supprimée', 'Succès');
+          this.showDeleteDialog = false;
+          this. plantToDelete = null;
+        }
+      });
     }
-    this.showDeleteDialog = false;
-    this.deletingPlant = null;
   }
 
   onDeleteCancel(): void {
     this.showDeleteDialog = false;
-    this.deletingPlant = null;
+    this.plantToDelete = null;
+  }
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
   }
 
 }

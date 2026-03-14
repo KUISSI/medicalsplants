@@ -1,11 +1,10 @@
 <div class="dashboard">
   <!-- Welcome Header -->
-  <div class="dashboard__hero">
+  <div class="dashboard__header">
     <div class="dashboard__welcome">
-      <p class="dashboard__date">{{ today | date: 'EEEE d MMMM yyyy' : '' : 'fr' }}</p>
-      <h2 class="dashboard__title">Bienvenue sur le panneau d'administration</h2>
+      <h1 class="dashboard__title">Bonjour, {{ authService.currentUser()?.pseudo }} 👋</h1>
       <p class="dashboard__subtitle">
-        Gérez les plantes, recettes, utilisateurs et modérez les contenus soumis.
+        Bienvenue dans le panneau d'administration de Medicals Plants
       </p>
     </div>
     <div class="dashboard__date">

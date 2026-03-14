@@ -1,69 +1,18 @@
 @import '../../../shared/styles/admin-page';
 @import '../../../shared/styles/admin-table';
-@import '../../../shared/styles/admin-form';
-
-.user-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  background: linear-gradient(135deg, #f0f7f1 0%, #e8f5e9 100%);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #c8e6c9;
-
-  &__avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  &__name {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--color-text);
-    margin: 0 0 2px;
-  }
-
-  &__email {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    margin: 0;
-  }
-}
-
-.date-cell {
-  color: var(--color-text-muted);
-  font-size: 0.88rem;
-}
-
-.verified-icon {
-  color: #2e7d32;
-  margin-left: 5px;
-  font-size: 0.9rem;
-  vertical-align: middle;
-}
 
 .user-cell {
   display: flex;
-  align-items: center;
+  align-items:  center;
   gap: 12px;
 
   &__avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--color-primary);
+    background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #ffffff;
-    display: flex;
+    display:  flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
@@ -77,17 +26,17 @@
 
   &__name {
     font-weight: 600;
-    color: #333;
+    color:  #333;
   }
 
   &__fullname {
     font-size: 0.85rem;
-    color: var(--color-text-faint);
+    color: #999;
   }
 }
 
 .email-cell {
-  color: var(--color-text-muted);
+  color: #666;
 }
 
 .verified-badge {
@@ -96,7 +45,7 @@
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: var(--color-accent);
+  background: #4CAF50;
   color: #fff;
   border-radius: 50%;
   font-size: 0.7rem;
@@ -106,15 +55,15 @@
 
 .inline-select {
   padding: 6px 10px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
-  background: var(--color-surface);
+  background: #ffffff;
   transition: all 0.3s;
 
   &:focus {
-    border-color: var(--color-accent);
+    border-color: #667eea;
     outline: none;
   }
 
@@ -125,7 +74,7 @@
   }
 
   &.badge--warning {
-    background: #fff3e0;
+    background:  #fff3e0;
     border-color: #FF9800;
     color: #e65100;
   }

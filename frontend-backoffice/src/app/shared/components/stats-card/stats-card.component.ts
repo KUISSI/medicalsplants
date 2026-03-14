@@ -7,84 +7,89 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <a class="stats-card" [style.--accent-color]="color" [routerLink]="link || null">
-      <div class="stats-card__icon-wrap">
-        <i class="bi {{ icon }}" aria-hidden="true"></i>
-      </div>
+    <div class="stats-card" [style.--accent-color]="color">
+      <div class="stats-card__icon">{{ icon }}</div>
       <div class="stats-card__content">
         <span class="stats-card__value">{{ value }}</span>
         <span class="stats-card__label">{{ label }}</span>
       </div>
-      <i class="bi bi-chevron-right stats-card__arrow" aria-hidden="true"></i>
-    </a>
+      @if (link) {
+        <a [routerLink]="link" class="stats-card__link">
+          Voir tout →
+        </a>
+      }
+    </div>
   `,
   styles: [`
     .stats-card {
       background: #ffffff;
-      border-radius: 14px;
-      padding: 20px 22px;
-      box-shadow: 0 2px 10px rgba(26, 71, 42, 0.07);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       position: relative;
-      transition: all 0.25s ease;
-      text-decoration: none;
-      color: inherit;
-      border: 1.5px solid transparent;
+      overflow: hidden;
+      transition: all 0.3s ease;
 
-      &:hover {
-        transform: translateY(-3px);
-        border-color: var(--accent-color, #4CAF50);
-        box-shadow: 0 8px 24px rgba(26, 71, 42, 0.12);
+      &:: before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: var(--accent-color, #667eea);
       }
 
-      &__icon-wrap {
-        width: 52px;
-        height: 52px;
+      &: hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      &__icon {
+        font-size: 2. 5rem;
+        width: 60px;
+        height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: color-mix(in srgb, var(--accent-color, #4CAF50) 12%, #F3FBF0);
+        background: linear-gradient(135deg, var(--accent-color, #667eea), #764ba2);
         border-radius: 12px;
-        flex-shrink: 0;
-        color: var(--accent-color, #4CAF50);
-        font-size: 1.35rem;
+        opacity: 0.9;
       }
 
       &__content {
         flex: 1;
         display: flex;
         flex-direction: column;
-        min-width: 0;
       }
 
       &__value {
-        font-family: 'Rosarivo', serif;
-        font-size: 1.85rem;
-        color: #1a472a;
+        font-size: 2rem;
+        font-weight: 700;
+        color:  #1a1a2e;
         line-height: 1;
-        font-weight: 400;
       }
 
       &__label {
-        font-size: 0.82rem;
-        color: #666;
-        margin-top: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        font-weight: 600;
+        font-size:  0.9rem;
+        color:  #666;
+        margin-top: 5px;
       }
 
-      &__arrow {
-        color: #ccc;
+      &__link {
+        color: var(--accent-color, #667eea);
+        text-decoration: none;
         font-size: 0.85rem;
-        transition: all 0.25s ease;
-      }
+        font-weight: 500;
+        white-space: nowrap;
+        transition: color 0.3s;
 
-      &:hover &__arrow {
-        color: var(--accent-color, #4CAF50);
-        transform: translateX(3px);
+        &:hover {
+          color:  #764ba2;
+        }
       }
     }
   `]
