@@ -1,64 +1,58 @@
 <div class="page">
-  <!-- Header -->
+
   <div class="page__header">
     <div class="page__header-content">
-      <h1 class="page__title">✨ Propriétés</h1>
-      <p class="page__subtitle">Gérez les propriétés thérapeutiques</p>
+      <h1 class="page__title">Propriétés thérapeutiques</h1>
+      <p class="page__subtitle">{{ properties.length }} propriété(s) référencée(s)</p>
     </div>
-    <a routerLink="/properties/new" class="btn btn--primary"> ➕ Nouvelle propriété </a>
+    <div class="page__header-actions">
+      <div class="search-box">
+        <i class="bi bi-search search-box__icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-box__input"
+          placeholder="Rechercher..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          aria-label="Rechercher une propriété"
+        />
+        @if (searchTerm) {
+          <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()" aria-label="Effacer">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+
+      <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()" aria-label="Filtrer par famille">
+        <option value="">Toutes les familles</option>
+        @for (family of families; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nouvelle propriété
+      </button>
+    </div>
   </div>
 
-  <!-- Filters -->
-  <div class="page__filters">
-    <div class="search-box">
-      <span class="search-box__icon">🔍</span>
-      <input
-        type="text"
-        class="search-box__input"
-        placeholder="Rechercher une propriété..."
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="applyFilters()"
-      />
-      @if (searchTerm) {
-        <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()">✕</button>
-      }
-    </div>
-
-    <select class="filter-select" [(ngModel)]="family" (ngModelChange)="applyFilters()">
-      <option value="">Toutes les familles</option>
-      @for (family of families; track family) {
-        <option [value]="family">{{ family }}</option>
-      }
-    </select>
-
-    @if (searchTerm || family) {
-      <button class="btn btn--secondary" (click)="clearFilters()">✕ Effacer</button>
-    }
-  </div>
-
-  <!-- Content -->
-  @if (isLoading) {
-    <app-loader message="Chargement des propriétés..."></app-loader>
-  } @else if (filteredProperties.length === 0) {
+  @if (properties.length === 0) {
     <div class="empty-state">
-      <span class="empty-state__icon">✨</span>
+      <i class="bi bi-stars empty-state__icon" aria-hidden="true"></i>
       <h3 class="empty-state__title">Aucune propriété trouvée</h3>
       <p class="empty-state__message">
-        @if (searchTerm || family) {
-          Modifiez vos critères de recherche
-        } @else {
-          Commencez par créer une propriété
-        }
+        @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche. }
+        @else { Commencez par créer une propriété. }
       </p>
-      @if (!searchTerm && !family) {
-        <a routerLink="/properties/new" class="btn btn--primary"> ➕ Créer une propriété </a>
+      @if (!searchTerm && !selectedFamily) {
+        <button class="btn btn--primary" (click)="openNew()">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          Créer une propriété
+        </button>
       }
     </div>
   } @else {
-    <div class="page__info">
-      <span>{{ filteredProperties.length }} propriété(s)</span>
-    </div>
-
     <div class="table-container">
       <table class="table">
         <thead>
@@ -67,18 +61,14 @@
             <th>Famille</th>
             <th>Symptômes liés</th>
             <th>Créé le</th>
-            <th>Actions</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          @for (property of filteredProperties; track property.id) {
-            <tr>
-              <td>
-                <strong>{{ property.title }}</strong>
-              </td>
-              <td>
-                <span class="badge badge--purple">{{ property.propertyFamily }}</span>
-              </td>
+          @for (property of properties; track property.id) {
+            <tr (click)="openEdit(property)" style="cursor: pointer;">
+              <td><strong class="item-name">{{ property.title }}</strong></td>
+              <td><span class="badge badge--info">{{ property.family }}</span></td>
               <td>
                 @if (property.symptoms && property.symptoms.length > 0) {
                   <div class="tags">
@@ -90,25 +80,17 @@
                     }
                   </div>
                 } @else {
-                  <span class="text-muted">Aucun</span>
+                  <span class="text-muted">—</span>
                 }
               </td>
-              <td>{{ formatDate(property.createdAt) }}</td>
+              <td class="date-cell">{{ formatDate(property.createdAt) }}</td>
               <td>
-                <div class="actions">
-                  <a
-                    [routerLink]="['/properties', property.id, 'edit']"
-                    class="action-btn"
-                    title="Modifier"
-                  >
-                    ✏️
-                  </a>
-                  <button
-                    class="action-btn action-btn--danger"
-                    (click)="confirmDelete(property)"
-                    title="Supprimer"
-                  >
-                    🗑️
+                <div class="row-actions">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openEdit(property)" title="Modifier" aria-label="Modifier {{ property.title }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="action-btn action-btn--danger" (click)="$event.stopPropagation(); confirmDelete(property)" title="Supprimer" aria-label="Supprimer {{ property.title }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
                   </button>
                 </div>
               </td>
@@ -120,13 +102,103 @@
   }
 </div>
 
+<!-- Slide-over form -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="slideOverTitle"
+  [subtitle]="isEditMode ? 'Modifier les informations de la propriété' : 'Créer une nouvelle propriété thérapeutique'"
+  (closed)="closeSlideOver()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="field">
+      <label class="field__label">Nom de la propriété *</label>
+      <input
+        type="text"
+        formControlName="title"
+        class="field__input"
+        [class.field__input--error]="f['title'].invalid && f['title'].touched"
+        placeholder="ex: Anti-inflammatoire"
+        autocomplete="off"
+      />
+      @if (f['title'].invalid && f['title'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Nom requis (2–100 caractères)
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Famille thérapeutique *</label>
+      <select
+        formControlName="family"
+        class="field__input"
+        [class.field__input--error]="f['family'].invalid && f['family'].touched"
+      >
+        <option value="">Sélectionner une famille...</option>
+        @for (family of predefinedFamilies; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+      @if (f['family'].invalid && f['family'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Famille requise
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Description</label>
+      <textarea
+        formControlName="description"
+        class="field__input field__input--textarea"
+        placeholder="Description des effets thérapeutiques..."
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section__title">Symptômes traités</p>
+      <div class="check-group" role="group" aria-label="Sélectionner les symptômes">
+        @for (symptom of availableSymptoms; track symptom.id) {
+          <div
+            class="check-item"
+            [class.check-item--selected]="isSymptomSelected(symptom.id)"
+            (click)="toggleSymptom(symptom.id)"
+            role="checkbox"
+            [attr.aria-checked]="isSymptomSelected(symptom.id)"
+            tabindex="0"
+            (keydown.space)="$event.preventDefault(); toggleSymptom(symptom.id)"
+          >
+            <div class="check-item__checkbox">
+              @if (isSymptomSelected(symptom.id)) {
+                <i class="bi bi-check2" aria-hidden="true"></i>
+              }
+            </div>
+            <span class="check-item__label">{{ symptom.title }}</span>
+            <span class="check-item__family">{{ symptom.family }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="so-actions">
+      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
+      <button type="submit" class="btn btn--primary">
+        <i class="bi bi-check2" aria-hidden="true"></i>
+        {{ isEditMode ? 'Enregistrer' : 'Créer la propriété' }}
+      </button>
+    </div>
+  </form>
+</app-slide-over>
+
+<!-- Delete dialog -->
 <app-confirm-dialog
   [isOpen]="showDeleteDialog"
   title="Supprimer la propriété"
-  [message]="
-    'Êtes-vous sûr de vouloir supprimer la propriété \'' + propertyToDelete?.title + '\' ?'
-  "
-  icon="🗑️"
+  [message]="'Supprimer définitivement \'' + deletingProperty?.title + '\' ?'"
   type="danger"
   confirmText="Supprimer"
   (confirm)="onDeleteConfirm()"

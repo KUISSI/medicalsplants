@@ -1,40 +1,35 @@
 <div class="page">
   <div class="page__header">
     <div class="page__header-content">
-      <a routerLink="/recipes" class="page__back">← Retour aux recettes</a>
-      <h1 class="page__title">⏳ Modération des recettes</h1>
+      <h1 class="page__title">Modération des recettes</h1>
       <p class="page__subtitle">Approuvez ou rejetez les recettes soumises</p>
     </div>
   </div>
 
-  @if (isLoading) {
-    <div class="loader-message">
-      <span class="spinner"></span>
-      Chargement des recettes en attente...
-    </div>
-  } @else if (pendingRecipes.length === 0) {
-    <div class="empty-state empty-state--success">
-      <span class="empty-state__icon">✅</span>
+  @if (pendingrecipes.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-check-circle empty-state__icon" aria-hidden="true"></i>
       <h3 class="empty-state__title">Aucune recette en attente</h3>
-      <p class="empty-state__message">Toutes les recettes ont été modérées. Bravo !</p>
-      <a routerLink="/recipes" class="btn btn--primary"> Voir toutes les recettes </a>
+      <p class="empty-state__message">Toutes les recettes ont été modérées.</p>
+      <a routerLink="/recipes" class="btn btn--primary">Voir toutes les recettes</a>
     </div>
   } @else {
     <div class="page__info">
-      <span class="pending-count">
-        {{ pendingRecipes.length }} recette(s) en attente de modération
-      </span>
+      <span>{{ pendingrecipes.length }} recette(s) en attente de modération</span>
     </div>
 
     <div class="moderation-grid">
-      @for (recipe of pendingRecipes; track recipe.id) {
+      @for (recipe of pendingrecipes; track recipe.id) {
         <div class="moderation-card">
           <div class="moderation-card__header">
             <span class="moderation-card__type">
-              {{ getRecipeTypeIcon(recipe.type) }} {{ recipeTypeLabels[recipe.type] }}
+              <i class="bi {{ getrecipeTypeIcon(recipe.type) }}" aria-hidden="true"></i>
+              {{ recipeTypeLabels[recipe.type] }}
             </span>
             @if (recipe.premium) {
-              <span class="moderation-card__premium">⭐ Premium</span>
+              <span class="moderation-card__premium">
+                <i class="bi bi-star-fill" aria-hidden="true"></i> Premium
+              </span>
             }
           </div>
 
@@ -63,24 +58,23 @@
               <span class="moderation-card__plants-label">Plantes utilisées :</span>
               <div class="moderation-card__plants-list">
                 @for (plant of recipe.plants; track plant.id) {
-                  <span class="plant-tag">🌿 {{ plant.title }}</span>
+                  <span class="plant-tag">
+                    <i class="bi bi-flower1" aria-hidden="true"></i>
+                    {{ plant.title }}
+                  </span>
                 }
               </div>
             </div>
           }
 
           <div class="moderation-card__actions">
-            <button
-              class="moderation-btn moderation-btn--reject"
-              (click)="openRejectDialog(recipe)"
-            >
-              ❌ Rejeter
+            <button class="moderation-btn moderation-btn--reject" (click)="openRejectDialog(recipe)">
+              <i class="bi bi-x-circle" aria-hidden="true"></i>
+              Rejeter
             </button>
-            <button
-              class="moderation-btn moderation-btn--approve"
-              (click)="openApproveDialog(recipe)"
-            >
-              ✅ Approuver
+            <button class="moderation-btn moderation-btn--approve" (click)="openApproveDialog(recipe)">
+              <i class="bi bi-check-circle" aria-hidden="true"></i>
+              Approuver
             </button>
           </div>
         </div>
@@ -90,31 +84,23 @@
 </div>
 
 <!-- Approve Dialog -->
-@if (showApproveDialog) {
-  <div class="modal-backdrop">
-    <div class="modal">
-      <h2>Approuver la recette</h2>
-      <p>
-        Êtes-vous sûr de vouloir approuver et publier la recette « {{ selectedRecipe?.title }} » ?
-      </p>
-      <div class="modal-actions">
-        <button class="btn btn--primary" (click)="onApproveConfirm()">Approuver</button>
-        <button class="btn btn--secondary" (click)="closeDialogs()">Annuler</button>
-      </div>
-    </div>
-  </div>
-}
+<app-confirm-dialog
+  [isOpen]="showApproveDialog"
+  title="Approuver la recette"
+  [message]="'Publier la recette \'' + selectedrecipe?.title + '\' ?'"
+  type="default"
+  confirmText="Approuver"
+  (confirm)="onApproveConfirm()"
+  (cancel)="closeDialogs()"
+></app-confirm-dialog>
 
 <!-- Reject Dialog -->
-@if (showRejectDialog) {
-  <div class="modal-backdrop">
-    <div class="modal">
-      <h2>Rejeter la recette</h2>
-      <p>Êtes-vous sûr de vouloir rejeter la recette « {{ selectedRecipe?.title }} » ?</p>
-      <div class="modal-actions">
-        <button class="btn btn--danger" (click)="onRejectConfirm()">Rejeter</button>
-        <button class="btn btn--secondary" (click)="closeDialogs()">Annuler</button>
-      </div>
-    </div>
-  </div>
-}
+<app-confirm-dialog
+  [isOpen]="showRejectDialog"
+  title="Rejeter la recette"
+  [message]="'Rejeter définitivement la recette \'' + selectedrecipe?.title + '\' ?'"
+  type="danger"
+  confirmText="Rejeter"
+  (confirm)="onRejectConfirm()"
+  (cancel)="closeDialogs()"
+></app-confirm-dialog>

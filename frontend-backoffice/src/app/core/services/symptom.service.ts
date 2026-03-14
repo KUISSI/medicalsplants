@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Symptom, CreateSymptomRequest, UpdateSymptomRequest } from '../models/symptom.model';
 
 @Injectable({
-  providedIn:  'root'
+  providedIn: 'root'
 })
 export class SymptomService {
 
@@ -26,41 +26,12 @@ export class SymptomService {
     return this.http.get<string[]>(`${this.apiUrl}/families`);
   }
 
-  /**
-   * Récupère les symptômes groupés par famille, avec filtres optionnels.
-   * @param searchTerm Filtre de recherche (optionnel)
-   * @param family Famille sélectionnée (optionnel)
-   */
-  getGroupedByFamily(
-    searchTerm?: string,
-    family?: string
-  ): Observable<{ [family: string]: Symptom[] }> {
-    let params = new HttpParams();
-    if (searchTerm) params = params.set('searchTerm', searchTerm);
-    if (family) params = params.set('family', family);
-
-    return this.http.get<{ [family: string]: Symptom[] }>(
-      `${this.apiUrl}/grouped`,
-      { params }
-    );
-  }
-
   create(request: CreateSymptomRequest): Observable<Symptom> {
-    const params = new HttpParams()
-      .set('title', request.title)
-      .set('family', request.family)
-      .set('description', request.description || '');
-
-    return this.http.post<Symptom>(this.apiUrl, null, { params });
+    return this.http.post<Symptom>(this.apiUrl, request);
   }
 
   update(id: string, request: UpdateSymptomRequest): Observable<Symptom> {
-    const params = new HttpParams()
-      .set('title', request.title)
-      .set('family', request.family)
-      .set('description', request.description || '');
-
-    return this.http.put<Symptom>(`${this.apiUrl}/${id}`, null, { params });
+    return this.http.put<Symptom>(`${this.apiUrl}/${id}`, request);
   }
 
   delete(id: string): Observable<void> {

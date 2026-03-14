@@ -1,110 +1,166 @@
 <div class="page">
-  <!-- Header -->
+
   <div class="page__header">
     <div class="page__header-content">
-      <h1 class="page__title">🩺 Symptômes</h1>
-      <p class="page__subtitle">Gérez les symptômes de la plateforme</p>
+      <h1 class="page__title">Symptômes</h1>
+      <p class="page__subtitle">{{ symptoms.length }} symptôme(s) référencé(s)</p>
     </div>
-    <a routerLink="/symptoms/new" class="btn btn--primary"> ➕ Nouveau symptôme </a>
+    <div class="page__header-actions">
+      <div class="search-box">
+        <i class="bi bi-search search-box__icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-box__input"
+          placeholder="Rechercher..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          aria-label="Rechercher un symptôme"
+        />
+        @if (searchTerm) {
+          <button class="search-box__clear" (click)="searchTerm = ''; applyFilters()" aria-label="Effacer">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+
+      <select class="filter-select" [(ngModel)]="selectedFamily" (ngModelChange)="applyFilters()" aria-label="Filtrer par famille">
+        <option value="">Toutes les familles</option>
+        @for (family of families; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nouveau symptôme
+      </button>
+    </div>
   </div>
 
-  <!-- Filters -->
-  <div class="page__filters">
-    <div class="search-box">
-      <span class="search-box__icon">🔍</span>
-      <input
-        type="text"
-        class="search-box__input"
-        placeholder="Rechercher un symptôme..."
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearch($event)"
-      />
-      <button *ngIf="searchTerm" class="search-box__clear" (click)="clearFilters()">✕</button>
+  @if (symptoms.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-activity empty-state__icon" aria-hidden="true"></i>
+      <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
+      <p class="empty-state__message">
+        @if (searchTerm || selectedFamily) { Modifiez vos critères de recherche. }
+        @else { Commencez par créer un symptôme. }
+      </p>
+      @if (!searchTerm && !selectedFamily) {
+        <button class="btn btn--primary" (click)="openNew()">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          Créer un symptôme
+        </button>
+      }
     </div>
-
-    <select class="filter-select" [(ngModel)]="family" (ngModelChange)="onFamilyChange($event)">
-      <option value="">Toutes les familles</option>
-      <option *ngFor="let family of families" [value]="family">{{ family }}</option>
-    </select>
-
-    <button *ngIf="searchTerm || family" class="btn btn--secondary" (click)="clearFilters()">
-      ✕ Effacer
-    </button>
-  </div>
-
-  <!-- Content -->
-  <ng-container *ngIf="isLoading; else loadedContent">
-    <app-loader message="Chargement des symptômes... "></app-loader>
-  </ng-container>
-
-  <ng-template #loadedContent>
-    <ng-container *ngIf="families.length === 0">
-      <div class="empty-state">
-        <span class="empty-state__icon">🩺</span>
-        <h3 class="empty-state__title">Aucun symptôme trouvé</h3>
-        <p class="empty-state__message">
-          <ng-container *ngIf="searchTerm || family; else createMsg">
-            Modifiez vos critères de recherche
-          </ng-container>
-          <ng-template #createMsg> Commencez par créer un symptôme </ng-template>
-        </p>
-        <a *ngIf="!searchTerm && !family" routerLink="/symptoms/new" class="btn btn--primary">
-          ➕ Créer un symptôme
-        </a>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="families.length > 0">
-      <div *ngFor="let family of families">
-        <h2>{{ family }}</h2>
-        <div class="table-container">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Créé le</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let symptom of groupedSymptoms[family]">
-                <td>
-                  <strong>{{ symptom.title }}</strong>
-                </td>
-                <td>{{ symptom.description || '-' }}</td>
-                <td>{{ formatDate(symptom.createdAt) }}</td>
-                <td>
-                  <div class="actions">
-                    <a
-                      [routerLink]="['/symptoms', symptom.id, 'edit']"
-                      class="action-btn"
-                      title="Modifier"
-                    >
-                      ✏️
-                    </a>
-                    <button
-                      class="action-btn action-btn--danger"
-                      (click)="confirmDelete(symptom)"
-                      title="Supprimer"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </ng-container>
-  </ng-template>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Famille</th>
+            <th>Description</th>
+            <th>Créé le</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (symptom of symptoms; track symptom.id) {
+            <tr (click)="openEdit(symptom)" style="cursor: pointer;">
+              <td><strong class="item-name">{{ symptom.title }}</strong></td>
+              <td><span class="badge badge--info">{{ symptom.family }}</span></td>
+              <td><span class="desc-cell">{{ symptom.description || '—' }}</span></td>
+              <td class="date-cell">{{ formatDate(symptom.createdAt) }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openEdit(symptom)" title="Modifier" aria-label="Modifier {{ symptom.title }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="action-btn action-btn--danger" (click)="$event.stopPropagation(); confirmDelete(symptom)" title="Supprimer" aria-label="Supprimer {{ symptom.title }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </div>
 
+<!-- Slide-over form -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="slideOverTitle"
+  [subtitle]="isEditMode ? 'Modifier les informations du symptôme' : 'Référencer un nouveau symptôme'"
+  (closed)="closeSlideOver()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="field">
+      <label class="field__label">Nom du symptôme *</label>
+      <input
+        type="text"
+        formControlName="title"
+        class="field__input"
+        [class.field__input--error]="f['title'].invalid && f['title'].touched"
+        placeholder="ex: Anxiété chronique"
+        autocomplete="off"
+      />
+      @if (f['title'].invalid && f['title'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Nom requis (2–100 caractères)
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Famille de symptômes *</label>
+      <select
+        formControlName="family"
+        class="field__input"
+        [class.field__input--error]="f['family'].invalid && f['family'].touched"
+      >
+        <option value="">Sélectionner une famille...</option>
+        @for (family of families; track family) {
+          <option [value]="family">{{ family }}</option>
+        }
+      </select>
+      @if (f['family'].invalid && f['family'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Famille requise
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Description</label>
+      <textarea
+        formControlName="description"
+        class="field__input field__input--textarea"
+        placeholder="Description détaillée du symptôme..."
+        rows="4"
+      ></textarea>
+    </div>
+
+    <div class="so-actions">
+      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
+      <button type="submit" class="btn btn--primary">
+        <i class="bi bi-check2" aria-hidden="true"></i>
+        {{ isEditMode ? 'Enregistrer' : 'Créer le symptôme' }}
+      </button>
+    </div>
+  </form>
+</app-slide-over>
+
+<!-- Delete dialog -->
 <app-confirm-dialog
   [isOpen]="showDeleteDialog"
   title="Supprimer le symptôme"
-  [message]="'Êtes-vous sûr de vouloir supprimer le symptôme \'' + symptomToDelete?.title + '\' ?'"
-  icon="🗑️"
+  [message]="'Supprimer définitivement \'' + deletingSymptom?.title + '\' ?'"
   type="danger"
   confirmText="Supprimer"
   (confirm)="onDeleteConfirm()"

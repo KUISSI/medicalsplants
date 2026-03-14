@@ -1,73 +1,97 @@
 <div class="page">
+
   <div class="page__header">
     <div class="page__header-content">
-      <h1 class="page__title">🌿 Plantes</h1>
-      <p class="page__subtitle">Gérez le catalogue des plantes médicinales</p>
+      <h1 class="page__title">Plantes médicinales</h1>
+      <p class="page__subtitle">{{ plants.length }} plante(s) au catalogue</p>
     </div>
-    <a routerLink="/plants/new" class="btn btn--primary"> ➕ Nouvelle plante </a>
+    <div class="page__header-actions">
+      <div class="search-box">
+        <i class="bi bi-search search-box__icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-box__input"
+          placeholder="Rechercher..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applySearch()"
+          aria-label="Rechercher une plante"
+        />
+        @if (searchTerm) {
+          <button class="search-box__clear" (click)="searchTerm = ''; applySearch()" aria-label="Effacer">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Nouvelle plante
+      </button>
+    </div>
   </div>
 
-  @if (isLoading) {
-    <app-loader message="Chargement des plantes..."></app-loader>
-  } @else if (plants.length === 0) {
+  @if (plants.length === 0) {
     <div class="empty-state">
-      <span class="empty-state__icon">🌿</span>
+      <i class="bi bi-flower1 empty-state__icon" aria-hidden="true"></i>
       <h3 class="empty-state__title">Aucune plante trouvée</h3>
-      <a routerLink="/plants/new" class="btn btn--primary"> ➕ Créer une plante </a>
+      <p class="empty-state__message">
+        @if (searchTerm) { Modifiez votre recherche ou } @else { Commencez par }
+        ajouter une plante au catalogue.
+      </p>
+      <button class="btn btn--primary" (click)="openNew()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Ajouter une plante
+      </button>
     </div>
   } @else {
-    <div class="page__info">
-      <span>{{ totalElements }} plante(s)</span>
-    </div>
-
     <div class="table-container">
       <table class="table">
         <thead>
           <tr>
             <th>Plante</th>
-            <th>Propriétés</th>
-            <th>Créé le</th>
-            <th>Actions</th>
+            <th>Historique</th>
+            <th>Image</th>
+            <th>Ajoutée le</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @for (plant of plants; track plant.id) {
-            <tr>
+            <tr (click)="openEdit(plant)" style="cursor: pointer;">
               <td>
                 <div class="plant-cell">
-                  <span class="plant-cell__icon">🌿</span>
+                  <div class="plant-cell__avatar" aria-hidden="true">
+                    <i class="bi bi-flower1"></i>
+                  </div>
                   <div>
-                    <strong>{{ plant.title }}</strong>
+                    <strong class="item-name">{{ plant.title }}</strong>
                     @if (plant.description) {
-                      <p class="plant-cell__desc">{{ plant.description }}</p>
+                      <span class="desc-cell">{{ plant.description }}</span>
                     }
                   </div>
                 </div>
               </td>
-
               <td>
-                @if (plant.properties && plant.properties.length > 0) {
-                  <span class="count-badge">{{ plant.properties.length }}</span>
+                @if (plant.history) {
+                  <span class="desc-cell">{{ plant.history.length > 60 ? (plant.history | slice:0:60) + '…' : plant.history }}</span>
                 } @else {
-                  <span class="text-muted">0</span>
+                  <span>—</span>
                 }
               </td>
-              <td>{{ formatDate(plant.createdAt) }}</td>
               <td>
-                <div class="actions">
-                  <a
-                    [routerLink]="['/plants', plant.id, 'edit']"
-                    class="action-btn"
-                    title="Modifier"
-                  >
-                    ✏️
-                  </a>
-                  <button
-                    class="action-btn action-btn--danger"
-                    (click)="confirmDelete(plant)"
-                    title="Supprimer"
-                  >
-                    🗑️
+                @if (plant.imageUrl) {
+                  <span class="desc-cell">{{ plant.imageUrl }}</span>
+                } @else {
+                  <span>—</span>
+                }
+              </td>
+              <td class="date-cell">{{ formatDate(plant.createdAt) }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openEdit(plant)" title="Modifier" aria-label="Modifier {{ plant.title }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="action-btn action-btn--danger" (click)="$event.stopPropagation(); confirmDelete(plant)" title="Supprimer" aria-label="Supprimer {{ plant.title }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
                   </button>
                 </div>
               </td>
@@ -76,44 +100,88 @@
         </tbody>
       </table>
     </div>
-
-    @if (totalPages > 1) {
-      <div class="pagination">
-        <button class="pagination__btn" [disabled]="currentPage === 0" (click)="loadPage(0)">
-          ««
-        </button>
-        <button
-          class="pagination__btn"
-          [disabled]="currentPage === 0"
-          (click)="loadPage(currentPage - 1)"
-        >
-          ‹
-        </button>
-        <span class="pagination__info">Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
-        <button
-          class="pagination__btn"
-          [disabled]="currentPage === totalPages - 1"
-          (click)="loadPage(currentPage + 1)"
-        >
-          ›
-        </button>
-        <button
-          class="pagination__btn"
-          [disabled]="currentPage === totalPages - 1"
-          (click)="loadPage(totalPages - 1)"
-        >
-          »»
-        </button>
-      </div>
-    }
   }
 </div>
 
+<!-- Slide-over form -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="slideOverTitle"
+  [subtitle]="isEditMode ? 'Modifier les informations de la plante' : 'Ajouter une nouvelle plante au catalogue'"
+  (closed)="closeSlideOver()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="field">
+      <label class="field__label">Nom de la plante *</label>
+      <input
+        type="text"
+        formControlName="title"
+        class="field__input"
+        [class.field__input--error]="f['title'].invalid && f['title'].touched"
+        placeholder="ex: Camomille romaine"
+        autocomplete="off"
+      />
+      @if (f['title'].invalid && f['title'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Nom requis (2–100 caractères)
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Description *</label>
+      <textarea
+        formControlName="description"
+        class="field__input field__input--textarea"
+        placeholder="Description des propriétés et usages..."
+        rows="3"
+      ></textarea>
+      @if (f['description'].invalid && f['description'].touched) {
+        <span class="field__error">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          Description requise
+        </span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label">Historique</label>
+      <textarea
+        formControlName="history"
+        class="field__input field__input--textarea"
+        placeholder="Historique et origines de la plante..."
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field__label">URL de l'image</label>
+      <input
+        type="text"
+        formControlName="imageUrl"
+        class="field__input"
+        placeholder="https://exemple.com/image.jpg"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="so-actions">
+      <button type="button" class="btn btn--ghost" (click)="closeSlideOver()">Annuler</button>
+      <button type="submit" class="btn btn--primary">
+        <i class="bi bi-check2" aria-hidden="true"></i>
+        {{ isEditMode ? 'Enregistrer' : 'Créer la plante' }}
+      </button>
+    </div>
+  </form>
+</app-slide-over>
+
+<!-- Delete dialog -->
 <app-confirm-dialog
   [isOpen]="showDeleteDialog"
   title="Supprimer la plante"
-  [message]="'Êtes-vous sûr de vouloir supprimer la plante \'' + plantToDelete?.title + '\' ? '"
-  icon="🗑️"
+  [message]="'Supprimer définitivement \'' + deletingPlant?.title + '\' ?'"
   type="danger"
   confirmText="Supprimer"
   (confirm)="onDeleteConfirm()"

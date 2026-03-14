@@ -59,7 +59,7 @@
 
   &__title {
     font-size: 1.2rem;
-    color: #1a1a2e;
+    color: var(--color-primary);
     margin:  0 0 12px 0;
     font-weight:  600;
   }
@@ -89,7 +89,7 @@
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
     color: #ffffff;
     display:  flex;
     align-items: center;

@@ -29,11 +29,11 @@
   min-width: 180px;
 
   &:focus {
-    border-color: #667eea;
+    border-color: var(--color-accent);
   }
 }
 
-. recipe-cell {
+.recipe-cell {
   display: flex;
   align-items:  center;
   gap: 10px;
@@ -48,7 +48,7 @@
   color: #e65100;
 }
 
-. status-badge {
+.status-badge {
   display: inline-block;
   padding: 5px 12px;
   border-radius: 20px;
