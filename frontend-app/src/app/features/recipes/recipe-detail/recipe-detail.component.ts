@@ -66,7 +66,6 @@ export class RecipeDetailComponent implements OnInit {
         this.parseIngredients();
         this.isLoading = false;
 
-        // ✅ AJOUT : charger les avis séparément car l'API recette renvoie reviews: null
         this.reviewService.getByRecipeId(id).subscribe({
           next: (reviews) => {
             if (this.recipe) this.recipe.reviews = reviews;
