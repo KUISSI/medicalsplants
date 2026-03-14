@@ -43,6 +43,12 @@ export class AuthService {
     }
   }
 
+  loginMock(user: User): void {
+    this.storage.set(environment.tokenKey, 'mock-token');
+    this.storage.set(environment.userKey, user);
+    this.currentUserSignal.set(user);
+  }
+
   login(request: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSignal.set(true);
 

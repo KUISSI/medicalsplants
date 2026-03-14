@@ -11,15 +11,22 @@ export const routes: Routes = [
     title: 'Connexion - Admin',
   },
 
+  // Routes protégées (Admin uniquement) — wrapped dans le layout
   {
     path: '',
+    loadComponent: () =>
+      import('./shared/components/admin-layout/admin-layout.component').then(
+        (m) => m.AdminLayoutComponent,
+      ),
     canActivate: [adminGuard],
     children: [
       {
         path: '',
+        pathMatch: 'full',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         title: 'Dashboard - Admin',
+        runGuardsAndResolvers: 'always',
       },
       {
         path: 'users',
@@ -28,11 +35,13 @@ export const routes: Routes = [
         title: 'Utilisateurs - Admin',
       },
       {
-        path: 'users/:id',
+        path: 'users/: id',
         loadComponent: () =>
           import('./features/users/user-edit/user-edit.component').then((m) => m.UserEditComponent),
         title: 'Modifier utilisateur - Admin',
       },
+
+      // Symptoms
       {
         path: 'symptoms',
         loadComponent: () =>
@@ -50,13 +59,15 @@ export const routes: Routes = [
         title: 'Nouveau symptôme - Admin',
       },
       {
-        path: 'symptoms/:id/edit',
+        path: 'symptoms/: id/edit',
         loadComponent: () =>
-          import('./features/symptoms/symptom-form/symptom-form.component').then(
+          import('./features/symptoms/symptom-form/symptom-form. component').then(
             (m) => m.SymptomFormComponent,
           ),
         title: 'Modifier symptôme - Admin',
       },
+
+      // Properties
       {
         path: 'properties',
         loadComponent: () =>
@@ -81,6 +92,8 @@ export const routes: Routes = [
           ),
         title: 'Modifier propriété - Admin',
       },
+
+      // Plants
       {
         path: 'plants',
         loadComponent: () =>
@@ -105,21 +118,23 @@ export const routes: Routes = [
           ),
         title: 'Modifier plante - Admin',
       },
+
+      // Receipts
       {
-        path: 'recipes',
+        path: 'receipts',
         loadComponent: () =>
-          import('./features/recipes/recipe-list/recipe-list.component').then(
-            (m) => m.RecipeListComponent,
+          import('./features/receipts/receipt-list/receipt-list.component').then(
+            (m) => m.ReceiptListComponent,
           ),
         title: 'Recettes - Admin',
       },
       {
-        path: 'recipes/moderation',
+        path: 'receipts/moderation',
         loadComponent: () =>
-          import('./features/recipes/recipe-moderation/recipe-moderation.component').then(
-            (m) => m.RecipeModerationComponent,
+          import('./features/receipts/receipt-moderation/receipt-moderation.component').then(
+            (m) => m.ReceiptModerationComponent,
           ),
-        title: 'Modération recettes - Admin',
+        title: 'Modération - Admin',
       },
     ],
   },

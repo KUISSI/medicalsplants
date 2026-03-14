@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-property-form',
   standalone: true,
+  standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, LoaderComponent],
   templateUrl: './property-form.component.html',
   styleUrls: ['./property-form.component.scss'],
@@ -24,14 +25,12 @@ export class PropertyFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private propertyService = inject(PropertyService);
-  private symptomService = inject(SymptomService);
-  private toastr = inject(ToastrService);
 
   propertyForm: FormGroup;
   property: Property | null = null;
   symptoms: Symptom[] = [];
   selectedSymptomIds: string[] = [];
+
 
   isLoadingData = false;
   isSaving = false;
@@ -81,7 +80,7 @@ export class PropertyFormComponent implements OnInit {
       next: (property) => {
         this.property = property;
         this.propertyForm.patchValue({
-          title: property.title,
+          title:          property.title,
           propertyFamily: property.propertyFamily,
           propertyDetail: property.propertyDetail || '',
         });
@@ -108,6 +107,7 @@ export class PropertyFormComponent implements OnInit {
       this.selectedSymptomIds.splice(index, 1);
     } else {
       this.selectedSymptomIds.push(symptomId);
+      this.selectedSymptomIds.push(symptomId);
     }
   }
 
@@ -117,10 +117,10 @@ export class PropertyFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.propertyForm.invalid) {
+    if (this.propertyForm.invalid) {
       this.propertyForm.markAllAsTouched();
       return;
     }
-
     this.isSaving = true;
 
     if (this.isEditMode && this.property) {

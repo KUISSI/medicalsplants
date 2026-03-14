@@ -1,5 +1,6 @@
 @import '../../../shared/styles/admin-page';
 @import '../../../shared/styles/admin-table';
+<<<<<<< HEAD
 
 .page__header {
   display: flex;
@@ -30,11 +31,41 @@
 }
 
 .description-cell {
+=======
+@import '../../../shared/styles/admin-form';
+
+.page__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.item-name {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.92rem;
+}
+
+.desc-cell {
+>>>>>>> main
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+<<<<<<< HEAD
   max-width: 300px;
   color: #666;
   font-size: 0.9rem;
 }
+=======
+  max-width: 280px;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+
+.date-cell {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+>>>>>>> main

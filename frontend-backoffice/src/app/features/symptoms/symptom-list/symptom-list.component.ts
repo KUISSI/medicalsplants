@@ -1,25 +1,76 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { SymptomService } from '../../../core/services/symptom.service';
+import { SlideOverComponent } from '../../../shared/components/slide-over/slide-over.component';
 import { Symptom } from '../../../core/models/symptom.model';
-import { ToastrService } from 'ngx-toastr';
+
+const MOCK_SYMPTOMS: Symptom[] = [
+  {
+    id: '1',
+    title: 'Anxiété',
+    symptomFamily: 'Troubles nerveux',
+    symptomDetail: "Sentiment persistant d'inquiétude et de tension",
+    createdAt: '2024-01-10T00:00:00',
+  },
+  {
+    id: '2',
+    title: 'Insomnie',
+    symptomFamily: 'Troubles du sommeil',
+    symptomDetail: "Difficulté à s'endormir ou à maintenir le sommeil",
+    createdAt: '2024-01-15T00:00:00',
+  },
+  {
+    id: '3',
+    title: 'Migraine',
+    symptomFamily: 'Douleurs',
+    symptomDetail: 'Maux de tête intenses, souvent unilatéraux',
+    createdAt: '2024-02-01T00:00:00',
+  },
+  {
+    id: '4',
+    title: 'Reflux gastrique',
+    symptomFamily: 'Troubles digestifs',
+    symptomDetail: "Remontée acide irritant l'œsophage",
+    createdAt: '2024-02-10T00:00:00',
+  },
+  {
+    id: '5',
+    title: 'Eczéma',
+    symptomFamily: 'Problèmes cutanés',
+    symptomDetail: 'Inflammation chronique de la peau',
+    createdAt: '2024-03-01T00:00:00',
+  },
+  {
+    id: '6',
+    title: 'Fatigue chronique',
+    symptomFamily: 'Troubles nerveux',
+    symptomDetail: 'Épuisement persistant sans cause apparente',
+    createdAt: '2024-03-05T00:00:00',
+  },
+];
+
+const PREDEFINED_FAMILIES = [
+  'Troubles nerveux',
+  'Troubles du sommeil',
+  'Douleurs',
+  'Troubles digestifs',
+  'Problèmes cutanés',
+  'Système respiratoire',
+  'Système cardiovasculaire',
+  'Système immunitaire',
+  'Système musculaire',
+  'Général',
+];
 
 @Component({
   selector: 'app-symptom-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    LoaderComponent,
-    ConfirmDialogComponent
-  ],
+  imports: [CommonModule, RouterModule, FormsModule, LoaderComponent, ConfirmDialogComponent],
   templateUrl: './symptom-list.component.html',
-  styleUrls: ['./symptom-list.component.scss']
+  styleUrls: ['./symptom-list.component.scss'],
 })
 export class SymptomListComponent implements OnInit {
   private symptomService = inject(SymptomService);
@@ -35,8 +86,20 @@ export class SymptomListComponent implements OnInit {
   showDeleteDialog = false;
   symptomToDelete: Symptom | null = null;
 
-  ngOnInit(): void {
-    this.loadSymptoms();
+  get isEditMode(): boolean {
+    return !!this.editingId;
+  }
+  get slideOverTitle(): string {
+    return this.editingId ? 'Modifier le symptôme' : 'Nouveau symptôme';
+  }
+  get f() {
+    return this.form.controls;
+  }
+
+  openNew(): void {
+    this.editingId = null;
+    this.form.reset();
+    this.slideOverOpen = true;
   }
 
   loadSymptoms(): void {
@@ -49,7 +112,7 @@ export class SymptomListComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -70,7 +133,7 @@ export class SymptomListComponent implements OnInit {
   }
 
   confirmDelete(symptom: Symptom): void {
-    this.symptomToDelete = symptom;
+    this.deletingSymptom = symptom;
     this.showDeleteDialog = true;
   }
 
@@ -80,23 +143,27 @@ export class SymptomListComponent implements OnInit {
         next: () => {
           const family = this.symptomToDelete?.family;
           if (family && this.groupedSymptoms[family]) {
-            this.groupedSymptoms[family] = this.groupedSymptoms[family].filter(s => s.id !== this.symptomToDelete?.id);
+            this.groupedSymptoms[family] = this.groupedSymptoms[family].filter(
+              (s) => s.id !== this.symptomToDelete?.id,
+            );
             if (this.groupedSymptoms[family].length === 0) {
-              this.families = this.families.filter(f => f !== family);
+              this.families = this.families.filter((f) => f !== family);
               delete this.groupedSymptoms[family];
             }
           }
           this.toastr.success('Symptôme supprimé', 'Succès');
           this.showDeleteDialog = false;
           this.symptomToDelete = null;
-        }
+        },
       });
     }
+    this.showDeleteDialog = false;
+    this.deletingSymptom = null;
   }
 
   onDeleteCancel(): void {
     this.showDeleteDialog = false;
-    this.symptomToDelete = null;
+    this.deletingSymptom = null;
   }
 
   formatDate(dateString: string): string {
