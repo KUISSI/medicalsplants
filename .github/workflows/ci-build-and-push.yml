@@ -34,6 +34,11 @@ jobs:
           cd ${{ matrix.app }}
           npm ci
 
+      - name: Run frontend tests
+        run: |
+          cd ${{ matrix.app }}
+          npm test
+
       - name: Build app
         run: |
           cd ${{ matrix.app }}
