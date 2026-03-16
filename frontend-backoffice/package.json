@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "start": "npx ng serve",
+    "build": "npx ng build",
+    "watch": "npx ng build --watch --configuration development",
     "test": "vitest run"
   },
   "prettier": {
@@ -21,6 +21,9 @@
     ]
   },
   "private": true,
+  "overrides": {
+    "undici": "^7.24.0"
+  },
   "packageManager": "npm@10.9.2",
   "dependencies": {
     "@angular/animations": "^21.1.1",
