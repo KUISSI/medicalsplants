@@ -12,10 +12,13 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  toastr.warning('Vous devez être connecté pour accéder à cette page', 'Accès refusé');
-  router.navigate(['/login'], { 
-    queryParams: { returnUrl: state. url } 
+  toastr.warning(
+    'Vous devez être connecté pour accéder à cette page',
+    'Accès refusé',
+  );
+  router.navigate(['/login'], {
+    queryParams: { returnUrl: state.url },
   });
-  
+
   return false;
 };
