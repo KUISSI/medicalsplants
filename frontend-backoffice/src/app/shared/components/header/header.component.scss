@@ -93,13 +93,13 @@
     font-weight: 500;
     white-space: nowrap;
 
-    &: hover {
+    &:hover {
       background:  rgba(255, 255, 255, 0.1);
       color: #ffffff;
     }
 
-    &. active {
-      background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    &.active {
+      background:  linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
       color: #ffffff;
     }
 
@@ -113,8 +113,8 @@
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
 
-      &. active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      &.active {
+        background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
       }
     }
   }
@@ -228,8 +228,8 @@
     }
 
     &--active {
-      . header__toggle-bar {
-        &: nth-child(1) {
+      .header__toggle-bar {
+        &:nth-child(1) {
           transform: rotate(45deg) translate(6px, 6px);
         }
         &:nth-child(2) {

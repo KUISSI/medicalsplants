@@ -31,16 +31,16 @@
         <div class="form-group">
           <label class="form-label">Famille *</label>
           <select
-            formControlName="propertyFamily"
+            formControlName="family"
             class="form-select"
-            [class.form-input--error]="propertyFamily?.invalid && propertyFamily?.touched"
+            [class.form-input--error]="family?.invalid && family?.touched"
           >
             <option value="">Sélectionnez une famille</option>
             @for (family of predefinedFamilies; track family) {
             <option [value]="family">{{ family }}</option>
             }
           </select>
-          @if (propertyFamily?.invalid && propertyFamily?.touched) {
+          @if (family?.invalid && family?.touched) {
           <span class="form-error">La famille est requise</span>
           }
         </div>
@@ -50,7 +50,7 @@
       <div class="form-group form-group--full">
         <label class="form-label">Description</label>
         <textarea
-          formControlName="propertyDetail"
+          formControlName="description"
           class="form-textarea"
           rows="3"
           placeholder="Décrivez cette propriété..."

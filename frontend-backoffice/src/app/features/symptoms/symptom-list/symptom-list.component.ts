@@ -1,105 +1,156 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { SymptomService } from '../../../core/services/symptom.service';
+import { SlideOverComponent } from '../../../shared/components/slide-over/slide-over.component';
 import { Symptom } from '../../../core/models/symptom.model';
-import { ToastrService } from 'ngx-toastr';
+import { SymptomService } from '../../../core/services/symptom.service';
 
 @Component({
   selector: 'app-symptom-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    LoaderComponent,
-    ConfirmDialogComponent
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ConfirmDialogComponent, SlideOverComponent],
   templateUrl: './symptom-list.component.html',
   styleUrls: ['./symptom-list.component.scss']
 })
 export class SymptomListComponent implements OnInit {
+  private fb = inject(FormBuilder);
   private symptomService = inject(SymptomService);
-  private toastr = inject(ToastrService);
 
-  groupedSymptoms: { [family: string]: Symptom[] } = {};
-  families: string[] = [];
-  isLoading = true;
+  /* ---- data ---- */
+  private allSymptoms: Symptom[] = [];
+  symptoms: Symptom[] = [];
   searchTerm = '';
-  family = '';
+  selectedFamily = '';
+  families: string[] = [];
 
-  // Delete confirmation
+  /* ---- slide-over ---- */
+  slideOverOpen = false;
+  editingId: string | null = null;
+
+  form: FormGroup = this.fb.group({
+    title:       ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    family:      ['', Validators.required],
+    description: ['', Validators.maxLength(1000)]
+  });
+
+  /* ---- delete dialog ---- */
   showDeleteDialog = false;
-  symptomToDelete: Symptom | null = null;
+  deletingSymptom: Symptom | null = null;
+
+  get isEditMode(): boolean { return !!this.editingId; }
+  get slideOverTitle(): string { return this.editingId ? 'Modifier le symptôme' : 'Nouveau symptôme'; }
+  get f() { return this.form.controls; }
 
   ngOnInit(): void {
     this.loadSymptoms();
+    this.loadFamilies();
   }
 
-  loadSymptoms(): void {
-    this.isLoading = true;
-    this.symptomService.getGroupedByFamily(this.searchTerm, this.family).subscribe({
+  private loadSymptoms(): void {
+    this.symptomService.getAll().subscribe({
       next: (data) => {
-        this.groupedSymptoms = data;
-        this.families = Object.keys(data).sort();
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
+        this.allSymptoms = data;
+        this.applyFilters();
       }
     });
   }
 
-  onSearch(term: string): void {
-    this.searchTerm = term;
-    this.loadSymptoms();
+  private loadFamilies(): void {
+    this.symptomService.getAllFamilies().subscribe({
+      next: (data) => {
+        this.families = data;
+      }
+    });
   }
 
-  onFamilyChange(family: string): void {
-    this.family = family;
-    this.loadSymptoms();
+  openNew(): void {
+    this.editingId = null;
+    this.form.reset();
+    this.slideOverOpen = true;
   }
 
-  clearFilters(): void {
-    this.searchTerm = '';
-    this.family = '';
-    this.loadSymptoms();
+  openEdit(symptom: Symptom): void {
+    this.editingId = symptom.id;
+    this.form.patchValue({
+      title:       symptom.title,
+      family:      symptom.family,
+      description: symptom.description || ''
+    });
+    this.slideOverOpen = true;
   }
 
-  confirmDelete(symptom: Symptom): void {
-    this.symptomToDelete = symptom;
-    this.showDeleteDialog = true;
+  closeSlideOver(): void {
+    this.slideOverOpen = false;
+    this.editingId = null;
+    this.form.reset();
   }
 
-  onDeleteConfirm(): void {
-    if (this.symptomToDelete) {
-      this.symptomService.delete(this.symptomToDelete.id).subscribe({
-        next: () => {
-          const family = this.symptomToDelete?.family;
-          if (family && this.groupedSymptoms[family]) {
-            this.groupedSymptoms[family] = this.groupedSymptoms[family].filter(s => s.id !== this.symptomToDelete?.id);
-            if (this.groupedSymptoms[family].length === 0) {
-              this.families = this.families.filter(f => f !== family);
-              delete this.groupedSymptoms[family];
-            }
+  save(): void {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    const { title, family, description } = this.form.value;
+
+    if (this.editingId) {
+      this.symptomService.update(this.editingId, { title, family, description }).subscribe({
+        next: (updated) => {
+          this.allSymptoms = this.allSymptoms.map(s => s.id === updated.id ? updated : s);
+          this.applyFilters();
+          this.closeSlideOver();
+        }
+      });
+    } else {
+      this.symptomService.create({ title, family, description }).subscribe({
+        next: (created) => {
+          this.allSymptoms = [...this.allSymptoms, created];
+          if (!this.families.includes(created.family)) {
+            this.loadFamilies();
           }
-          this.toastr.success('Symptôme supprimé', 'Succès');
-          this.showDeleteDialog = false;
-          this.symptomToDelete = null;
+          this.applyFilters();
+          this.closeSlideOver();
         }
       });
     }
   }
 
-  onDeleteCancel(): void {
-    this.showDeleteDialog = false;
-    this.symptomToDelete = null;
+  applyFilters(): void {
+    let result = this.allSymptoms;
+    const term = this.searchTerm.toLowerCase().trim();
+    if (term) result = result.filter(s => s.title.toLowerCase().includes(term) || s.family.toLowerCase().includes(term));
+    if (this.selectedFamily) result = result.filter(s => s.family === this.selectedFamily);
+    this.symptoms = result;
   }
 
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('fr-FR');
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.selectedFamily = '';
+    this.symptoms = [...this.allSymptoms];
+  }
+
+  confirmDelete(symptom: Symptom): void {
+    this.deletingSymptom = symptom;
+    this.showDeleteDialog = true;
+  }
+
+  onDeleteConfirm(): void {
+    if (this.deletingSymptom) {
+      const id = this.deletingSymptom.id;
+      this.symptomService.delete(id).subscribe({
+        next: () => {
+          this.allSymptoms = this.allSymptoms.filter(s => s.id !== id);
+          this.applyFilters();
+        }
+      });
+    }
+    this.showDeleteDialog = false;
+    this.deletingSymptom = null;
+  }
+
+  onDeleteCancel(): void {
+    this.showDeleteDialog = false;
+    this.deletingSymptom = null;
+  }
+
+  formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 }

@@ -2,7 +2,9 @@
   <div class="login-card">
     <!-- Header -->
     <div class="login-card__header">
-      <span class="login-card__icon">🔧</span>
+      <div class="login-card__logo-wrap">
+        <img src="assets/logo.svg" alt="MedPlants" class="login-card__logo" />
+      </div>
       <h1 class="login-card__title">Administration</h1>
       <p class="login-card__subtitle">Connectez-vous pour accéder au panneau d'administration</p>
     </div>
@@ -11,9 +13,9 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <!-- Email -->
       <div class="form-group">
-        <label for="email" class="form-label">Email</label>
+        <label for="email" class="form-label">Adresse email</label>
         <div class="form-input-wrapper">
-          <span class="form-input-icon">📧</span>
+          <i class="bi bi-envelope form-input-icon" aria-hidden="true"></i>
           <input
             type="email"
             id="email"
@@ -26,8 +28,8 @@
         </div>
         @if (email?.invalid && email?.touched) {
         <span class="form-error">
-          @if (email?. errors?.['required']) { L'email est requis } @else if
-          (email?.errors?.['email']) { Format d'email invalide }
+          @if (email?.errors?.['required']) { L'email est requis }
+          @else if (email?.errors?.['email']) { Format d'email invalide }
         </span>
         }
       </div>
@@ -36,7 +38,7 @@
       <div class="form-group">
         <label for="password" class="form-label">Mot de passe</label>
         <div class="form-input-wrapper">
-          <span class="form-input-icon">🔒</span>
+          <i class="bi bi-lock form-input-icon" aria-hidden="true"></i>
           <input
             [type]="showPassword ? 'text' : 'password'"
             id="password"
@@ -46,33 +48,39 @@
             placeholder="••••••••"
             autocomplete="current-password"
           />
-          <button type="button" class="form-input-toggle" (click)="togglePassword()">
-            {{ showPassword ? '🙈' : '👁️' }}
+          <button type="button" class="form-input-toggle" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword" aria-hidden="true"></i>
           </button>
         </div>
         @if (password?.invalid && password?.touched) {
         <span class="form-error">
-          @if (password?.errors?. ['required']) { Le mot de passe est requis } @else if
-          (password?.errors?.['minlength']) { Minimum 8 caractères }
+          @if (password?.errors?.['required']) { Le mot de passe est requis }
+          @else if (password?.errors?.['minlength']) { Minimum 8 caractères }
         </span>
         }
       </div>
 
+      <!-- Login error -->
+      @if (loginError) {
+        <div class="form-error form-error--global">
+          <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+          {{ loginError }}
+        </div>
+      }
+
       <!-- Submit Button -->
-      <button
-        type="submit"
-        class="login-btn"
-        [disabled]="loginForm.invalid || authService.isLoading()"
-      >
-        @if (authService.isLoading()) {
-        <span class="login-btn__loader"></span>
-        Connexion... } @else { Se connecter }
+      <button type="submit" class="login-btn">
+        <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+        Se connecter
       </button>
     </form>
 
     <!-- Footer -->
     <div class="login-card__footer">
-      <p>🛡️ Accès réservé aux administrateurs</p>
+      <p>
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        Accès réservé aux administrateurs
+      </p>
     </div>
   </div>
 </div>

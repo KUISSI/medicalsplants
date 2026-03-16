@@ -7,78 +7,95 @@
   </div>
 
   @if (isLoadingData) {
-    <app-loader message="Chargement... "></app-loader>
+  <app-loader message="Chargement... "></app-loader>
   } @else {
-    <div class="form-container">
-      <form [formGroup]="plantForm" (ngSubmit)="onSubmit()" class="admin-form">
-        <div class="form-grid">
-          <!-- Title -->
-          <div class="form-group">
-            <label class="form-label">Nom de la plante *</label>
-            <input
-              type="text"
-              formControlName="title"
-              class="form-input"
-              [class.form-input--error]="title?.invalid && title?.touched"
-              placeholder="Ex: Camomille"
-            />
-            @if (title?.invalid && title?.touched) {
-              <span class="form-error">Le nom est requis</span>
-            }
-          </div>
-
-          <!-- Description -->
-          <div class="form-group form-group--full">
-            <label class="form-label">Description</label>
-            <textarea
-              formControlName="description"
-              class="form-textarea"
-              rows="4"
-              placeholder="Décrivez cette plante et ses bienfaits..."
-            ></textarea>
-          </div>
-
-          <!-- Properties -->
-          @if (!isEditMode && properties.length > 0) {
-            <div class="form-group form-group--full">
-              <label class="form-label">Propriétés thérapeutiques</label>
-              <div class="checkbox-list">
-                @for (property of properties; track property.id) {
-                  <label
-                    class="checkbox-item"
-                    [class.checkbox-item--selected]="isPropertySelected(property.id)"
-                  >
-                    <input
-                      type="checkbox"
-                      [checked]="isPropertySelected(property.id)"
-                      (change)="toggleProperty(property.id)"
-                    />
-                    <span class="checkbox-item__label">
-                      {{ property.title }}
-                      <small>({{ property.propertyFamily }})</small>
-                    </span>
-                  </label>
-                }
-              </div>
-              <span class="form-hint"
-                >{{ selectedPropertyIds.length }} propriété(s) sélectionnée(s)</span
-              >
-            </div>
+  <div class="form-container">
+    <form [formGroup]="plantForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <div class="form-grid">
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Nom de la plante *</label>
+          <input
+            type="text"
+            formControlName="title"
+            class="form-input"
+            [class.form-input--error]="title?.invalid && title?.touched"
+            placeholder="Ex: Camomille"
+          />
+          @if (title?. invalid && title?.touched) {
+          <span class="form-error">Le nom est requis</span>
           }
         </div>
-        <!-- Fermeture du form-grid ici -->
 
-        <div class="form-actions">
-          <a routerLink="/plants" class="btn btn--secondary">Annuler</a>
-          <button type="submit" class="btn btn--primary" [disabled]="isSaving">
-            @if (isSaving) {
-              Enregistrement...
-            } @else {
-              {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-            }
-          </button>
+        <!-- Image URL -->
+        <div class="form-group">
+          <label class="form-label">URL de l'image</label>
+          <input
+            type="text"
+            formControlName="imageUrl"
+            class="form-input"
+            placeholder="https://..."
+          />
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group form-group--full">
+        <label class="form-label">Description *</label>
+        <textarea
+          formControlName="description"
+          class="form-textarea"
+          rows="4"
+          placeholder="Décrivez cette plante et ses bienfaits..."
+        ></textarea>
+      </div>
+
+      <!-- History -->
+      <div class="form-group form-group--full">
+        <label class="form-label">Historique</label>
+        <textarea
+          formControlName="history"
+          class="form-textarea"
+          rows="3"
+          placeholder="Historique et origines de cette plante..."
+        ></textarea>
+      </div>
+
+      <!-- Properties -->
+      @if (!isEditMode && properties. length > 0) {
+      <div class="form-group form-group--full">
+        <label class="form-label">Propriétés thérapeutiques</label>
+        <div class="checkbox-list">
+          @for (property of properties; track property. id) {
+          <label
+            class="checkbox-item"
+            [class.checkbox-item--selected]="isPropertySelected(property.id)"
+          >
+            <input
+              type="checkbox"
+              [checked]="isPropertySelected(property.id)"
+              (change)="toggleProperty(property.id)"
+            />
+            <span class="checkbox-item__label">
+              {{ property.title }}
+              <small>({{ property.family }})</small>
+            </span>
+          </label>
+          }
+        </div>
+        <span class="form-hint">{{ selectedPropertyIds.length }} propriété(s) sélectionnée(s)</span>
+      </div>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/plants" class="btn btn--secondary">Annuler</a>
+        <button type="submit" class="btn btn--primary" [disabled]="isSaving">
+          @if (isSaving) { Enregistrement... } @else {
+          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
   }
 </div>
