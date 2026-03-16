@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start":  "ng serve",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "serve": "ng serve --open"
+    "serve": "ng serve --open",
+    "test": "vitest run"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +29,8 @@
     "@angular-devkit/build-angular": "^19.0.0",
     "@angular/cli": "^19.0.0",
     "@angular/compiler-cli": "^19.0.0",
-    "typescript": "~5.6.0"
+    "typescript": "~5.6.0",
+    "vitest": "^2.0.0",
+    "happy-dom": "^14.0.0"
   }
 }
