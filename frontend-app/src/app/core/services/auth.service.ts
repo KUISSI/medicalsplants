@@ -5,7 +5,6 @@ import { Observable, of, tap, catchError, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../../environments/environment';
-import { StorageService } from './storage.service';
 import {
   User,
   LoginRequest,
@@ -20,11 +19,9 @@ import {
 export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-  // Signals pour la réactivité
   private currentUserSignal = signal<User | null>(null);
   private isLoadingSignal = signal<boolean>(false);
 
-  // Computed values
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isLoading = this.isLoadingSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
@@ -37,19 +34,18 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private storage: StorageService,
     private toastr: ToastrService,
   ) {
-    this.loadUserFromStorage();
+    this.restoreSession();
   }
 
-  private loadUserFromStorage(): void {
-    const user = this.storage.get<User>(environment.userKey);
-    const token = this.storage.get<string>(environment.tokenKey);
-
-    if (user && token) {
-      this.currentUserSignal.set(user);
-    }
+  private restoreSession(): void {
+    this.http
+      .get<User>(`${this.apiUrl}/me`, { withCredentials: true })
+      .pipe(catchError(() => of(null)))
+      .subscribe((user) => {
+        if (user) this.currentUserSignal.set(user);
+      });
   }
 
   register(request: RegisterRequest): Observable<MessageResponse> {
@@ -80,7 +76,7 @@ export class AuthService {
         tap((response) => {
           this.isLoadingSignal.set(false);
           this.handleAuthSuccess(response);
-          this.toastr.success('Connexion réussie', 'Bienvenue ! ');
+          this.toastr.success('Connexion réussie', 'Bienvenue !');
         }),
         catchError((error) => {
           this.isLoadingSignal.set(false);
@@ -119,9 +115,7 @@ export class AuthService {
     return this.http.post<MessageResponse>(
       `${this.apiUrl}/forgot-password`,
       null,
-      {
-        params: { email },
-      },
+      { params: { email } },
     );
   }
 
@@ -132,9 +126,7 @@ export class AuthService {
     return this.http.post<MessageResponse>(
       `${this.apiUrl}/reset-password`,
       null,
-      {
-        params: { token, newPassword },
-      },
+      { params: { token, newPassword } },
     );
   }
 
@@ -150,21 +142,12 @@ export class AuthService {
       .pipe(tap((user) => this.currentUserSignal.set(user)));
   }
 
-  getAccessToken(): string | null {
-    return this.storage.get<string>(environment.tokenKey);
-  }
-
   private handleAuthSuccess(response: AuthResponse): void {
-    const { accessToken, user } = response.data;
-    this.storage.set(environment.tokenKey, accessToken);
-    this.storage.set(environment.userKey, user);
+    const { user } = response.data;
     this.currentUserSignal.set(user);
   }
 
   private handleLogout(): void {
-    this.storage.remove(environment.tokenKey);
-    this.storage.remove(environment.userKey);
-
     this.currentUserSignal.set(null);
     this.router.navigate(['/']);
     this.toastr.info('Vous êtes déconnecté', 'À bientôt !');

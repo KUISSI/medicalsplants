@@ -42,40 +42,19 @@ export const errorInterceptor: HttpInterceptorFn = (
             !req.url.includes('/auth/refresh') &&
             !req.url.includes('/auth/login')
           ) {
-            const refreshToken = authService['storage'].get<string>(
-              environment.refreshTokenKey,
+            return authService.refreshToken().pipe(
+              switchMap(() => {
+                return next(req.clone({ withCredentials: true }));
+              }),
+              catchError(() => {
+                authService.logout();
+                toastr.warning(
+                  'Session expirée. Veuillez vous reconnecter.',
+                  'Non autorisé',
+                );
+                return throwError(() => error);
+              }),
             );
-            if (refreshToken) {
-              return authService.refreshToken().pipe(
-                switchMap(() => {
-                  const newToken = authService.getAccessToken();
-                  if (newToken) {
-                    const authReq = req.clone({
-                      setHeaders: { Authorization: `Bearer ${newToken}` },
-                    });
-                    return next(authReq);
-                  }
-                  authService.logout();
-                  toastr.warning(
-                    'Session expirée. Veuillez vous reconnecter.',
-                    'Non autorisé',
-                  );
-                  return throwError(() => error);
-                }),
-                catchError(() => {
-                  authService.logout();
-                  toastr.warning(
-                    'Session expirée. Veuillez vous reconnecter.',
-                    'Non autorisé',
-                  );
-                  return throwError(() => error);
-                }),
-              );
-            } else {
-              errorMessage = 'Session expirée. Veuillez vous reconnecter.';
-              toastr.warning(errorMessage, 'Non autorisé');
-              authService.logout();
-            }
           }
           break;
 
