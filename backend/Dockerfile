@@ -1,14 +1,14 @@
-# Multi-stage Dockerfile for Spring Boot backend
-# Build with Maven and run with a slim JRE
-
-FROM maven:3.9.4-amazoncorretto-17 AS build
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /build
 COPY pom.xml .
+RUN mvn -B dependency:go-offline -q
 COPY src ./src
-RUN mvn -e -B -DskipTests package
+RUN mvn -B -DskipTests package -q
 
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+USER app
 COPY --from=build /build/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
