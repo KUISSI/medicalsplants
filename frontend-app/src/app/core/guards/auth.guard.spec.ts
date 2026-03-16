@@ -1,26 +1,25 @@
 // auth.guard.spec.ts
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { vi } from 'vitest';
 import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 describe('authGuard', () => {
-  let authServiceMock: jasmine.SpyObj<AuthService>;
-  let routerMock: jasmine.SpyObj<Router>;
-  let toastrMock: jasmine.SpyObj<ToastrService>;
+  const isAuthenticated = vi.fn();
+  const navigate = vi.fn();
+  const warning = vi.fn();
 
   beforeEach(() => {
-    authServiceMock = jasmine.createSpyObj('AuthService', ['isAuthenticated']);
-    routerMock = jasmine.createSpyObj('Router', ['navigate']);
-    toastrMock = jasmine.createSpyObj('ToastrService', ['warning']);
+    vi.clearAllMocks();
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock },
-        { provide: ToastrService, useValue: toastrMock },
+        { provide: AuthService, useValue: { isAuthenticated } },
+        { provide: Router, useValue: { navigate } },
+        { provide: ToastrService, useValue: { warning } },
       ],
     });
   });
@@ -31,21 +30,24 @@ describe('authGuard', () => {
     );
 
   it('should allow access when authenticated', () => {
-    authServiceMock.isAuthenticated.and.returnValue(true);
-    expect(runGuard()).toBeTrue();
+    isAuthenticated.mockReturnValue(true);
+    expect(runGuard()).toBe(true);
   });
 
   it('should redirect to /login when not authenticated', () => {
-    authServiceMock.isAuthenticated.and.returnValue(false);
-    expect(runGuard('/plants')).toBeFalse();
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/login'], {
+    isAuthenticated.mockReturnValue(false);
+    expect(runGuard('/plants')).toBe(false);
+    expect(navigate).toHaveBeenCalledWith(['/login'], {
       queryParams: { returnUrl: '/plants' },
     });
   });
 
   it('should show a toastr warning when not authenticated', () => {
-    authServiceMock.isAuthenticated.and.returnValue(false);
+    isAuthenticated.mockReturnValue(false);
     runGuard();
-    expect(toastrMock.warning).toHaveBeenCalled();
+    expect(warning).toHaveBeenCalledWith(
+      'Vous devez être connecté pour accéder à cette page',
+      'Accès refusé',
+    );
   });
 });
