@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
@@ -23,6 +23,7 @@ const PREDEFINED_FAMILIES = [
 })
 export class PropertyListComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
   private propertyService = inject(PropertyService);
   private symptomService = inject(SymptomService);
 

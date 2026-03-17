@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { SymptomService } from '../../../core/services/symptom.service';
 import { Symptom } from '../../../core/models/symptom.model';
-
 
 @Component({
   selector: 'app-symptom-form',
@@ -17,23 +17,20 @@ export class SymptomFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private symptomService = inject(SymptomService);
 
   symptomForm: FormGroup;
   symptom: Symptom | null = null;
-
   isLoadingData = false;
   isSaving = false;
   isEditMode = false;
+  error = '';
 
-  predefinedFamilies = [
+  families: string[] = [
     'Troubles nerveux', 'Troubles du sommeil', 'Douleurs', 'Troubles digestifs',
-    'Problèmes cutanés', 'Système respiratoire', 'Système cardiovasculaire',
-    'Système immunitaire', 'Système musculaire', 'Général'
+    'Problemes cutanes', 'Systeme respiratoire', 'Systeme cardiovasculaire',
+    'Systeme immunitaire', 'Systeme musculaire', 'General'
   ];
-
-  get families(): string[] {
-    return this.predefinedFamilies;
-  }
 
   constructor() {
     this.symptomForm = this.fb.group({
@@ -47,12 +44,27 @@ export class SymptomFormComponent implements OnInit {
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.isEditMode = true;
-      this.router.navigate(['/symptoms']);
+      this.isLoadingData = true;
+      this.symptomService.getById(id).subscribe({
+        next: (symptom) => {
+          this.symptom = symptom;
+          this.symptomForm.patchValue({
+            title:       symptom.title,
+            family:      symptom.family,
+            description: symptom.description
+          });
+          this.isLoadingData = false;
+        },
+        error: () => {
+          this.isLoadingData = false;
+          this.router.navigate(['/symptoms']);
+        }
+      });
     }
   }
 
-  get title() { return this.symptomForm.get('title'); }
-  get family() { return this.symptomForm.get('family'); }
+  get title()       { return this.symptomForm.get('title'); }
+  get family()      { return this.symptomForm.get('family'); }
   get description() { return this.symptomForm.get('description'); }
 
   onSubmit(): void {
@@ -61,9 +73,19 @@ export class SymptomFormComponent implements OnInit {
       return;
     }
     this.isSaving = true;
-    setTimeout(() => {
-      this.isSaving = false;
-      this.router.navigate(['/symptoms']);
-    }, 500);
+    this.error = '';
+    const obs = this.isEditMode && this.symptom
+      ? this.symptomService.update(this.symptom.id, this.symptomForm.value)
+      : this.symptomService.create(this.symptomForm.value);
+    obs.subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.router.navigate(['/symptoms']);
+      },
+      error: () => {
+        this.isSaving = false;
+        this.error = 'Erreur lors de la sauvegarde.';
+      }
+    });
   }
 }

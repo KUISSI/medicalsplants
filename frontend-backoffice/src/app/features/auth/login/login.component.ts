@@ -4,11 +4,6 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 
-const MOCK_ADMIN = {
-  email: 'admin@medicalsplants.com',
-  password: 'Admin1234!'
-};
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -24,6 +19,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   showPassword = false;
   loginError = '';
+  isLoading = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -46,16 +42,18 @@ export class LoginComponent {
     }
 
     const { email, password } = this.loginForm.value;
+    this.isLoading = true;
+    this.loginError = '';
 
-    if (email === MOCK_ADMIN.email && password === MOCK_ADMIN.password) {
-      this.authService.loginMock({
-        id: '1', email, pseudo: 'Admin', role: 'ADMIN',
-        status: 'ACTIVE', isActive: true, isEmailVerified: true,
-        createdAt: new Date().toISOString()
-      });
-      this.router.navigate(['/']);
-    } else {
-      this.loginError = 'Email ou mot de passe incorrect.';
-    }
+    this.authService.login({ email, password }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.loginError = 'Email ou mot de passe incorrect.';
+      }
+    });
   }
 }

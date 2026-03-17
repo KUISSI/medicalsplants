@@ -1,15 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { Receipt, RECEIPT_TYPE_LABELS } from '../../../core/models/receipt.model';
-
-const MOCK_PENDING: Receipt[] = [
-  { id: '3', title: 'Baume apaisant',        type: 'LOTION',    status: 'PENDING', isPremium: false, description: 'Lotion hydratante à l\'aloe vera pour peaux sensibles', author: { pseudo: 'Carol' } as any, plants: [{ id:'4', title: 'Aloe vera' } as any],     createdAt: '2024-03-01T10:00:00' },
-  { id: '7', title: 'Sirop antitussif',       type: 'HOT_DRINK', status: 'PENDING', isPremium: false, description: 'Sirop naturel contre la toux à base de thym',           author: { pseudo: 'Felix' } as any, plants: [{ id:'2', title: 'Lavande' } as any],       createdAt: '2024-03-08T14:30:00' },
-  { id: '8', title: 'Masque purifiant',       type: 'LOTION',    status: 'PENDING', isPremium: true,  description: 'Masque à l\'argile et plantes médicinales',             author: { pseudo: 'Bob' } as any,   plants: [{ id:'3', title: 'Menthe poivrée' } as any], createdAt: '2024-03-09T09:15:00' }
-];
+import { Recipe, RECIPE_TYPE_LABELS } from '../../../core/models/recipe.model';
+import { RecipeService } from '../../../core/services/recipe.service';
 
 @Component({
   selector: 'app-receipt-moderation',
@@ -19,44 +14,60 @@ const MOCK_PENDING: Receipt[] = [
   styleUrls: ['./receipt-moderation.component.scss']
 })
 export class ReceiptModerationComponent implements OnInit {
-  pendingReceipts: Receipt[] = MOCK_PENDING;
+  private recipeService = inject(RecipeService);
+
+  pendingReceipts: Recipe[] = [];
   isLoading = false;
 
-  receiptTypeLabels = RECEIPT_TYPE_LABELS;
+  receiptTypeLabels = RECIPE_TYPE_LABELS;
 
   showApproveDialog = false;
   showRejectDialog = false;
-  selectedReceipt: Receipt | null = null;
+  selectedReceipt: Recipe | null = null;
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.pendingReceipts = MOCK_PENDING;
-      this.isLoading = false;
-    }, 300);
+    this.isLoading = true;
+    this.recipeService.getPending().subscribe({
+      next: (recipes) => {
+        this.pendingReceipts = recipes;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
-  openApproveDialog(receipt: Receipt): void {
+  openApproveDialog(receipt: Recipe): void {
     this.selectedReceipt = receipt;
     this.showApproveDialog = true;
   }
 
-  openRejectDialog(receipt: Receipt): void {
+  openRejectDialog(receipt: Recipe): void {
     this.selectedReceipt = receipt;
     this.showRejectDialog = true;
   }
 
   onApproveConfirm(): void {
-    if (this.selectedReceipt) {
-      this.pendingReceipts = this.pendingReceipts.filter(r => r.id !== this.selectedReceipt?.id);
-      this.closeDialogs();
-    }
+    if (!this.selectedReceipt) return;
+    this.recipeService.approve(this.selectedReceipt.id).subscribe({
+      next: () => {
+        this.pendingReceipts = this.pendingReceipts.filter(r => r.id !== this.selectedReceipt?.id);
+        this.closeDialogs();
+      },
+      error: () => this.closeDialogs()
+    });
   }
 
   onRejectConfirm(): void {
-    if (this.selectedReceipt) {
-      this.pendingReceipts = this.pendingReceipts.filter(r => r.id !== this.selectedReceipt?.id);
-      this.closeDialogs();
-    }
+    if (!this.selectedReceipt) return;
+    this.recipeService.archive(this.selectedReceipt.id).subscribe({
+      next: () => {
+        this.pendingReceipts = this.pendingReceipts.filter(r => r.id !== this.selectedReceipt?.id);
+        this.closeDialogs();
+      },
+      error: () => this.closeDialogs()
+    });
   }
 
   closeDialogs(): void {
