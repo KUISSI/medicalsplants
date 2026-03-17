@@ -1,4 +1,4 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -29,9 +29,11 @@ export const errorInterceptor: HttpInterceptorFn = (
           break;
 
         case 401:
-          errorMessage = 'Session expirée';
-          toastr.warning(errorMessage, 'Déconnexion');
-          authService.logout();
+          if (!req.url.includes('/auth/')) {
+            errorMessage = 'Session expirée';
+            toastr.warning(errorMessage, 'Déconnexion');
+            authService.logout();
+          }
           break;
 
         case 403:

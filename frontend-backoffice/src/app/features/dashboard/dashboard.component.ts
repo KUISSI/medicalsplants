@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   private userService = inject(UserService);
   private plantService = inject(PlantService);
   private recipeService = inject(RecipeService);
+  private cdr = inject(ChangeDetectorRef);
 
   today = new Date();
 
@@ -70,6 +71,7 @@ export class DashboardComponent implements OnInit {
           receipts: recipes.totalElements,
           pendingReceipts: pending.length,
         };
+        this.cdr.detectChanges();
       },
       error: () => {},
     });

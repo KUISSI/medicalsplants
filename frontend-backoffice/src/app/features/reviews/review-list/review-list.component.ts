@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -17,6 +17,7 @@ import { Recipe } from '../../../core/models/recipe.model';
 export class ReviewListComponent implements OnInit {
   private reviewService = inject(ReviewService);
   private recipeService = inject(RecipeService);
+  private cdr = inject(ChangeDetectorRef);
 
   recipes: Recipe[] = [];
   reviewsByRecipe: Record<string, Review[]> = {};
@@ -38,6 +39,7 @@ export class ReviewListComponent implements OnInit {
       next: page => {
         this.recipes = page.content;
         this.isLoadingRecipes = false;
+        this.cdr.detectChanges();
       },
       error: () => { this.isLoadingRecipes = false; }
     });
@@ -60,6 +62,7 @@ export class ReviewListComponent implements OnInit {
       next: reviews => {
         this.reviewsByRecipe[recipeId] = reviews;
         this.loadingReviews[recipeId] = false;
+        this.cdr.detectChanges();
       },
       error: () => { this.loadingReviews[recipeId] = false; }
     });
