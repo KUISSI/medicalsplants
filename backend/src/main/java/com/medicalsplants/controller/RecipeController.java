@@ -151,7 +151,9 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Get all recipes for admin (all statuses)")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/all")
     public ResponseEntity<Page<RecipeResponse>> getAllRecipes(
             @RequestParam(required = false) String status,

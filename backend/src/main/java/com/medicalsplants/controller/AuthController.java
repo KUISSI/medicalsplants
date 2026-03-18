@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medicalsplants.model.dto.request.LoginRequest;
@@ -87,7 +88,12 @@ public class AuthController {
 
     @Operation(summary = "Refresh token")
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<AuthResponse> refreshToken(
+            @CookieValue(value = "refreshToken", required = false) String refreshTokenCookie) {
+        if (refreshTokenCookie == null || refreshTokenCookie.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        RefreshTokenRequest request = new RefreshTokenRequest(refreshTokenCookie);
         AuthService.AuthResult result = authService.refreshToken(request);
 
         // Cookie JWT d'accÃ¨s

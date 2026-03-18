@@ -19,7 +19,6 @@ import { RecipeService } from '../../../core/services/recipe.service';
 export class RecipeListComponent implements OnInit {
   private recipeService = inject(RecipeService);
 
-  private allRecipes: Recipe[] = [];
   recipes: Recipe[] = [];
 
   currentPage = 0;
@@ -34,28 +33,26 @@ export class RecipeListComponent implements OnInit {
 
   statusKeys: RecipeStatus[] = Object.keys(RECIPE_STATUS_LABELS) as RecipeStatus[];
 
-  ngOnInit(): void {
-    this.recipeService.getAll(0, 50).subscribe({
+  loadRecipes(): void {
+    const status = this.selectedStatus || undefined;
+    this.recipeService.getAllAdmin(this.currentPage, 20, status).subscribe({
       next: page => {
-        this.allRecipes = page.content;
+        this.recipes = page.content;
         this.totalElements = page.totalElements;
         this.totalPages = page.totalPages;
         this.currentPage = page.number;
-        this.applyFilter();
       },
       error: err => console.error('Failed to load recipes', err)
     });
   }
 
+  ngOnInit(): void {
+    this.loadRecipes();
+  }
+
   applyFilter(): void {
-    if (this.selectedStatus) {
-      this.recipes = this.allRecipes.filter(r => r.status === this.selectedStatus);
-    } else {
-      this.recipes = [...this.allRecipes];
-    }
-    this.totalElements = this.recipes.length;
-    this.totalPages = 1;
     this.currentPage = 0;
+    this.loadRecipes();
   }
 
   onStatusChange(): void {
@@ -64,6 +61,7 @@ export class RecipeListComponent implements OnInit {
 
   loadPage(page: number): void {
     this.currentPage = page;
+    this.loadRecipes();
   }
 
   getrecipeTypeIcon(type: RecipeType): string {
