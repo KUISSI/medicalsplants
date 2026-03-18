@@ -52,7 +52,7 @@
         </thead>
         <tbody>
           @for (recipe of recipes; track recipe.id) {
-            <tr>
+            <tr (click)="openDetail(recipe)" style="cursor:pointer">
               <td>
                 <div class="recipe-cell">
                   <i class="bi {{ getrecipeTypeIcon(recipe.type) }} recipe-cell__icon" aria-hidden="true"></i>
@@ -87,7 +87,7 @@
               <td class="date-cell">{{ formatDate(recipe.createdAt) }}</td>
               <td>
                 <div class="row-actions">
-                  <button class="action-btn" title="Voir" aria-label="Voir {{ recipe.title }}">
+                  <button class="action-btn" (click)="$event.stopPropagation(); openDetail(recipe)" title="Voir" aria-label="Voir {{ recipe.title }}">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -117,3 +117,84 @@
     }
   }
 </div>
+
+<!-- Slide-over detail -->
+<app-slide-over
+  [isOpen]="slideOverOpen"
+  [title]="selectedRecipe?.title ?? ''"
+  subtitle="Détail de la recette"
+  (closed)="closeDetail()"
+>
+  @if (selectedRecipe) {
+    <div class="so-detail">
+
+      <div class="field">
+        <label class="field__label">Type</label>
+        <span class="badge badge--info">{{ recipeTypeLabels[selectedRecipe.type] }}</span>
+      </div>
+
+      <div class="field">
+        <label class="field__label">Statut</label>
+        <span class="status-badge" [style.background-color]="recipeStatusColors[selectedRecipe.status]">
+          {{ recipeStatusLabels[selectedRecipe.status] }}
+        </span>
+      </div>
+
+      <div class="field">
+        <label class="field__label">Auteur</label>
+        <span>{{ selectedRecipe.author?.pseudo ?? '—' }}</span>
+      </div>
+
+      @if (selectedRecipe.description) {
+        <div class="field">
+          <label class="field__label">Description</label>
+          <p class="desc-cell">{{ selectedRecipe.description }}</p>
+        </div>
+      }
+
+      @if (selectedRecipe.plants?.length) {
+        <div class="field">
+          <label class="field__label">Actifs</label>
+          <div class="tag-list">
+            @for (plant of selectedRecipe.plants; track plant.id) {
+              <span class="badge badge--info">{{ plant.title }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="field">
+        <label class="field__label">Créé le</label>
+        <span>{{ formatDate(selectedRecipe.createdAt) }}</span>
+      </div>
+
+    </div>
+
+    <div class="so-actions">
+      @if (selectedRecipe.status === 'PENDING') {
+        <button class="btn btn--primary" (click)="approveRecipe()">
+          <i class="bi bi-check2-circle" aria-hidden="true"></i> Approuver
+        </button>
+      }
+      @if (selectedRecipe.status === 'PUBLISHED') {
+        <button class="btn btn--ghost" (click)="archiveRecipe()">
+          <i class="bi bi-archive" aria-hidden="true"></i> Archiver
+        </button>
+      }
+      <button class="btn btn--danger" (click)="confirmDelete()">
+        <i class="bi bi-trash" aria-hidden="true"></i> Supprimer
+      </button>
+    </div>
+  }
+</app-slide-over>
+
+<!-- Delete confirmation dialog -->
+<app-confirm-dialog
+  [isOpen]="showDeleteDialog"
+  title="Supprimer la recette"
+  [message]="'Supprimer définitivement \'' + selectedRecipe?.title + '\' ?'"
+  type="danger"
+  confirmText="Supprimer"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()"
+></app-confirm-dialog>

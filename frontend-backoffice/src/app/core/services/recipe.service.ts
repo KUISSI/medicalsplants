@@ -17,7 +17,7 @@ export class RecipeService {
   }
 
   getPublished(page: number, size: number): Observable<RecipePage> {
-    return this.http.get<RecipePage>(`${this.apiUrl}/published?page=${page}&size=${size}`);
+    return this.http.get<RecipePage>(`${this.apiUrl}/all?page=${page}&size=${size}&status=PUBLISHED`);
   }
 
   getPending(): Observable<Recipe[]> {
@@ -49,6 +49,14 @@ export class RecipeService {
     let url = `${this.apiUrl}/all?page=${page}&size=${size}&sort=${sort}`;
     if (status) url += `&status=${status}`;
     return this.http.get<RecipePage>(url);
+  }
+
+  getById(id: string): Observable<Recipe> {
+    return this.http.get<Recipe>(`${this.apiUrl}/${id}`);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   searchAdmin(q: string, page: number, size: number): Observable<RecipePage> {

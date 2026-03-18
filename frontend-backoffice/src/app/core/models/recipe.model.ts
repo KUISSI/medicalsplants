@@ -3,7 +3,7 @@ import { User } from './user.model';
 
 // Types (PascalCase)
 export type RecipeType = 'HOT_DRINK' | 'COLD_DRINK' | 'DISH' | 'LOTION' | 'OTHER';
-export type RecipeStatus = 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED';
+export type RecipeStatus = 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED' | 'ARCHIVED';
 
 // Interfaces (PascalCase)
 export interface Recipe {
@@ -50,12 +50,14 @@ export const RECIPE_STATUS_LABELS: Record<RecipeStatus, string> = {
   DRAFT: 'Brouillon',
   PENDING: 'En attente',
   PUBLISHED: 'Publié',
-  REJECTED: 'Rejeté'
+  REJECTED: 'Rejeté',
+  ARCHIVED: 'Archivé'
 };
 
 export const RECIPE_STATUS_COLORS: Record<RecipeStatus, string> = {
   DRAFT: '#9e9e9e',
   PENDING: '#ff9800',
   PUBLISHED: '#4caf50',
-  REJECTED: '#f44336'
+  REJECTED: '#f44336',
+  ARCHIVED: '#607d8b'
 };
