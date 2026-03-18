@@ -5,7 +5,7 @@ import { Recipe, RecipePage, CreateRecipeRequest } from '../models/recipe.model'
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RecipeService {
   private apiUrl = environment.apiUrl + '/recipes';
@@ -34,5 +34,26 @@ export class RecipeService {
 
   create(request: CreateRecipeRequest): Observable<Recipe> {
     return this.http.post<Recipe>(this.apiUrl, request);
+  }
+
+  search(q: string): Observable<RecipePage> {
+    return this.http.get<RecipePage>(`${this.apiUrl}/search?q=${encodeURIComponent(q)}`);
+  }
+
+  getAllAdmin(
+    page: number,
+    size: number,
+    status: string = '',
+    sort: string = 'title,asc',
+  ): Observable<RecipePage> {
+    let url = `${this.apiUrl}/all?page=${page}&size=${size}&sort=${sort}`;
+    if (status) url += `&status=${status}`;
+    return this.http.get<RecipePage>(url);
+  }
+
+  searchAdmin(q: string, page: number, size: number): Observable<RecipePage> {
+    return this.http.get<RecipePage>(
+      `${this.apiUrl}/search?q=${encodeURIComponent(q)}&page=${page}&size=${size}`,
+    );
   }
 }

@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { Property, CreatePropertyRequest, UpdatePropertyRequest } from '../models/property.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PropertyService {
-
   private readonly apiUrl = `${environment.apiUrl}/properties`;
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Property[]> {
-    return this.http.get<Property[]>(this.apiUrl);
+    return this.http.get<Property[] | any>(this.apiUrl).pipe(
+      map((res) => (Array.isArray(res) ? res : [])),
+      catchError(() => of([])),
+    );
   }
 
   getById(id: string): Observable<Property> {

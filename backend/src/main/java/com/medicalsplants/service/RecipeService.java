@@ -251,4 +251,15 @@ public class RecipeService {
             throw new ForbiddenException("You can only delete your own recipes");
         }
     }
+
+    @Transactional(readOnly = true)
+    public Page<RecipeResponse> getAllRecipes(String status, Pageable pageable) {
+        if (status == null || status.isEmpty()) {
+            return recipeRepository.findAllByDeletedAtIsNull(pageable)
+                    .map(recipeMapper::toDto);
+        } else {
+            return recipeRepository.findByStatusAndDeletedAtIsNull(RecipeStatus.valueOf(status), pageable)
+                    .map(recipeMapper::toDto);
+        }
+    }
 }

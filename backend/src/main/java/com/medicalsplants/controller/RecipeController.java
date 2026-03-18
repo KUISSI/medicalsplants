@@ -150,4 +150,12 @@ public class RecipeController {
         recipeService.deleteRecipe(id, currentUser);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<Page<RecipeResponse>> getAllRecipes(
+            @RequestParam(required = false) String status,
+            @PageableDefault(size = 100) Pageable pageable) {
+        return ResponseEntity.ok(recipeService.getAllRecipes(status, pageable));
+    }
 }

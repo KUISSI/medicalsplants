@@ -1,4 +1,4 @@
-package com.medicalsplants.controller;
+﻿package com.medicalsplants.controller;
 
 import java.util.UUID;
 
@@ -29,11 +29,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication and authorization endpoints")
 public class AuthController {
+
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
 
     private final AuthService authService;
     private final UserRepository userRepository;
@@ -57,10 +61,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthService.AuthResult result = authService.login(request);
 
-        // Cookie JWT d'accès
+        // Cookie JWT d'accÃ¨s
         ResponseCookie jwtCookie = ResponseCookie.from("jwt", result.getResponse().getData().getAccessToken())
                 .httpOnly(true)
-                .secure(true) // true en prod (HTTPS)
+                .secure(cookieSecure) // true en prod (HTTPS)
                 .path("/")
                 .maxAge(2 * 60 * 60) // 2h
                 .sameSite("Strict")
@@ -69,7 +73,7 @@ public class AuthController {
         // Cookie refreshToken
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/api/v1/auth/refresh")
                 .maxAge(30 * 24 * 60 * 60)
                 .sameSite("Strict")
@@ -86,10 +90,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         AuthService.AuthResult result = authService.refreshToken(request);
 
-        // Cookie JWT d'accès
+        // Cookie JWT d'accÃ¨s
         ResponseCookie jwtCookie = ResponseCookie.from("jwt", result.getResponse().getData().getAccessToken())
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(2 * 60 * 60)
                 .sameSite("Strict")
@@ -98,7 +102,7 @@ public class AuthController {
         // Cookie refreshToken
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/api/v1/auth/refresh")
                 .maxAge(30 * 24 * 60 * 60)
                 .sameSite("Strict")
@@ -116,10 +120,10 @@ public class AuthController {
         String refreshToken = request != null ? request.getRefreshToken() : null;
         MessageResponse response = authService.logout(refreshToken);
 
-        // Supprime les cookies côté client
+        // Supprime les cookies cÃ´tÃ© client
         ResponseCookie deleteJwtCookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
@@ -127,7 +131,7 @@ public class AuthController {
 
         ResponseCookie deleteRefreshCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/api/v1/auth/refresh")
                 .maxAge(0)
                 .sameSite("Strict")
@@ -147,7 +151,7 @@ public class AuthController {
 
         ResponseCookie deleteJwtCookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
@@ -155,7 +159,7 @@ public class AuthController {
 
         ResponseCookie deleteRefreshCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/api/v1/auth/refresh")
                 .maxAge(0)
                 .sameSite("Strict")

@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class CsrfInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Supposons que le token CSRF est stocké dans un cookie nommé 'XSRF-TOKEN'
     const csrfToken = this.getCookie('XSRF-TOKEN');
     if (csrfToken && ['POST', 'PUT', 'DELETE'].includes(req.method)) {
       const cloned = req.clone({

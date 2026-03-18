@@ -34,4 +34,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
     @Query("SELECT r FROM Recipe r WHERE r.status = 'PUBLISHED' AND r.deletedAt IS NULL AND (r.premium = false OR :canSeePremium = true) AND LOWER(r.title) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Recipe> searchByTitle(@Param("search") String search, @Param("canSeePremium") boolean canSeePremium, Pageable pageable);
+
+    @Query("SELECT r FROM Recipe r WHERE r.deletedAt IS NULL")
+    Page<Recipe> findAllByDeletedAtIsNull(Pageable pageable);
+
+    Page<Recipe> findByStatusAndDeletedAtIsNull(RecipeStatus status, Pageable pageable);
 }
